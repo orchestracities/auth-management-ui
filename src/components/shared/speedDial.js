@@ -11,10 +11,11 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DeleteDialog from './messages/cardDelete'
-const actions = [
-    { icon: <EditIcon />, name: 'Edit' },
-    { icon: <DeleteIcon color="error" />, name: 'Delete' },
-];
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import TenantForm from '../tenant/tenantForm'
+
+
 
 const fabProps = {
     sx: {
@@ -24,7 +25,7 @@ const fabProps = {
     }
 };
 export default function MultifunctionButton() {
-
+ //DELETE
     const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
 
     const handleClickOpenDeleteDialog = () => {
@@ -34,8 +35,20 @@ export default function MultifunctionButton() {
     const handleCloseDeleteDialog = (value) => {
         setOpenDeleteDialog(false);
     };
+    //EDIT
+    const [open, setOpen] = React.useState(false);
 
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
 
+    const handleClose = () => {
+        setOpen(false);
+    };
+    const actions = [
+        { icon: <EditIcon />, name: 'Edit',click: handleClickOpen },
+        { icon: <DeleteIcon color="error" />, name: 'Delete',click:handleClickOpenDeleteDialog},
+    ];
     return (
         <Box sx={{ height: 60, transform: 'translateZ(0px)', flexGrow: 1, zIndex: 100, background: "#8a93e140" }}>
             <SpeedDial
@@ -46,8 +59,8 @@ export default function MultifunctionButton() {
             >
                 {actions.map((action) => (
                     <SpeedDialAction
-                        onClick={handleClickOpenDeleteDialog}
-                        key={action.name}
+                        onClick={action.click}
+                        key={action.name}   
                         icon={action.icon}
                         tooltipTitle={action.name}
                     />
@@ -55,8 +68,22 @@ export default function MultifunctionButton() {
             </SpeedDial>
             <DeleteDialog
                 open={openDeleteDialog}
-                onClose={setOpenDeleteDialog}
+                onClose={handleCloseDeleteDialog} 
             />
+              <Dialog
+                open={open}
+                fullWidth={true}
+                maxWidth={"xl"}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                
+               <TenantForm title={"Edit Tenant"} close={setOpen}></TenantForm>
+                <DialogActions>
+
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 }
