@@ -25,6 +25,8 @@ import DashboardCard from './components/shared/cards'
 import Grid from '@mui/material/Grid';
 import AddButton from './components/shared/addButton'
 import TenantSelection from './components/shared/tenantSelection';
+import PolicyFilters from './components/policy/policyFilters';
+import PoliciesTable from './components/policy/policiesTable';
 const drawerWidth = 240;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -178,7 +180,10 @@ export default function App() {
         <AddButton></AddButton>
           <Grid container spacing={2} sx={{marginLeft:"15px "}}>
             <Grid item xs={12}>
-              <SortButton></SortButton>
+              <PolicyFilters></PolicyFilters>
+            </Grid>
+            <Grid item xs={12}>
+              <PoliciesTable></PoliciesTable>
             </Grid>
             <Grid item xs={12} lg={6  } xl={4}>
               <DashboardCard></DashboardCard>

@@ -10,9 +10,10 @@ import ShareIcon from '@mui/icons-material/Share';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteDialog from './messages/cardDelete'
 const actions = [
     { icon: <EditIcon />, name: 'Edit' },
-    { icon: <DeleteIcon color="error"/>, name: 'Delete' },
+    { icon: <DeleteIcon color="error" />, name: 'Delete' },
 ];
 
 const fabProps = {
@@ -23,6 +24,18 @@ const fabProps = {
     }
 };
 export default function MultifunctionButton() {
+
+    const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+
+    const handleClickOpenDeleteDialog = () => {
+        setOpenDeleteDialog(true);
+    };
+
+    const handleCloseDeleteDialog = (value) => {
+        setOpenDeleteDialog(false);
+    };
+
+
     return (
         <Box sx={{ height: 60, transform: 'translateZ(0px)', flexGrow: 1, zIndex: 100, background: "#8a93e140" }}>
             <SpeedDial
@@ -33,12 +46,17 @@ export default function MultifunctionButton() {
             >
                 {actions.map((action) => (
                     <SpeedDialAction
+                        onClick={handleClickOpenDeleteDialog}
                         key={action.name}
                         icon={action.icon}
                         tooltipTitle={action.name}
                     />
                 ))}
             </SpeedDial>
+            <DeleteDialog
+                open={openDeleteDialog}
+                onClose={setOpenDeleteDialog}
+            />
         </Box>
     );
 }

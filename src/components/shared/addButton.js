@@ -22,6 +22,7 @@ import Slide from '@mui/material/Slide';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
+import TenantForm from '../tenant/tenantForm'
 
 const bottomStyle = {
     position: "fixed",
@@ -65,47 +66,16 @@ export default function AddButton(pageType) {
                 </NewElement>
             </Stack>
             <Dialog
+            sx={{borderRadius:"17px !important"}}
                 open={open}
                 fullWidth={true}
                 maxWidth={"xl"}
                 onClose={handleClose}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
-              
             >
-                <CustomDialogTitle >
-                    <Toolbar>
-                        <IconButton
-                            edge="start"
-                            onClick={handleClose}
-                            aria-label="close"
-                        >
-                            <CloseIcon />
-                        </IconButton>
-                        <Typography sx={{ ml: 2, flex: 1, color: "black" }} variant="h6" component="div">
-                            New Tenant
-                        </Typography>
-                        <Button autoFocus color="secondary" onClick={handleClose}>
-                            save
-                        </Button>
-                    </Toolbar>
-                </CustomDialogTitle>
-                <DialogContent   sx={{minHeight:"400px"}}>
-                    <Grid container
-                        spacing={3}
-                        >
-                        <Grid item xs={12}>
-                            <TextField id="Name" label="Name" variant="outlined"   sx={{
-                         width: '100%',
-                       }}/>
-                        </Grid>
-                        <Grid item xs={12}>
-                        <TextField id="Description" label="Description" variant="outlined"   sx={{
-                         width: '100%',
-                       }}/>
-                        </Grid>
-                    </Grid>
-                </DialogContent>
+                
+               <TenantForm title={"New Tenant"} close={setOpen}></TenantForm>
                 <DialogActions>
 
                 </DialogActions>
