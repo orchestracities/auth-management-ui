@@ -9,8 +9,11 @@ import {
   InMemoryCache,
   ApolloProvider,
   useQuery,
-  gql
+  gql,
+createHttpLink, 
 } from "@apollo/client";
+import { setContext } from '@apollo/client/link/context';
+
 import Keycloak from 'keycloak-js'
 import { WebSocketLink } from 'apollo-link-ws'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
@@ -32,12 +35,31 @@ var keycloak = Keycloak({
         console.log("token", keycloak.token);
         const wsLink = new GraphQLWsLink(createClient({
           url: 'ws://localhost:4000/graphql',
-          connectionParams: {
-            authToken: keycloak.token,
-          },
+          options: {
+            reconnect: true,
+          }
         }));
-        const client = new ApolloClient({
+        
+      
+
+        const httpLink = createHttpLink({
           uri: 'http://localhost:4000/graphql',
+        });
+        
+        const authLink = setContext((_, { headers }) => {
+          // get the authentication token from local storage if it exists
+          const token = localStorage.getItem('token');
+          // return the headers to the context so httpLink can read them
+          return {
+            headers: {
+              ...headers,
+              Authorization: `Bearer ${keycloak.token}`
+            }
+          }
+        });
+        
+        const client = new ApolloClient({
+          link: authLink.concat(httpLink),
           cache: new InMemoryCache()
         });
         
