@@ -17,7 +17,7 @@ configureKeycloak(app, graphqlPath)
 
 const typeDefs = gql`
   type Query {
-    greetings: [String]!
+    greetings: [String] @hasRole(role: "developer")
   }
 
   type Mutation {

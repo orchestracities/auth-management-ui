@@ -24,26 +24,37 @@ var keycloak = Keycloak({
 
 
 
-const wsLink = new GraphQLWsLink(createClient({
-  url: 'ws://localhost:4000/graphql',
-  connectionParams: {
-    authToken: `Bearer ${keycloak.token}`,
-  },
-}));
-const client = new ApolloClient({
-  uri: 'http://localhost:4000/graphql',
-  cache: new InMemoryCache()
-});
-
-client
-  .query({
-    query: gql`
-    query {
-      hello
+  keycloak.init({
+    onLoad: 'login-required'
+  }).then(authenticated => {
+    if (authenticated) {
+      keycloak.loadUserInfo().then(userInfo => {
+        console.log("token", keycloak.token);
+        const wsLink = new GraphQLWsLink(createClient({
+          url: 'ws://localhost:4000/graphql',
+          connectionParams: {
+            authToken: keycloak.token,
+          },
+        }));
+        const client = new ApolloClient({
+          uri: 'http://localhost:4000/graphql',
+          cache: new InMemoryCache()
+        });
+        
+        client
+          .query({
+            query: gql`
+            query {
+              greetings
+            }
+            `
+          })
+          .then(result => console.log(result));
+      });
     }
-    `
-  })
-  .then(result => console.log(result));
+  });
+
+
 
 ReactDOM.render(
   <React.StrictMode>

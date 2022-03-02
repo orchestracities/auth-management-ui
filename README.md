@@ -23,7 +23,7 @@ The Keycloak console is accessible at localhost:8080 and the admin login is admi
 
 to run a simple example use:
 
-node examples/basic.js
+node examples/advancedAuth.js
 
 Now you should see the GraphQL Playground.
 

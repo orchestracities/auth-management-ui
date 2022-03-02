@@ -17,8 +17,7 @@ const { keycloak } = configureKeycloak(app, graphqlPath)
 
 // Ensure entire GraphQL Api can only be accessed by authenticated users
 app.use(graphqlPath, keycloak.protect())
-app.options('*', cors())
-
+app.use(cors());
 const typeDefs = gql`
   type Query {
     hello: String @hasRole(role: "developer")
