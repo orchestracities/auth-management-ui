@@ -32,7 +32,6 @@ var keycloak = Keycloak({
   }).then(authenticated => {
     if (authenticated) {
       keycloak.loadUserInfo().then(userInfo => {
-        console.log("token", keycloak.token);
         const wsLink = new GraphQLWsLink(createClient({
           url: 'ws://localhost:4000/graphql',
           options: {
