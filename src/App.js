@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { Component } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -27,6 +27,21 @@ import AddButton from './components/shared/addButton'
 import TenantSelection from './components/shared/tenantSelection';
 import PolicyFilters from './components/policy/policyFilters';
 import PoliciesTable from './components/policy/policiesTable';
+import Keycloak from 'keycloak-js'
+import { WebSocketLink } from 'apollo-link-ws'
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
+import { createClient } from 'graphql-ws';
+import reportWebVitals from './reportWebVitals';
+
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  useQuery,
+  gql,
+createHttpLink, 
+} from "@apollo/client";
+import { setContext } from '@apollo/client/link/context';
 const drawerWidth = 240;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -86,119 +101,193 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
-export default function App() {
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
-  const data = { mainTitle: "Tenant Admin List" };
-  const handleDrawerOpen = () => {
-    setOpen(true);
+export default class App extends Component {
+
+  state = {
+    open: false,
+    setOpen: (newValue) => {
+      this.setState({ open: newValue,direction:(newValue)?"ltr":"" })
+    },
+    direction:"ltr",
+    mainTitle: "Tenant Admin List",
+    authenticated: false,
+    name: "",
+    email: "",
+    id: "",
+    keycloak : "",
+    groups:[],
+    login: (keycloak, authenticated) => {
+      this.setState({ keycloak: keycloak, authenticated: authenticated })
+      this.state.keycloak.loadUserInfo().then(userInfo => {
+        this.setState({ name: userInfo.name, email: userInfo.email, id: userInfo.sub });
+        keycloak.loadUserInfo().then(userInfo => {
+          const wsLink = new GraphQLWsLink(createClient({
+            url: 'ws://localhost:4000/graphql',
+            options: {
+              reconnect: true,
+            }
+          }));
+
+          const httpLink = createHttpLink({
+            uri: 'http://localhost:4000/graphql',
+          });
+          
+          const authLink = setContext((_, { headers }) => {
+            // get the authentication token from local storage if it exists
+            const token = localStorage.getItem('token');
+            // return the headers to the context so httpLink can read them
+            return {
+              headers: {
+                ...headers,
+                Authorization: `Bearer ${keycloak.token}`
+              }
+            }
+          });
+          
+          const client = new ApolloClient({
+            link: authLink.concat(httpLink),
+            cache: new InMemoryCache()
+          });
+          
+          client
+            .query({
+              query: gql`
+              query {
+                greetings
+              }
+              `
+            })
+            .then(result => console.log(result));
+        });
+      });
+    },
+  }
+
+
+  componentDidMount() {
+    const keycloak=Keycloak({
+      url: 'http://localhost:8080/auth/',
+      realm: 'keycloak-connect-graphql',
+      clientId: 'myapp'
+    })
+    keycloak.init({ onLoad: 'login-required', checkLoginIframe: false }).then(authenticated => {
+      this.state.login(keycloak, authenticated)
+    });
+  }
+
+  handleDrawerOpen = () => {
+    this.state.setOpen(true);
   };
 
-  const handleDrawerClose = () => {
-    setOpen(false);
+  handleDrawerClose = () => {
+    this.state.setOpen(false);
   };
-
-  return (
-    <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
-      <AppBar position="fixed" open={open}>
-        <CustomToolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{ mr: 2, ...(open && { display: 'none' }) }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-
-          </Typography>
-         
-          <div>
-           < TenantSelection></TenantSelection>
-          </div>
-          <div>
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return (
+      <Box sx={{ display: 'flex' }}>
+        <CssBaseline />
+        <AppBar position="fixed" open={this.state.open}>
+          <CustomToolbar>
             <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
               color="inherit"
-              edge="end"
+              aria-label="open drawer"
+              onClick={this.handleDrawerOpen}
+              edge="start"
+              sx={{ mr: 2, ...(this.state.open && { display: 'none' }) }}
             >
-              <AccountCircle />
+              <MenuIcon />
             </IconButton>
-          </div>
-        </CustomToolbar>
-      </AppBar>
-      <Drawer
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+
+            </Typography>
+
+            <div>
+              < TenantSelection></TenantSelection>
+            </div>
+            <div>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                color="inherit"
+                edge="end"
+              >
+                <AccountCircle />
+              </IconButton>
+            </div>
+          </CustomToolbar>
+        </AppBar>
+        <Drawer
+          sx={{
             width: drawerWidth,
-            boxSizing: 'border-box',
-          },
-        }}
-        variant="persistent"
-        anchor="left"
-        open={open}
-      >
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
-      <Main open={open}>
-        <DrawerHeader />
-        <MainTitle {...data}></MainTitle>
-        <AddButton></AddButton>
-          <Grid container spacing={2} sx={{marginLeft:"15px "}}>
+            flexShrink: 0,
+            '& .MuiDrawer-paper': {
+              width: drawerWidth,
+              boxSizing: 'border-box',
+            },
+          }}
+          variant="persistent"
+          anchor="left"
+          open={this.state.open}
+        >
+          <DrawerHeader>
+            <IconButton onClick={this.handleDrawerClose}>
+              {this.state.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            </IconButton>
+          </DrawerHeader>
+          <Divider />
+          <List>
+            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+              <ListItem button key={text}>
+                <ListItemIcon>
+                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                </ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItem>
+            ))}
+          </List>
+          <Divider />
+          <List>
+            {['All mail', 'Trash', 'Spam'].map((text, index) => (
+              <ListItem button key={text}>
+                <ListItemIcon>
+                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                </ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItem>
+            ))}
+          </List>
+        </Drawer>
+        <Main open={this.state.open}>
+          <DrawerHeader />
+          <MainTitle {...this.state}></MainTitle>
+          <AddButton></AddButton>
+          <Grid container spacing={2} sx={{ marginLeft: "15px " }}>
             <Grid item xs={12}>
               <PolicyFilters></PolicyFilters>
             </Grid>
             <Grid item xs={12}>
               <PoliciesTable></PoliciesTable>
             </Grid>
-            <Grid item xs={12} lg={6  } xl={4}>
+            <Grid item xs={12} lg={6} xl={4}>
               <DashboardCard></DashboardCard>
             </Grid>
-            <Grid item xs={12} lg={6  } xl={4}>
+            <Grid item xs={12} lg={6} xl={4}>
               <DashboardCard></DashboardCard>
             </Grid>
-            <Grid item xs={12} lg={6  } xl={4}>
+            <Grid item xs={12} lg={6} xl={4}>
               <DashboardCard></DashboardCard>
             </Grid>
-            <Grid item xs={12} lg={6  } xl={4}>
+            <Grid item xs={12} lg={6} xl={4}>
               <DashboardCard></DashboardCard>
             </Grid>
           </Grid>
-      </Main>
-    </Box>
-  );
+        </Main>
+      </Box>
+    );
+  }
 }
