@@ -186,6 +186,7 @@ export default class App extends Component {
     super(props);
   }
   render() {
+    
     return (
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
@@ -203,7 +204,6 @@ export default class App extends Component {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
 
             </Typography>
-
             <div>
               < TenantSelection></TenantSelection>
             </div>
@@ -263,8 +263,7 @@ export default class App extends Component {
           </List>
         </Drawer>
         <Main open={this.state.open}>
-          <DrawerHeader />
-          <MainTitle {...this.state}></MainTitle>
+        { (this.state.authenticated)?<div><MainTitle {...this.state}></MainTitle>
           <AddButton></AddButton>
           <Grid container spacing={2} sx={{ marginLeft: "15px " }}>
             <Grid item xs={12}>
@@ -285,7 +284,9 @@ export default class App extends Component {
             <Grid item xs={12} lg={6} xl={4}>
               <DashboardCard></DashboardCard>
             </Grid>
-          </Grid>
+          </Grid></div>:""}
+          <DrawerHeader />
+          
         </Main>
       </Box>
     );
