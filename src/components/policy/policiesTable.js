@@ -254,7 +254,7 @@ const PoliciesTableToolbar = (props) => {
                     </IconButton>
                 </Tooltip>
             ) : (
-                ""
+                "Total elements: "+stableSort(rows, getComparator(order, orderBy)).length
             )}
         </Toolbar>
     );
