@@ -119,8 +119,9 @@ export default class App extends Component {
     login: (keycloak, authenticated) => {
       this.setState({ keycloak: keycloak, authenticated: authenticated })
       this.state.keycloak.loadUserInfo().then(userInfo => {
-        this.setState({ name: userInfo.name, email: userInfo.email, id: userInfo.sub });
         keycloak.loadUserInfo().then(userInfo => {
+          this.setState({ name: userInfo.name, email: userInfo.email, id: userInfo.sub });
+          console.log(this.state);
           const wsLink = new GraphQLWsLink(createClient({
             url: 'ws://localhost:4000/graphql',
             options: {
@@ -262,8 +263,8 @@ export default class App extends Component {
             ))}
           </List>
         </Drawer>
-        <Main open={this.state.open}>
-        { (this.state.authenticated)?<div><MainTitle {...this.state}></MainTitle>
+       
+        { (this.state.authenticated)? <Main open={this.state.open}><MainTitle {...this.state}></MainTitle>
           <AddButton></AddButton>
           <Grid container spacing={2} sx={{ marginLeft: "15px " }}>
             <Grid item xs={12}>
@@ -272,22 +273,10 @@ export default class App extends Component {
             <Grid item xs={12}>
               <PoliciesTable></PoliciesTable>
             </Grid>
-            <Grid item xs={12} lg={6} xl={4}>
-              <DashboardCard></DashboardCard>
-            </Grid>
-            <Grid item xs={12} lg={6} xl={4}>
-              <DashboardCard></DashboardCard>
-            </Grid>
-            <Grid item xs={12} lg={6} xl={4}>
-              <DashboardCard></DashboardCard>
-            </Grid>
-            <Grid item xs={12} lg={6} xl={4}>
-              <DashboardCard></DashboardCard>
-            </Grid>
-          </Grid></div>:""}
+           
+          </Grid></Main>:<Main open={this.state.open}/>}
           <DrawerHeader />
           
-        </Main>
       </Box>
     );
   }
