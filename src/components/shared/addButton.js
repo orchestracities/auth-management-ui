@@ -1,4 +1,4 @@
-import * as React from 'react';
+    import * as React from 'react';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Stack from '@mui/material/Stack';
@@ -47,8 +47,7 @@ const CustomDialogTitle = styled(AppBar)({
 });
 
 
-export default function AddButton(pageType) {
-    const [open, setOpen] = React.useState(false);
+export default function AddButton({pageType,setOpen,status}) {
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -66,8 +65,7 @@ export default function AddButton(pageType) {
                 </NewElement>
             </Stack>
             <Dialog
-            sx={{borderRadius:"17px !important"}}
-                open={open}
+                open={status}
                 fullWidth={true}
                 maxWidth={"xl"}
                 onClose={handleClose}
@@ -75,7 +73,7 @@ export default function AddButton(pageType) {
                 aria-describedby="alert-dialog-description"
             >
                 
-               <TenantForm title={"New Tenant"} close={setOpen}></TenantForm>
+              {pageType}
                 <DialogActions>
 
                 </DialogActions>

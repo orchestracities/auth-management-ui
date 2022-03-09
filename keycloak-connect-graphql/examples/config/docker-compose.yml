@@ -54,15 +54,15 @@ services:
   #     - POSTGRES_DB=policyapi
   #   networks:
   #     - envoymesh
-  keycloak:
-    image: jboss/keycloak:11.0.1
+
+  keycloack:
+    image: quay.io/keycloak/keycloak:15.0.1
     ports:
       - "8080:8080"
     environment:
-      DB_VENDOR: h2
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: admin
-      version: "3.7"
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+      - KEYCLOAK_HOME=dashboard
     networks:
       - envoymesh
 

@@ -32,7 +32,7 @@ const RadiusDiv =styled('div')({
  });
 
 
-export default function DashboardCard(data) {
+export default function DashboardCard({pageType,setOpen,status}) {
 
 
   return (
@@ -44,7 +44,7 @@ export default function DashboardCard(data) {
       </Avatar>
     }
     action={
-      <MultifunctionButton></MultifunctionButton>
+      <MultifunctionButton pageType={pageType} setOpen={setOpen} status={status}></MultifunctionButton>
     }
     title="Tenant Name"
     subheader="Tenant ID"

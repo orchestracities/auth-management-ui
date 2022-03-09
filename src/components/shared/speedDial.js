@@ -24,7 +24,7 @@ const fabProps = {
         }
     }
 };
-export default function MultifunctionButton() {
+export default function MultifunctionButton({pageType,setOpen,status}) {
  //DELETE
     const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
 
@@ -35,8 +35,7 @@ export default function MultifunctionButton() {
     const handleCloseDeleteDialog = (value) => {
         setOpenDeleteDialog(false);
     };
-    //EDIT
-    const [open, setOpen] = React.useState(false);
+  
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -71,7 +70,7 @@ export default function MultifunctionButton() {
                 onClose={handleCloseDeleteDialog} 
             />
               <Dialog
-                open={open}
+                open={status}
                 fullWidth={true}
                 maxWidth={"xl"}
                 onClose={handleClose}
@@ -79,7 +78,7 @@ export default function MultifunctionButton() {
                 aria-describedby="alert-dialog-description"
             >
                 
-               <TenantForm title={"Edit Tenant"} close={setOpen}></TenantForm>
+               {pageType}
                 <DialogActions>
 
                 </DialogActions>
