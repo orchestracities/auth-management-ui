@@ -1,12 +1,12 @@
-const express = require('express')
-const { ApolloServer, gql } = require('apollo-server-express')
-const { configureKeycloak } = require('./lib/common')
-const cors = require("cors");
-const {
+import express from 'express'
+import { ApolloServer, gql } from 'apollo-server-express'
+import { configureKeycloak } from '../lib/common'
+import cors from "cors"
+import {
   KeycloakContext,
   KeycloakTypeDefs,
   KeycloakSchemaDirectives
-} = require('../')
+} from '../../dist/index'
 
 const app = express()
 
@@ -18,7 +18,7 @@ const { keycloak } = configureKeycloak(app, graphqlPath)
 // Ensure entire GraphQL Api can only be accessed by authenticated users
 app.use(graphqlPath, keycloak.protect())
 app.use(cors());
-const typeDefs = gql`
+const typeDefs = `
   type Query {
     hello: String @hasRole(role: "developer")
   }
@@ -39,11 +39,12 @@ const resolvers = {
 
 const server = new ApolloServer({
   typeDefs: [KeycloakTypeDefs, typeDefs],
+  // See  https://github.com/ardatan/graphql-tools/issues/1581
   schemaDirectives: KeycloakSchemaDirectives,
   resolvers,
   context: ({ req }) => {
     return {
-      kauth: new KeycloakContext({ req })
+      kauth: new KeycloakContext({ req : req as any })
     }
   }
 })

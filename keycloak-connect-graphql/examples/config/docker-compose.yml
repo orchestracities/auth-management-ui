@@ -1,6 +1,6 @@
-version: '3'
-
+version: "3.7"
 services:
+
 
   policy-api:
     build:
@@ -9,12 +9,15 @@ services:
     networks:
       - envoymesh
     ports:
-      - "8383:8303"
+      - "8085:8000"
     # depends_on:
     #   - postgresserver
 
   ext_authz-opa-service:
     image: openpolicyagent/opa:0.25.1-istio
+    environment:
+      - VALID_ISSUERS=http://keycloak:8080/auth/realms/master
+      - VALID_AUDIENCE=client1
     ports:
       - "9191:9191"
       - "8282:8282"
@@ -31,12 +34,11 @@ services:
       - --diagnostic-addr=0.0.0.0:8282
       - --set=plugins.envoy_ext_authz_grpc.addr=:9002
       - --set=decision_logs.console=true
-      - /etc/policy.rego
     networks:
       - envoymesh
 
   mongo:
-    image: mongo:3.2.19
+    image: mongo:4.4
     ports:
       - "27017:27017"
     volumes:
@@ -55,26 +57,26 @@ services:
   #   networks:
   #     - envoymesh
 
-  keycloack:
-    image: quay.io/keycloak/keycloak:15.0.1
+  keycloak:
+    image: jboss/keycloak:16.1.1
     ports:
       - "8080:8080"
     environment:
-      - KEYCLOAK_USER=admin
-      - KEYCLOAK_PASSWORD=admin
-      - KEYCLOAK_HOME=dashboard
+      DB_VENDOR: h2
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
     networks:
       - envoymesh
 
   upstream-service:
-    image: fiware/orion:${ORION_VERSION:-2.0.0}
+    image: fiware/orion:${ORION_VERSION:-3.3.1}
     ports:
       - "1026:1026"
     command: -logLevel DEBUG -noCache -dbhost mongo
     depends_on:
       - mongo
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://0.0.0.0:1026/version" ]
+      test: ["CMD", "curl", "-f", "http://0.0.0.0:1026/version"]
       interval: 1m
       timeout: 10s
       retries: 3
