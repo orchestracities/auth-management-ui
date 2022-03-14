@@ -182,8 +182,8 @@ export default class App extends Component {
   componentDidMount() {
     const keycloak = Keycloak({
       url: 'http://localhost:8080/auth/',
-      realm: 'keycloak-connect-graphql',
-      clientId: 'Webapp'
+      realm: 'master',
+      clientId: 'client1'
     })
     keycloak.init({ onLoad: 'login-required', checkLoginIframe: false }).then(authenticated => {
       this.state.login(keycloak, authenticated)

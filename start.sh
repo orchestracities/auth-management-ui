@@ -11,7 +11,7 @@ fi
 echo "Downloading Decendencies ..."
 npm install --force
 cd keycloak-connect-graphql/examples/config
-wget https://raw.githubusercontent.com/orchestracities/anubis/master/keycloak/realm-export.json -O realm-export.json
+wget https://raw.githubusercontent.com/orchestracities/anubis/ui-connector/keycloak/realm-export.json -O realm-export.json
 mkdir config
 cd config
 mkdir opa-service
@@ -25,9 +25,7 @@ cd ..
 cd ..
  docker-compose up -d
 
-echo "waiting the container to be setted up"
 
-sleep 15 
 
 echo "Setting up tenant Tenant1..."
 curl -s -i -X 'POST' \
@@ -78,7 +76,7 @@ curl -s -i -X 'POST' \
 "agent": ["acl:AuthenticatedAgent"]
 }'
 echo "Setting up Keycloack"
-npm run examples:seed
+
 docker cp  realm-export.json config_keycloak_1:/opt/jboss/keycloak/bin
 docker exec -ti config_keycloak_1 bash "-c" "cd opt/jboss/keycloak/bin && sh standalone.sh -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.file=realm-export.json -Dkeycloak.migration.strategy=OVERWRITE_EXISTING -Djboss.http.port=8888 -Djboss.https.port=9999 -Djboss.management.http.port=7777" 
  exit 1
