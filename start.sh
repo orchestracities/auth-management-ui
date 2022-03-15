@@ -10,21 +10,30 @@ if [ $status -eq 7 ]; then
 fi
 echo "Downloading Decendencies ..."
 npm install --force
-cd keycloak-connect-graphql/examples/config
+echo "Downloading Keycloak scripts..."
+cd keycloak
+wget https://github.com/orchestracities/keycloak-scripts/releases/download/v0.0.4/oc-custom.jar -O oc-custom.jar
 wget https://raw.githubusercontent.com/orchestracities/anubis/ui-connector/keycloak/realm-export.json -O realm-export.json
-mkdir config
-cd config
-mkdir opa-service
-cd opa-service
-wget https://raw.githubusercontent.com/orchestracities/anubis/master/config/opa-service/opa.yaml -O opa.yaml
-
-
 
 echo "Deploying services via Docker Compose..."
 cd ..
-cd ..
- docker-compose up -d
+docker-compose up -d
 
+wait=0
+HOST="http://localhost:8080"
+while [ "$(curl -s -o /dev/null -L -w ''%{http_code}'' $HOST)" != "200" ] && [ $wait -le 60 ]
+do
+ echo "Waiting for Keycloak..."
+ sleep 5
+ wait=$((wait+5))
+ echo "Elapsed time: $wait"
+done
+
+if [ $wait -gt 60 ]; then
+ echo "timeout while waiting services to be ready"
+ docker-compose down -v
+ exit -1
+fi
 
 
 echo "Setting up tenant Tenant1..."
@@ -75,8 +84,8 @@ curl -s -i -X 'POST' \
 "mode": ["acl:Control"],
 "agent": ["acl:AuthenticatedAgent"]
 }'
-echo "Setting up Keycloack"
-
-docker cp  realm-export.json config_keycloak_1:/opt/jboss/keycloak/bin
-docker exec -ti config_keycloak_1 bash "-c" "cd opt/jboss/keycloak/bin && sh standalone.sh -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.file=realm-export.json -Dkeycloak.migration.strategy=OVERWRITE_EXISTING -Djboss.http.port=8888 -Djboss.https.port=9999 -Djboss.management.http.port=7777" 
- exit 1
+#echo "Setting up Keycloack"
+#
+#docker cp  realm-export.json config_keycloak_1:/opt/jboss/keycloak/bin
+#docker exec -ti config_keycloak_1 bash "-c" "cd opt/jboss/keycloak/bin && sh standalone.sh -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.file=realm-export.json -Dkeycloak.migration.strategy=OVERWRITE_EXISTING -Djboss.http.port=8888 -Djboss.https.port=9999 -Djboss.management.http.port=7777" 
+# exit 1
