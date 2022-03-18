@@ -31,8 +31,7 @@ import Keycloak from 'keycloak-js'
 import { WebSocketLink } from 'apollo-link-ws'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { createClient } from 'graphql-ws';
-import reportWebVitals from './reportWebVitals';
-import TenantForm from './components/tenant/tenantForm';
+import axios from "axios"
 import {
   ApolloClient,
   InMemoryCache,
@@ -126,12 +125,24 @@ export default class App extends Component {
     id: "",
     keycloak: "",
     groups: [],
+    tenants:[],
+    getTenants:()=>{
+      axios.get(process.env.REACT_APP_API_LOCATION+'v1/tenants')
+    .then((response) => {
+      this.setState({tenants: response.data});
+      console.log(this.state);
+    })
+    .catch((e) => 
+    {
+      console.error(e);
+    });
+  },
     login: (keycloak, authenticated) => {
       this.setState({ keycloak: keycloak, authenticated: authenticated })
       this.state.keycloak.loadUserInfo().then(userInfo => {
         keycloak.loadUserInfo().then(userInfo => {
           this.setState({ name: userInfo.name, email: userInfo.email, id: userInfo.sub });
-          console.log(this.state);
+          console.log(process.env)
           const wsLink = new GraphQLWsLink(createClient({
             url: 'ws://localhost:4000/graphql',
             options: {
@@ -160,6 +171,8 @@ export default class App extends Component {
             cache: new InMemoryCache()
           });
 
+          
+         
           client
             .query({
               query: gql`
@@ -169,6 +182,8 @@ export default class App extends Component {
               `
             })
             .then(result => console.log(result));
+
+            this.state.getTenants();
         });
       });
     },
@@ -222,7 +237,7 @@ export default class App extends Component {
 
               </Typography>
               <div>
-                < TenantSelection></TenantSelection>
+                < TenantSelection tenantValues={this.state.tenants}></TenantSelection>
               </div>
               <div>
                 <IconButton
@@ -272,7 +287,7 @@ export default class App extends Component {
             <Divider />
           </Drawer>
           {(this.state.authenticated) ? <Main open={this.state.open}><Routes>
-          <Route path="Tenant" element={ <TenantPage />} />
+          <Route path="Tenant" element={ <TenantPage getTenants={this.state.getTenants} tenantValues={this.state.tenants}/>} />
           <Route path="Service" element={ <ServicePage />} />
           <Route path="Policy" element={ <PolicyPage />} />
           </Routes></Main> : <Main open={this.state.open} />}

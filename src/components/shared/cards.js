@@ -32,7 +32,7 @@ const RadiusDiv =styled('div')({
  });
 
 
-export default function DashboardCard({pageType,setOpen,status}) {
+export default function DashboardCard({pageType,setOpen,status,data,getTenants}) {
 
 
   return (
@@ -40,14 +40,14 @@ export default function DashboardCard({pageType,setOpen,status}) {
     <CardHeader
     avatar={
       <Avatar sx={{ bgcolor: "#8086ba" }} aria-label="recipe">
-        T
+        {data.name[0]}
       </Avatar>
     }
     action={
-      <MultifunctionButton pageType={pageType} setOpen={setOpen} status={status}></MultifunctionButton>
+      <MultifunctionButton data={data} getTenants={getTenants} pageType={pageType} setOpen={setOpen} status={status}></MultifunctionButton>
     }
-    title="Tenant Name"
-    subheader="Tenant ID"
+    title= {data.name}
+    subheader={data.id}
   />
     
      

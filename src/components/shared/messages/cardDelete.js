@@ -7,6 +7,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { styled } from '@mui/material/styles';
+import axios from "axios"
 
 
 const DialogDiv =styled('div')({
@@ -15,15 +16,30 @@ const DialogDiv =styled('div')({
 
    
 export default function DeleteDialog(props) {
-    const {open,onClose} = props;
+    const {open,onClose,getTenants,data} = props;
 
-    const handleClose = () => {
-        onClose(false);
+    const deletElement = () => {
+        axios.delete(process.env.REACT_APP_API_LOCATION+'v1/tenants/'+data.id)
+        .then((response) => {
+            onClose(false);
+            getTenants();
+        })
+        .catch((e) => 
+        {
+          console.error(e);
+        });
+      
+      };
+      const handleClose = () => {
+       
+            onClose(false);
+       
       };
     
     return (
         <Dialog
             open={open}
+            fullWidth={true}
             onClose={handleClose}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
@@ -34,11 +50,11 @@ export default function DeleteDialog(props) {
             </DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                   Are you really sure about deleting this service API:  ?
+                  { "Are you really sure about deleting:" +data.name+" ?"}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose} autoFocus color="secondary">
+                <Button onClick={deletElement} autoFocus color="secondary">
                     DELETE
                 </Button>
             </DialogActions>

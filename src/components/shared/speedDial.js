@@ -24,7 +24,7 @@ const fabProps = {
         }
     }
 };
-export default function MultifunctionButton({pageType,setOpen,status}) {
+export default function MultifunctionButton({pageType,setOpen,status,data,getTenants}) {
  //DELETE
     const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
 
@@ -67,7 +67,9 @@ export default function MultifunctionButton({pageType,setOpen,status}) {
             </SpeedDial>
             <DeleteDialog
                 open={openDeleteDialog}
-                onClose={handleCloseDeleteDialog} 
+                onClose={handleCloseDeleteDialog}
+                getTenants={getTenants}
+                data={data}
             />
               <Dialog
                 open={status}

@@ -22,6 +22,7 @@ import Slide from '@mui/material/Slide';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
+import axios from "axios"
 
 const CustomDialogTitle = styled(AppBar)({
     position: 'relative',
@@ -30,10 +31,42 @@ const CustomDialogTitle = styled(AppBar)({
 });
 
 
-export default function TenantForm({title,close}) {
+export default function TenantForm({ title, close, action, tenant,getTenants }) {
+    const [name, setName] = React.useState((action === "modify") ? tenant.name : " ");
+    const [description, setDescription] = React.useState('');
+
     const handleClose = () => {
         close(false);
     };
+
+    const handleSave = () => {
+       
+        switch (action) {
+            case "create":
+              
+                axios.post(process.env.REACT_APP_API_LOCATION+'v1/tenants', {
+                    "name": name
+                  })
+                .then((response) => {
+                    close(false);
+                    getTenants();
+                })
+                .catch((e) => 
+                {
+                  console.error(e);
+                });
+               
+                break;
+            case "modify":
+                console.log("modify")
+                break;
+            default:
+                break;
+        }
+       
+    };
+
+    console.log(tenant)
     return (
         <div>
             <CustomDialogTitle >
@@ -46,9 +79,9 @@ export default function TenantForm({title,close}) {
                         <CloseIcon />
                     </IconButton>
                     <Typography sx={{ ml: 2, flex: 1, color: "black" }} variant="h6" component="div">
-                        {title}
+                        {(action === "modify") ? title + ":" + tenant.name : title}
                     </Typography>
-                    <Button autoFocus color="secondary" onClick={handleClose}>
+                    <Button autoFocus color="secondary" onClick={handleSave}>
                         save
                     </Button>
                 </Toolbar>
@@ -58,9 +91,20 @@ export default function TenantForm({title,close}) {
                     spacing={3}
                 >
                     <Grid item xs={12}>
-                        <TextField id="Name" label="Name" variant="outlined" sx={{
-                            width: '100%',
-                        }} />
+                        <TextField
+                            id="Name"
+                            label="Name"
+                            variant="outlined"
+                            defaultValue={(action === "modify") ? tenant.name : ""}
+                            sx={{
+                                width: '100%',
+                            }}
+                            onChange={(event) => {
+                                setName(event.target.value)
+                            }}
+                            helperText={(name === "")?"the name is mandatory":""}
+                            error={name === ""} />
+
                     </Grid>
                     <Grid item xs={12}>
                         <TextField id="Description" label="Description" variant="outlined" sx={{

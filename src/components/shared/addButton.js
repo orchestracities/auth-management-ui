@@ -69,8 +69,8 @@ export default function AddButton({pageType,setOpen,status}) {
                 fullWidth={true}
                 maxWidth={"xl"}
                 onClose={handleClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
+                aria-labelledby="alert-dialog-titlel"
+                aria-describedby="alert-dialog-descriptionl"
             >
                 
               {pageType}

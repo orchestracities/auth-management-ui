@@ -8,15 +8,14 @@ if [ $status -eq 7 ]; then
     echo 'docker is not running - test will not be executed'
     exit 1
 fi
-echo "Downloading Decendencies ..."
-npm install --force
+
 echo "Downloading Keycloak scripts..."
-cd keycloak
+
 wget https://github.com/orchestracities/keycloak-scripts/releases/download/v0.0.4/oc-custom.jar -O oc-custom.jar
 wget https://raw.githubusercontent.com/orchestracities/anubis/ui-connector/keycloak/realm-export.json -O realm-export.json
 
 echo "Deploying services via Docker Compose..."
-cd ..
+
 docker-compose up -d
 
 wait=0
@@ -24,6 +23,10 @@ HOST="http://localhost:8080"
 while [ "$(curl -s -o /dev/null -L -w ''%{http_code}'' $HOST)" != "200" ] && [ $wait -le 60 ]
 do
  echo "Waiting for Keycloak..."
+ docker cp  realm-export.json auth-management-ui_keycloak_1:/opt/jboss/keycloak/bin
+
+docker exec -ti auth-management-ui_keycloak_1 bash "-c" "cd opt/jboss/keycloak/bin && sh standalone.sh -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.file=realm-export.json -Dkeycloak.migration.strategy=OVERWRITE_EXISTING -Djboss.http.port=8888 -Djboss.https.port=9999 -Djboss.management.http.port=7777" 
+
  sleep 5
  wait=$((wait+5))
  echo "Elapsed time: $wait"
@@ -84,8 +87,11 @@ curl -s -i -X 'POST' \
 "mode": ["acl:Control"],
 "agent": ["acl:AuthenticatedAgent"]
 }'
+
+ docker cp  realm-export.json auth-management-ui_keycloak_1:/opt/jboss/keycloak/bin
+
+docker exec -ti auth-management-ui_keycloak_1 bash "-c" "cd opt/jboss/keycloak/bin && sh standalone.sh -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.file=realm-export.json -Dkeycloak.migration.strategy=OVERWRITE_EXISTING -Djboss.http.port=8888 -Djboss.https.port=9999 -Djboss.management.http.port=7777" 
+
 #echo "Setting up Keycloack"
 #
-#docker cp  realm-export.json config_keycloak_1:/opt/jboss/keycloak/bin
-#docker exec -ti config_keycloak_1 bash "-c" "cd opt/jboss/keycloak/bin && sh standalone.sh -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.file=realm-export.json -Dkeycloak.migration.strategy=OVERWRITE_EXISTING -Djboss.http.port=8888 -Djboss.https.port=9999 -Djboss.management.http.port=7777" 
 # exit 1

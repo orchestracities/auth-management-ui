@@ -64,8 +64,8 @@ const TenantSelect = styled(Select)(
 
     },
 });
-export default function TenantSelection(tenantValue) {
-  const [Tenant, set_Tenant] = React.useState('First');
+export default function TenantSelection({tenantValues}) {
+  const [Tenant, set_Tenant] = React.useState();
 
   const handleChange = (event) => {
     set_Tenant(event.target.value);
@@ -85,9 +85,9 @@ export default function TenantSelection(tenantValue) {
           label="Tenant"
           onChange={handleChange}
         >
-          <MenuItem value={"First"}>First</MenuItem>
-          <MenuItem value={"Second"}>Second</MenuItem>
-          <MenuItem value={"Third"}>Third</MenuItem>
+            {tenantValues.map((tenant) => (
+                    <MenuItem value={tenant.id}>{tenant.name}</MenuItem>
+                ))}
         </TenantSelect>
       </FormControl>
     </Box>
