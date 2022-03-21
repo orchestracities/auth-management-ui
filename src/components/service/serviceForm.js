@@ -21,11 +21,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
-import TextareaAutosize from '@mui/material/TextareaAutosize';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import { InputLabel } from '@mui/material';
+import axios from "axios"
+
 
 const CustomDialogTitle = styled(AppBar)({
     position: 'relative',
@@ -34,15 +31,57 @@ const CustomDialogTitle = styled(AppBar)({
 });
 
 
-export default function ServiceForm({ title, close }) {
+export default function ServiceForm({ title, close, action, service, tenantName_id,getServices }) {
     const handleClose = () => {
         close(false);
     };
-    const [path, setPath] = React.useState('String');
+    const [path, setPath] = React.useState((action === "modify") ? service.path : "/");
 
-    const handleChange = (event) => {
-      setPath(event.target.value);
+
+    const handleSave = () => {
+
+        switch (action) {
+            case "create":
+
+                axios.post(process.env.REACT_APP_API_LOCATION + 'v1/tenants/' + tenantName_id[0].id + "/service_paths", {
+                    "path": path
+                })
+                    .then((response) => {
+                        getServices();
+                        close(false);
+                    })
+                    .catch((e) => {
+                        console.error(e);
+                    });
+                break;
+            case "modify":
+                console.log("modify")
+                break;
+            default:
+                break;
+        }
+
     };
+
+
+    const cases = () => {
+        switch (true) {
+            case path[0] !== "/":
+                return "/ should be the first char";
+                break;
+            case path.indexOf(' ') >= 0:
+                return "The string should be without spaces"
+                break;
+            case path[0] === "/" && typeof path[1] === "undefined":
+                return "A value after / is mandatory";
+                break;
+            case path[0] === "/" && typeof path[1] !== "undefined":
+                return "";
+                break;
+            default:
+                break;
+        }
+    }
     return (
         <div>
             <CustomDialogTitle >
@@ -57,7 +96,7 @@ export default function ServiceForm({ title, close }) {
                     <Typography sx={{ ml: 2, flex: 1, color: "black" }} variant="h6" component="div">
                         {title}
                     </Typography>
-                    <Button autoFocus color="secondary" onClick={handleClose}>
+                    <Button autoFocus color="secondary" onClick={handleSave}>
                         save
                     </Button>
                 </Toolbar>
@@ -67,25 +106,24 @@ export default function ServiceForm({ title, close }) {
                     spacing={3}
                 >
                     <Grid item xs={12}>
-                        <TextField id="Tenant" label="Tenant" variant="outlined" disabled sx={{
+                        <TextField id="Tenant" label="Tenant" variant="outlined" defaultValue={tenantName_id[0].name} disabled sx={{
                             width: '100%',
                         }} />
                     </Grid>
                     <Grid item xs={12}>
-                        <FormControl fullWidth>
-                            <InputLabel id="tenant">path</InputLabel>
-                            <Select
-                                labelId="path"
-                                id="path"
-                                variant="outlined"
-                                value={path}
-                                label="Tenant"
-                                onChange={handleChange}
-                            >
-                                <MenuItem value={"String"}>String</MenuItem>
-                           
-                            </Select>
-                        </FormControl>
+                        <TextField
+                            id="Path"
+                            label="Path"
+                            variant="outlined"
+                            defaultValue={(action === "modify") ? service.path : "/"}
+                            sx={{
+                                width: '100%',
+                            }}
+                            onChange={(event) => {
+                                setPath(event.target.value)
+                            }}
+                            helperText={cases()}
+                            error={((path === "") || (path[0] === "/" && typeof path[1] === "undefined") || (path.indexOf(' ') >= 0))} />
                     </Grid>
                 </Grid>
             </DialogContent>

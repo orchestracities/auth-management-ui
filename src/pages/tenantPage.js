@@ -23,7 +23,7 @@ export default function TenantPage({tenantValues,getTenants}) {
             </Grid>
             {tenantValues.map((tenant) => (
                     <Grid item xs={4}>
-                    <DashboardCard  pageType={ <TenantForm title={"Edit Tenant"} close={setEditOpen} action={"modify"} tenant={tenant}></TenantForm>} setOpen={setEditOpen} status={editOpen} data={tenant} getTenants={getTenants}></DashboardCard>
+                    <DashboardCard  pageType={ <TenantForm title={"Edit Tenant"} close={setEditOpen} action={"modify"} tenant={tenant}></TenantForm>} setOpen={setEditOpen} status={editOpen} data={tenant} getData={getTenants}></DashboardCard>
                   </Grid>  
                 ))}
                 

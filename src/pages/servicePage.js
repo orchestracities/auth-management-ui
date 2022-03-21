@@ -7,22 +7,43 @@ import { Grid } from '@mui/material';
 import SortButton from '../components/shared/sortButton';
 import DashboardCard from '../components/shared/cards';
 import ServiceForm from '../components/service/serviceForm';
-export default function ServicePage() {
-    const [open, setOpen] = React.useState(false);
+import axios from "axios"
+
+export default function ServicePage({tenantValues,thisTenant}) {
+  const [editOpen, setEditOpen] = React.useState(false);
+  const [createOpen, setCreateOpen] = React.useState(false);
+  const [services, setServices] = React.useState([]);
+  const getServices=()=>{
+    axios.get(process.env.REACT_APP_API_LOCATION+'v1/tenants/'+thisTenant+"/service_paths")
+    .then((response) => {
+     
+      setServices(response.data);
+    })
+    .catch((e) => 
+    {
+      console.error(e);
+    });
+  }
+  
+  React.useEffect(() => {
+    getServices();
+  },[thisTenant]);
 
    const mainTitle= "Service paths";
     return (
-        <div>
-          <MainTitle mainTitle={mainTitle}></MainTitle>
-          <AddButton pageType={ <ServiceForm title={"New Service"} close={setOpen} ></ServiceForm>} setOpen={setOpen} status={open}></AddButton>
-          <Grid container spacing={2} sx={{ marginLeft: "15px " }}>
-            <Grid item xs={12}>
-              <SortButton></SortButton>
-            </Grid>
-            <Grid item xs={12}>
-            <DashboardCard pageType={ <ServiceForm title={"Edit Tenant"} close={setOpen} ></ServiceForm>} setOpen={setOpen} status={open}></DashboardCard>
-            </Grid>       
-          </Grid>
-        </div>
+      <div>
+      <MainTitle mainTitle={mainTitle}></MainTitle>
+      {(typeof thisTenant === undefined || thisTenant ==="")?"":<AddButton pageType={ <ServiceForm title={"New Service"} close={setCreateOpen} action={"create"} getServices={getServices} tenantName_id={tenantValues.filter((e) => e.id === thisTenant)} />} setOpen={setCreateOpen} status={createOpen} ></AddButton>}
+      <Grid container spacing={2} sx={{ marginLeft: "15px " }}>
+        <Grid item xs={12}>
+          <SortButton></SortButton>
+        </Grid>
+        {services.slice(1).map((service) => (
+                    <Grid item xs={4}>
+                    <DashboardCard  pageType={ <ServiceForm title={"Edit Service"} close={setEditOpen} action={"modify"} service={service} getServices={getServices} tenantName_id={tenantValues.filter((e) => e.id === thisTenant)}/>} setOpen={setEditOpen} status={editOpen} data={service} getData={getServices}></DashboardCard>
+                  </Grid>  
+                ))}
+      </Grid>
+    </div>
     );
 }

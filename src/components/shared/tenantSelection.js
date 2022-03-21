@@ -64,13 +64,13 @@ const TenantSelect = styled(Select)(
 
     },
 });
-export default function TenantSelection({tenantValues}) {
-  const [Tenant, set_Tenant] = React.useState();
+export default function TenantSelection({tenantValues,seTenant}) {
+  const [Tenant, set_Tenant] = React.useState("");
 
   const handleChange = (event) => {
     set_Tenant(event.target.value);
+    seTenant(event.target.value);
   };
-  
 
   return (
     <ThemeProvider theme={theme}>

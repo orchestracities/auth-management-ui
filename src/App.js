@@ -126,6 +126,10 @@ export default class App extends Component {
     keycloak: "",
     groups: [],
     tenants:[],
+    thisTenant:"",
+    seTenant:(newValue)=>{
+      this.setState({thisTenant:newValue});
+    },
     getTenants:()=>{
       axios.get(process.env.REACT_APP_API_LOCATION+'v1/tenants')
     .then((response) => {
@@ -155,9 +159,6 @@ export default class App extends Component {
           });
 
           const authLink = setContext((_, { headers }) => {
-            // get the authentication token from local storage if it exists
-            const token = localStorage.getItem('token');
-            // return the headers to the context so httpLink can read them
             return {
               headers: {
                 ...headers,
@@ -237,7 +238,7 @@ export default class App extends Component {
 
               </Typography>
               <div>
-                < TenantSelection tenantValues={this.state.tenants}></TenantSelection>
+                < TenantSelection seTenant={this.state.seTenant} tenantValues={this.state.tenants}></TenantSelection>
               </div>
               <div>
                 <IconButton
@@ -246,6 +247,7 @@ export default class App extends Component {
                   aria-controls="menu-appbar"
                   aria-haspopup="true"
                   color="inherit"
+
                   edge="end"
                 >
                   <AccountCircle />
@@ -288,7 +290,7 @@ export default class App extends Component {
           </Drawer>
           {(this.state.authenticated) ? <Main open={this.state.open}><Routes>
           <Route path="Tenant" element={ <TenantPage getTenants={this.state.getTenants} tenantValues={this.state.tenants}/>} />
-          <Route path="Service" element={ <ServicePage />} />
+          <Route path="Service" element={ <ServicePage tenantValues={this.state.tenants} thisTenant={this.state.thisTenant} />} />
           <Route path="Policy" element={ <PolicyPage />} />
           </Routes></Main> : <Main open={this.state.open} />}
           <DrawerHeader />
