@@ -51,6 +51,7 @@ import {
   NavLink
 } from "react-router-dom";
 import { ThirtyFpsOutlined } from '@mui/icons-material';
+import jwt_decode from "jwt-decode";
 
 const drawerWidth = 240;
 
@@ -120,9 +121,7 @@ export default class App extends Component {
     },
     direction: "ltr",
     authenticated: false,
-    name: "",
-    email: "",
-    id: "",
+   tokenData:[],
     keycloak: "",
     groups: [],
     tenants:[],
@@ -131,10 +130,19 @@ export default class App extends Component {
       this.setState({thisTenant:newValue});
     },
     getTenants:()=>{
+    
+     
+     
+
       axios.get(process.env.REACT_APP_API_LOCATION+'v1/tenants')
     .then((response) => {
-      this.setState({tenants: response.data});
-      console.log(this.state);
+      let userTenants=[];
+      let tenantFiltered=[];
+      this.state.tokenData.tenants.map((thisTenant, index) => {
+         tenantFiltered=response.data.filter((e) => e.name === thisTenant.name);
+         tenantFiltered.length > 0 ? userTenants.push(tenantFiltered[0]) : tenantFiltered=[];
+       });
+      this.setState({tenants: userTenants});
     })
     .catch((e) => 
     {
@@ -145,8 +153,8 @@ export default class App extends Component {
       this.setState({ keycloak: keycloak, authenticated: authenticated })
       this.state.keycloak.loadUserInfo().then(userInfo => {
         keycloak.loadUserInfo().then(userInfo => {
-          this.setState({ name: userInfo.name, email: userInfo.email, id: userInfo.sub });
-          console.log(process.env)
+          let decoded = jwt_decode(keycloak.token);
+          this.setState({tokenData:decoded});
           const wsLink = new GraphQLWsLink(createClient({
             url: 'ws://localhost:4000/graphql',
             options: {
