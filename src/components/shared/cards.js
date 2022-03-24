@@ -12,7 +12,7 @@ import MultifunctionButton from './speedDial';
 import Badge from '@mui/material/Badge';
 import SecurityIcon from '@mui/icons-material/Security';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-
+import ServiceChildren from '../service/serviceChildren';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -34,6 +34,7 @@ const RadiusDiv =styled('div')({
 
 export default function DashboardCard({pageType,setOpen,status,data,getData}) {
 
+ const [subpathOpen, setSubpathOpen]= React.useState(false);
 
   return (
     <RadiusDiv>
@@ -57,17 +58,14 @@ export default function DashboardCard({pageType,setOpen,status,data,getData}) {
         </Typography>
       </CardContent>
       <CardActions>
-     
-        <IconButton aria-label="service">
+      {(pageType.props.title==="Edit Service")?"":   <IconButton aria-label="service">
         <Badge badgeContent={4} color="secondary">
         <ContentCopyIcon sx={{color:"#536BBF"}}  fontSize="large"/>
       </Badge>
-        </IconButton>
-        <IconButton aria-label="path">
-        <Badge badgeContent={6} color="success">
-        <SecurityIcon sx={{color:"#536BBF"}}  fontSize="large"/>
-      </Badge>
-        </IconButton>
+        </IconButton>}
+     
+        <ServiceChildren setOpen={setSubpathOpen} status={subpathOpen} data={(pageType.props.title==="Edit Tenant")?data.service_paths.slice(1):data.children} masterTitle={(pageType.props.title==="Edit Tenant")?data.name:data.path} getData={getData}/>
+    
        
       </CardActions>
       

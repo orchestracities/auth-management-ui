@@ -18,17 +18,21 @@ const DialogDiv = styled('div')({
 export default function DeleteDialog(props) {
     const { open, onClose, getData, data } = props;
 
-    const deleteMapper = () => {
+    const deleteMapper = (thisData) => {
+
+        
         switch (true) {
-            case typeof data.name !== "undefined":
-                return process.env.REACT_APP_API_LOCATION + 'v1/tenants/' + data.id;
+            case typeof thisData.name !== "undefined":
+                return process.env.REACT_APP_API_LOCATION + 'v1/tenants/' + thisData.id;
                 break;
-            case typeof data.path !== "undefined":
-                return process.env.REACT_APP_API_LOCATION + 'v1/tenants/' + data.tenant_id +"/service_paths/"+data.id ;
+            case typeof thisData.path !== "undefined":
+                return process.env.REACT_APP_API_LOCATION + 'v1/tenants/' + thisData.tenant_id + "/service_paths/" + thisData.id;
                 break;
-            case typeof data.access_to !== "undefined":
+            case typeof thisData.access_to !== "undefined":
                 return "";
                 break;
+          
+
             default:
                 break;
         }
@@ -42,6 +46,9 @@ export default function DeleteDialog(props) {
             case typeof data.path !== "undefined":
                 return data.path;
                 break;
+            case typeof data.multiple !== "undefined":
+                return data.selectedText;
+                break;
             case typeof data.access_to !== "undefined":
                 return "";
                 break;
@@ -51,7 +58,21 @@ export default function DeleteDialog(props) {
     }
 
     const deletElement = () => {
-        axios.delete(deleteMapper())
+        if(typeof data.multiple !== "undefined"){
+            for (let thisData of data.dataValues){
+            axios.delete(deleteMapper(thisData))
+            .then((response) => {
+                getData();
+            })
+            .catch((e) => {
+                console.error(e);
+            });
+            }
+            data.setSelected([]);
+            onClose(false);
+           
+        }else{
+            axios.delete(deleteMapper(data))
             .then((response) => {
                 onClose(false);
                 getData();
@@ -59,6 +80,7 @@ export default function DeleteDialog(props) {
             .catch((e) => {
                 console.error(e);
             });
+        }
 
     };
     const handleClose = () => {

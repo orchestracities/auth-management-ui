@@ -22,6 +22,7 @@ import Slide from '@mui/material/Slide';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import axios from "axios"
+import InputAdornment from '@mui/material/InputAdornment';
 
 
 const CustomDialogTitle = styled(AppBar)({
@@ -35,8 +36,8 @@ export default function ServiceForm({ title, close, action, service, tenantName_
     const handleClose = () => {
         close(false);
     };
-    
-    const [path, setPath] = React.useState((action === "modify") ? service.path : "/");
+
+    const [path, setPath] = React.useState("/");
 
 
     const handleSave = () => {
@@ -56,7 +57,16 @@ export default function ServiceForm({ title, close, action, service, tenantName_
                     });
                 break;
             case "modify":
-                console.log("modify")
+                axios.post(process.env.REACT_APP_API_LOCATION + 'v1/tenants/' + tenantName_id[0].id + "/service_paths", {
+                    "path": service.path+path
+                })
+                    .then((response) => {
+                        getServices();
+                        close(false);
+                    })
+                    .catch((e) => {
+                        console.error(e);
+                    });
                 break;
             default:
                 break;
@@ -116,13 +126,16 @@ export default function ServiceForm({ title, close, action, service, tenantName_
                             id="Path"
                             label="Path"
                             variant="outlined"
-                            defaultValue={(action === "modify") ? service.path : "/"}
+                            defaultValue="/"
                             sx={{
                                 width: '100%',
                             }}
                             onChange={(event) => {
                                 setPath(event.target.value)
                             }}
+                            InputProps={(action === "modify") ? {
+                                startAdornment: <InputAdornment position="start">{service.path}</InputAdornment>,
+                              }: " "}
                             helperText={cases()}
                             error={((path === "") || (path[0] === "/" && typeof path[1] === "undefined") || (path.indexOf(' ') >= 0))} />
                     </Grid>

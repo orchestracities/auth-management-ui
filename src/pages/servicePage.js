@@ -12,7 +12,7 @@ import axios from "axios"
 export default function ServicePage({tenantValues,thisTenant}) {
   const [editOpen, setEditOpen] = React.useState(false);
   const [createOpen, setCreateOpen] = React.useState(false);
-  const [services, setServices] = React.useState([]);
+  const [services, setServices] = React.useState([{children:[]}]);
   const getServices=()=>{
     axios.get(process.env.REACT_APP_API_LOCATION+'v1/tenants/'+thisTenant+"/service_paths")
     .then((response) => {
@@ -38,7 +38,7 @@ export default function ServicePage({tenantValues,thisTenant}) {
         <Grid item xs={12}>
           <SortButton></SortButton>
         </Grid>
-        {services.slice(1).map((service) => (
+        {services[0].children.map((service) => (
                     <Grid item xs={4}>
                     <DashboardCard  pageType={ <ServiceForm title={"Edit Service"} close={setEditOpen} action={"modify"} service={service} getServices={getServices} tenantName_id={tenantValues.filter((e) => e.id === thisTenant)}/>} setOpen={setEditOpen} status={editOpen} data={service} getData={getServices}></DashboardCard>
                   </Grid>  
