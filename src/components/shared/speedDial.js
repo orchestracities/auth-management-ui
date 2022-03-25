@@ -45,7 +45,7 @@ export default function MultifunctionButton({pageType,setOpen,status,data,getDat
         setOpen(false);
     };
     const actions = [
-        { icon: <EditIcon />, name: 'Edit',click: handleClickOpen },
+        { icon: <EditIcon />, name: (pageType.props.title==="Edit Tenant")?"Edit":"New Sub-path",click: handleClickOpen },
         { icon: <DeleteIcon color="error" />, name: 'Delete',click:handleClickOpenDeleteDialog},
     ];
     return (

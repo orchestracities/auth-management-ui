@@ -9,8 +9,7 @@ import DashboardCard from '../components/shared/cards';
 import ServiceForm from '../components/service/serviceForm';
 import axios from "axios"
 
-export default function ServicePage({tenantValues,thisTenant}) {
-  const [editOpen, setEditOpen] = React.useState(false);
+export default function ServicePage({getTenants,tenantValues,thisTenant}) {
   const [createOpen, setCreateOpen] = React.useState(false);
   const [services, setServices] = React.useState([{children:[]}]);
   const getServices=()=>{
@@ -18,6 +17,7 @@ export default function ServicePage({tenantValues,thisTenant}) {
     .then((response) => {
      
       setServices(response.data);
+      getTenants();
     })
     .catch((e) => 
     {
@@ -40,7 +40,7 @@ export default function ServicePage({tenantValues,thisTenant}) {
         </Grid>
         {services[0].children.map((service) => (
                     <Grid item xs={4}>
-                    <DashboardCard  pageType={ <ServiceForm title={"Edit Service"} close={setEditOpen} action={"modify"} service={service} getServices={getServices} tenantName_id={tenantValues.filter((e) => e.id === thisTenant)}/>} setOpen={setEditOpen} status={editOpen} data={service} getData={getServices}></DashboardCard>
+                    <DashboardCard key={service.id} pageType={ <ServiceForm  title={"New Sub-service"}  action={"modify"} service={service} getServices={getServices} tenantName_id={tenantValues.filter((e) => e.id === thisTenant)}/>}  data={service} getData={getServices}></DashboardCard>
                   </Grid>  
                 ))}
       </Grid>

@@ -194,11 +194,7 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
                         </IconButton>
                     </Tooltip>
                 ) : (
-                    <Tooltip title="Filter list">
-                        <IconButton>
-                            <FilterListIcon />
-                        </IconButton>
-                    </Tooltip>
+                   ""
                 )}
             </Toolbar>
         );

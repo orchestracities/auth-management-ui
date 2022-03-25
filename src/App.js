@@ -298,7 +298,7 @@ export default class App extends Component {
           </Drawer>
           {(this.state.authenticated) ? <Main open={this.state.open}><Routes>
           <Route path="Tenant" element={ <TenantPage getTenants={this.state.getTenants} tenantValues={this.state.tenants}/>} />
-          <Route path="Service" element={ <ServicePage tenantValues={this.state.tenants} thisTenant={this.state.thisTenant} />} />
+          <Route path="Service" element={ <ServicePage getTenants={this.state.getTenants} tenantValues={this.state.tenants} thisTenant={this.state.thisTenant} />} />
           <Route path="Policy" element={ <PolicyPage />} />
           </Routes></Main> : <Main open={this.state.open} />}
           <DrawerHeader />

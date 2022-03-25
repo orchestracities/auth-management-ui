@@ -32,39 +32,42 @@ const RadiusDiv =styled('div')({
  });
 
 
-export default function DashboardCard({pageType,setOpen,status,data,getData}) {
+export default function DashboardCard({pageType,data,getData}) {
 
  const [subpathOpen, setSubpathOpen]= React.useState(false);
-
-  return (
-    <RadiusDiv>
+ const [status, setOpen] = React.useState(false);
+ const props={close:setOpen};
+ const layout = React.cloneElement(pageType, props);
+ 
+ return (
+    <RadiusDiv key={data.id}>
     <CardHeader
     avatar={
       <Avatar sx={{ bgcolor: "#8086ba" }} aria-label="recipe">
-        {(pageType.props.title==="Edit Service")?data.path[1]:data.name[0]}
+        {(layout.props.title==="New Sub-service")?data.path[1]:data.name[0]}
       </Avatar>
     }
     action={
-      <MultifunctionButton data={data} getData={getData} pageType={pageType} setOpen={setOpen} status={status}></MultifunctionButton>
+      <MultifunctionButton  key={data.id} data={data} getData={getData} pageType={layout} setOpen={setOpen} status={status}></MultifunctionButton>
     }
-    title=   {(pageType.props.title==="Edit Service")?data.path:data.name}
+    title=   {(layout.props.title==="New Sub-service")?data.path:data.name}
     subheader=  {data.id}
   />
     
      
       <CardContent>
         <Typography variant="body2" color="text.secondary">
-        {(pageType.props.title==="Edit Service")? pageType.props.tenantName_id[0].name:"description"}
+        {(layout.props.title==="New Sub-service")? layout.props.tenantName_id[0].name:"description"}
         </Typography>
       </CardContent>
       <CardActions>
-      {(pageType.props.title==="Edit Service")?"":   <IconButton aria-label="service">
+      {(layout.props.title==="New Sub-service")?"":   <IconButton aria-label="service">
         <Badge badgeContent={4} color="secondary">
         <ContentCopyIcon sx={{color:"#536BBF"}}  fontSize="large"/>
       </Badge>
         </IconButton>}
      
-        <ServiceChildren setOpen={setSubpathOpen} status={subpathOpen} data={(pageType.props.title==="Edit Tenant")?data.service_paths.slice(1):data.children} masterTitle={(pageType.props.title==="Edit Tenant")?data.name:data.path} getData={getData}/>
+        <ServiceChildren setOpen={setSubpathOpen} status={subpathOpen} data={(layout.props.title==="Edit Tenant")?data.service_paths.slice(1):data.children} masterTitle={(layout.props.title==="Edit Tenant")?data.name:data.path} getData={getData}/>
     
        
       </CardActions>
