@@ -6,24 +6,79 @@ import { Grid } from '@mui/material';
 import PolicyFilters from '../components/policy/policyFilters'
 import PolicyTable from '../components/policy/policiesTable'
 import PolicyForm from '../components/policy/policyForm'
+import axios from "axios"
 
 
-export default function PolicyPage() {
-    const [open, setOpen] = React.useState(false);
+export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
+  const [open, setOpen] = React.useState(false);
+  const tenantName_id = () => {
+    let tenantArray = tenantValues.filter((e) => e.id === thisTenant);
+    return tenantArray[0].name;
+  }
+  //services
+  const [services, setServices] = React.useState([{ children: [] }]);
+  const getServices = () => {
+    axios.get(process.env.REACT_APP_API_LOCATION + 'v1/tenants/' + thisTenant + "/service_paths")
+      .then((response) => {
+        console.log(response.data);
+        setServices(response.data);
+        getPolicies(response.data);
+        getTenants();
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  }
+  //policies
+  const [policies, setPolicies] = React.useState([{ children: [] }]);
+  const getPolicies = (servicesResponse) => {
+    let datAccumulator = [];
+    for (let service of servicesResponse) {
+      axios.get(process.env.REACT_APP_API_LOCATION + 'v1/policies', {
+        headers: {
+          "fiware_service": tenantName_id(),
+          "fiware_service_path": service.path
+        }
+      })
+        .then((response) => {
+          response.data.forEach(e => e.fiware_service = tenantName_id());
+          response.data.forEach(e => e.fiware_service_path = service.path);
+          datAccumulator = [...datAccumulator, ...response.data];
+          setPolicies(datAccumulator);
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    }
+  console.log(policies);
+  }
+  const [access_modes, setAccess_modes] = React.useState([]);
 
-   const mainTitle= "Policies:";
-    return (
-        <div>
-          <MainTitle mainTitle={mainTitle}></MainTitle>
-          <AddButton pageType={ <PolicyForm title={"New Policy"} close={setOpen} ></PolicyForm>} setOpen={setOpen} status={open}></AddButton>
-          <Grid container spacing={2} sx={{ marginLeft: "15px " }}>
-            <Grid item xs={12}>
-            <PolicyFilters></PolicyFilters>
-            </Grid>
-            <Grid item xs={12}>
-             <PolicyTable></PolicyTable>
-            </Grid>       
-          </Grid>
-        </div>
-    );
+  React.useEffect(() => {
+    getServices();
+    axios.get(process.env.REACT_APP_API_LOCATION + 'v1/policies/access-modes')
+    .then(response => setAccess_modes(response.data))
+    .catch(err => console.log(err));
+  }, [thisTenant]);
+
+  const mainTitle = "Policies:";
+
+  return (
+    <div>
+      <MainTitle mainTitle={mainTitle}></MainTitle>
+      {
+        (typeof thisTenant === undefined || thisTenant === "")
+          ? ""
+  : <AddButton pageType={<PolicyForm tenantName={tenantName_id} action="create" services={services} getServices={getServices} access_modes={access_modes} title={"New Policy"} close={setOpen} ></PolicyForm>} setOpen={setOpen} status={open}></AddButton>
+      }
+      <Grid container spacing={2} sx={{ marginLeft: "15px " }}>
+        <Grid item xs={12}>
+          <PolicyFilters></PolicyFilters>
+        </Grid>
+        <Grid item xs={12}>
+          <PolicyTable data={policies} getData={getServices}></PolicyTable>
+        </Grid>
+      </Grid>
+    </div>
+  );
 }

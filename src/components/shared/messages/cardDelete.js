@@ -20,7 +20,7 @@ export default function DeleteDialog(props) {
 
     const deleteMapper = (thisData) => {
 
-        
+
         switch (true) {
             case typeof thisData.name !== "undefined":
                 return process.env.REACT_APP_API_LOCATION + 'v1/tenants/' + thisData.id;
@@ -29,10 +29,8 @@ export default function DeleteDialog(props) {
                 return process.env.REACT_APP_API_LOCATION + 'v1/tenants/' + thisData.tenant_id + "/service_paths/" + thisData.id;
                 break;
             case typeof thisData.access_to !== "undefined":
-                return "";
+                return process.env.REACT_APP_API_LOCATION + 'v1/policies/' + thisData.id;
                 break;
-          
-
             default:
                 break;
         }
@@ -58,28 +56,42 @@ export default function DeleteDialog(props) {
     }
 
     const deletElement = () => {
-        if(typeof data.multiple !== "undefined"){
-            for (let thisData of data.dataValues){
-            axios.delete(deleteMapper(thisData))
-            .then((response) => {
-                getData();
-            })
-            .catch((e) => {
-                console.error(e);
-            });
+        if (typeof data.multiple !== "undefined") {
+            for (let thisData of data.dataValues) {
+                axios.delete(deleteMapper(thisData),
+                    (typeof thisData.access_to !== "undefined")
+                        ?
+                        {
+                            headers: {
+                                "fiware_service": thisData.fiware_service,
+                                "fiware_service_path": thisData.fiware_service_path
+                            }
+                        }
+                        :
+                        {
+                            headers: {
+
+                            }
+                        })
+                    .then((response) => {
+                        getData();
+                    })
+                    .catch((e) => {
+                        console.error(e);
+                    });
             }
             data.setSelected([]);
             onClose(false);
-           
-        }else{
+
+        } else {
             axios.delete(deleteMapper(data))
-            .then((response) => {
-                onClose(false);
-                getData();
-            })
-            .catch((e) => {
-                console.error(e);
-            });
+                .then((response) => {
+                    onClose(false);
+                    getData();
+                })
+                .catch((e) => {
+                    console.error(e);
+                });
         }
 
     };

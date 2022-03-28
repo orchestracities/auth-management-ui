@@ -27,7 +27,7 @@ import DialogActions from '@mui/material/DialogActions';
 import TenantForm from '../tenant/tenantForm'
 import DeleteDialog from '../shared/messages/cardDelete'
 
-export default function PoliciesTable() {
+export default function PoliciesTable({ data,getData }) {
     //DELETE
     const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
 
@@ -50,219 +50,209 @@ export default function PoliciesTable() {
     };
 
 
-function createData(access, path, resource, resourceType, actor, actorType, action) {
-    return {
-        access,
-        path,
-        resource,
-        resourceType,
-        actor,
-        actorType,
-        action
-    };
-}
-
-const rows = [
-    createData('Data1', 'Data', 'Data', 'Data', 'Data', 'Sata', EditButton("")),
-    createData('Data2', 'Data', 'Data', 'Data', 'Data', 'Sata', EditButton("")),
-    createData('Data3', 'Data', 'Data', 'Data', 'Data', 'Sata', EditButton("")),
-    createData('Data4', 'Data', 'Data', 'Data', 'Data', 'Sata', EditButton("")),
-    createData('Data5', 'Data', 'Data', 'Data', 'Data', 'Sata', EditButton("")),
-    createData('Data6', 'Data', 'Data', 'Data', 'Data', 'Sata', EditButton("")),
-    createData('Data7', 'Data', 'Data', 'Data', 'Data', 'Sata', EditButton("")),
-    createData('Data8', 'Data', 'Data', 'Data', 'Data', 'Sata', EditButton("")),
-    createData('Data9', 'Data', 'Data', 'Data', 'Data', 'Sata', EditButton("")),
-    createData('Data10', 'Data', 'Data', 'Data', 'Data', 'Sata', EditButton("")),
-    createData('Data11', 'Data', 'Data', 'Data', 'Data', 'Sata', EditButton("")),
-    createData('Data12', 'Data', 'Data', 'Data', 'Data', 'Sata', EditButton("")),
-    createData('Data13', 'Data', 'Data', 'Data', 'Data', 'Sata', EditButton("")),
-    createData('Data14', 'Data', 'Data', 'Data', 'Data', 'Sata', EditButton("")),
-    createData('Data15', 'Data', 'Data', 'Data', 'Data', 'Sata', EditButton("")),
-
-];
-
-function EditButton(data) {
-    return (<Tooltip title="Edit">
-        <IconButton onClick={handleClickOpen}>
-            <EditIcon />
-        </IconButton>
-    </Tooltip>)
-}
-
-function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
+    function createData(id, access, path, resource, resourceType, actor, actorType, action) {
+        return {
+            id,
+            access,
+            path,
+            resource,
+            resourceType,
+            actor,
+            actorType,
+            action
+        };
     }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
+
+    const rows = data;
+
+    function EditButton(data) {
+        return (<Tooltip title="Edit">
+            <IconButton onClick={handleClickOpen}>
+                <EditIcon />
+            </IconButton>
+        </Tooltip>)
     }
-    return 0;
-}
 
-function getComparator(order, orderBy) {
-    return order === 'desc'
-        ? (a, b) => descendingComparator(a, b, orderBy)
-        : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-// This method is created for cross-browser compatibility, if you don't
-// need to support IE11, you can use Array.prototype.sort() directly
-function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-        const order = comparator(a[0], b[0]);
-        if (order !== 0) {
-            return order;
+    function descendingComparator(a, b, orderBy) {
+        if (b[orderBy] < a[orderBy]) {
+            return -1;
         }
-        return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
-}
+        if (b[orderBy] > a[orderBy]) {
+            return 1;
+        }
+        return 0;
+    }
 
-const headCells = [
-    {
-        id: 'access',
-        numeric: false,
-        disablePadding: false,
-        label: 'Access To',
-    },
-    {
-        id: 'path',
-        numeric: false,
-        disablePadding: false,
-        label: 'Path',
-    },
-    {
-        id: 'resource',
-        numeric: false,
-        disablePadding: false,
-        label: 'Resource',
-    },
-    {
-        id: 'resourceType',
-        numeric: false,
-        disablePadding: false,
-        label: 'Resource Type',
-    },
-    {
-        id: 'actor',
-        numeric: false,
-        disablePadding: false,
-        label: 'Actor',
-    },
-    {
-        id: 'actorType',
-        numeric: false,
-        disablePadding: false,
-        label: 'Actor Type',
-    },
-    {
-        id: 'action',
-        numeric: false,
-        disablePadding: true,
-        label: '',
-    },
-];
+    function getComparator(order, orderBy) {
+        return order === 'desc'
+            ? (a, b) => descendingComparator(a, b, orderBy)
+            : (a, b) => -descendingComparator(a, b, orderBy);
+    }
 
-function PoliciesTableHead(props) {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
-        props;
-    const createSortHandler = (property) => (event) => {
-        onRequestSort(event, property);
+    // This method is created for cross-browser compatibility, if you don't
+    // need to support IE11, you can use Array.prototype.sort() directly
+    function stableSort(array, comparator) {
+        const stabilizedThis = array.map((el, index) => [el, index]);
+        stabilizedThis.sort((a, b) => {
+            const order = comparator(a[0], b[0]);
+            if (order !== 0) {
+                return order;
+            }
+            return a[1] - b[1];
+        });
+        return stabilizedThis.map((el) => el[0]);
+    }
+
+    const headCells = [
+        {
+            id: 'id',
+            numeric: false,
+            disablePadding: false,
+            label: 'ID',
+        },
+        {
+            id: 'Access',
+            numeric: false,
+            disablePadding: false,
+            label: 'Access',
+        },
+        {
+            id: 'path',
+            numeric: false,
+            disablePadding: false,
+            label: 'Path',
+        },
+        {
+            id: 'resource',
+            numeric: false,
+            disablePadding: false,
+            label: 'Resource',
+        },
+        {
+            id: 'resourceType',
+            numeric: false,
+            disablePadding: false,
+            label: 'Resource Type',
+        },
+        {
+            id: 'actor',
+            numeric: false,
+            disablePadding: false,
+            label: 'Actor',
+        },
+        {
+            id: 'actorType',
+            numeric: false,
+            disablePadding: false,
+            label: 'Actor Type',
+        },
+        {
+            id: 'action',
+            numeric: false,
+            disablePadding: true,
+            label: '',
+        },
+    ];
+
+    function PoliciesTableHead(props) {
+        const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
+            props;
+        const createSortHandler = (property) => (event) => {
+            onRequestSort(event, property);
+        };
+
+        return (
+            <TableHead>
+                <TableRow>
+                    <TableCell padding="checkbox">
+                        <Checkbox
+                            color="primary"
+                            indeterminate={numSelected > 0 && numSelected < rowCount}
+                            checked={rowCount > 0 && numSelected === rowCount}
+                            onChange={onSelectAllClick}
+                            inputProps={{
+                                'aria-label': 'select all desserts',
+                            }}
+                        />
+                    </TableCell>
+                    {headCells.map((headCell) => (
+                        <TableCell
+                            key={headCell.id}
+                            align={headCell.numeric ? 'right' : 'left'}
+                            padding={headCell.disablePadding ? 'none' : 'normal'}
+                            sortDirection={orderBy === headCell.id ? order : false}
+                        >
+                            <TableSortLabel
+                                active={orderBy === headCell.id}
+                                direction={orderBy === headCell.id ? order : 'asc'}
+                                onClick={createSortHandler(headCell.id)}
+                            >
+                                {headCell.label}
+                                {orderBy === headCell.id ? (
+                                    <Box component="span" sx={visuallyHidden}>
+                                        {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                    </Box>
+                                ) : null}
+                            </TableSortLabel>
+                        </TableCell>
+                    ))}
+                </TableRow>
+            </TableHead>
+        );
+    }
+
+    PoliciesTableHead.propTypes = {
+        numSelected: PropTypes.number.isRequired,
+        onRequestSort: PropTypes.func.isRequired,
+        onSelectAllClick: PropTypes.func.isRequired,
+        order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+        orderBy: PropTypes.string.isRequired,
+        rowCount: PropTypes.number.isRequired,
     };
 
-    return (
-        <TableHead>
-            <TableRow>
-                <TableCell padding="checkbox">
-                    <Checkbox
-                        color="primary"
-                        indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={rowCount > 0 && numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{
-                            'aria-label': 'select all desserts',
-                        }}
-                    />
-                </TableCell>
-                {headCells.map((headCell) => (
-                    <TableCell
-                        key={headCell.id}
-                        align={headCell.numeric ? 'right' : 'left'}
-                        padding={headCell.disablePadding ? 'none' : 'normal'}
-                        sortDirection={orderBy === headCell.id ? order : false}
+    const PoliciesTableToolbar = (props) => {
+        const { numSelected } = props;
+
+        return (
+            <Toolbar
+                sx={{
+                    pl: { sm: 2 },
+                    pr: { xs: 1, sm: 1 },
+                    ...(numSelected > 0 && {
+                        bgcolor: (theme) =>
+                            alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
+                    }),
+                }}
+            >
+                {numSelected > 0 ? (
+                    <Typography
+                        sx={{ flex: '1 1 100%' }}
+                        color="inherit"
+                        variant="subtitle1"
+                        component="div"
                     >
-                        <TableSortLabel
-                            active={orderBy === headCell.id}
-                            direction={orderBy === headCell.id ? order : 'asc'}
-                            onClick={createSortHandler(headCell.id)}
-                        >
-                            {headCell.label}
-                            {orderBy === headCell.id ? (
-                                <Box component="span" sx={visuallyHidden}>
-                                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                </Box>
-                            ) : null}
-                        </TableSortLabel>
-                    </TableCell>
-                ))}
-            </TableRow>
-        </TableHead>
-    );
-}
+                        {numSelected} selected
+                    </Typography>
+                ) : (
+                    ""
+                )}
 
-PoliciesTableHead.propTypes = {
-    numSelected: PropTypes.number.isRequired,
-    onRequestSort: PropTypes.func.isRequired,
-    onSelectAllClick: PropTypes.func.isRequired,
-    order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-    orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired,
-};
+                {numSelected > 0 ? (
+                    <Tooltip title="Delete">
+                        <IconButton onClick={handleClickOpenDeleteDialog}>
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip>
+                ) : (
+                    "Total elements: " + stableSort(rows, getComparator(order, orderBy)).length
+                )}
+            </Toolbar>
+        );
+    };
 
-const PoliciesTableToolbar = (props) => {
-    const { numSelected } = props;
-
-    return (
-        <Toolbar
-            sx={{
-                pl: { sm: 2 },
-                pr: { xs: 1, sm: 1 },
-                ...(numSelected > 0 && {
-                    bgcolor: (theme) =>
-                        alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-                }),
-            }}
-        >
-            {numSelected > 0 ? (
-                <Typography
-                    sx={{ flex: '1 1 100%' }}
-                    color="inherit"
-                    variant="subtitle1"
-                    component="div"
-                >
-                    {numSelected} selected
-                </Typography>
-            ) : (
-                ""
-            )}
-
-            {numSelected > 0 ? (
-                <Tooltip title="Delete">
-                    <IconButton onClick={handleClickOpenDeleteDialog}>
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
-            ) : (
-                "Total elements: "+stableSort(rows, getComparator(order, orderBy)).length
-            )}
-        </Toolbar>
-    );
-};
-
-PoliciesTableToolbar.propTypes = {
-    numSelected: PropTypes.number.isRequired,
-};
+    PoliciesTableToolbar.propTypes = {
+        numSelected: PropTypes.number.isRequired,
+    };
 
 
     const [order, setOrder] = React.useState('asc');
@@ -271,7 +261,28 @@ PoliciesTableToolbar.propTypes = {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
+    const fromIdToText = (policyIDs) => {
+        let textDisplay = "\n";
+        let foundPolicy;
+        for (let id of policyIDs) {
+            foundPolicy = data.filter((e) => e.id === id);
+            if (foundPolicy.length > 0) {
+            textDisplay = textDisplay + " -- " + foundPolicy[0].id + "\n";
+            }
+        }
+        return textDisplay;
+    }
 
+    const dataCreator = (policyIDs) => {
+        let arrayOfData = [];
+        for (let id of policyIDs) {
+            let foundPolicy = data.filter((e) => e.id === id);
+            if (foundPolicy.length > 0) {
+                arrayOfData.push({ id: foundPolicy[0].id,access_to:foundPolicy[0].access_to,fiware_service:foundPolicy[0].fiware_service,fiware_service_path:foundPolicy[0].fiware_service_path})
+            }
+        }
+        return arrayOfData;
+    }
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -281,19 +292,19 @@ PoliciesTableToolbar.propTypes = {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelecteds = rows.map((n) => n.access);
+            const newSelecteds = rows.map((n) => n.id);
             setSelected(newSelecteds);
             return;
         }
         setSelected([]);
     };
 
-    const handleClick = (event, access) => {
-        const selectedIndex = selected.indexOf(access);
+    const handleClick = (event, id) => {
+        const selectedIndex = selected.indexOf(id);
         let newSelected = [];
 
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, access);
+            newSelected = newSelected.concat(selected, id);
         } else if (selectedIndex === 0) {
             newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
@@ -319,7 +330,7 @@ PoliciesTableToolbar.propTypes = {
 
 
 
-    const isSelected = (access) => selected.indexOf(access) !== -1;
+    const isSelected = (id) => selected.indexOf(id) !== -1;
 
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
@@ -349,17 +360,17 @@ PoliciesTableToolbar.propTypes = {
                             {stableSort(rows, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
-                                    const isItemSelected = isSelected(row.access);
+                                    const isItemSelected = isSelected(row.id);
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
                                         <TableRow
                                             hover
-                                            onClick={(event) => handleClick(event, row.access)}
+                                            onClick={(event) => handleClick(event, row.id)}
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
-                                            key={row.access}
+                                            key={row.id}
                                             selected={isItemSelected}
                                         >
                                             <TableCell padding="checkbox">
@@ -378,11 +389,12 @@ PoliciesTableToolbar.propTypes = {
                                                 align="left"
                                                 padding="none"
                                             >
-                                                {row.access}
+                                                {row.id}
                                             </TableCell>
+                                            <TableCell align="left">{row.access_to}</TableCell>
                                             <TableCell align="left">{row.path}</TableCell>
                                             <TableCell align="left">{row.resource}</TableCell>
-                                            <TableCell align="left">{row.resourceType}</TableCell>
+                                            <TableCell align="left">{row.resource_type}</TableCell>
                                             <TableCell align="left">{row.actor}</TableCell>
                                             <TableCell align="left">{row.actorType}</TableCell>
                                             <TableCell align="left">{row.action}</TableCell>
@@ -411,11 +423,13 @@ PoliciesTableToolbar.propTypes = {
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
             </Paper>
-  <DeleteDialog
+            <DeleteDialog
                 open={openDeleteDialog}
-                onClose={handleCloseDeleteDialog} 
+                onClose={handleCloseDeleteDialog}
+                getData={getData}
+                data={{ dataValues: dataCreator(selected), multiple: true, selectedText: fromIdToText(selected), setSelected: setSelected }}
             />
-              <Dialog
+            <Dialog
                 open={open}
                 fullWidth={true}
                 maxWidth={"xl"}
@@ -423,8 +437,8 @@ PoliciesTableToolbar.propTypes = {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                
-               <TenantForm title={"Edit Tenant"} close={setOpen}></TenantForm>
+
+                <TenantForm title={"Edit Tenant"} close={setOpen}></TenantForm>
                 <DialogActions>
 
                 </DialogActions>

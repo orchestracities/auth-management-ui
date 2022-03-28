@@ -26,6 +26,9 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { InputLabel } from '@mui/material';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import axios from "axios"
+import { Mode } from '@mui/icons-material';
 
 const CustomDialogTitle = styled(AppBar)({
     position: 'relative',
@@ -34,50 +37,77 @@ const CustomDialogTitle = styled(AppBar)({
 });
 
 
-export default function PolicyForm({ title, close }) {
+export default function PolicyForm({ title, close, action, tenantName, services, access_modes,getServices }) {
     const handleClose = () => {
         close(false);
     };
-    //SERVICE
-    const [service, setService] = React.useState('String');
-
-    const handleService = (event) => {
-      setService(event.target.value);
-    };
 
     //SERVICE PATH
-    const [path, setPath] = React.useState('String');
+    const [path, setPath] = React.useState();
 
     const handlePath = (event) => {
-      setPath(event.target.value);
+        setPath(event.target.value);
     };
 
     //ACCESS
-    const [access, setAccess] = React.useState('String');
+    const [access, setAccess] = React.useState('');
 
     const handleAccess = (event) => {
-      setAccess(event.target.value);
+        setAccess(event.target.value);
     };
 
     //RESOURCE
-    const [resource, setResource] = React.useState('String');
+    const [resource, setResource] = React.useState('');
 
     const handleResource = (event) => {
-      setResource(event.target.value);
+        setResource(event.target.value);
     };
 
     //MODE
-    const [mode, setMode] = React.useState('String');
+    const [mode, setMode] = React.useState([]);
 
     const handleMode = (event) => {
-      setMode(event.target.value);
+        setMode(event.target.value);
     };
 
     //AGENT
-    const [agent, setAgent] = React.useState('String');
+    const [agent, setAgent] = React.useState([]);
 
     const handleAgent = (event) => {
-      setAgent(event.target.value);
+        setAgent(event.target.value);
+    };
+
+    const handleSave = () => {
+
+        switch (action) {
+            case "create":
+
+                axios.post(process.env.REACT_APP_API_LOCATION + 'v1/policies/', {
+                    "access_to": access,
+                    "resource_type": resource,
+                    "mode": mode,
+                    "agent": agent
+                }, {
+                    headers: {
+                        "fiware_service": tenantName(),
+                        "fiware_service_path": path
+                    }
+                })
+                    .then((response) => {
+                        getServices();
+                        close(false);
+                    })
+                    .catch((e) => {
+                        console.error(e);
+                    });
+                break;
+            case "modify":
+
+                break;
+            default:
+                break;
+        }
+
     };
 
     return (
@@ -94,7 +124,7 @@ export default function PolicyForm({ title, close }) {
                     <Typography sx={{ ml: 2, flex: 1, color: "black" }} variant="h6" component="div">
                         {title}
                     </Typography>
-                    <Button autoFocus color="secondary" onClick={handleClose}>
+                    <Button autoFocus color="secondary" onClick={handleSave}>
                         save
                     </Button>
                 </Toolbar>
@@ -103,22 +133,12 @@ export default function PolicyForm({ title, close }) {
                 <Grid container
                     spacing={3}
                 >
-                   
+
                     <Grid item xs={12}>
-                        <FormControl fullWidth>
-                            <InputLabel id="service">Service</InputLabel>
-                            <Select
-                                labelId="Service"
-                                id="Service"
-                                variant="outlined"
-                                value={service}
-                                label="Service"
-                                onChange={setService}
-                            >
-                                <MenuItem value={"String"}>String</MenuItem>
-                           
-                            </Select>
-                        </FormControl>
+                        <TextField id="Service" label="Service" variant="outlined" defaultValue={tenantName} disabled sx={{
+                            width: '100%',
+                        }} />
+
                     </Grid>
                     <Grid item xs={12}>
                         <FormControl fullWidth>
@@ -129,59 +149,57 @@ export default function PolicyForm({ title, close }) {
                                 variant="outlined"
                                 value={path}
                                 label="Service Path"
-                                onChange={setPath}
+                                onChange={handlePath}
                             >
-                                <MenuItem value={"String"}>String</MenuItem>
-                           
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <FormControl fullWidth>
-                            <InputLabel id="access">Access To</InputLabel>
-                            <Select
-                                labelId="access"
-                                id="access"
-                                variant="outlined"
-                                value={access}
-                                label="Access To"
-                                onChange={setAccess}
-                            >
-                                <MenuItem value={"String"}>String</MenuItem>
-                           
-                            </Select>
-                        </FormControl>
-                    </Grid>
+                                {services.slice(1).map((service) => (
+                                    <MenuItem value={service.path}>{service.path}</MenuItem>
+                                ))}
 
-                    <Grid item xs={12}>
-                        <FormControl fullWidth>
-                            <InputLabel id="resource">Resource Type</InputLabel>
-                            <Select
-                                labelId="resource"
-                                id="resource"
-                                variant="outlined"
-                                value={resource}
-                                label="Resource Type"
-                                onChange={setResource}
-                            >
-                                <MenuItem value={"String"}>String</MenuItem>
-                           
+
                             </Select>
                         </FormControl>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            id="access"
+                            variant="outlined"
+                            value={access}
+                            label="Access To"
+                            onChange={setAccess}
+                            sx={{
+                                width: '100%',
+                            }}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            id="resource"
+                            variant="outlined"
+                            value={resource}
+                            label="Resource Type"
+                            onChange={setResource}
+                            sx={{
+                                width: '100%',
+                            }}
+                        />
                     </Grid>
                     <Grid item xs={12}>
                         <FormControl fullWidth>
                             <InputLabel id="mode">Mode</InputLabel>
+
                             <Select
                                 labelId="mode"
                                 id="mode"
                                 variant="outlined"
                                 value={mode}
                                 label="Mode"
-                                onChange={setMode}
+                                multiple
+                                input={<OutlinedInput label="Mode" />}
+                                onChange={handleMode}
                             >
-                                <MenuItem value={"String"}>String</MenuItem>
-                           
+                                {access_modes.map((service) => (
+                                    <MenuItem value={service.iri}>{service.name}</MenuItem>
+                                ))}
                             </Select>
                         </FormControl>
                     </Grid>
@@ -194,10 +212,13 @@ export default function PolicyForm({ title, close }) {
                                 variant="outlined"
                                 value={agent}
                                 label="Agent"
-                                onChange={setAgent}
+                                multiple
+                                input={<OutlinedInput label="Mode" />}
+                                onChange={handleAgent}
                             >
-                                <MenuItem value={"String"}>String</MenuItem>
-                           
+                                <MenuItem value={"acl:AuthenticatedAgent"}>Authenticated Agent</MenuItem>
+                                <MenuItem value={"foaf:Agent"}>Agent</MenuItem>
+                                <MenuItem value={"oc-acl:ResourceTenantAgent"}>Resource Tenant Agent</MenuItem>
                             </Select>
                         </FormControl>
                     </Grid>
