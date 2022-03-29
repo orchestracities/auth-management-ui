@@ -135,7 +135,7 @@ export default function PolicyForm({ title, close, action, tenantName, services,
                 >
 
                     <Grid item xs={12}>
-                        <TextField id="Service" label="Service" variant="outlined" defaultValue={tenantName} disabled sx={{
+                        <TextField id="Service" label="Service" variant="outlined" defaultValue={tenantName()} disabled sx={{
                             width: '100%',
                         }} />
 
@@ -165,7 +165,7 @@ export default function PolicyForm({ title, close, action, tenantName, services,
                             variant="outlined"
                             value={access}
                             label="Access To"
-                            onChange={setAccess}
+                            onChange={handleAccess}
                             sx={{
                                 width: '100%',
                             }}
@@ -177,7 +177,7 @@ export default function PolicyForm({ title, close, action, tenantName, services,
                             variant="outlined"
                             value={resource}
                             label="Resource Type"
-                            onChange={setResource}
+                            onChange={handleResource}
                             sx={{
                                 width: '100%',
                             }}
