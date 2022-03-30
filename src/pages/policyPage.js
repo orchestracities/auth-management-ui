@@ -7,6 +7,7 @@ import PolicyFilters from '../components/policy/policyFilters'
 import PolicyTable from '../components/policy/policiesTable'
 import PolicyForm from '../components/policy/policyForm'
 import axios from "axios"
+import Typography from '@mui/material/Typography';
 
 
 export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
@@ -71,14 +72,17 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
           ? ""
   : <AddButton pageType={<PolicyForm tenantName={tenantName_id} action="create" services={services} getServices={getServices} access_modes={access_modes} title={"New Policy"} close={setOpen} ></PolicyForm>} setOpen={setOpen} status={open}></AddButton>
       }
-      <Grid container spacing={2} sx={{ marginLeft: "15px " }}>
+      {(policies.length > 1)?<Grid container spacing={2} sx={{ marginLeft: "15px " }}>
         <Grid item xs={12}>
           <PolicyFilters></PolicyFilters>
         </Grid>
         <Grid item xs={12}>
           <PolicyTable data={policies} getData={getServices}></PolicyTable>
         </Grid>
-      </Grid>
+      </Grid>:<Typography sx={{padding:"20px"}} variant="h6" component="h3">
+            No data avaitable
+      </Typography>}
+      
     </div>
   );
 }

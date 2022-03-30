@@ -37,7 +37,7 @@ const CustomDialogTitle = styled(AppBar)({
 });
 
 
-export default function PolicyForm({ title, close, action, tenantName, services, access_modes,getServices }) {
+export default function PolicyForm({ title, close, action, tenantName, services, access_modes, getServices }) {
     const handleClose = () => {
         close(false);
     };
@@ -69,6 +69,19 @@ export default function PolicyForm({ title, close, action, tenantName, services,
     const handleMode = (event) => {
         setMode(event.target.value);
     };
+
+    //AGENT-TYPE 
+    const [agentType, setAgentType] = React.useState("");
+
+    const handleAgentType = (event) => {
+        setAgentType(event.target.value);
+    };
+
+    const [otherAgent,setOtherAgent] = React.useState("");
+
+    const handleOtherAgent = (event) => {
+        setOtherAgent(event.target.value);
+    }
 
     //AGENT
     const [agent, setAgent] = React.useState([]);
@@ -205,23 +218,61 @@ export default function PolicyForm({ title, close, action, tenantName, services,
                     </Grid>
                     <Grid item xs={12}>
                         <FormControl fullWidth>
-                            <InputLabel id="agent">Agent</InputLabel>
+                            <InputLabel id="agentType">Agent-Type</InputLabel>
                             <Select
-                                labelId="agent"
-                                id="agent"
+                                labelId="agentType"
+                                id="agentType"
                                 variant="outlined"
-                                value={agent}
-                                label="Agent"
-                                multiple
-                                input={<OutlinedInput label="Mode" />}
-                                onChange={handleAgent}
+                                value={agentType}
+                                label="AgentType"
+                                onChange={handleAgentType}
                             >
-                                <MenuItem value={"acl:AuthenticatedAgent"}>Authenticated Agent</MenuItem>
-                                <MenuItem value={"foaf:Agent"}>Agent</MenuItem>
-                                <MenuItem value={"oc-acl:ResourceTenantAgent"}>Resource Tenant Agent</MenuItem>
+                                <MenuItem value={"default"}>Default</MenuItem>
+                                <MenuItem value={"user"}>User</MenuItem>
+                                <MenuItem value={"role"}>Role</MenuItem>
+                                <MenuItem value={"group"}>User</MenuItem>
+                                <MenuItem value={"other"}>Other</MenuItem>
                             </Select>
                         </FormControl>
                     </Grid>
+                    {(agentType === "default") ?
+                        <Grid item xs={12}>
+                            <FormControl fullWidth>
+                                <InputLabel id="agent">Agent</InputLabel>
+                                <Select
+                                    labelId="agent"
+                                    id="agent"
+                                    variant="outlined"
+                                    value={agent}
+                                    label="Agent"
+                                    multiple
+                                    input={<OutlinedInput label="Mode" />}
+                                    onChange={handleAgent}
+                                >
+                                    <MenuItem value={"acl:AuthenticatedAgent"}>Authenticated Agent</MenuItem>
+                                    <MenuItem value={"foaf:Agent"}>Agent</MenuItem>
+                                    <MenuItem value={"oc-acl:ResourceTenantAgent"}>Resource Tenant Agent</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        :
+                        ""}
+
+                    {(agentType === "other") ?
+                        <Grid item xs={12}>
+                            <TextField
+                            id="OtherAgent"
+                            variant="outlined"
+                            value={otherAgent}
+                            label="Other Agent"
+                            onChange={handleOtherAgent}
+                            sx={{
+                                width: '100%',
+                            }}
+                        />
+                        </Grid>
+                        :
+                        ""}
                 </Grid>
             </DialogContent>
         </div>

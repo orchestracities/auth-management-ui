@@ -13,6 +13,7 @@ import Badge from '@mui/material/Badge';
 import SecurityIcon from '@mui/icons-material/Security';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ServiceChildren from '../service/serviceChildren';
+import PoliciesChildren from '../policy/policiesChildren';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -61,11 +62,7 @@ export default function DashboardCard({pageType,data,getData}) {
         </Typography>
       </CardContent>
       <CardActions>
-      {(layout.props.title==="New Sub-service")?"":   <IconButton aria-label="service">
-        <Badge badgeContent={4} color="secondary">
-        <ContentCopyIcon sx={{color:"#536BBF"}}  fontSize="large"/>
-      </Badge>
-        </IconButton>}
+      {(layout.props.title==="New Sub-service")?"": <PoliciesChildren tenantId={data.id} tenantName={data.name}></PoliciesChildren>}
      
         <ServiceChildren setOpen={setSubpathOpen} status={subpathOpen} data={(layout.props.title==="Edit Tenant")?data.service_paths.slice(1):data.children} masterTitle={(layout.props.title==="Edit Tenant")?data.name:data.path} getData={getData}/>
     

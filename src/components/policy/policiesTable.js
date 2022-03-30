@@ -392,7 +392,7 @@ export default function PoliciesTable({ data,getData }) {
                                                 {row.id}
                                             </TableCell>
                                             <TableCell align="left">{row.access_to}</TableCell>
-                                            <TableCell align="left">{row.path}</TableCell>
+                                            <TableCell align="left">{row.fiware_service_path}</TableCell>
                                             <TableCell align="left">{row.resource}</TableCell>
                                             <TableCell align="left">{row.resource_type}</TableCell>
                                             <TableCell align="left">{row.actor}</TableCell>
