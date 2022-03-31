@@ -8,7 +8,7 @@ import SortButton from '../components/shared/sortButton';
 import DashboardCard from '../components/shared/cards';
 import TenantForm from '../components/tenant/tenantForm';
 
-export default function TenantPage({tenantValues,getTenants}) {
+export default function TenantPage({tenantValues,getTenants,seTenant}) {
     const [createOpen, setCreateOpen] = React.useState(false);
 
    const mainTitle= "Tenant Admin List";
@@ -22,7 +22,7 @@ export default function TenantPage({tenantValues,getTenants}) {
             </Grid>
             {tenantValues.map((tenant) => (
                     <Grid item xs={4}>
-                    <DashboardCard  pageType={ <TenantForm title={"Edit Tenant"}  action={"modify"} tenant={tenant}></TenantForm>} data={tenant} getData={getTenants}></DashboardCard>
+                    <DashboardCard  pageType={ <TenantForm title={"Edit Tenant"}  action={"modify"} tenant={tenant}></TenantForm>} data={tenant} getData={getTenants} seTenant={seTenant}></DashboardCard>
                   </Grid>  
                 ))}
                 

@@ -64,8 +64,8 @@ const TenantSelect = styled(Select)(
 
     },
 });
-export default function TenantSelection({tenantValues,seTenant}) {
-  const [Tenant, set_Tenant] = React.useState("");
+export default function TenantSelection({tenantValues,seTenant,correntValue}) {
+  const [Tenant, set_Tenant] = React.useState(correntValue);
 
   const handleChange = (event) => {
     set_Tenant(event.target.value);
@@ -81,7 +81,7 @@ export default function TenantSelection({tenantValues,seTenant}) {
           labelId="tenant"
           id="tenant"
           variant="outlined"
-          value={Tenant}
+          value={correntValue}
           label="Tenant"
           onChange={handleChange}
         >

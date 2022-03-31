@@ -130,10 +130,6 @@ export default class App extends Component {
       this.setState({thisTenant:newValue});
     },
     getTenants:()=>{
-    
-     
-     
-
       axios.get(process.env.REACT_APP_API_LOCATION+'v1/tenants')
     .then((response) => {
       let userTenants=[];
@@ -246,7 +242,7 @@ export default class App extends Component {
 
               </Typography>
               <div>
-                < TenantSelection seTenant={this.state.seTenant} tenantValues={this.state.tenants}></TenantSelection>
+                < TenantSelection seTenant={this.state.seTenant} tenantValues={this.state.tenants} correntValue={this.state.thisTenant}></TenantSelection>
               </div>
               <div>
                 <IconButton
@@ -297,7 +293,7 @@ export default class App extends Component {
             <Divider />
           </Drawer>
           {(this.state.authenticated) ? <Main open={this.state.open}><Routes>
-          <Route path="Tenant" element={ <TenantPage getTenants={this.state.getTenants} tenantValues={this.state.tenants}/>} />
+          <Route path="Tenant" element={ <TenantPage getTenants={this.state.getTenants} tenantValues={this.state.tenants} seTenant={this.state.seTenant}/>} />
           <Route path="Service" element={ <ServicePage getTenants={this.state.getTenants} tenantValues={this.state.tenants} thisTenant={this.state.thisTenant} />} />
           <Route path="Policy" element={ <PolicyPage getTenants={this.state.getTenants} tenantValues={this.state.tenants} thisTenant={this.state.thisTenant} />} />
           </Routes></Main> : <Main open={this.state.open} />}
