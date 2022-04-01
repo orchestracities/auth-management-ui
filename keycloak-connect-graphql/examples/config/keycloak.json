@@ -1,0 +1,9 @@
+{
+  "realm": "master",
+  "auth-server-url": "http://localhost:8080/auth",
+  "ssl-required": "none",
+  "resource": "keycloak-connect-graphql-public",
+  "public-client": true,
+  "use-resource-role-mappings": true,
+  "confidential-port": 0
+}

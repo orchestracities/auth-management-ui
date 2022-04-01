@@ -1,0 +1,34 @@
+version: "3.7"
+services:
+  policy-api:
+    image: orchestracities/anubis-management-api:master
+    networks:
+      - envoymesh
+    environment:
+      - CORS_ALLOWED_ORIGINS=*
+      - CORS_ALLOWED_METHODS=*
+      - CORS_ALLOWED_HEADERS=*
+    ports:
+      - "8085:8000"
+
+  keycloak:
+    image: jboss/keycloak:${KEYCLOAK_VERSION:-16.1.1}
+    # if your platform is linux/arm64 use the following image
+    # image: koolwithk/keycloak-arm:16.0.0
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./keycloak/oc-custom.jar:/opt/jboss/keycloak/standalone/deployments/oc-custom.jar
+      - ./keycloak/realm-export.json:/opt/jboss/realm-export.json
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=password
+      - JAVA_TOOL_OPTIONS=-Dkeycloak.profile.feature.scripts=enabled -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.file=/opt/jboss/realm-export.json -Dkeycloak.migration.strategy=OVERWRITE_EXISTING
+    networks:
+      - envoymesh
+
+volumes:
+  mongodata:
+
+networks:
+  envoymesh: {}
