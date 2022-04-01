@@ -11,7 +11,7 @@ The default user/password inside keycloack is admin/admin
 
 ## How to setup the Webapp
 
-###### The Webapp
+### The Webapp
 
 To setup the webapp first of all let's create a .env file inside the main folder, the file should contain the string:
 
@@ -31,7 +31,7 @@ after that we can start our application with
 npm start
 ```
 
-######  Keycloack and graphql
+###  Keycloack and graphql
 
 To setup the connection between keycloack and graphql open a new window and move to the keycloak-connect-graphql folder
 
