@@ -10,34 +10,30 @@ if [ $status -eq 7 ]; then
 fi
 
 echo "Downloading Keycloak scripts..."
-
+mkdir keycloak
+cd keycloak
 wget https://github.com/orchestracities/keycloak-scripts/releases/download/v0.0.4/oc-custom.jar -O oc-custom.jar
-wget https://raw.githubusercontent.com/orchestracities/anubis/ui-connector/keycloak/realm-export.json -O realm-export.json
+wget https://raw.githubusercontent.com/orchestracities/anubis/master/keycloak/realm-export.json -O realm-export.json
+cd ..
 
 echo "Deploying services via Docker Compose..."
-
 docker-compose up -d
 
 wait=0
 HOST="http://localhost:8080"
 while [ "$(curl -s -o /dev/null -L -w ''%{http_code}'' $HOST)" != "200" ] && [ $wait -le 60 ]
 do
- echo "Waiting for Keycloak..."
- docker cp  realm-export.json auth-management-ui_keycloak_1:/opt/jboss/keycloak/bin
-
-docker exec -ti auth-management-ui_keycloak_1 bash "-c" "cd opt/jboss/keycloak/bin && sh standalone.sh -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.file=realm-export.json -Dkeycloak.migration.strategy=OVERWRITE_EXISTING -Djboss.http.port=8888 -Djboss.https.port=9999 -Djboss.management.http.port=7777" 
-
- sleep 5
- wait=$((wait+5))
- echo "Elapsed time: $wait"
+  echo "Waiting for Keycloak..."
+  sleep 5
+  wait=$((wait+5))
+  echo "Elapsed time: $wait"
 done
 
 if [ $wait -gt 60 ]; then
- echo "timeout while waiting services to be ready"
- docker-compose down -v
- exit -1
+  echo "timeout while waiting services to be ready"
+  docker-compose down -v
+  exit -1
 fi
-
 
 echo "Setting up tenant Tenant1..."
 curl -s -i -X 'POST' \
@@ -48,19 +44,16 @@ curl -s -i -X 'POST' \
   "name": "Tenant1"
 }'
 
-echo "Setting up policy that allows reading and creating entities under tenant Tenant1 and path / ..."
+echo "Setting up tenant Tenant2..."
 curl -s -i -X 'POST' \
-'http://127.0.0.1:8085/v1/policies/' \
--H 'accept: */*' \
--H 'fiware_service: Tenant1' \
--H 'fiware_service_path: /' \
--H 'Content-Type: application/json' \
--d '{
-"access_to": "*",
-"resource_type": "entity",
-"mode": ["acl:Read"],
-"agent": ["acl:AuthenticatedAgent"]
+  'http://127.0.0.1:8085/v1/tenants/' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "name": "Tenant2"
 }'
+
+echo "Setting up policy that allows creating entities under tenant Tenant1 and path / ..."
 
 curl -s -i -X 'POST' \
 'http://127.0.0.1:8085/v1/policies/' \
@@ -88,10 +81,4 @@ curl -s -i -X 'POST' \
 "agent": ["acl:AuthenticatedAgent"]
 }'
 
- docker cp  realm-export.json auth-management-ui_keycloak_1:/opt/jboss/keycloak/bin
-
-docker exec -ti auth-management-ui_keycloak_1 bash "-c" "cd opt/jboss/keycloak/bin && sh standalone.sh -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.file=realm-export.json -Dkeycloak.migration.strategy=OVERWRITE_EXISTING -Djboss.http.port=8888 -Djboss.https.port=9999 -Djboss.management.http.port=7777" 
-
-#echo "Setting up Keycloack"
-#
-# exit 1
+echo "Demo deployed!"
