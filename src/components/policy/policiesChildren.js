@@ -16,7 +16,7 @@ export default function PoliciesChildren({ tenantId, tenantName, seTenant }) {
   //services
   const [services, setServices] = React.useState([{ children: [] }]);
   const getServices = () => {
-    axios.get(process.env.REACT_APP_API_LOCATION + 'v1/tenants/' + tenantId + "/service_paths")
+    axios.get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/tenants/' + tenantId + "/service_paths")
       .then((response) => {
         getPolicies(response.data);
       })
@@ -29,7 +29,7 @@ export default function PoliciesChildren({ tenantId, tenantName, seTenant }) {
   const getPolicies = (servicesResponse) => {
     let datAccumulator = [];
     for (let service of servicesResponse) {
-      axios.get(process.env.REACT_APP_API_LOCATION + 'v1/policies', {
+      axios.get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies', {
         headers: {
           "fiware_service": tenantName,
           "fiware_service_path": service.path

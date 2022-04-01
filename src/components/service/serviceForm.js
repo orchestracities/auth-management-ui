@@ -45,7 +45,7 @@ export default function ServiceForm({ title, close, action, service, tenantName_
         switch (action) {
             case "create":
 
-                axios.post(process.env.REACT_APP_API_LOCATION + 'v1/tenants/' + tenantName_id[0].id + "/service_paths", {
+                axios.post(process.env.REACT_APP_ANUBIS_API_URL + 'v1/tenants/' + tenantName_id[0].id + "/service_paths", {
                     "path": path
                 })
                     .then((response) => {
@@ -57,7 +57,7 @@ export default function ServiceForm({ title, close, action, service, tenantName_
                     });
                 break;
             case "modify":
-                axios.post(process.env.REACT_APP_API_LOCATION + 'v1/tenants/' + tenantName_id[0].id + "/service_paths", {
+                axios.post(process.env.REACT_APP_ANUBIS_API_URL + 'v1/tenants/' + tenantName_id[0].id + "/service_paths", {
                     "path": service.path+path
                 })
                     .then((response) => {

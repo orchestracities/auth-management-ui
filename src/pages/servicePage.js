@@ -13,7 +13,7 @@ export default function ServicePage({getTenants,tenantValues,thisTenant}) {
   const [createOpen, setCreateOpen] = React.useState(false);
   const [services, setServices] = React.useState([{children:[]}]);
   const getServices=()=>{
-    axios.get(process.env.REACT_APP_API_LOCATION+'v1/tenants/'+thisTenant+"/service_paths")
+    axios.get(process.env.REACT_APP_ANUBIS_API_URL+'v1/tenants/'+thisTenant+"/service_paths")
     .then((response) => {
      
       setServices(response.data);

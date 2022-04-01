@@ -23,13 +23,13 @@ export default function DeleteDialog(props) {
 
         switch (true) {
             case typeof thisData.name !== "undefined":
-                return process.env.REACT_APP_API_LOCATION + 'v1/tenants/' + thisData.id;
+                return process.env.REACT_APP_ANUBIS_API_URL + 'v1/tenants/' + thisData.id;
                 break;
             case typeof thisData.path !== "undefined":
-                return process.env.REACT_APP_API_LOCATION + 'v1/tenants/' + thisData.tenant_id + "/service_paths/" + thisData.id;
+                return process.env.REACT_APP_ANUBIS_API_URL + 'v1/tenants/' + thisData.tenant_id + "/service_paths/" + thisData.id;
                 break;
             case typeof thisData.access_to !== "undefined":
-                return process.env.REACT_APP_API_LOCATION + 'v1/policies/' + thisData.id;
+                return process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies/' + thisData.id;
                 break;
             default:
                 break;

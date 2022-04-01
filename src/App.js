@@ -130,7 +130,7 @@ export default class App extends Component {
       this.setState({thisTenant:newValue});
     },
     getTenants:()=>{
-      axios.get(process.env.REACT_APP_API_LOCATION+'v1/tenants')
+      axios.get(process.env.REACT_APP_ANUBIS_API_URL+'v1/tenants')
     .then((response) => {
       let userTenants=[];
       let tenantFiltered=[];

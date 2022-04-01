@@ -44,7 +44,7 @@ export default function TenantForm({ title, close, action, tenant,getTenants }) 
         switch (action) {
             case "create":
               
-                axios.post(process.env.REACT_APP_API_LOCATION+'v1/tenants', {
+                axios.post(process.env.REACT_APP_ANUBIS_API_URL+'v1/tenants', {
                     "name": name
                   })
                 .then((response) => {

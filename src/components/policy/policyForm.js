@@ -95,7 +95,7 @@ export default function PolicyForm({ title, close, action, tenantName, services,
         switch (action) {
             case "create":
 
-                axios.post(process.env.REACT_APP_API_LOCATION + 'v1/policies/', {
+                axios.post(process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies/', {
                     "access_to": access,
                     "resource_type": resource,
                     "mode": mode,

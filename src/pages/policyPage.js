@@ -19,7 +19,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
   //services
   const [services, setServices] = React.useState([{ children: [] }]);
   const getServices = () => {
-    axios.get(process.env.REACT_APP_API_LOCATION + 'v1/tenants/' + thisTenant + "/service_paths")
+    axios.get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/tenants/' + thisTenant + "/service_paths")
       .then((response) => {
         console.log(response.data);
         setServices(response.data);
@@ -35,7 +35,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
   const getPolicies = (servicesResponse) => {
     let datAccumulator = [];
     for (let service of servicesResponse) {
-      axios.get(process.env.REACT_APP_API_LOCATION + 'v1/policies', {
+      axios.get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies', {
         headers: {
           "fiware_service": tenantName_id(),
           "fiware_service_path": service.path
@@ -57,7 +57,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
 
   React.useEffect(() => {
     getServices();
-    axios.get(process.env.REACT_APP_API_LOCATION + 'v1/policies/access-modes')
+    axios.get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies/access-modes')
     .then(response => setAccess_modes(response.data))
     .catch(err => console.log(err));
   }, [thisTenant]);
