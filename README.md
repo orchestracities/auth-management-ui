@@ -1,5 +1,9 @@
 # auth management ui
 
+This Webapp is to provide an intuitive UI for [Anubis policy-api](https://github.com/orchestracities/anubis) using the language of [Material for you](https://m3.material.io/) (or Material v3) and the help of [MUI](https://mui.com/) in order to have an intuitive and a familiar look and feel for the end user.
+
+![Interface](https://user-images.githubusercontent.com/34061179/161280350-a7a9fa46-9176-447c-b031-050f9e17f6a7.png)
+
 ## How to setup Docker
 
 To start the docker compose and populate keycloack use the script:
