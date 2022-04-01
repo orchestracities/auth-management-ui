@@ -50,4 +50,3 @@ To run a simple example use:
 ```
 node examples/advancedAuth.js
 ```
-
