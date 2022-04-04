@@ -36,7 +36,7 @@ export default function ServicePage({getTenants,tenantValues,thisTenant}) {
       {(typeof thisTenant === undefined || thisTenant ==="")?"":<AddButton pageType={ <ServiceForm title={"New Service"} close={setCreateOpen} action={"create"} getServices={getServices} tenantName_id={tenantValues.filter((e) => e.id === thisTenant)} />} setOpen={setCreateOpen} status={createOpen} ></AddButton>}
       <Grid container spacing={2} sx={{ marginLeft: "15px " }}>
         <Grid item xs={12}>
-          <SortButton></SortButton>
+        {(services[0].children.length > 0)?<SortButton data={services[0].children} id={"path"} sortData={setServices}></SortButton>:""}
         </Grid>
         {services[0].children.map((service) => (
                     <Grid item xs={4}>

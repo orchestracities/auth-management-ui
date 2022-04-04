@@ -293,7 +293,7 @@ export default class App extends Component {
             <Divider />
           </Drawer>
           {(this.state.authenticated) ? <Main open={this.state.open}><Routes>
-          <Route path="Tenant" element={ <TenantPage getTenants={this.state.getTenants} tenantValues={this.state.tenants} seTenant={this.state.seTenant}/>} />
+          <Route path="Tenant" element={ <TenantPage getTenants={this.state.getTenants} tenantValues={this.state.tenants} seTenant={this.state.seTenant} sortTenants={this.state.sortTenants}/>} />
           <Route path="Service" element={ <ServicePage getTenants={this.state.getTenants} tenantValues={this.state.tenants} thisTenant={this.state.thisTenant} />} />
           <Route path="Policy" element={ <PolicyPage getTenants={this.state.getTenants} tenantValues={this.state.tenants} thisTenant={this.state.thisTenant} />} />
           </Routes></Main> : <Main open={this.state.open} />}

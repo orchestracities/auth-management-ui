@@ -51,20 +51,29 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-export default function SortButton() {
+export default function SortButton({ data, id, sortData }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
+
+  const [mode, setMode] = React.useState("Title (ASC)");
+  const handleClose = (event) => {
+    if (event.target.innerText) {
+      setMode(event.target.innerText);
+    }
     setAnchorEl(null);
   };
+
+  React.useEffect(() => {
+    sortData((id==="name")?data.reverse((a, b) => parseFloat(a[id]) - parseFloat(b[id])):[{children:data.reverse((a, b) => parseFloat(a[id]) - parseFloat(b[id]))}]);
+  }, [mode,data]);
 
   return (
     <div >
       <Button
-      sx={{marginBottom:"30px"}}
+        sx={{ marginBottom: "30px" }}
         id="demo-customized-button"
         aria-controls={open ? 'demo-customized-menu' : undefined}
         aria-haspopup="true"
@@ -74,7 +83,7 @@ export default function SortButton() {
         onClick={handleClick}
         endIcon={<KeyboardArrowDownIcon />}
       >
-        SORT BY
+        {" SORT BY: " + mode}
       </Button>
       <StyledMenu
         id="demo-customized-menu"
@@ -85,16 +94,14 @@ export default function SortButton() {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleClose} disableRipple>
-        
-          Title
+        <MenuItem onClick={handleClose} disabled={(mode === "Title (ASC)") ? true : false} disableRipple>
+          Title (ASC)
         </MenuItem>
-        <MenuItem onClick={handleClose} disableRipple>
-         
-          Date
+        <MenuItem onClick={handleClose} disabled={(mode === "Title (DES)") ? true : false} disableRipple>
+          Title (DES)
         </MenuItem>
-      
-     
+
+
       </StyledMenu>
     </div>
   );
