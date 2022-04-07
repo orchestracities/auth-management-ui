@@ -61,7 +61,7 @@ export default function PoliciesChildren({ tenantId, tenantName, seTenant }) {
     <NavLink to={"/Policy"}>
       <IconButton aria-label="service" onClick={reiderect}>
         <Badge badgeContent={policies.length} color="secondary">
-          <ContentCopyIcon sx={{ color: "#536BBF" }} fontSize="large" />
+          <ContentCopyIcon color="primary" fontSize="large" />
         </Badge>
       </IconButton>
     </NavLink>

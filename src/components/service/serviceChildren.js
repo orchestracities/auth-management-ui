@@ -292,9 +292,9 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
     return (
         <div>
-            <IconButton aria-label="path" onClick={handleClickOpen}>
+            <IconButton  aria-label="path" onClick={handleClickOpen}>
                 <Badge badgeContent={data.length} color="success">
-                    <SecurityIcon sx={{ color: "#536BBF" }} fontSize="large" />
+                    <SecurityIcon color="primary" fontSize="large" />
                 </Badge>
             </IconButton>
             <Dialog

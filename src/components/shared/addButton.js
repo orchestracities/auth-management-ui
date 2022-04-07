@@ -30,14 +30,14 @@ const bottomStyle = {
     right: "20px",
 }
 
-const NewElement = styled(IconButton)({
+const NewElement = styled(IconButton)(({ theme }) => ({
     borderRadius: "15px",
-    background: "#8086ba",
+    background:theme.palette.primary.dark,
     color: "white",
     "&:hover": {
-        background: "#8086ba"
+        background: theme.palette.primary.dark
     }
-});
+}));
 
 
 const CustomDialogTitle = styled(AppBar)({

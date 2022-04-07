@@ -8,6 +8,7 @@ import SortButton from '../components/shared/sortButton';
 import DashboardCard from '../components/shared/cards';
 import ServiceForm from '../components/service/serviceForm';
 import axios from "axios"
+import Grow from '@mui/material/Grow';
 
 export default function ServicePage({getTenants,tenantValues,thisTenant}) {
   const [createOpen, setCreateOpen] = React.useState(false);
@@ -38,10 +39,13 @@ export default function ServicePage({getTenants,tenantValues,thisTenant}) {
         <Grid item xs={12}>
           <SortButton></SortButton>
         </Grid>
-        {services[0].children.map((service) => (
+        {services[0].children.map((service,index) => (
+             <Grow in={true}  style={{ transformOrigin: '0 0 0' }}
+             {...(true ? { timeout: index*600 } : {})}>
                     <Grid item xs={4}>
                     <DashboardCard key={service.id} pageType={ <ServiceForm  title={"New Sub-service"}  action={"modify"} service={service} getServices={getServices} tenantName_id={tenantValues.filter((e) => e.id === thisTenant)}/>}  data={service} getData={getServices}></DashboardCard>
-                  </Grid>  
+                  </Grid>
+                  </Grow>  
                 ))}
       </Grid>
     </div>

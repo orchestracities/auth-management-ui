@@ -25,12 +25,12 @@ const ExpandMore = styled((props) => {
     duration: theme.transitions.duration.shortest,
   }),
 }));
-
-const RadiusDiv =styled('div')({
+const RadiusDiv =styled('div')(({ theme }) => ({
   borderRadius:"15px",
-  background:"#8a93e140",
+  background:(theme.palette.primary.light.replace(")"," / 70% )")).replace(/,/g,""),
+  color:theme.palette.primary.contrastText,
   maxWidth: 550, 
- });
+ }));
 
 
 export default function DashboardCard({pageType,data,getData,seTenant}) {
@@ -39,12 +39,24 @@ export default function DashboardCard({pageType,data,getData,seTenant}) {
  const [status, setOpen] = React.useState(false);
  const props={close:setOpen};
  const layout = React.cloneElement(pageType, props);
- 
+ const incrementColor = (color, step)=>{
+  var colorToInt = parseInt(color.substr(1), 16),                   
+      nstep = parseInt(step);                                        
+  if(!isNaN(colorToInt) && !isNaN(nstep)){                          
+      colorToInt += nstep;                                           
+      var ncolor = colorToInt.toString(16);                         
+      ncolor = '#' + (new Array(7-ncolor.length).join(0)) + ncolor;   
+      if(/^#[0-9a-f]{6}$/i.test(ncolor)){                            
+          return ncolor;
+      }
+  }
+  return color;
+};
  return (
-    <RadiusDiv key={data.id}>
+    <RadiusDiv key={data.id} sx={{ background: (layout.props.title==="New Sub-service")?"":"#8086bab8" }}>
     <CardHeader
     avatar={
-      <Avatar sx={{ bgcolor: "#8086ba" }} aria-label="recipe">
+      <Avatar sx={{ bgcolor: (layout.props.title==="New Sub-service")?incrementColor(layout.props.tenantName_id[0].props.color, Math.floor(Math.random() * 500)-20): data.props.color}} aria-label="recipe">
         {(layout.props.title==="New Sub-service")?data.path[1]:data.name[0]}
       </Avatar>
     }
@@ -52,12 +64,12 @@ export default function DashboardCard({pageType,data,getData,seTenant}) {
       <MultifunctionButton  key={data.id} data={data} getData={getData} pageType={layout} setOpen={setOpen} status={status}></MultifunctionButton>
     }
     title=   {(layout.props.title==="New Sub-service")?data.path:data.name}
-    subheader=  {data.id}
+    subheader=  { <Typography variant="body2" >{data.id}</Typography>}
   />
     
      
       <CardContent>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" >
         {(layout.props.title==="New Sub-service")? layout.props.tenantName_id[0].name:"description"}
         </Typography>
       </CardContent>

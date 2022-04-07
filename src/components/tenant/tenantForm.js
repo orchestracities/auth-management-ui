@@ -22,7 +22,19 @@ import Slide from '@mui/material/Slide';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
+import ColorPicker from './colorPicker';
 import axios from "axios"
+import {
+    ApolloClient,
+    InMemoryCache,
+    ApolloProvider,
+    useQuery,
+    gql,
+    createHttpLink,
+  } from "@apollo/client";
+  import { setContext } from '@apollo/client/link/context';
+
+
 
 const CustomDialogTitle = styled(AppBar)({
     position: 'relative',
@@ -31,39 +43,76 @@ const CustomDialogTitle = styled(AppBar)({
 });
 
 
-export default function TenantForm({ title, close, action, tenant,getTenants }) {
+export default function TenantForm({ title, close, action, tenant, getTenants, keycloakToken }) {
     const [name, setName] = React.useState((action === "modify") ? tenant.name : " ");
     const [description, setDescription] = React.useState('');
+    const [color, setColor] = React.useState((action === "modify") ? tenant.props.color : null);
 
     const handleClose = () => {
         close(false);
     };
 
     const handleSave = () => {
-       
+
         switch (action) {
             case "create":
-              
-                axios.post(process.env.REACT_APP_ANUBIS_API_URL+'v1/tenants', {
+
+                axios.post(process.env.REACT_APP_ANUBIS_API_URL + 'v1/tenants', {
                     "name": name
-                  })
-                .then((response) => {
-                    close(false);
-                    getTenants();
                 })
-                .catch((e) => 
-                {
-                  console.error(e);
-                });
-               
+                    .then((response) => {
+                      
+                        close(false);
+                        getTenants();
+                    })
+                    .catch((e) => {
+                        console.error(e);
+                    });
+
                 break;
             case "modify":
-                console.log("modify")
+                const httpLink = createHttpLink({
+                    uri: 'http://localhost:4000/graphql',
+                  });
+        
+                  const authLink = setContext((_, { headers }) => {
+                    return {
+                      headers: {
+                        ...headers,
+                        Authorization: `Bearer ${keycloakToken}`
+                      }
+                    }
+                  });
+        
+                  const client = new ApolloClient({
+                    link: authLink.concat(httpLink),
+                    cache: new InMemoryCache()
+                  });
+                client
+                .mutate({
+                    mutation: gql`
+                    mutation  {
+                        modifyTenants(
+                       name: "Tenant1"
+                       icon: "test"
+                       color: "wd"
+                       ){
+                                         name
+                                       icon
+                                       color
+                                     }
+                       }
+             `
+                })
+                .then((result) => {
+                    close(false);
+                    getTenants();
+                });
                 break;
             default:
                 break;
         }
-       
+
     };
 
     console.log(tenant)
@@ -87,10 +136,11 @@ export default function TenantForm({ title, close, action, tenant,getTenants }) 
                 </Toolbar>
             </CustomDialogTitle>
             <DialogContent sx={{ minHeight: "400px" }}>
+
                 <Grid container
                     spacing={3}
                 >
-                    <Grid item xs={12}>
+                    {(action === "modify") ? "" : <Grid item xs={12}>
                         <TextField
                             id="Name"
                             label="Name"
@@ -102,15 +152,22 @@ export default function TenantForm({ title, close, action, tenant,getTenants }) 
                             onChange={(event) => {
                                 setName(event.target.value)
                             }}
-                            helperText={(name === "")?"the name is mandatory":""}
+                            helperText={(name === "") ? "the name is mandatory" : ""}
                             error={name === ""} />
 
-                    </Grid>
+                    </Grid>}
+
                     <Grid item xs={12}>
                         <TextField id="Description" label="Description" variant="outlined" sx={{
                             width: '100%',
                         }} />
                     </Grid>
+                    <Grid item xs={12} container direction="column"
+                        justifyContent="center"
+                        alignItems="center">
+                        < ColorPicker defaultValue={color} setColor={setColor} mode={action}></ColorPicker>
+                    </Grid>
+
                 </Grid>
             </DialogContent>
         </div>
