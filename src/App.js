@@ -135,102 +135,117 @@ export default class App extends Component {
             palette: {
               primary: {
                 // light: will be calculated from palette.primary.main,
-                main: data[0].props.color,
+                main: data[0].props.primaryColor,
                 // dark: will be calculated from palette.primary.main,
               },
-              
+              secondary: {
+                // light: will be calculated from palette.primary.main,
+                main: data[0].props.secondaryColor,
+                // dark: will be calculated from palette.primary.main,
+              },
+
             },
           })
         })
       }
 
-  },
-  tenantColor:  createTheme({
-    palette: {
-      primary: {
-        main: "#8086ba" ,
+    },
+    tenantColor: createTheme({
+      palette: {
+        primary: {
+          main: "#8086ba",
+        },
+        contrastThreshold: 3,
+        tonalOffset: 0.2,
       },
-      contrastThreshold: 3,
-      tonalOffset: 0.2,
-    },
-  }),
-  tenants: [],
-  thisTenant: "",
-  seTenant: (newValue) => {
+    }),
+    tenants: [],
+    thisTenant: "",
+    seTenant: (newValue) => {
       this.setState({ thisTenant: newValue });
-this.state.catchColor(newValue);
+      this.state.catchColor(newValue);
     },
-preferencesMapper: (data, userTenants) => {
-  data.map((thisData, i) => {
-    let index = userTenants.map(function (e) {
-      return e.name;
-    }).indexOf(thisData.name);
-    userTenants[index].props = thisData;
-  });
-  return userTenants;
-},
-  getTenants: () => {
-    axios.get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/tenants')
-      .then((response) => {
-        let userTenants = [];
-        let tenantFiltered = [];
-        this.state.tokenData.tenants.map((thisTenant, index) => {
-          tenantFiltered = response.data.filter((e) => e.name === thisTenant.name);
-          tenantFiltered.length > 0 ? userTenants.push(tenantFiltered[0]) : tenantFiltered = [];
-        });
-        const httpLink = createHttpLink({
-          uri: 'http://localhost:4000/graphql',
-        });
+    preferencesMapper: (data, userTenants) => {
+      data.map((thisData, i) => {
+        let index = userTenants.map(function (e) {
+          return e.name;
+        }).indexOf(thisData.name);
+        userTenants[index].props = thisData;
+      });
+      return userTenants;
+    },
+    getTenants: () => {
+      axios.get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/tenants')
+        .then((response) => {
+          let userTenants = [];
+          let tenantFiltered = [];
+          let tenantFilteredNames = [];
+          this.state.tokenData.tenants.map((thisTenant, index) => {
+            tenantFiltered = response.data.filter((e) => e.name === thisTenant.name);
+            tenantFiltered.length > 0 ? userTenants.push(tenantFiltered[0]) : tenantFiltered = [];
+          });
+          userTenants.map((thisTenant, index) => {
+            tenantFilteredNames.push(thisTenant.name.toString());
+          });
+          const httpLink = createHttpLink({
+            uri: 'http://localhost:4000/graphql',
+          });
 
-        const authLink = setContext((_, { headers }) => {
-          return {
-            headers: {
-              ...headers,
-              Authorization: `Bearer ${this.state.keycloak.token}`
+          const authLink = setContext((_, { headers }) => {
+            return {
+              headers: {
+                ...headers,
+                Authorization: `Bearer ${this.state.keycloak.token}`
+              }
             }
-          }
-        });
+          });
 
-        const client = new ApolloClient({
-          link: authLink.concat(httpLink),
-          cache: new InMemoryCache()
-        });
-
-
-        /*
-  mutation  {
-              publishArticle(
-             title: "test"
-             content: "test"
-             ){
-                               id
-                             title
-                             content
-                           }
-             }
-        */
-        client
-          .query({
-            query: gql`
-             query {
-              listTenants{
-                name
-                icon
-                color
-             }
-             }
-             `
-          })
-          .then((result) => {
-            this.setState({ tenants: this.state.preferencesMapper(result.data.listTenants, userTenants) });
+          const client = new ApolloClient({
+            link: authLink.concat(httpLink),
+            cache: new InMemoryCache()
           });
 
 
-      })
-      .catch((e) => {
-        console.error(e);
-      });
-  },
+          /*
+    mutation  {
+                publishArticle(
+               title: "test"
+               content: "test"
+               ){
+                                 id
+                               title
+                               content
+                             }
+               }
+          */
+
+
+          client
+            .query({
+              query: gql`
+            query listTenants($tenantNames: [String]!) {
+    listTenants(tenantNames: $tenantNames) {
+                name
+                icon
+                primaryColor
+                secondaryColor
+             }
+              }
+             `,
+              variables: {
+                tenantNames: tenantFilteredNames
+              }
+            })
+            .then((result) => {
+              this.setState({ tenants: this.state.preferencesMapper(result.data.listTenants, userTenants) });
+            });
+
+
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    },
     login: (keycloak, authenticated) => {
       this.setState({ keycloak: keycloak, authenticated: authenticated })
       this.state.keycloak.loadUserInfo().then(userInfo => {
@@ -251,115 +266,115 @@ preferencesMapper: (data, userTenants) => {
     },
   }
 
-links = [{ name: "Tenant", route: "/Tenant", icon: <InboxIcon></InboxIcon> },
-{ name: "Service", route: "/Service", icon: <InboxIcon></InboxIcon> },
-{ name: "Policy", route: "/Policy", icon: <InboxIcon></InboxIcon> }
-]
+  links = [{ name: "Tenant", route: "/Tenant", icon: <InboxIcon></InboxIcon> },
+  { name: "Service", route: "/Service", icon: <InboxIcon></InboxIcon> },
+  { name: "Policy", route: "/Policy", icon: <InboxIcon></InboxIcon> }
+  ]
 
-componentDidMount() {
-  const keycloak = Keycloak({
-    url: 'http://localhost:8080/auth/',
-    realm: 'master',
-    clientId: 'client1'
-  })
-  keycloak.init({ onLoad: 'login-required', checkLoginIframe: false }).then(authenticated => {
-    this.state.login(keycloak, authenticated)
-  });
-}
+  componentDidMount() {
+    const keycloak = Keycloak({
+      url: 'http://localhost:8080/auth/',
+      realm: 'master',
+      clientId: 'client1'
+    })
+    keycloak.init({ onLoad: 'login-required', checkLoginIframe: false }).then(authenticated => {
+      this.state.login(keycloak, authenticated)
+    });
+  }
 
-handleDrawerOpen = () => {
-  this.state.setOpen(true);
-};
+  handleDrawerOpen = () => {
+    this.state.setOpen(true);
+  };
 
-handleDrawerClose = () => {
-  this.state.setOpen(false);
-};
-constructor(props) {
-  super(props);
-}
-render() {
+  handleDrawerClose = () => {
+    this.state.setOpen(false);
+  };
+  constructor(props) {
+    super(props);
+  }
+  render() {
 
-  return (
-    <ThemeProvider theme={this.state.tenantColor}>
-      <Box sx={{ display: 'flex' }}>
-        <BrowserRouter>
+    return (
+      <ThemeProvider theme={this.state.tenantColor}>
+        <Box sx={{ display: 'flex' }}>
+          <BrowserRouter>
 
-          <CssBaseline />
-          <AppBar position="fixed" open={this.state.open}>
-            <CustomToolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={this.handleDrawerOpen}
-                edge="start"
-                sx={{ mr: 2, ...(this.state.open && { display: 'none' }) }}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-
-              </Typography>
-              <div>
-                < TenantSelection seTenant={this.state.seTenant} tenantValues={this.state.tenants} correntValue={this.state.thisTenant}></TenantSelection>
-              </div>
-              <div>
+            <CssBaseline />
+            <AppBar position="fixed" open={this.state.open}>
+              <CustomToolbar>
                 <IconButton
-                  size="large"
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
                   color="inherit"
-
-                  edge="end"
+                  aria-label="open drawer"
+                  onClick={this.handleDrawerOpen}
+                  edge="start"
+                  sx={{ mr: 2, ...(this.state.open && { display: 'none' }) }}
                 >
-                  <AccountCircle />
+                  <MenuIcon />
                 </IconButton>
-              </div>
-            </CustomToolbar>
-          </AppBar>
-          <Drawer
-            sx={{
-              width: drawerWidth,
-              flexShrink: 0,
-              '& .MuiDrawer-paper': {
-                width: drawerWidth,
-                boxSizing: 'border-box',
-              },
-            }}
-            variant="persistent"
-            anchor="left"
-            open={this.state.open}
-          >
-            <DrawerHeader>
-              <IconButton onClick={this.handleDrawerClose}>
-                {this.state.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-              </IconButton>
-            </DrawerHeader>
-            <Divider />
-            <List>
-              {this.links.map((thisItem, index) => (
-                <NavLink to={thisItem.route}>
-                  <ListItem button key={thisItem.name}>
-                    <ListItemIcon>
-                      {thisItem.icon}
-                    </ListItemIcon>
-                    <ListItemText primary={thisItem.name} />
-                  </ListItem>
-                </NavLink>
-              ))}
-            </List>
-            <Divider />
-          </Drawer>
-          {(this.state.authenticated) ? <Main open={this.state.open}><Routes>
-            <Route path="Tenant" element={<TenantPage keycloakToken={this.state.keycloak.token} getTenants={this.state.getTenants} tenantValues={this.state.tenants} seTenant={this.state.seTenant} />} />
-            <Route path="Service" element={<ServicePage getTenants={this.state.getTenants} tenantValues={this.state.tenants} thisTenant={this.state.thisTenant} />} />
-            <Route path="Policy" element={<PolicyPage getTenants={this.state.getTenants} tenantValues={this.state.tenants} thisTenant={this.state.thisTenant} />} />
-          </Routes></Main> : <Main open={this.state.open} />}
-          <DrawerHeader />
-        </BrowserRouter>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
 
-      </Box>
-    </ThemeProvider>
-  );
-}
+                </Typography>
+                <div>
+                  < TenantSelection seTenant={this.state.seTenant} tenantValues={this.state.tenants} correntValue={this.state.thisTenant}></TenantSelection>
+                </div>
+                <div>
+                  <IconButton
+                    size="large"
+                    aria-label="account of current user"
+                    aria-controls="menu-appbar"
+                    aria-haspopup="true"
+                    color="inherit"
+
+                    edge="end"
+                  >
+                    <AccountCircle />
+                  </IconButton>
+                </div>
+              </CustomToolbar>
+            </AppBar>
+            <Drawer
+              sx={{
+                width: drawerWidth,
+                flexShrink: 0,
+                '& .MuiDrawer-paper': {
+                  width: drawerWidth,
+                  boxSizing: 'border-box',
+                },
+              }}
+              variant="persistent"
+              anchor="left"
+              open={this.state.open}
+            >
+              <DrawerHeader>
+                <IconButton onClick={this.handleDrawerClose}>
+                  {this.state.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                </IconButton>
+              </DrawerHeader>
+              <Divider />
+              <List>
+                {this.links.map((thisItem, index) => (
+                  <NavLink to={thisItem.route}>
+                    <ListItem button key={thisItem.name}>
+                      <ListItemIcon>
+                        {thisItem.icon}
+                      </ListItemIcon>
+                      <ListItemText primary={thisItem.name} />
+                    </ListItem>
+                  </NavLink>
+                ))}
+              </List>
+              <Divider />
+            </Drawer>
+            {(this.state.authenticated) ? <Main open={this.state.open}><Routes>
+              <Route path="Tenant" element={<TenantPage keycloakToken={this.state.keycloak.token} getTenants={this.state.getTenants} tenantValues={this.state.tenants} seTenant={this.state.seTenant} />} />
+              <Route path="Service" element={<ServicePage getTenants={this.state.getTenants} tenantValues={this.state.tenants} thisTenant={this.state.thisTenant} />} />
+              <Route path="Policy" element={<PolicyPage getTenants={this.state.getTenants} tenantValues={this.state.tenants} thisTenant={this.state.thisTenant} />} />
+            </Routes></Main> : <Main open={this.state.open} />}
+            <DrawerHeader />
+          </BrowserRouter>
+
+        </Box>
+      </ThemeProvider>
+    );
+  }
 }

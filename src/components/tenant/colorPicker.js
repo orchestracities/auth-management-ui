@@ -2,6 +2,8 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import { useSelect } from '@mui/base';
 import { styled } from '@mui/system';
+import { HexColorPicker } from "react-colorful";
+import Grid from '@mui/material/Grid';
 
 const grey = {
     100: '#E7EBF0',
@@ -29,8 +31,8 @@ const Toggle = styled('div')(
   font-family: IBM Plex Sans, sans-serif;
   font-size: 0.875rem;
   box-sizing: border-box;
-  min-height: calc(1.5em + 22px);
-  min-width: 320px;
+  min-height: calc(1.5em + 30px);
+  min-width: 240px;
   background: var(--color, ${theme.palette.mode === 'dark' ? grey[900] : '#fff'});
   border: 1px solid ${theme.palette.mode === 'dark' ? grey[800] : grey[300]};
   box-shadow: ${theme.palette.mode === 'dark'
@@ -51,6 +53,7 @@ const Toggle = styled('div')(
 
   & .placeholder {
     opacity: 0.8;
+    color:${theme.palette.primary.contrastText}
   }
   `,
 );
@@ -59,7 +62,7 @@ const Listbox = styled('ul')(
     ({ theme }) => `
   font-family: IBM Plex Sans, sans-serif;
   font-size: 0.875rem;
-  max-height: 200px;
+  max-height: 220px;
   box-sizing: border-box;
   padding: 5px;
   margin: 5px 0 0 0;
@@ -101,19 +104,16 @@ const Listbox = styled('ul')(
   `,
 );
 
-function CustomSelect({ options, placeholder,defaultValue,mode,setColor }) {
+function CustomSelect({ placeholder, defaultValue, mode, setColor }) {
     const listboxRef = React.useRef(null);
     const [listboxVisible, setListboxVisible] = React.useState(false);
+    const [color, setTheColor] = React.useState((mode === "modify") ? defaultValue : "#8086ba");
 
-    const { getButtonProps, getListboxProps, getOptionProps, value=(mode === "modify")?defaultValue:'#8086ba' } = useSelect({
-        listboxRef,
-        options
-    });
 
     React.useEffect(() => {
         if (listboxVisible) {
             listboxRef.current?.focus();
-            setColor(value);
+            setColor(color);
         }
     }, [listboxVisible]);
 
@@ -123,68 +123,25 @@ function CustomSelect({ options, placeholder,defaultValue,mode,setColor }) {
             onMouseOut={() => setListboxVisible(false)}
             onFocus={() => setListboxVisible(true)}
             onBlur={() => setListboxVisible(false)}
-         
+
         >
-            <Toggle {...getButtonProps()} style={{ '--color': value }}>
-                {value ?? <span className="placeholder">{placeholder ?? ' '}</span>}
+            <Toggle  style={{ '--color': color }}>
+              <span className="placeholder">{placeholder +color ?? ' '}</span>
             </Toggle>
-            <Listbox    {...getListboxProps()} className={listboxVisible ? '' : 'hidden'}>
-                {options.map((option) => (
-                    <li key={option.value} {...getOptionProps(option)}>
-                        {option.label}
-                    </li>
-                ))}
+            <Listbox    className={listboxVisible ? '' : 'hidden'}>
+              
+            <Grid item xs={12} container direction="column"
+                        justifyContent="center"
+                        alignItems="center">
+                      <HexColorPicker color={color} onChange={(color)=>setTheColor(color)} />
+                    </Grid>
+
             </Listbox>
         </Root>
     );
 }
 
-CustomSelect.propTypes = {
-    options: PropTypes.arrayOf(
-        PropTypes.shape({
-            disabled: PropTypes.bool,
-            label: PropTypes.node,
-            value: PropTypes.string.isRequired,
-        }),
-    ).isRequired,
-    placeholder: PropTypes.string,
-};
 
-const options = [
-    {
-        label: 'Default',
-        value: '#8086ba',
-    },
-    {
-        label: 'Red',
-        value: '#D32F2F',
-    },
-    {
-        label: 'Pink',
-        value: '#e91e63',
-    },
-    {
-        label: 'Purple',
-        value: '#9c27b0',
-    },
-    {
-        label: 'Indigo',
-        value: '#3f51b5',
-    },
-    {
-        label: 'Teal',
-        value: '#009688',
-    },
-    {
-        label: 'Green',
-        value: '#4CAF50',
-    },
-    {
-        label: 'Blue',
-        value: '#2196F3',
-    },
-];
-
-export default function ColorPicker({defaultValue,mode,setColor}) {
-    return <CustomSelect placeholder="Select a color..." options={options} defaultValue={defaultValue} setColor={setColor} mode={mode}/>;
+export default function ColorPicker({ defaultValue, mode, setColor,text }) {
+    return <CustomSelect placeholder={text}  defaultValue={defaultValue} setColor={setColor} mode={mode} />;
 }

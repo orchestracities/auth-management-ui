@@ -46,7 +46,8 @@ const CustomDialogTitle = styled(AppBar)({
 export default function TenantForm({ title, close, action, tenant, getTenants, keycloakToken }) {
     const [name, setName] = React.useState((action === "modify") ? tenant.name : " ");
     const [description, setDescription] = React.useState('');
-    const [color, setColor] = React.useState((action === "modify") ? tenant.props.color : null);
+    const [primaryColor, setPrimaryColor] = React.useState((action === "modify") ? tenant.props.primaryColor : null);
+    const [secondaryColor, setSecondaryColor] = React.useState((action === "modify") ? tenant.props.secondaryColor : null);
 
     const handleClose = () => {
         close(false);
@@ -91,18 +92,26 @@ export default function TenantForm({ title, close, action, tenant, getTenants, k
                 client
                 .mutate({
                     mutation: gql`
-                    mutation  {
+                    mutation modifyTenants($name: String!, $icon: String!,$primaryColor: String!,$secondaryColor: String!) {
                         modifyTenants(
-                       name: "Tenant1"
-                       icon: "test"
-                       color: "wd"
+                            name:$name
+                            icon:$icon
+                            primaryColor:$primaryColor
+                            secondaryColor:$secondaryColor
                        ){
-                                         name
-                                       icon
-                                       color
+                        name
+                        icon
+                        primaryColor
+                        secondaryColor
                                      }
                        }
-             `
+             `,
+             variables: {
+                name:name,
+                icon:"test",
+                primaryColor:primaryColor,
+                secondaryColor:secondaryColor
+              }
                 })
                 .then((result) => {
                     close(false);
@@ -162,12 +171,16 @@ export default function TenantForm({ title, close, action, tenant, getTenants, k
                             width: '100%',
                         }} />
                     </Grid>
-                    <Grid item xs={12} container direction="column"
+                    <Grid item lg={6} md={6} xs={12} container direction="column"
                         justifyContent="center"
                         alignItems="center">
-                        < ColorPicker defaultValue={color} setColor={setColor} mode={action}></ColorPicker>
+                        < ColorPicker defaultValue={primaryColor} setColor={setPrimaryColor} mode={action} text={"Primary-Color: "}></ColorPicker>
                     </Grid>
-
+                    <Grid item lg={6} md={6} xs={12} container direction="column"
+                        justifyContent="center"
+                        alignItems="center">
+                        < ColorPicker defaultValue={secondaryColor} setColor={setSecondaryColor} mode={action} text={"Secondary-Color: "}></ColorPicker>
+                    </Grid>
                 </Grid>
             </DialogContent>
         </div>

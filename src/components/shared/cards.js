@@ -40,11 +40,11 @@ export default function DashboardCard({pageType,data,getData,seTenant}) {
  const props={close:setOpen};
  const layout = React.cloneElement(pageType, props);
  const incrementColor = (color, step)=>{
-  var colorToInt = parseInt(color.substr(1), 16),                   
+  let colorToInt = parseInt(color.substr(1), 16),                   
       nstep = parseInt(step);                                        
   if(!isNaN(colorToInt) && !isNaN(nstep)){                          
       colorToInt += nstep;                                           
-      var ncolor = colorToInt.toString(16);                         
+      let ncolor = colorToInt.toString(16);                         
       ncolor = '#' + (new Array(7-ncolor.length).join(0)) + ncolor;   
       if(/^#[0-9a-f]{6}$/i.test(ncolor)){                            
           return ncolor;
@@ -56,7 +56,7 @@ export default function DashboardCard({pageType,data,getData,seTenant}) {
     <RadiusDiv key={data.id} sx={{ background: (layout.props.title==="New Sub-service")?"":"#8086bab8" }}>
     <CardHeader
     avatar={
-      <Avatar sx={{ bgcolor: (layout.props.title==="New Sub-service")?incrementColor(layout.props.tenantName_id[0].props.color, Math.floor(Math.random() * 500)-20): data.props.color}} aria-label="recipe">
+      <Avatar sx={{ bgcolor: (layout.props.title==="New Sub-service")?incrementColor(layout.props.tenantName_id[0].props.primaryColor, Math.floor(Math.random() * 500)-20): data.props.primaryColor}} aria-label="recipe">
         {(layout.props.title==="New Sub-service")?data.path[1]:data.name[0]}
       </Avatar>
     }

@@ -1,6 +1,7 @@
 const express = require('express')
 const { ApolloServer, gql } = require('apollo-server-express')
 const { configureKeycloak } = require('./lib/common')
+const mongoose = require("mongoose");
 
 const {
   KeycloakContext,
@@ -9,6 +10,22 @@ const {
   hasPermission
 } = require('../')
 
+
+main().catch(err => console.log(err));
+
+async function main() {
+  await mongoose.connect('mongodb://localhost:27017/test');
+}
+
+const usrPreference = new mongoose.Schema({
+  name: String,
+  icon: String,
+  primaryColor: String,
+  secondaryColor: String,
+});
+
+const Preferences = mongoose.model('UsrPreferences', usrPreference);
+
 const app = express()
 
 const graphqlPath = '/graphql'
@@ -16,39 +33,84 @@ const graphqlPath = '/graphql'
 // perform the standard keycloak-connect middleware setup on our app
 const { keycloak } = configureKeycloak(app, graphqlPath)
 
+const firstTest = new Preferences({
+  name: "Tenant1",
+  icon: "String",
+  primaryColor: "#8090ba",
+  secondaryColor: "#8090ba",
+});
+const secondTest = new Preferences({
+  name: "Tenant2",
+  icon: "String",
+  primaryColor: "#8090ba",
+  secondaryColor: "#8090ba",
+});
+
+/*
+firstTest.save(function (err) {
+  if (err) return handleError(err);
+  // that's it!
+});
+*/
+
+
+
+async function get(data) {
+  const thisUser = await Preferences.find({ name: { $in: data } })
+
+  for (let e of thisUser) {
+    //let deletedOwner = await Preferences.findByIdAndRemove(e._id, {projection : "shopPlace"});
+
+  }
+  return await thisUser;
+}
+
+
+async function update(data) {
+  const filter = { name: data.name };
+  const update = {
+    name: data.name,
+    icon: data.icon,
+    primaryColor: data.primaryColor,
+    secondaryColor: data.secondaryColor
+  };
+
+  let thisTenant = await Preferences.findOneAndUpdate(filter, update);
+  return await thisTenant;
+}
+
 
 const typeDefs = gql`
   type Tenant {
-    name: ID!
+    name: String!
     icon: String!
-    color: String!
+    primaryColor: String!
+    secondaryColor: String!
   }
   type Query {
-    listTenants: [Tenant]!  @auth
+    listTenants(tenantNames:[String]!): [Tenant]  @auth
   }
   type Mutation {
-    publishTenants(name: String!, icon: String!,color:String!): Tenant! 
-    modifyTenants(name: String!, icon: String!,color:String!): Tenant! 
+    publishTenants(name: String!, icon: String!,primaryColor: String!,secondaryColor: String!): [Tenant] 
+    modifyTenants(name: String!, icon: String!,primaryColor: String!,secondaryColor: String!): [Tenant] 
   }
 `
 
-let Tenants = [{ name: "Tenant1", icon: "test", color: "#9575cd"}, { name: "Tenant2", icon: "test", color:"#009688" }]
 const resolvers = {
   Query: {
-    listTenants: (obj, args, context, info) => {
-      return Tenants;
-    },
+    listTenants: async (obj, args, context, info) => {
+      return await get(args.tenantNames);
+    }
   },
   Mutation: {
-    publishTenants: (object, args, context, info) => {
+    publishTenants: async (object, args, context, info) => {
       const user = context.kauth.accessToken.content;
-      Tenants.push({ name: args.name, icon: args.icon, color: args.color })
-      return { name: args.name, icon: args.icon, color: args.color }
+      return await update(args);
     },
-    modifyTenants: (object, args, context, info) => {
-     
-      return "lol";
-    }
+    modifyTenants: async (object, args, context, info) => {
+      console.log(context) 
+      return await [update(args)];
+    },
   }
 }
 
@@ -62,7 +124,6 @@ const server = new ApolloServer({
     }
   }
 })
-
 server.applyMiddleware({ app })
 
 const port = 4000
