@@ -80,6 +80,33 @@ async function update(data) {
 }
 
 
+async function add(data) {
+  const arrayOfData = {
+    name: data.name,
+    icon: data.icon,
+    primaryColor: data.primaryColor,
+    secondaryColor: data.secondaryColor
+  };
+
+  let thisTenant = await arrayOfData.save(function (err) {
+  if (err) return handleError(err);
+  // that's it!
+});
+  return await thisTenant;
+}
+
+async function deleteTenant(data) {
+  const thisUser = await Preferences.find({ name: { $in: data } })
+
+  for (let e of thisUser) {
+    let deletedOwner = await Preferences.findByIdAndRemove(e._id);
+
+  }
+  return await ( typeof deletedOwner === 'object')?true:false;
+}
+
+
+
 const typeDefs = gql`
   type Tenant {
     name: String!
@@ -91,7 +118,8 @@ const typeDefs = gql`
     listTenants(tenantNames:[String]!): [Tenant]  @auth
   }
   type Mutation {
-    publishTenants(name: String!, icon: String!,primaryColor: String!,secondaryColor: String!): [Tenant] 
+    publishTenants(name: String!, icon: String!,primaryColor: String!,secondaryColor: String!): [Tenant]
+    removeTenants(tenantNames:[String]!): Boolean!
     modifyTenants(name: String!, icon: String!,primaryColor: String!,secondaryColor: String!): [Tenant] 
   }
 `
@@ -104,12 +132,13 @@ const resolvers = {
   },
   Mutation: {
     publishTenants: async (object, args, context, info) => {
-      const user = context.kauth.accessToken.content;
-      return await update(args);
+      return await [add(args)];
     },
     modifyTenants: async (object, args, context, info) => {
-      console.log(context) 
       return await [update(args)];
+    },
+    removeTenants: async (object, args, context, info) => {
+      return await deleteTenant(args);
     },
   }
 }
