@@ -14,6 +14,7 @@ import SecurityIcon from '@mui/icons-material/Security';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ServiceChildren from '../service/serviceChildren';
 import PoliciesChildren from '../policy/policiesChildren';
+import IconList from '../tenant/iconList';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -38,6 +39,11 @@ export default function DashboardCard({pageType,data,getData,seTenant}) {
  const [subpathOpen, setSubpathOpen]= React.useState(false);
  const [status, setOpen] = React.useState(false);
  const props={close:setOpen};
+ const listOfIcons=IconList();
+ const iconMapper=(iconName)=>{
+  let thisIcon= listOfIcons.filter((e) => e.name === iconName)
+   return (thisIcon[0].name !== "none")?thisIcon[0].icon:data.name[0];
+ }
  const layout = React.cloneElement(pageType, props);
  const incrementColor = (color, step)=>{
   let colorToInt = parseInt(color.substr(1), 16),                   
@@ -57,7 +63,7 @@ export default function DashboardCard({pageType,data,getData,seTenant}) {
     <CardHeader
     avatar={
       <Avatar sx={{ bgcolor: (layout.props.title==="New Sub-service")?incrementColor(layout.props.tenantName_id[0].props.primaryColor, Math.floor(Math.random() * 500)-20): data.props.primaryColor}} aria-label="recipe">
-        {(layout.props.title==="New Sub-service")?data.path[1]:data.name[0]}
+        {(layout.props.title==="New Sub-service")?data.path[1]:iconMapper(data.props.icon)}
       </Avatar>
     }
     action={

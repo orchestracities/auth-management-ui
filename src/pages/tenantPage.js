@@ -25,11 +25,10 @@ export default function TenantPage({tenantValues,getTenants,seTenant,client,keyc
                <Grow in={true}  style={{ transformOrigin: '0 0 0' }}
                {...(true ? { timeout: index*600 } : {})}>
                     <Grid item xs={4}>
-                    <DashboardCard  pageType={ <TenantForm keycloakToken={keycloakToken} client={client} title={"Edit Tenant"}  action={"modify"} tenant={tenant} getTenants={getTenants}></TenantForm>} data={tenant} getData={getTenants} seTenant={seTenant}></DashboardCard>
+                    <DashboardCard pageType={ <TenantForm keycloakToken={keycloakToken} client={client} title={"Edit Tenant"}  action={"modify"} tenant={tenant} getTenants={getTenants}></TenantForm>} data={tenant} getData={getTenants} seTenant={seTenant}></DashboardCard>
                   </Grid>  
                   </Grow>
                 ))}
-                
           </Grid>
         </div>
     );

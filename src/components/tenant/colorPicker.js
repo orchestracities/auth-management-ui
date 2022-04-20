@@ -125,16 +125,16 @@ function CustomSelect({ placeholder, defaultValue, mode, setColor }) {
             onBlur={() => setListboxVisible(false)}
 
         >
-            <Toggle  style={{ '--color': color }}>
-              <span className="placeholder">{placeholder +color ?? ' '}</span>
+            <Toggle style={{ '--color': color }}>
+                <span className="placeholder">{placeholder + color ?? ' '}</span>
             </Toggle>
-            <Listbox    className={listboxVisible ? '' : 'hidden'}>
-              
-            <Grid item xs={12} container direction="column"
-                        justifyContent="center"
-                        alignItems="center">
-                      <HexColorPicker color={color} onChange={(color)=>setTheColor(color)} />
-                    </Grid>
+            <Listbox className={listboxVisible ? '' : 'hidden'}>
+
+                <Grid item xs={12} container direction="column"
+                    justifyContent="center"
+                    alignItems="center">
+                    <HexColorPicker color={color} onChange={(color) => setTheColor(color)} />
+                </Grid>
 
             </Listbox>
         </Root>
@@ -142,6 +142,6 @@ function CustomSelect({ placeholder, defaultValue, mode, setColor }) {
 }
 
 
-export default function ColorPicker({ defaultValue, mode, setColor,text }) {
-    return <CustomSelect placeholder={text}  defaultValue={defaultValue} setColor={setColor} mode={mode} />;
+export default function ColorPicker({ defaultValue, mode, setColor, text }) {
+    return <CustomSelect placeholder={text} defaultValue={defaultValue} setColor={setColor} mode={mode} />;
 }

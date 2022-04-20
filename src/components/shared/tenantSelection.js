@@ -5,6 +5,9 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+import IconList from '../tenant/iconList';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Avatar from '@mui/material/Avatar';
 
 const TenantSelect = styled(Select)(
   {
@@ -24,12 +27,13 @@ const TenantSelect = styled(Select)(
         '&.Mui-focused fieldset': {
             borderColor: 'green',
         },
+        
     }
   }
   
   );
 
-
+  
   const theme = createTheme({
     components: {
         // Name of the component
@@ -57,7 +61,6 @@ const TenantSelect = styled(Select)(
                 // Name of the slot
                 root: {
                     // Some CSS
-                    color: 'white !important',
                 },
             },
         }
@@ -66,7 +69,11 @@ const TenantSelect = styled(Select)(
 });
 export default function TenantSelection({tenantValues,seTenant,correntValue}) {
   const [Tenant, set_Tenant] = React.useState(correntValue);
-
+  const listOfIcons=IconList();
+  const iconMapper=(iconName)=>{
+   let thisIcon= listOfIcons.filter((e) => e.name === iconName)
+    return thisIcon[0].icon;
+  }
   const handleChange = (event) => {
     set_Tenant(event.target.value);
     seTenant(event.target.value);
@@ -86,7 +93,11 @@ export default function TenantSelection({tenantValues,seTenant,correntValue}) {
           onChange={handleChange}
         >
             {tenantValues.map((tenant) => (
-                    <MenuItem value={tenant.id}>{tenant.name}</MenuItem>
+                    <MenuItem value={tenant.id}>
+                          <ListItemIcon>
+                                {iconMapper(tenant.props.icon)}
+                            </ListItemIcon>
+                        {tenant.name}</MenuItem>
                 ))}
         </TenantSelect>
       </FormControl>

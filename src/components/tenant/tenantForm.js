@@ -23,6 +23,7 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import ColorPicker from './colorPicker';
+import IconPicker from './iconPicker'
 import axios from "axios"
 import {
     ApolloClient,
@@ -48,6 +49,7 @@ export default function TenantForm({ title, close, action, tenant, getTenants, k
     const [description, setDescription] = React.useState('');
     const [primaryColor, setPrimaryColor] = React.useState((action === "modify") ? tenant.props.primaryColor : null);
     const [secondaryColor, setSecondaryColor] = React.useState((action === "modify") ? tenant.props.secondaryColor : null);
+    const [iconName,setIconName] = React.useState((action === "modify") ? tenant.props.icon : null);
 
     const handleClose = () => {
         close(false);
@@ -108,7 +110,7 @@ export default function TenantForm({ title, close, action, tenant, getTenants, k
              `,
              variables: {
                 name:name,
-                icon:"test",
+                icon:iconName,
                 primaryColor:primaryColor,
                 secondaryColor:secondaryColor
               }
@@ -171,6 +173,11 @@ export default function TenantForm({ title, close, action, tenant, getTenants, k
                             width: '100%',
                         }} />
                     </Grid>
+                    <Grid item lg={12} md={12} xs={12} container direction="column"
+                        justifyContent="center"
+                        alignItems="center">
+                    <IconPicker previusValue={iconName} setValue={setIconName} mode={action}></IconPicker>
+                    </Grid>
                     <Grid item lg={6} md={6} xs={12} container direction="column"
                         justifyContent="center"
                         alignItems="center">
@@ -181,6 +188,7 @@ export default function TenantForm({ title, close, action, tenant, getTenants, k
                         alignItems="center">
                         < ColorPicker defaultValue={secondaryColor} setColor={setSecondaryColor} mode={action} text={"Secondary-Color: "}></ColorPicker>
                     </Grid>
+                   
                 </Grid>
             </DialogContent>
         </div>
