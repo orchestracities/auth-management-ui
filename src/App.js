@@ -82,14 +82,12 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
 })(({ theme, open }) => ({
-  background: theme.palette.primary.main,
   minHeight: "100px",
   transition: theme.transitions.create(['margin', 'width'], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
-    background: theme.palette.primary.main,
     minHeight: "100px",
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: `${drawerWidth}px`,
@@ -146,7 +144,9 @@ export default class App extends Component {
 
             },
           })
-        })
+        }, () => {
+        });
+
       }
 
     },
@@ -154,6 +154,9 @@ export default class App extends Component {
       palette: {
         primary: {
           main: "#8086ba",
+        },
+        secondary: {
+          main: "#4c61a9"
         },
         contrastThreshold: 3,
         tonalOffset: 0.2,
@@ -205,21 +208,6 @@ export default class App extends Component {
             cache: new InMemoryCache()
           });
 
-
-          /*
-    mutation  {
-                publishArticle(
-               title: "test"
-               content: "test"
-               ){
-                                 id
-                               title
-                               content
-                             }
-               }
-          */
-
-
           client
             .query({
               query: gql`
@@ -238,6 +226,7 @@ export default class App extends Component {
             })
             .then((result) => {
               this.setState({ tenants: this.state.preferencesMapper(result.data.listTenants, userTenants) });
+              this.state.seTenant(this.state.thisTenant);
             });
 
 
@@ -301,7 +290,7 @@ export default class App extends Component {
 
             <CssBaseline />
             <AppBar position="fixed" open={this.state.open}>
-              <CustomToolbar>
+              <CustomToolbar color="primary">
                 <IconButton
                   color="inherit"
                   aria-label="open drawer"
@@ -324,7 +313,6 @@ export default class App extends Component {
                     aria-controls="menu-appbar"
                     aria-haspopup="true"
                     color="inherit"
-
                     edge="end"
                   >
                     <AccountCircle />

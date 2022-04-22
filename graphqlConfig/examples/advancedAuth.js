@@ -8,13 +8,13 @@ const {
   KeycloakTypeDefs,
   KeycloakSchemaDirectives,
   hasPermission
-} = require('../')
-
+} = require('..')
+require('dotenv').config({ path: '../.env' })
 
 main().catch(err => console.log(err));
 
 async function main() {
-  await mongoose.connect('mongodb://localhost:27017/test');
+  await mongoose.connect(process.env.REACT_APP_MONGO_DB);
 }
 
 const usrPreference = new mongoose.Schema({
@@ -30,38 +30,13 @@ const app = express()
 
 const graphqlPath = '/graphql'
 
-// perform the standard keycloak-connect middleware setup on our app
 const { keycloak } = configureKeycloak(app, graphqlPath)
-
-const firstTest = new Preferences({
-  name: "Tenant1",
-  icon: "String",
-  primaryColor: "#8090ba",
-  secondaryColor: "#8090ba",
-});
-const secondTest = new Preferences({
-  name: "Tenant2",
-  icon: "String",
-  primaryColor: "#8090ba",
-  secondaryColor: "#8090ba",
-});
-
-/*
-firstTest.save(function (err) {
-  if (err) return handleError(err);
-  // that's it!
-});
-*/
 
 
 
 async function get(data) {
   const thisUser = await Preferences.find({ name: { $in: data } })
 
-  for (let e of thisUser) {
-    //let deletedOwner = await Preferences.findByIdAndRemove(e._id, {projection : "shopPlace"});
-
-  }
   return await thisUser;
 }
 
@@ -108,19 +83,19 @@ async function deleteTenant(data) {
 
 
 const typeDefs = gql`
-  type Tenant {
+  type TenantConfiguration {
     name: String!
     icon: String!
     primaryColor: String!
     secondaryColor: String!
   }
   type Query {
-    listTenants(tenantNames:[String]!): [Tenant]  @auth
+    listTenants(tenantNames:[String]!): [TenantConfiguration]  @auth
   }
   type Mutation {
-    publishTenants(name: String!, icon: String!,primaryColor: String!,secondaryColor: String!): [Tenant]
+    publishTenants(name: String!, icon: String!,primaryColor: String!,secondaryColor: String!): [TenantConfiguration]
     removeTenants(tenantNames:[String]!): Boolean!
-    modifyTenants(name: String!, icon: String!,primaryColor: String!,secondaryColor: String!): [Tenant] 
+    modifyTenants(name: String!, icon: String!,primaryColor: String!,secondaryColor: String!): [TenantConfiguration] 
   }
 `
 

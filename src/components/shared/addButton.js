@@ -32,10 +32,10 @@ const bottomStyle = {
 
 const NewElement = styled(IconButton)(({ theme }) => ({
     borderRadius: "15px",
-    background:theme.palette.primary.dark,
+    background:theme.palette.secondary.main,
     color: "white",
     "&:hover": {
-        background: theme.palette.primary.dark
+        background: theme.palette.secondary.main
     }
 }));
 
