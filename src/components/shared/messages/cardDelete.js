@@ -10,9 +10,14 @@ import { styled } from '@mui/material/styles';
 import axios from "axios"
 
 
-const DialogDiv = styled('div')({
+const DialogDiv = styled('div')(({ theme }) => ({
     background: "#ff000040",
-});
+}));
+const DialogRounded = styled(Dialog)(({ theme }) => ({
+      '& .MuiPaper-rounded':{
+        borderRadius: 15,
+    },
+}));
 
 
 export default function DeleteDialog(props) {
@@ -102,7 +107,7 @@ export default function DeleteDialog(props) {
     };
 
     return (
-        <Dialog
+        <DialogRounded
             open={open}
             fullWidth={true}
             onClose={handleClose}
@@ -124,7 +129,7 @@ export default function DeleteDialog(props) {
                     </Button>
                 </DialogActions>
             </DialogDiv>
-        </Dialog>
+        </DialogRounded>
     );
 }
 

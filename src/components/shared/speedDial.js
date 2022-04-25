@@ -14,8 +14,13 @@ import DeleteDialog from './messages/cardDelete'
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import TenantForm from '../tenant/tenantForm'
+import { styled } from '@mui/material/styles';
 
-
+const DialogRounded = styled(Dialog)(({ theme }) => ({
+      '& .MuiPaper-rounded':{
+        borderRadius: 15,
+    },
+}));
 
 const fabProps = {
     sx: {
@@ -71,7 +76,7 @@ export default function MultifunctionButton({pageType,setOpen,status,data,getDat
                 getData={getData}
                 data={data}
             />
-              <Dialog
+              <DialogRounded
                 open={status}
                 fullWidth={true}
                 maxWidth={"xl"}
@@ -84,7 +89,7 @@ export default function MultifunctionButton({pageType,setOpen,status,data,getDat
                 <DialogActions>
 
                 </DialogActions>
-            </Dialog>
+            </DialogRounded>
         </Box>
     );
 }

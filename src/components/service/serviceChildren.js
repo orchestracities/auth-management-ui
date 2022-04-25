@@ -32,7 +32,11 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import DeleteDialog from '../shared/messages/cardDelete';
 
-
+const DialogRounded = styled(Dialog)(({ theme }) => ({
+      '& .MuiPaper-rounded':{
+        borderRadius: 15,
+    },
+}));
 
 const CustomDialogTitle = styled(AppBar)({
     position: 'relative',
@@ -297,7 +301,7 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
                     <SecurityIcon color="primary" fontSize="large" />
                 </Badge>
             </IconButton>
-            <Dialog
+            <DialogRounded
                 open={status}
                 fullWidth={true}
                 maxWidth={"xl"}
@@ -415,7 +419,7 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
                 <DialogActions>
 
                 </DialogActions>
-            </Dialog>
+            </DialogRounded>
         </div>
     );
 }
