@@ -15,7 +15,7 @@ require('dotenv').config({ path: '../.env' })
 main().catch(err => console.log(err));
 
 async function main() {
-    await mongoose.connect(process.env.REACT_APP_MONGO_DB);
+    await mongoose.connect(process.env.MONGO_DB_TENANTS_CONNECTION);
 }
 
 async function get(data) {

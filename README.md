@@ -21,7 +21,7 @@ To setup the webapp first of all let's create a .env file inside the main folder
 
 ```
 REACT_APP_ANUBIS_API_URL=http://localhost:8085/
-REACT_APP_MONGO_DB=mongodb://localhost:27017/test
+MONGO_DB_TENANTS_CONNECTION=mongodb://localhost:27017/test
 ```
 
 Then let's start the package required with
