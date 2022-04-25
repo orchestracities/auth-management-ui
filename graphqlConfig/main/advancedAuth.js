@@ -62,7 +62,7 @@ const server = new ApolloServer({
   resolvers,
   context: ({ req }) => {
     return {
-      kauth: new KeycloakContext({ req }, keycloak, { resource_server_id: 'keycloak-connect-graphql-resource-server' })
+      kauth: new KeycloakContext({ req }, keycloak, { resource_server_id: 'graphql-config-server' })
     }
   }
 })
