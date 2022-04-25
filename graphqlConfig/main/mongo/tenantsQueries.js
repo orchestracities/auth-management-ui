@@ -49,7 +49,6 @@ async function add(data) {
 
     let thisTenant = await arrayOfData.save(function (err) {
         if (err) return handleError(err);
-        // that's it!
     });
     return await thisTenant;
 }
@@ -65,9 +64,4 @@ async function deleteTenant(data) {
 }
 
 
-module.exports = {
-    get,
-    update,
-    add,
-    deleteTenant,
-}
+module.exports = {get,update,add,deleteTenant}

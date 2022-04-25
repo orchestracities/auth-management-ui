@@ -7,7 +7,7 @@ const {
   KeycloakTypeDefs,
   KeycloakSchemaDirectives,
   hasPermission
-} = require('..')
+} = require('../dist')
 
 const app = express()
 
@@ -70,6 +70,4 @@ server.applyMiddleware({ app })
 
 const port = 4000
 
-app.listen({ port }, () =>
-  console.log(`🚀 Server ready at http://localhost:${port}${server.graphqlPath}`)
-)
+app.listen({ port }, () =>console.log(`🚀 Server ready at http://localhost:${port}${server.graphqlPath}`));

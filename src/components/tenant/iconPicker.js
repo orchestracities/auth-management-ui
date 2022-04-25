@@ -44,8 +44,6 @@ export default function IconPicker({previusValue, setValue,mode}) {
                             </ListItemIcon>
                             {thisItem.name}</MenuItem>
                     ))}
-
-
                 </Select>
             </FormControl>
         </Box>
