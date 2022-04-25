@@ -2,12 +2,7 @@ const express = require('express')
 const { ApolloServer, gql } = require('apollo-server-express')
 const { configureKeycloak } = require('./lib/common')
 require('dotenv').config({ path: '../.env' })
-const {
-  KeycloakContext,
-  KeycloakTypeDefs,
-  KeycloakSchemaDirectives,
-  hasPermission
-} = require('../dist')
+const { KeycloakContext, KeycloakTypeDefs, KeycloakSchemaDirectives } = require('keycloak-connect-graphql')
 
 const app = express()
 
@@ -61,7 +56,7 @@ const server = new ApolloServer({
   resolvers,
   context: ({ req }) => {
     return {
-      kauth: new KeycloakContext({ req }, keycloak, { resource_server_id: process.env.RESOURCE_SERVER_NAME })
+      kauth: new KeycloakContext({ req }, keycloak, { resource_server_id: process.env.GRAPHQL_RESOURCE_SERVER_NAME })
     }
   }
 })

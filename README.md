@@ -21,8 +21,8 @@ To setup the webapp first of all let's create a .env file inside the main folder
 
 ```
 REACT_APP_ANUBIS_API_URL=http://localhost:8085/
-MONGO_DB_TENANTS_CONNECTION=mongodb://localhost:27017/test
-RESOURCE_SERVER_NAME=graphql-config-server
+GRAPHQL_MONGO_DB=mongodb://localhost:27017/graphql
+GRAPHQL_RESOURCE_SERVER_NAME=graphql-config-server
 ```
 
 Then let's start the package required with
@@ -39,10 +39,10 @@ npm start
 
 ###  Keycloack and graphql
 
-To setup the connection between keycloack and graphql open a new window and move to the graphqlConfig folder
+To setup the connection between keycloack and graphql open a new window and move to the graphql-server folder
 
 ```
-cd graphqlConfig
+cd graphql-server
 ```
 
 Then let's start the package required with

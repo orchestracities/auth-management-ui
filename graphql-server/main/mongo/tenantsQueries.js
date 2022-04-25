@@ -15,7 +15,7 @@ require('dotenv').config({ path: '../.env' })
 main().catch(err => console.log(err));
 
 async function main() {
-    await mongoose.connect(process.env.MONGO_DB_TENANTS_CONNECTION);
+    await mongoose.connect(process.env.GRAPHQL_MONGO_DB);
 }
 
 async function get(data) {
@@ -64,4 +64,9 @@ async function deleteTenant(data) {
 }
 
 
-module.exports = {get,update,add,deleteTenant}
+module.exports = {
+    get,
+    update,
+    add,
+    deleteTenant
+}

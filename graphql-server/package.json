@@ -36,6 +36,7 @@
   "dependencies": {
     "@graphql-tools/utils": "7.2.3",
     "dotenv": "^16.0.0",
+    "keycloak-connect-graphql": "^0.7.0",
     "mongoose": "^6.2.11"
   },
   "devDependencies": {

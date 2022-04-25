@@ -1,7 +1,7 @@
 .env
 #automatic setup
-graphqlConfig/examples/config/config/*
-graphqlConfig/examples/config/realm-export
+graphql-server/examples/config/config/*
+graphql-server/examples/config/realm-export
 keycloak
 
 # Logs
