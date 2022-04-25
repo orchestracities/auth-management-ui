@@ -1,7 +1,7 @@
 const express = require('express')
 const { ApolloServer, gql } = require('apollo-server-express')
 const { configureKeycloak } = require('./lib/common')
-
+require('dotenv').config({ path: '../.env' })
 const {
   KeycloakContext,
   KeycloakTypeDefs,
@@ -14,7 +14,6 @@ const app = express()
 const graphqlPath = '/graphql'
 
 const { keycloak } = configureKeycloak(app, graphqlPath)
-
 
 const {get,update,add,deleteTenant} = require('./mongo/tenantsQueries')
 
@@ -62,7 +61,7 @@ const server = new ApolloServer({
   resolvers,
   context: ({ req }) => {
     return {
-      kauth: new KeycloakContext({ req }, keycloak, { resource_server_id: 'graphql-config-server' })
+      kauth: new KeycloakContext({ req }, keycloak, { resource_server_id: process.env.RESOURCE_SERVER_NAME })
     }
   }
 })
