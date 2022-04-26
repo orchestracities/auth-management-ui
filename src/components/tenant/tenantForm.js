@@ -43,6 +43,10 @@ const CustomDialogTitle = styled(AppBar)({
     boxShadow: "none"
 });
 
+const FormHeight = styled('div')({
+});
+
+
 
 export default function TenantForm({ title, close, action, tenant, getTenants, keycloakToken }) {
     const [name, setName] = React.useState((action === "modify") ? tenant.name : " ");
@@ -111,8 +115,8 @@ export default function TenantForm({ title, close, action, tenant, getTenants, k
              variables: {
                 name:name,
                 icon:iconName,
-                primaryColor:primaryColor,
-                secondaryColor:secondaryColor
+                primaryColor:primaryColor.toString(),
+                secondaryColor:secondaryColor.toString()
               }
                 })
                 .then((result) => {
@@ -128,7 +132,7 @@ export default function TenantForm({ title, close, action, tenant, getTenants, k
 
     console.log(tenant)
     return (
-        <div>
+        <FormHeight>
             <CustomDialogTitle >
                 <Toolbar>
                     <IconButton
@@ -191,6 +195,6 @@ export default function TenantForm({ title, close, action, tenant, getTenants, k
                    
                 </Grid>
             </DialogContent>
-        </div>
+        </FormHeight>
     );
 }
