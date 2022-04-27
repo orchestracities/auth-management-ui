@@ -60,5 +60,5 @@ node main/mongo/populateDB.js
 After that we can run the example with:
 
 ```
-node examples/advancedAuth.js
+node main/advancedAuth.js
 ```

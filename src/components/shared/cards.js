@@ -80,14 +80,9 @@ export default function DashboardCard({pageType,data,getData,seTenant}) {
         </Typography>
       </CardContent>
       <CardActions>
+      <ServiceChildren setOpen={setSubpathOpen} status={subpathOpen} data={(layout.props.title==="Edit Tenant")?data.service_paths.slice(1):data.children} masterTitle={(layout.props.title==="Edit Tenant")?data.name:data.path} getData={getData}/>
       {(layout.props.title==="New Sub-service")?"": <PoliciesChildren tenantId={data.id} tenantName={data.name} seTenant={seTenant}></PoliciesChildren>}
-     
-        <ServiceChildren setOpen={setSubpathOpen} status={subpathOpen} data={(layout.props.title==="Edit Tenant")?data.service_paths.slice(1):data.children} masterTitle={(layout.props.title==="Edit Tenant")?data.name:data.path} getData={getData}/>
-    
-       
       </CardActions>
-      
-   
     </RadiusDiv>
   );
 }
