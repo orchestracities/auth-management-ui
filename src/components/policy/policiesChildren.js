@@ -2,7 +2,7 @@ import * as React from 'react';
 import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import PolicyIcon from '@mui/icons-material/Policy';
 import axios from "axios"
 import {
   BrowserRouter,
@@ -61,7 +61,7 @@ export default function PoliciesChildren({ tenantId, tenantName, seTenant }) {
     <NavLink to={"/Policy"}>
       <IconButton aria-label="service" onClick={reiderect}>
         <Badge badgeContent={policies.length} color="secondary">
-          <ContentCopyIcon color="primary" fontSize="large" />
+          <PolicyIcon color="primary" fontSize="large" />
         </Badge>
       </IconButton>
     </NavLink>

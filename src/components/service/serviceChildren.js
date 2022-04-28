@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import Grid from '@mui/material/Grid';
 import Badge from '@mui/material/Badge';
-import SecurityIcon from '@mui/icons-material/Security';
+import FolderIcon from '@mui/icons-material/Folder';
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -25,10 +25,7 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import Tooltip from '@mui/material/Tooltip';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import DeleteDialog from '../shared/messages/cardDelete';
 
@@ -298,7 +295,7 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
         <div>
             <IconButton  aria-label="path" onClick={handleClickOpen}>
                 <Badge badgeContent={data.length} color="success">
-                    <SecurityIcon color="primary" fontSize="large" />
+                    <FolderIcon color="primary" fontSize="large" />
                 </Badge>
             </IconButton>
             <DialogRounded
