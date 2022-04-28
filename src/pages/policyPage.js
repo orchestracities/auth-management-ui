@@ -62,7 +62,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
     .catch(err => console.log(err));
   }, [thisTenant]);
 
-  const mainTitle = "Policies:";
+  const mainTitle = "Policies";
 
   return (
     <div>
@@ -86,3 +86,4 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
     </div>
   );
 }
+

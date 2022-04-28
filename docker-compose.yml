@@ -10,6 +10,15 @@ services:
       - CORS_ALLOWED_HEADERS=*
     ports:
       - "8085:8000"
+      
+  mongo:
+    image: mongo:4.4
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+    networks:
+      - envoymesh
 
   keycloak:
     image: jboss/keycloak:${KEYCLOAK_VERSION:-16.1.1}

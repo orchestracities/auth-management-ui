@@ -14,8 +14,13 @@ import DeleteDialog from './messages/cardDelete'
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import TenantForm from '../tenant/tenantForm'
+import { styled } from '@mui/material/styles';
 
-
+const DialogRounded = styled(Dialog)(({ theme }) => ({
+    '& .MuiPaper-rounded': {
+        borderRadius: 15,
+    },
+}));
 
 const fabProps = {
     sx: {
@@ -24,8 +29,8 @@ const fabProps = {
         }
     }
 };
-export default function MultifunctionButton({pageType,setOpen,status,data,getData}) {
- //DELETE
+export default function MultifunctionButton({ pageType, setOpen, status, data, getData }) {
+    //DELETE
     const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
 
     const handleClickOpenDeleteDialog = () => {
@@ -35,7 +40,7 @@ export default function MultifunctionButton({pageType,setOpen,status,data,getDat
     const handleCloseDeleteDialog = (value) => {
         setOpenDeleteDialog(false);
     };
-  
+
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -45,8 +50,8 @@ export default function MultifunctionButton({pageType,setOpen,status,data,getDat
         setOpen(false);
     };
     const actions = [
-        { icon: <EditIcon />, name: (pageType.props.title==="Edit Tenant")?"Edit":"New Sub-path",click: handleClickOpen },
-        { icon: <DeleteIcon color="error" />, name: 'Delete',click:handleClickOpenDeleteDialog},
+        { icon: <EditIcon />, name: (pageType.props.title === "Edit Tenant") ? "Edit" : "New Sub-path", click: handleClickOpen },
+        { icon: <DeleteIcon color="error" />, name: 'Delete', click: handleClickOpenDeleteDialog },
     ];
     return (
         <Box sx={{ height: 60, transform: 'translateZ(0px)', flexGrow: 1, zIndex: 100, background: "#8a93e140" }}>
@@ -59,7 +64,7 @@ export default function MultifunctionButton({pageType,setOpen,status,data,getDat
                 {actions.map((action) => (
                     <SpeedDialAction
                         onClick={action.click}
-                        key={action.name}   
+                        key={action.name}
                         icon={action.icon}
                         tooltipTitle={action.name}
                     />
@@ -71,7 +76,7 @@ export default function MultifunctionButton({pageType,setOpen,status,data,getDat
                 getData={getData}
                 data={data}
             />
-              <Dialog
+            <DialogRounded
                 open={status}
                 fullWidth={true}
                 maxWidth={"xl"}
@@ -79,12 +84,10 @@ export default function MultifunctionButton({pageType,setOpen,status,data,getDat
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                
-               {pageType}
+                {pageType}
                 <DialogActions>
-
                 </DialogActions>
-            </Dialog>
+            </DialogRounded>
         </Box>
     );
 }

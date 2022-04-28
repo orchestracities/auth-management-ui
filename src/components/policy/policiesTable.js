@@ -26,6 +26,13 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import TenantForm from '../tenant/tenantForm'
 import DeleteDialog from '../shared/messages/cardDelete'
+import { styled } from '@mui/material/styles';
+
+const DialogRounded = styled(Dialog)(({ theme }) => ({
+      '& .MuiPaper-rounded':{
+        borderRadius: 15,
+    },
+}));
 
 export default function PoliciesTable({ data,getData }) {
     //DELETE
@@ -429,7 +436,7 @@ export default function PoliciesTable({ data,getData }) {
                 getData={getData}
                 data={{ dataValues: dataCreator(selected), multiple: true, selectedText: fromIdToText(selected), setSelected: setSelected }}
             />
-            <Dialog
+            <DialogRounded
                 open={open}
                 fullWidth={true}
                 maxWidth={"xl"}
@@ -442,7 +449,7 @@ export default function PoliciesTable({ data,getData }) {
                 <DialogActions>
 
                 </DialogActions>
-            </Dialog>
+            </DialogRounded>
         </Box>
     );
 }
