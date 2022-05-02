@@ -15,6 +15,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import ServiceChildren from '../service/serviceChildren'
 import PoliciesChildren from '../policy/policiesChildren'
 import IconList from '../tenant/iconList'
+import { Trans } from "react-i18next";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props
@@ -57,28 +58,27 @@ export default function DashboardCard ({ pageType, data, getData, seTenant }) {
     return color
   }
   return (
-    <RadiusDiv key={data.id} sx={{ background: (layout.props.title === 'New Sub-service') ? '' : '#8086bab8' }}>
+    <RadiusDiv key={data.id} sx={{ background: (layout.props.action==="Sub-service-creation")?"":"#8086bab8" }}>
     <CardHeader
     avatar={
-      <Avatar sx={{ bgcolor: (layout.props.title === 'New Sub-service') ? incrementColor(layout.props.tenantName_id[0].props.primaryColor, Math.floor(Math.random() * 500) - 20) : data.props.primaryColor }} aria-label="recipe">
-        {(layout.props.title === 'New Sub-service') ? data.path[1] : iconMapper(data.props.icon)}
+     <Avatar sx={{ bgcolor: (layout.props.action==="Sub-service-creation")?incrementColor(layout.props.tenantName_id[0].props.primaryColor, Math.floor(Math.random() * 500)-20): data.props.primaryColor}} aria-label="recipe">
+       {(layout.props.action==="Sub-service-creation")?data.path[1]:iconMapper(data.props.icon)}
       </Avatar>
     }
     action={
       <MultifunctionButton key={data.id} data={data} getData={getData} pageType={layout} setOpen={setOpen} status={status}></MultifunctionButton>
     }
-    title= {(layout.props.title === 'New Sub-service') ? data.path : data.name}
-    subheader= { <Typography variant="body2" >{data.id}</Typography>}
-  />
-
+    title=   {(layout.props.action==="Sub-service-creation")?data.path:data.name}
+    subheader=  { <Typography variant="body2" >{data.id}</Typography>}
+  />  
       <CardContent>
         <Typography variant="body2" >
-        {(layout.props.title === 'New Sub-service') ? layout.props.tenantName_id[0].name : 'description'}
+        {(layout.props.action==="Sub-service-creation")? layout.props.tenantName_id[0].name:"description"}
         </Typography>
       </CardContent>
       <CardActions>
-      <ServiceChildren setOpen={setSubpathOpen} status={subpathOpen} data={(layout.props.title === 'Edit Tenant') ? data.service_paths.slice(1) : data.children} masterTitle={(layout.props.title === 'Edit Tenant') ? data.name : data.path} getData={getData}/>
-      {(layout.props.title === 'New Sub-service') ? '' : <PoliciesChildren tenantId={data.id} tenantName={data.name} seTenant={seTenant}></PoliciesChildren>}
+      <ServiceChildren setOpen={setSubpathOpen} status={subpathOpen} data={(layout.props.action==="modify")?data.service_paths.slice(1):data.children} masterTitle={(layout.props.action==="modify")?data.name:data.path} getData={getData}/>
+      {(layout.props.action==="Sub-service-creation")?"": <PoliciesChildren tenantId={data.id} tenantName={data.name} seTenant={seTenant}></PoliciesChildren>}
       </CardActions>
     </RadiusDiv>
   )

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import IconButton from '@mui/material/IconButton'
-import { styled, alpha } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
@@ -12,6 +12,7 @@ import Grid from '@mui/material/Grid'
 import Badge from '@mui/material/Badge'
 import FolderIcon from '@mui/icons-material/Folder'
 import PropTypes from 'prop-types'
+import { alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -27,6 +28,7 @@ import Tooltip from '@mui/material/Tooltip'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { visuallyHidden } from '@mui/utils'
 import DeleteDialog from '../shared/messages/cardDelete'
+import { Trans } from "react-i18next"
 
 const DialogRounded = styled(Dialog)(({ theme }) => ({
   '& .MuiPaper-rounded': {
@@ -177,7 +179,7 @@ export default function ServiceChildren ({ masterTitle, setOpen, status, data, g
                         variant="subtitle1"
                         component="div"
                     >
-                        {numSelected} selected
+                       <Trans i18nKey="common.table.selected" values={{data:numSelected}}/>
                     </Typography>
                     )
                   : (
@@ -187,13 +189,12 @@ export default function ServiceChildren ({ masterTitle, setOpen, status, data, g
                         id="tableTitle"
                         component="div"
                     >
-                        {data.length + ((data.length > 1) ? '  Elements' : '  Element')}
+                        {((data.length > 1) ?  <Trans i18nKey="common.table.counterPlural" values={{data:data.length}}/> :  <Trans i18nKey="common.table.counterSingle" values={{data:data.length}}/>)}
                     </Typography>
                     )}
 
-                {numSelected > 0
-                  ? (
-                    <Tooltip title="Delete">
+                {numSelected > 0 ? (
+                    <Tooltip title={<Trans>common.deleteTooltip</Trans>}>
                         <IconButton onClick={handleClickOpenDeleteDialog}>
                             <DeleteIcon />
                         </IconButton>
@@ -318,8 +319,8 @@ export default function ServiceChildren ({ masterTitle, setOpen, status, data, g
                         >
                             <CloseIcon />
                         </IconButton>
-                        <Typography sx={{ ml: 2, flex: 1, color: 'black' }} variant="h6" component="div">
-                            {'Subpaths of ' + masterTitle}
+                        <Typography sx={{ ml: 2, flex: 1, color: "black" }} variant="h6" component="div">
+                        <Trans i18nKey="common.subPath" values={{name:masterTitle}}/>
                         </Typography>
 
                     </Toolbar>

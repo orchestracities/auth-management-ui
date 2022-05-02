@@ -8,6 +8,7 @@ import PolicyTable from '../components/policy/policiesTable'
 import PolicyForm from '../components/policy/policyForm'
 import axios from 'axios'
 import Typography from '@mui/material/Typography'
+import { Trans } from 'react-i18next'
 
 export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
   const [open, setOpen] = React.useState(false)
@@ -61,15 +62,15 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
       .catch(err => console.log(err))
   }, [thisTenant])
 
-  const mainTitle = 'Policies'
+  const mainTitle = <Trans>policies.titles.page</Trans>
 
   return (
     <div>
       <MainTitle mainTitle={mainTitle}></MainTitle>
       {
-        (typeof thisTenant === undefined || thisTenant === '')
-          ? ''
-          : <AddButton pageType={<PolicyForm tenantName={tenantName_id} action="create" services={services} getServices={getServices} access_modes={access_modes} title={'New Policy'} close={setOpen} ></PolicyForm>} setOpen={setOpen} status={open}></AddButton>
+        (typeof thisTenant === undefined || thisTenant === "")
+          ? ""
+  : <AddButton pageType={<PolicyForm tenantName={tenantName_id} action="create" services={services} getServices={getServices} access_modes={access_modes} title={<Trans>policies.titles.new</Trans>} close={setOpen} ></PolicyForm>} setOpen={setOpen} status={open}></AddButton>
       }
       {(policies.length > 1)
         ? <Grid container spacing={2} sx={{ marginLeft: '15px ' }}>
@@ -79,9 +80,8 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
         <Grid item xs={12}>
           <PolicyTable data={policies} getData={getServices}></PolicyTable>
         </Grid>
-      </Grid>
-        : <Typography sx={{ padding: '20px' }} variant="h6" component="h3">
-            No data avaitable
+      </Grid>:<Typography sx={{padding:"20px"}} variant="h6" component="h3">
+      <Trans>policies.titles.noData</Trans>
       </Typography>}
 
     </div>

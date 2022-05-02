@@ -148,7 +148,8 @@ function CustomSelect ({ placeholder, defaultValue, mode, setColor }) {
 
     >
       <Toggle style={{ '--color': color }}>
-        <span className="placeholder">{placeholder + colord(color).toName({ closest: true }) ?? ' '}</span>
+        <span className="placeholder">{placeholder ?? ' '}</span>
+        <span className="placeholder">{colord(color).toName({ closest: true }) ?? ' '}</span>
       </Toggle>
       <Listbox className={listboxVisible ? '' : 'hidden'}>
 

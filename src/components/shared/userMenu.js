@@ -24,6 +24,17 @@ import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { useTranslation, Trans } from "react-i18next";
+import axios from "axios"
+import {
+    ApolloClient,
+    InMemoryCache,
+    ApolloProvider,
+    useQuery,
+    gql,
+    createHttpLink,
+} from "@apollo/client";
+import { setContext } from '@apollo/client/link/context';
 
 const DialogRounded = styled(Dialog)(({ theme }) => ({
     '& .MuiPaper-rounded': {
@@ -37,7 +48,8 @@ const CustomDialogTitle = styled(AppBar)({
     boxShadow: "none"
 });
 
-export default function UserMenu({ language, changeLanguage }) {
+export default function UserMenu({ language, userData, keycloakToken }) {
+    const { t, i18n } = useTranslation();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [settings, setOpenSettings] = React.useState(false);
     const open = Boolean(anchorEl);
@@ -54,6 +66,53 @@ export default function UserMenu({ language, changeLanguage }) {
     const settingsClose = () => {
         setOpenSettings(false);
     };
+
+    React.useEffect(() => {
+        i18n.changeLanguage(language.language)
+    }, [language]);
+
+    const handleLanguagePreference = (newValue) => {
+        language.setLanguage(newValue);
+        (newValue === "defaultBrowser") ? i18n.changeLanguage(Intl.NumberFormat().resolvedOptions().locale) : i18n.changeLanguage(newValue);
+        const httpLink = createHttpLink({
+            uri: 'http://localhost:4000/graphql',
+        });
+
+        const authLink = setContext((_, { headers }) => {
+            return {
+                headers: {
+                    ...headers,
+                    Authorization: `Bearer ${keycloakToken}`
+                }
+            }
+        });
+
+        const client = new ApolloClient({
+            link: authLink.concat(httpLink),
+            cache: new InMemoryCache()
+        });
+        client
+            .mutate({
+                mutation: gql`
+                    mutation modifyUserPreferences($usrName: String!, $language: String!) {
+                        modifyUserPreferences(
+                            usrName: $usrName
+                            language: $language
+                       ){
+                        usrName
+                        language
+                                     }
+                       }
+             `,
+                variables: {
+                    usrName: userData.idTokenParsed.sub,
+                    language: newValue,
+                }
+            })
+            .then((result) => {
+                console.log(result);
+            });
+    }
 
     return (
         <React.Fragment>
@@ -110,7 +169,7 @@ export default function UserMenu({ language, changeLanguage }) {
                     <ListItemIcon>
                         <Settings fontSize="small" />
                     </ListItemIcon>
-                    Settings
+                    <Trans>common.userSettings.title</Trans>
                 </MenuItem>
                 <MenuItem>
                     <ListItemIcon>
@@ -137,7 +196,7 @@ export default function UserMenu({ language, changeLanguage }) {
                             <CloseIcon />
                         </IconButton>
                         <Typography sx={{ ml: 2, flex: 1, color: "black" }} variant="h6" component="div">
-                            Settings
+                            <Trans>common.userSettings.title</Trans>
                         </Typography>
                     </Toolbar>
                 </CustomDialogTitle>
@@ -147,21 +206,27 @@ export default function UserMenu({ language, changeLanguage }) {
                     >
                         <Grid item xs={12}>
                             <FormControl fullWidth>
-                                <InputLabel id="language">Language</InputLabel>
+                                <InputLabel id="language"> <Trans>common.userSettings.language</Trans></InputLabel>
                                 <Select
                                     labelId="language"
                                     id="language-select"
                                     variant="outlined"
-                                    label="Language"
+                                    onChange={(event) => {
+                                        handleLanguagePreference(event.target.value)
+                                    }}
+                                    value={language.language}
+                                    label={<Trans>common.userSettings.language</Trans>}
                                 >
-                                    <MenuItem value={10}>Default</MenuItem>
-                                    <MenuItem value={20}>English</MenuItem>
-                                    <MenuItem value={30}>Italian</MenuItem>
+                                    <MenuItem value={"defaultBrowser"}>Default</MenuItem>
+                                    <MenuItem value={"en"}>English</MenuItem>
+                                    <MenuItem value={"it"}>Italian</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>
                     </Grid>
                 </DialogContent>
+                <DialogActions>
+                </DialogActions>
             </DialogRounded>
         </React.Fragment>
     );

@@ -1,0 +1,70 @@
+{
+    "tenant": {
+        "titles": {
+            "page": "Tenant Admin List",
+            "new": "New Tenant",
+            "edit": "Edit Tenant: <0>{{name}}</0>"
+        },
+        "form": {
+            "name": "Name",
+            "description": "Description",
+            "icon": "Icon",
+            "primaryColor": "Primary Color: ",
+            "secondaryColor": "Secondary Color: "
+        },
+        "tooltip": {
+            "editIcon": "Edit"
+        }
+    },
+    "service": {
+        "titles": {
+            "page": "Service paths",
+            "new": "New Service",
+            "edit": "New Sub-service"
+        },
+        "tooltip": {
+            "editIcon": "New Sub-path"
+        }
+    },
+    "policies": {
+        "titles": {
+            "page": "Policies",
+            "new": "New Policy",
+            "resource": "Resource",
+            "access":"access",
+            "resourceType": "Resource Type",
+            "actor": "Actor",
+            "actoryType": "Actor Type",
+            "noData":"No data avaitable"
+        },
+        "form": {
+            "servicePath": "Service Path",
+            "acessTo": "Access To",
+            "resourceType": "Resource Type",
+            "mode": "Mode",
+            "agentType": "Agent Type",
+            "agent":"Agent",
+            "otherAgent":"Other Agent"
+        }
+    },
+    "common": {
+        "deleteTooltip": "Delete",
+        "deleteText": "Are you really sure about deleting:",
+        "deleteTextTitle": "Are you sure?",
+        "saveButton": "SAVE",
+        "deleteButton": "DELETE",
+        "userPopup":{
+            "settings":"settings"
+        },
+        "userSettings":{
+            "title":"Settings",
+            "language":"Language"
+        },
+        "subPath":"Subpaths of: <0>{{name}}</0>",
+        "table":{
+            "counterPlural":"{{data}}  Elements",
+            "counterSingle":"{{data}}  Element",
+            "selected":"{{data}}  selected"
+        }
+    }
+}

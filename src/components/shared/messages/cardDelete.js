@@ -8,6 +8,7 @@ import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 import { styled } from '@mui/material/styles'
 import axios from 'axios'
+import { Trans } from "react-i18next"
 
 const DialogDiv = styled('div')(({ theme }) => ({
   background: '#ff000040'
@@ -106,16 +107,19 @@ export default function DeleteDialog (props) {
         >
             <DialogDiv>
                 <DialogTitle id="alert-dialog-title">
-                    {'Are you sure?'}
+                <Trans>common.deleteTextTitle</Trans>
                 </DialogTitle>
                 <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                      <Trans>common.deleteText</Trans>
+                    </DialogContentText>
                     <DialogContentText id="alert-dialog-description">
-                        {'Are you really sure about deleting:' + uiMapper() + ' ?'}
+                        {uiMapper() + " ?"}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={deletElement} autoFocus color="secondary">
-                        DELETE
+                    <Trans>common.deleteButton</Trans>
                     </Button>
                 </DialogActions>
             </DialogDiv>

@@ -54,8 +54,6 @@ import { ThirtyFpsOutlined } from '@mui/icons-material'
 import jwt_decode from "jwt-decode"
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import UserMenu from './components/shared/userMenu'
-const drawerWidth = 240
-
 
 const drawerWidth = 240
 
@@ -123,6 +121,10 @@ export default class App extends Component {
     tokenData: [],
     keycloak: '',
     groups: [],
+    language: "",
+    setAppLanguage: (newLanguagePreference) => {
+      this.setState({ language: newLanguagePreference });
+    },
     catchColor: (newID) => {
       const data = this.state.tenants.filter((e) => e.id === newID)
       if (data.length > 0) {
@@ -222,8 +224,8 @@ export default class App extends Component {
             })
             .then((result) => {
               client
-              .query({
-                query: gql`
+                .query({
+                  query: gql`
               query getUserPreferences($usrName: String!) {
                getUserPreferences(usrName: $usrName) {
                    usrName
@@ -231,13 +233,13 @@ export default class App extends Component {
                   }
                 }
                `,
-                variables: {
-                  usrName: this.state.keycloak.idTokenParsed.sub
-                }
-              })
-              .then((result) => {
-                console.log(result)
-              });
+                  variables: {
+                    usrName: this.state.keycloak.idTokenParsed.sub
+                  }
+                })
+                .then((result) => {
+                  this.state.setAppLanguage(result.data.getUserPreferences[0].language);
+                });
               this.setState({ tenants: this.state.preferencesMapper(result.data.listTenants, userTenants) });
               this.state.seTenant(this.state.thisTenant);
             });
@@ -318,7 +320,7 @@ export default class App extends Component {
                   < TenantSelection seTenant={this.state.seTenant} tenantValues={this.state.tenants} correntValue={this.state.thisTenant}></TenantSelection>
                 </div>
                 <div>
-               <UserMenu></UserMenu>
+                  <UserMenu keycloakToken={this.state.keycloak.token} language={{language:this.state.language,setLanguage:this.state.setAppLanguage}} userData={this.state.keycloak}></UserMenu>
                 </div>
               </CustomToolbar>
             </AppBar>

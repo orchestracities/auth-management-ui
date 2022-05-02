@@ -34,6 +34,7 @@ import {
   createHttpLink
 } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
+import { Trans } from "react-i18next";
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -135,11 +136,11 @@ export default function TenantForm ({ title, close, action, tenant, getTenants, 
                     >
                         <CloseIcon />
                     </IconButton>
-                    <Typography sx={{ ml: 2, flex: 1, color: 'black' }} variant="h6" component="div">
-                        {(action === 'modify') ? title + ':' + tenant.name : title}
+                    <Typography sx={{ ml: 2, flex: 1, color: "black" }} variant="h6" component="div">
+                        {title}
                     </Typography>
                     <Button autoFocus color="secondary" onClick={handleSave}>
-                        save
+                        <Trans>common.saveButton</Trans>
                     </Button>
                 </Toolbar>
             </CustomDialogTitle>
@@ -153,7 +154,7 @@ export default function TenantForm ({ title, close, action, tenant, getTenants, 
                       : <Grid item xs={12}>
                         <TextField
                             id="Name"
-                            label="Name"
+                            label={ <Trans>tenant.form.name</Trans>}
                             variant="outlined"
                             defaultValue={(action === 'modify') ? tenant.name : ''}
                             sx={{
@@ -168,8 +169,8 @@ export default function TenantForm ({ title, close, action, tenant, getTenants, 
                     </Grid>}
 
                     <Grid item xs={12}>
-                        <TextField id="Description" label="Description" variant="outlined" sx={{
-                          width: '100%'
+                        <TextField id="Description"  label={ <Trans>tenant.form.description</Trans>} variant="outlined" sx={{
+                            width: '100%',
                         }} />
                     </Grid>
                     <Grid item lg={12} md={12} xs={12} container direction="column"
@@ -180,12 +181,12 @@ export default function TenantForm ({ title, close, action, tenant, getTenants, 
                     <Grid item lg={6} md={6} xs={12} container direction="column"
                         justifyContent="center"
                         alignItems="center">
-                        < ColorPicker defaultValue={primaryColor} setColor={setPrimaryColor} mode={action} text={'Primary-Color: '}></ColorPicker>
+                        < ColorPicker defaultValue={primaryColor} setColor={setPrimaryColor} mode={action} text={<Trans>tenant.form.primaryColor</Trans>}></ColorPicker>
                     </Grid>
                     <Grid item lg={6} md={6} xs={12} container direction="column"
                         justifyContent="center"
                         alignItems="center">
-                        < ColorPicker defaultValue={secondaryColor} setColor={setSecondaryColor} mode={action} text={'Secondary-Color: '}></ColorPicker>
+                        < ColorPicker defaultValue={secondaryColor} setColor={setSecondaryColor} mode={action} text={<Trans>tenant.form.secondaryColor</Trans>}></ColorPicker>
                     </Grid>
 
                 </Grid>

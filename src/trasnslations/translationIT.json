@@ -1,0 +1,70 @@
+{
+    "tenant": {
+        "titles": {
+            "page": "Lista Dei Tenant",
+            "new": "Nuovo Tenant",
+            "edit": "Modifica Tenant: <0>{{name}}</0>"
+        },
+        "form": {
+            "name": "Nome",
+            "description": "Descrizione",
+            "icon": "Icona",
+            "primaryColor": "Colore Primario: ",
+            "secondaryColor": "Colore Secondario: "
+        },
+        "tooltip": {
+            "editIcon": "Modifica"
+        }
+    },
+    "service": {
+        "titles": {
+            "page": "Paths dei Servizi",
+            "new": "Nuovo Servizio",
+            "edit": "Nuovo path del servizio"
+        },
+        "tooltip": {
+            "editIcon": "Nuovo path del servizio"
+        }
+    },
+    "policies": {
+        "titles": {
+            "page": "Policies",
+            "new": "Nuova Policy",
+            "resource": "Risorse",
+            "access":"Accesso",
+            "resourceType": "Tipologia risorse",
+            "actor": "Attore",
+            "actoryType": "Tipo di Attore",
+            "noData":"Nessun Dato disponibile"
+        },
+        "form": {
+            "servicePath": "Paths dei Servizi",
+            "acessTo": "Accesso A",
+            "resourceType": "Tipo risorsa",
+            "mode": "Modalità",
+            "agentType": "Tipologia di Attore",
+            "agent":"Attore",
+            "otherAgent":"Altri possibili Attori"
+        }
+    },
+    "common": {
+        "deleteTooltip": "Elimina",
+        "deleteText": "Sei davvero sicuro di voler eliminare:",
+        "deleteTextTitle": "Sei sicuro di procedere?",
+        "saveButton": "SALVA",
+        "deleteButton": "ELIMINA",
+        "userPopup":{
+            "settings":"Impostazioni"
+        },
+        "userSettings":{
+            "title":"Impostazioni",
+            "language":"Lingua"
+        },
+        "subPath":"Subpaths di: <0>{{name}}</0>",
+        "table":{
+            "counterPlural":"{{data}}  Elementi",
+            "counterSingle":"{{data}}  Elemento",
+            "selected":"{{data}}  Selezionati"
+        }
+    }
+}

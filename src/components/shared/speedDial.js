@@ -15,6 +15,7 @@ import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import TenantForm from '../tenant/tenantForm'
 import { styled } from '@mui/material/styles'
+import {Trans } from "react-i18next";
 
 const DialogRounded = styled(Dialog)(({ theme }) => ({
   '& .MuiPaper-rounded': {
@@ -44,19 +45,19 @@ export default function MultifunctionButton ({ pageType, setOpen, status, data, 
     setOpenDeleteDialog(false)
   }
 
-  const handleClickOpen = () => {
-    setOpen(true)
-  }
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
 
-  const handleClose = () => {
-    setOpen(false)
-  }
-  const actions = [
-    { icon: <EditIcon />, name: (pageType.props.title === 'Edit Tenant') ? 'Edit' : 'New Sub-path', click: handleClickOpen },
-    { icon: <DeleteIcon color="error" />, name: 'Delete', click: handleClickOpenDeleteDialog }
-  ]
-  return (
-        <Box sx={{ height: 60, transform: 'translateZ(0px)', flexGrow: 1, zIndex: 100, background: '#8a93e140' }}>
+    const handleClose = () => {
+        setOpen(false);
+    };
+    const actions = [
+        { icon: <EditIcon />, name: (pageType.props.action === "modify") ? <Trans>tenant.tooltip.editIcon</Trans> : <Trans>service.tooltip.editIcon</Trans>, click: handleClickOpen },
+        { icon: <DeleteIcon color="error" />, name: <Trans>common.deleteTooltip</Trans>, click: handleClickOpenDeleteDialog },
+    ];
+    return (
+        <Box sx={{ height: 60, transform: 'translateZ(0px)', flexGrow: 1, zIndex: 100, background: "#8a93e140" }}>
             <SpeedDial
                 FabProps={fabProps}
                 ariaLabel="SpeedDial basic example"

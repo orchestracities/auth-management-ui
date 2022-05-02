@@ -27,8 +27,9 @@ import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 import { InputLabel } from '@mui/material'
 import OutlinedInput from '@mui/material/OutlinedInput'
-import axios from 'axios'
+import axios from "axios"
 import { Mode } from '@mui/icons-material'
+import { Trans } from "react-i18next"
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -152,13 +153,13 @@ export default function PolicyForm ({ title, close, action, tenantName, services
                     </Grid>
                     <Grid item xs={12}>
                         <FormControl fullWidth>
-                            <InputLabel id="path">Service Path</InputLabel>
+                            <InputLabel id="path"><Trans>policies.form.servicePath</Trans></InputLabel>
                             <Select
                                 labelId="path"
                                 id="path"
                                 variant="outlined"
                                 value={path}
-                                label="Service Path"
+                                label={<Trans>policies.form.servicePath</Trans>}
                                 onChange={handlePath}
                             >
                                 {services.slice(1).map((service) => (
@@ -173,7 +174,7 @@ export default function PolicyForm ({ title, close, action, tenantName, services
                             id="access"
                             variant="outlined"
                             value={access}
-                            label="Access To"
+                            label={<Trans>policies.form.acessTo</Trans>}
                             onChange={handleAccess}
                             sx={{
                               width: '100%'
@@ -185,7 +186,7 @@ export default function PolicyForm ({ title, close, action, tenantName, services
                             id="resource"
                             variant="outlined"
                             value={resource}
-                            label="Resource Type"
+                            label={<Trans>policies.form.resourceType</Trans>}
                             onChange={handleResource}
                             sx={{
                               width: '100%'
@@ -194,14 +195,14 @@ export default function PolicyForm ({ title, close, action, tenantName, services
                     </Grid>
                     <Grid item xs={12}>
                         <FormControl fullWidth>
-                            <InputLabel id="mode">Mode</InputLabel>
+                            <InputLabel id="mode"><Trans>policies.form.mode</Trans></InputLabel>
 
                             <Select
                                 labelId="mode"
                                 id="mode"
                                 variant="outlined"
                                 value={mode}
-                                label="Mode"
+                                label={<Trans>policies.form.mode</Trans>}
                                 multiple
                                 input={<OutlinedInput label="Mode" />}
                                 onChange={handleMode}
@@ -214,13 +215,13 @@ export default function PolicyForm ({ title, close, action, tenantName, services
                     </Grid>
                     <Grid item xs={12}>
                         <FormControl fullWidth>
-                            <InputLabel id="agentType">Agent-Type</InputLabel>
+                            <InputLabel id="agentType"><Trans>policies.form.agentType</Trans></InputLabel>
                             <Select
                                 labelId="agentType"
                                 id="agentType"
                                 variant="outlined"
                                 value={agentType}
-                                label="AgentType"
+                                label={<Trans>policies.form.agentType</Trans>}
                                 onChange={handleAgentType}
                             >
                                 <MenuItem value={'default'}>Default</MenuItem>
@@ -234,13 +235,13 @@ export default function PolicyForm ({ title, close, action, tenantName, services
                     {(agentType === 'default')
                       ? <Grid item xs={12}>
                             <FormControl fullWidth>
-                                <InputLabel id="agent">Agent</InputLabel>
+                                <InputLabel id="agent"><Trans>policies.form.agent</Trans></InputLabel>
                                 <Select
                                     labelId="agent"
                                     id="agent"
                                     variant="outlined"
                                     value={agent}
-                                    label="Agent"
+                                    label={<Trans>policies.form.agent</Trans>}
                                     multiple
                                     input={<OutlinedInput label="Mode" />}
                                     onChange={handleAgent}
@@ -259,7 +260,7 @@ export default function PolicyForm ({ title, close, action, tenantName, services
                             id="OtherAgent"
                             variant="outlined"
                             value={otherAgent}
-                            label="Other Agent"
+                            label={<Trans>policies.form.otherAgent</Trans>}
                             onChange={handleOtherAgent}
                             sx={{
                               width: '100%'
