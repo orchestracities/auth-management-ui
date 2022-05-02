@@ -13,6 +13,13 @@ const usrPreference = new mongoose.Schema({
 
 const Preferences = connection.model('UsrPreferences', usrPreference)
 
+const usrSettings = new mongoose.Schema({
+    usrName: String,
+    language: String,
+});
+
+const Settings = connection.model('UsrSettings', usrSettings);
+
 Preferences.create({
   name: 'Tenant1',
   icon: 'none',

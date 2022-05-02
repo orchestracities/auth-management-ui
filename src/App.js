@@ -49,9 +49,13 @@ import {
   Routes,
   Route,
   NavLink
-} from 'react-router-dom'
+} from "react-router-dom"
 import { ThirtyFpsOutlined } from '@mui/icons-material'
-import jwt_decode from 'jwt-decode'
+import jwt_decode from "jwt-decode"
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+import UserMenu from './components/shared/userMenu'
+const drawerWidth = 240
+
 
 const drawerWidth = 240
 
@@ -204,12 +208,12 @@ export default class App extends Component {
             .query({
               query: gql`
             query listTenants($tenantNames: [String]!) {
-    listTenants(tenantNames: $tenantNames) {
+              listTenants(tenantNames: $tenantNames) {
                 name
                 icon
                 primaryColor
                 secondaryColor
-             }
+                }
               }
              `,
               variables: {
@@ -217,9 +221,26 @@ export default class App extends Component {
               }
             })
             .then((result) => {
-              this.setState({ tenants: this.state.preferencesMapper(result.data.listTenants, userTenants) })
-              this.state.seTenant(this.state.thisTenant)
-            })
+              client
+              .query({
+                query: gql`
+              query getUserPreferences($usrName: String!) {
+               getUserPreferences(usrName: $usrName) {
+                   usrName
+                   language
+                  }
+                }
+               `,
+                variables: {
+                  usrName: this.state.keycloak.idTokenParsed.sub
+                }
+              })
+              .then((result) => {
+                console.log(result)
+              });
+              this.setState({ tenants: this.state.preferencesMapper(result.data.listTenants, userTenants) });
+              this.state.seTenant(this.state.thisTenant);
+            });
         })
         .catch((e) => {
           console.error(e)
@@ -297,16 +318,7 @@ export default class App extends Component {
                   < TenantSelection seTenant={this.state.seTenant} tenantValues={this.state.tenants} correntValue={this.state.thisTenant}></TenantSelection>
                 </div>
                 <div>
-                  <IconButton
-                    size="large"
-                    aria-label="account of current user"
-                    aria-controls="menu-appbar"
-                    aria-haspopup="true"
-                    color="inherit"
-                    edge="end"
-                  >
-                    <AccountCircle />
-                  </IconButton>
+               <UserMenu></UserMenu>
                 </div>
               </CustomToolbar>
             </AppBar>
