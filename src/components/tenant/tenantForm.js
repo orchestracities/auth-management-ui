@@ -22,7 +22,20 @@ import Slide from '@mui/material/Slide';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
+import ColorPicker from './colorPicker';
+import IconPicker from './iconPicker'
 import axios from "axios"
+import {
+    ApolloClient,
+    InMemoryCache,
+    ApolloProvider,
+    useQuery,
+    gql,
+    createHttpLink,
+  } from "@apollo/client";
+  import { setContext } from '@apollo/client/link/context';
+
+
 
 const CustomDialogTitle = styled(AppBar)({
     position: 'relative',
@@ -30,45 +43,96 @@ const CustomDialogTitle = styled(AppBar)({
     boxShadow: "none"
 });
 
+const FormHeight = styled('div')({
+});
 
-export default function TenantForm({ title, close, action, tenant,getTenants }) {
+
+
+export default function TenantForm({ title, close, action, tenant, getTenants, keycloakToken }) {
     const [name, setName] = React.useState((action === "modify") ? tenant.name : " ");
     const [description, setDescription] = React.useState('');
+    const [primaryColor, setPrimaryColor] = React.useState((action === "modify") ? tenant.props.primaryColor : null);
+    const [secondaryColor, setSecondaryColor] = React.useState((action === "modify") ? tenant.props.secondaryColor : null);
+    const [iconName,setIconName] = React.useState((action === "modify") ? tenant.props.icon : null);
 
     const handleClose = () => {
         close(false);
     };
 
     const handleSave = () => {
-       
+
         switch (action) {
             case "create":
-              
-                axios.post(process.env.REACT_APP_ANUBIS_API_URL+'v1/tenants', {
+
+                axios.post(process.env.REACT_APP_ANUBIS_API_URL + 'v1/tenants', {
                     "name": name
-                  })
-                .then((response) => {
-                    close(false);
-                    getTenants();
                 })
-                .catch((e) => 
-                {
-                  console.error(e);
-                });
-               
+                    .then((response) => {
+                      
+                        close(false);
+                        getTenants();
+                    })
+                    .catch((e) => {
+                        console.error(e);
+                    });
+
                 break;
             case "modify":
-                console.log("modify")
+                const httpLink = createHttpLink({
+                    uri: 'http://localhost:4000/graphql',
+                  });
+        
+                  const authLink = setContext((_, { headers }) => {
+                    return {
+                      headers: {
+                        ...headers,
+                        Authorization: `Bearer ${keycloakToken}`
+                      }
+                    }
+                  });
+        
+                  const client = new ApolloClient({
+                    link: authLink.concat(httpLink),
+                    cache: new InMemoryCache()
+                  });
+                client
+                .mutate({
+                    mutation: gql`
+                    mutation modifyTenants($name: String!, $icon: String!,$primaryColor: String!,$secondaryColor: String!) {
+                        modifyTenants(
+                            name:$name
+                            icon:$icon
+                            primaryColor:$primaryColor
+                            secondaryColor:$secondaryColor
+                       ){
+                        name
+                        icon
+                        primaryColor
+                        secondaryColor
+                                     }
+                       }
+             `,
+             variables: {
+                name:name,
+                icon:iconName,
+                primaryColor:primaryColor.toString(),
+                secondaryColor:secondaryColor.toString()
+              }
+                })
+                .then((result) => {
+                    close(false);
+                    getTenants();
+                });
                 break;
             default:
                 break;
         }
-       
+
     };
 
     console.log(tenant)
     return (
-        <div>
+        <FormHeight>
             <CustomDialogTitle >
                 <Toolbar>
                     <IconButton
@@ -87,10 +151,11 @@ export default function TenantForm({ title, close, action, tenant,getTenants }) 
                 </Toolbar>
             </CustomDialogTitle>
             <DialogContent sx={{ minHeight: "400px" }}>
+
                 <Grid container
                     spacing={3}
                 >
-                    <Grid item xs={12}>
+                    {(action === "modify") ? "" : <Grid item xs={12}>
                         <TextField
                             id="Name"
                             label="Name"
@@ -102,17 +167,34 @@ export default function TenantForm({ title, close, action, tenant,getTenants }) 
                             onChange={(event) => {
                                 setName(event.target.value)
                             }}
-                            helperText={(name === "")?"the name is mandatory":""}
+                            helperText={(name === "") ? "the name is mandatory" : ""}
                             error={name === ""} />
 
-                    </Grid>
+                    </Grid>}
+
                     <Grid item xs={12}>
                         <TextField id="Description" label="Description" variant="outlined" sx={{
                             width: '100%',
                         }} />
                     </Grid>
+                    <Grid item lg={12} md={12} xs={12} container direction="column"
+                        justifyContent="center"
+                        alignItems="center">
+                    <IconPicker previusValue={iconName} setValue={setIconName} mode={action}></IconPicker>
+                    </Grid>
+                    <Grid item lg={6} md={6} xs={12} container direction="column"
+                        justifyContent="center"
+                        alignItems="center">
+                        < ColorPicker defaultValue={primaryColor} setColor={setPrimaryColor} mode={action} text={"Primary-Color: "}></ColorPicker>
+                    </Grid>
+                    <Grid item lg={6} md={6} xs={12} container direction="column"
+                        justifyContent="center"
+                        alignItems="center">
+                        < ColorPicker defaultValue={secondaryColor} setColor={setSecondaryColor} mode={action} text={"Secondary-Color: "}></ColorPicker>
+                    </Grid>
+                   
                 </Grid>
             </DialogContent>
-        </div>
+        </FormHeight>
     );
 }

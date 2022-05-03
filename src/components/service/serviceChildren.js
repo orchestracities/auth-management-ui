@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import Grid from '@mui/material/Grid';
 import Badge from '@mui/material/Badge';
-import SecurityIcon from '@mui/icons-material/Security';
+import FolderIcon from '@mui/icons-material/Folder';
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -25,14 +25,15 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import Tooltip from '@mui/material/Tooltip';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import DeleteDialog from '../shared/messages/cardDelete';
 
-
+const DialogRounded = styled(Dialog)(({ theme }) => ({
+      '& .MuiPaper-rounded':{
+        borderRadius: 15,
+    },
+}));
 
 const CustomDialogTitle = styled(AppBar)({
     position: 'relative',
@@ -292,12 +293,12 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
     return (
         <div>
-            <IconButton aria-label="path" onClick={handleClickOpen}>
+            <IconButton  aria-label="path" onClick={handleClickOpen}>
                 <Badge badgeContent={data.length} color="success">
-                    <SecurityIcon sx={{ color: "#536BBF" }} fontSize="large" />
+                    <FolderIcon color="primary" fontSize="large" />
                 </Badge>
             </IconButton>
-            <Dialog
+            <DialogRounded
                 open={status}
                 fullWidth={true}
                 maxWidth={"xl"}
@@ -415,7 +416,7 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
                 <DialogActions>
 
                 </DialogActions>
-            </Dialog>
+            </DialogRounded>
         </div>
     );
 }

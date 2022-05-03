@@ -17,10 +17,12 @@ The default user/password inside keycloack is admin/admin
 
 ### The Webapp
 
-To setup the webapp first of all let's create a .env file inside the main folder, the file should contain the string:
+To setup the webapp first of all let's create a .env file inside the main folder, the file should contain the strings:
 
 ```
 REACT_APP_ANUBIS_API_URL=http://localhost:8085/
+GRAPHQL_MONGO_DB=mongodb://localhost:27017/graphql
+GRAPHQL_RESOURCE_SERVER_NAME=graphql-config-server
 ```
 
 Then let's start the package required with
@@ -37,10 +39,10 @@ npm start
 
 ###  Keycloack and graphql
 
-To setup the connection between keycloack and graphql open a new window and move to the keycloak-connect-graphql folder
+To setup the connection between keycloack and graphql open a new window and move to the graphql-server folder
 
 ```
-cd keycloak-connect-graphql
+cd graphql-server
 ```
 
 Then let's start the package required with
@@ -49,8 +51,14 @@ Then let's start the package required with
 npm install
 ```
 
-To run a simple example use:
+After that we need to populate MongoDB with some default values related to Tenant1 & Tenant2:
 
 ```
-node examples/advancedAuth.js
+node main/mongo/populateDB.js
+```
+
+After that we can run the example with:
+
+```
+node main/advancedAuth.js
 ```

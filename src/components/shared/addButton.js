@@ -30,21 +30,21 @@ const bottomStyle = {
     right: "20px",
 }
 
-const NewElement = styled(IconButton)({
-    borderRadius: "15px",
-    background: "#8086ba",
+const NewElement = styled(IconButton)(({ theme }) => ({
+    borderRadius: 15,
+    background:theme.palette.secondary.main,
     color: "white",
     "&:hover": {
-        background: "#8086ba"
+        background: theme.palette.secondary.main
     }
-});
+}));
 
 
-const CustomDialogTitle = styled(AppBar)({
-    position: 'relative',
-    background: "white",
-    boxShadow: "none"
-});
+const DialogRounded = styled(Dialog)(({ theme }) => ({
+    '& .MuiPaper-rounded':{
+        borderRadius: 15,
+    },
+}));
 
 
 export default function AddButton({pageType,setOpen,status}) {
@@ -64,7 +64,7 @@ export default function AddButton({pageType,setOpen,status}) {
                     <AddIcon fontSize="medium" />
                 </NewElement>
             </Stack>
-            <Dialog
+            <DialogRounded
                 open={status}
                 fullWidth={true}
                 maxWidth={"xl"}
@@ -77,7 +77,7 @@ export default function AddButton({pageType,setOpen,status}) {
                 <DialogActions>
 
                 </DialogActions>
-            </Dialog>
+            </DialogRounded>
         </div>
     );
 }
