@@ -13,6 +13,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Grow from '@mui/material/Grow';
+
 const StyledMenu = styled((props) => (
   <Menu
     anchorOrigin={{
@@ -30,8 +31,7 @@ const StyledMenu = styled((props) => (
   '& .MuiPaper-root': {
     borderRadius: 6,
     marginTop: theme.spacing(1),
-    minWidth: document.getElementById('filterContainer').clientWidth,
-    top: "13rem !important",
+ minWidth:document.getElementById('filterContainer').clientWidth,    top: "13rem !important",
     color:
       theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
     boxShadow:
@@ -55,13 +55,13 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-export default function ActorFilter({ data, status, setstatus, filterValue }) {
+export default function ModeFilter({ data, status, setstatus,filterValue}) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [target, setarget] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setarget(event.currentTarget);
-    if (event.target.id !== "") {
+    if(event.target.id !==""){
       setstatus(event.target.id);
     }
   };
@@ -70,7 +70,7 @@ export default function ActorFilter({ data, status, setstatus, filterValue }) {
   };
 
   React.useEffect(() => {
-    if (status !== null && status === "ActorFilter") {
+    if (status !== null && status==="ModeFilter") {
       setAnchorEl(target);
     } else {
       setAnchorEl(null);
@@ -86,14 +86,14 @@ export default function ActorFilter({ data, status, setstatus, filterValue }) {
         {...(!open ? { timeout: 500 } : {})}
       >
         <Button
-          id="ActorFilter"
+          id="ModeFilter"
           aria-controls={open ? 'demo-customized-menu' : undefined}
           aria-haspopup="true"
           aria-expanded={open ? 'true' : undefined}
           variant="outlined"
           onClick={handleClick}
         >
-          Actor
+          Mode
         </Button>
       </Grow>
       <StyledMenu
@@ -118,7 +118,7 @@ export default function ActorFilter({ data, status, setstatus, filterValue }) {
                 defaultValue={filterValue.value}
                 getOptionLabel={(option) => option.name}
                 renderInput={(params) => (
-                  <TextField {...params} label="Actor" placeholder="Actor" />
+                  <TextField {...params} label="Mode" placeholder="Mode" />
                 )}
                 onChange={(event, value) => filterValue.set(value)}
                 isOptionEqualToValue={(option, value) => option.iri === value.iri}

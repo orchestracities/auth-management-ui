@@ -3,11 +3,17 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import Grid from '@mui/material/Grid';
+import Container from '@mui/material/Container';
 
 
 
 ReactDOM.render(
   <React.StrictMode>
+     <Container fixed >
+     <Grid container  ></Grid>
+     </Container>
+     
     <App />
   </React.StrictMode>
   ,

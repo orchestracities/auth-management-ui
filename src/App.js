@@ -353,7 +353,7 @@ export default class App extends Component {
               </List>
               <Divider />
             </Drawer>
-            {(this.state.authenticated) ? <Main open={this.state.open}><Routes>
+            {(this.state.authenticated) ? <Main open={this.state.open}> <Grid container id="filterContainer"></Grid><Routes>
               <Route path="Tenant" element={<TenantPage keycloakToken={this.state.keycloak.token} getTenants={this.state.getTenants} tenantValues={this.state.tenants} seTenant={this.state.seTenant} />} />
               <Route path="Service" element={<ServicePage getTenants={this.state.getTenants} tenantValues={this.state.tenants} thisTenant={this.state.thisTenant} />} />
               <Route path="Policy" element={<PolicyPage getTenants={this.state.getTenants} tenantValues={this.state.tenants} thisTenant={this.state.thisTenant} />} />

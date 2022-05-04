@@ -31,7 +31,7 @@ const StyledMenu = styled((props) => (
   '& .MuiPaper-root': {
     borderRadius: 6,
     marginTop: theme.spacing(1),
-    minWidth: 900,
+ minWidth:document.getElementById('filterContainer').clientWidth,
     top: "13rem !important",
     color:
       theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
@@ -56,7 +56,7 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-export default function PathFilter({ data, status, setstatus }) {
+export default function PathFilter({ data, status, setstatus,filterValue }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [target, setarget] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -80,7 +80,7 @@ export default function PathFilter({ data, status, setstatus }) {
 
 
   return (
-    <div style={{ height: (status !== null) ? 67 : "" }}>
+    <div style={{ height:  75 }}>
       <Grow
         in={!open}
         style={{ transformOrigin: '0 0 0' }}
@@ -117,10 +117,14 @@ export default function PathFilter({ data, status, setstatus }) {
                 id="multiple-limit-tags"
                 options={data}
                 getOptionLabel={(option) => option.fiware_service_path}
+                defaultValue={filterValue.value}
                 renderInput={(params) => (
                   <TextField {...params} label="Path" placeholder="Path" />
                 )}
-                sx={{ width: 500, marginTop: "10px" }}
+                onChange={(event, value) => filterValue.set(value)}
+                isOptionEqualToValue={(option, value) => option.fiware_service_path === value.fiware_service_path}
+
+                sx={{ width: "100%", marginTop: "10px" }}
               />
             </Grow>
           </Grid>
