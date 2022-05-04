@@ -37,8 +37,8 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
     for (let service of servicesResponse) {
       axios.get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies', {
         headers: {
-          "fiware_service": tenantName_id(),
-          "fiware_service_path": service.path
+          "fiware-service": tenantName_id(),
+          "fiware-servicepath": service.path
         }
       })
         .then((response) => {
@@ -62,6 +62,15 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
     .catch(err => console.log(err));
   }, [thisTenant]);
 
+  const [agentsTypes, setagentsTypes] = React.useState([]);
+
+  React.useEffect(() => {
+    getServices();
+    axios.get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies/agent-types')
+    .then(response => setagentsTypes(response.data))
+    .catch(err => console.log(err));
+  }, [thisTenant]);
+
   const mainTitle = "Policies";
 
   return (
@@ -70,14 +79,14 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
       {
         (typeof thisTenant === undefined || thisTenant === "")
           ? ""
-  : <AddButton pageType={<PolicyForm tenantName={tenantName_id} action="create" services={services} getServices={getServices} access_modes={access_modes} title={"New Policy"} close={setOpen} ></PolicyForm>} setOpen={setOpen} status={open}></AddButton>
+  : <AddButton pageType={<PolicyForm tenantName={tenantName_id} action="create" agentsTypes={agentsTypes} services={services} getServices={getServices} access_modes={access_modes} title={"New Policy"} close={setOpen} ></PolicyForm>} setOpen={setOpen} status={open}></AddButton>
       }
       {(policies.length > 1)?<Grid container spacing={2} sx={{ marginLeft: "15px " }}>
         <Grid item xs={12}>
-          <PolicyFilters></PolicyFilters>
+          <PolicyFilters data={policies}></PolicyFilters>
         </Grid>
         <Grid item xs={12}>
-          <PolicyTable data={policies} getData={getServices}></PolicyTable>
+          <PolicyTable data={policies} getData={getServices} access_modes={access_modes} agentsTypes={agentsTypes}></PolicyTable>
         </Grid>
       </Grid>:<Typography sx={{padding:"20px"}} variant="h6" component="h3">
             No data avaitable

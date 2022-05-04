@@ -9,14 +9,14 @@ import DashboardCard from '../components/shared/cards';
 import TenantForm from '../components/tenant/tenantForm';
 import Grow from '@mui/material/Grow';
 
-export default function TenantPage({ tenantValues, getTenants, seTenant }) {
+export default function TenantPage({tenantValues,getTenants,seTenant,client,keycloakToken}) {
   const [createOpen, setCreateOpen] = React.useState(false);
   const [sortedTenants, sortTenants] = React.useState([]);
   const [count, counter] = React.useState(1);
   React.useEffect(() => {
     sortTenants(tenantValues.reverse((a, b) => parseFloat(a.name) - parseFloat(b.name)))
   }, [tenantValues]);
-
+  const mainTitle="Tenant Admin Page";
   const rerOder = (newData) => {
     sortTenants(newData)
     counter(count + 1);
@@ -38,9 +38,6 @@ export default function TenantPage({ tenantValues, getTenants, seTenant }) {
                   </Grid>  
                   </Grow>
                 ))}
-          </Grid>
-        ))}
-
       </Grid>
     </div>
   );

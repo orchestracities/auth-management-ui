@@ -29,12 +29,12 @@ import DeleteDialog from '../shared/messages/cardDelete'
 import { styled } from '@mui/material/styles';
 
 const DialogRounded = styled(Dialog)(({ theme }) => ({
-      '& .MuiPaper-rounded':{
+    '& .MuiPaper-rounded': {
         borderRadius: 15,
     },
 }));
 
-export default function PoliciesTable({ data,getData }) {
+export default function PoliciesTable({ data, getData, access_modes, agentsTypes }) {
     //DELETE
     const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
 
@@ -56,18 +56,23 @@ export default function PoliciesTable({ data,getData }) {
         setOpen(false);
     };
 
+    const agentToString = (agents) => {
+        const agentsNames = [{ iri: 'acl:AuthenticatedAgent', name: 'Authenticated Agent' }, { iri: 'foaf:Agent', name: 'Agent' }, { iri: 'oc-acl:ResourceTenantAgent', name: 'Resource Tenant Agent' }, { iri: 'default', name: 'Default' }]
+        let agentString = "";
+        for (let thisAgent of agents) {
+            let foundAgent = agentsNames.filter((e) => e.iri === thisAgent);
+            agentString = agentString + foundAgent[0].name + " ";
+        }
+        return agentString;
+    }
 
-    function createData(id, access, path, resource, resourceType, actor, actorType, action) {
-        return {
-            id,
-            access,
-            path,
-            resource,
-            resourceType,
-            actor,
-            actorType,
-            action
-        };
+    const modeToString = (modes) => {
+        let modeString = "";
+        for (let mode of modes) {
+            let foundMode = access_modes.filter((e) => e.iri === mode);
+            modeString = modeString + foundMode[0].name + " ";
+        }
+        return modeString;
     }
 
     const rows = data;
@@ -118,13 +123,13 @@ export default function PoliciesTable({ data,getData }) {
             label: 'ID',
         },
         {
-            id: 'Access',
+            id: 'access_to',
             numeric: false,
             disablePadding: false,
             label: 'Access',
         },
         {
-            id: 'path',
+            id: 'fiware_service_path',
             numeric: false,
             disablePadding: false,
             label: 'Path',
@@ -136,13 +141,13 @@ export default function PoliciesTable({ data,getData }) {
             label: 'Resource',
         },
         {
-            id: 'resourceType',
+            id: 'resource_type',
             numeric: false,
             disablePadding: false,
             label: 'Resource Type',
         },
         {
-            id: 'actor',
+            id: 'agent',
             numeric: false,
             disablePadding: false,
             label: 'Actor',
@@ -152,6 +157,12 @@ export default function PoliciesTable({ data,getData }) {
             numeric: false,
             disablePadding: false,
             label: 'Actor Type',
+        },
+        {
+            id: 'mode',
+            numeric: false,
+            disablePadding: false,
+            label: 'Mode',
         },
         {
             id: 'action',
@@ -274,7 +285,7 @@ export default function PoliciesTable({ data,getData }) {
         for (let id of policyIDs) {
             foundPolicy = data.filter((e) => e.id === id);
             if (foundPolicy.length > 0) {
-            textDisplay = textDisplay + " -- " + foundPolicy[0].id + "\n";
+                textDisplay = textDisplay + " -- " + foundPolicy[0].id + "\n";
             }
         }
         return textDisplay;
@@ -285,7 +296,13 @@ export default function PoliciesTable({ data,getData }) {
         for (let id of policyIDs) {
             let foundPolicy = data.filter((e) => e.id === id);
             if (foundPolicy.length > 0) {
-                arrayOfData.push({ id: foundPolicy[0].id,access_to:foundPolicy[0].access_to,fiware_service:foundPolicy[0].fiware_service,fiware_service_path:foundPolicy[0].fiware_service_path})
+                let thisPolicy = foundPolicy[0];
+                arrayOfData.push({
+                    id: thisPolicy.id,
+                    access_to: thisPolicy.access_to,
+                    fiware_service: thisPolicy.fiware_service,
+                    fiware_service_path: thisPolicy.fiware_service_path
+                });
             }
         }
         return arrayOfData;
@@ -402,8 +419,9 @@ export default function PoliciesTable({ data,getData }) {
                                             <TableCell align="left">{row.fiware_service_path}</TableCell>
                                             <TableCell align="left">{row.resource}</TableCell>
                                             <TableCell align="left">{row.resource_type}</TableCell>
-                                            <TableCell align="left">{row.actor}</TableCell>
+                                            <TableCell align="left">{agentToString(row.agent)}</TableCell>
                                             <TableCell align="left">{row.actorType}</TableCell>
+                                            <TableCell align="left">{modeToString(row.mode)}</TableCell>
                                             <TableCell align="left">{row.action}</TableCell>
                                         </TableRow>
                                     );

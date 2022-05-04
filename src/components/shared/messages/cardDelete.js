@@ -68,8 +68,8 @@ export default function DeleteDialog(props) {
                         ?
                         {
                             headers: {
-                                "fiware_service": thisData.fiware_service,
-                                "fiware_service_path": thisData.fiware_service_path
+                                "fiware-service": thisData.fiware_service,
+                                "fiware-servicepath": thisData.fiware_service_path
                             }
                         }
                         :

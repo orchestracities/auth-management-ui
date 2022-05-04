@@ -31,9 +31,8 @@ const StyledMenu = styled((props) => (
   '& .MuiPaper-root': {
     borderRadius: 6,
     marginTop: theme.spacing(1),
-    minWidth: 120,
+    minWidth: 900,
     top: "13rem !important",
-    left: " 8rem !important",
     color:
       theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
     boxShadow:
@@ -57,81 +56,74 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-export default function PathFilter() {
+export default function PathFilter({ data, status, setstatus }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [target, setarget] = React.useState(null);
   const open = Boolean(anchorEl);
-  const top100Films = [
-    { title: 'The Shawshank Redemption', year: 1994 },
-    { title: 'The Godfather', year: 1972 },
-    { title: 'The Godfather: Part II', year: 1974 },
-    { title: 'The Dark Knight', year: 2008 },
-    { title: '12 Angry Men', year: 1957 },
-    { title: "Schindler's List", year: 1993 },
-    { title: 'Pulp Fiction', year: 1994 },
-    {
-      title: 'The Lord of the Rings: The Return of the King',
-      year: 2003,
-    },
-    { title: 'The Good, the Bad and the Ugly', year: 1966 },
-    { title: 'Fight Club', year: 1999 },
-    {
-      title: 'The Lord of the Rings: The Fellowship of the Ring',
-      year: 2001,
-    },
-    {
-      title: 'Star Wars: Episode V - The Empire Strikes Back',
-      year: 1980,
-    }
-  ];
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+    setarget(event.currentTarget);
+    if(event.target.id !==""){
+      setstatus(event.target.id);
+    }
   };
   const handleClose = () => {
-    setAnchorEl(null);
+    setstatus(null)
   };
 
+  React.useEffect(() => {
+    if (status !== null && status==="PathFilter") {
+      setAnchorEl(target);
+    } else {
+      setAnchorEl(null);
+    }
+  }, [status]);
+
+
   return (
-    <div >
+    <div style={{ height: (status !== null) ? 67 : "" }}>
       <Grow
         in={!open}
         style={{ transformOrigin: '0 0 0' }}
         {...(!open ? { timeout: 500 } : {})}
       >
         <Button
-          sx={{ display: (!open) ? "flex" : "none" }}
-          id="demo-customized-button"
+          id="PathFilter"
           aria-controls={open ? 'demo-customized-menu' : undefined}
           aria-haspopup="true"
           aria-expanded={open ? 'true' : undefined}
           variant="outlined"
           onClick={handleClick}
-          endIcon={<KeyboardArrowDownIcon />}
         >
           PATH
         </Button>
       </Grow>
       <StyledMenu
         id="demo-customized-menu"
-
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
         children={
-          <Grow
-            in={open}
-            style={{ transformOrigin: '0 0 0' }}
-            {...(open ? { timeout: 500 } : {})}
-          >
-            <Autocomplete
-              id="multiple-limit-tags"
-              options={top100Films}
-              getOptionLabel={(option) => option.title}
-              renderInput={(params) => (
-                <TextField {...params} label="limitTags" placeholder="Favorites" />
-              )}
-              sx={{ width: '500px', marginTop: "10px" }}
-            />
-          </Grow>
+          <Grid item xs={12}
+            container
+            direction="column"
+            justifyContent="space-between"
+            alignItems="left">
+            <Grow
+              in={open}
+              style={{ transformOrigin: '0 0 0' }}
+              {...(open ? { timeout: 500 } : {})}
+            >
+              <Autocomplete
+                id="multiple-limit-tags"
+                options={data}
+                getOptionLabel={(option) => option.fiware_service_path}
+                renderInput={(params) => (
+                  <TextField {...params} label="Path" placeholder="Path" />
+                )}
+                sx={{ width: 500, marginTop: "10px" }}
+              />
+            </Grow>
+          </Grid>
         }
       />
 

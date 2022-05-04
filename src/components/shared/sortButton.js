@@ -83,7 +83,7 @@ export default function SortButton({ data, id, sortData }) {
         onClick={handleClick}
         endIcon={<KeyboardArrowDownIcon />}
       >
-        {" SORT BY: " + mode}
+        {"" + mode}
       </Button>
       <StyledMenu
         id="demo-customized-menu"

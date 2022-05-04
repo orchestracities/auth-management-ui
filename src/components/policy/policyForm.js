@@ -37,7 +37,7 @@ const CustomDialogTitle = styled(AppBar)({
 });
 
 
-export default function PolicyForm({ title, close, action, tenantName, services, access_modes, getServices }) {
+export default function PolicyForm({ title, close, action, tenantName, services, access_modes,agentsTypes,getServices }) {
     const handleClose = () => {
         close(false);
     };
@@ -102,8 +102,8 @@ export default function PolicyForm({ title, close, action, tenantName, services,
                     "agent": agent
                 }, {
                     headers: {
-                        "fiware_service": tenantName(),
-                        "fiware_service_path": path
+                        "fiware-service": tenantName(),
+                        "fiware-servicepath": path
                     }
                 })
                     .then((response) => {
@@ -227,15 +227,13 @@ export default function PolicyForm({ title, close, action, tenantName, services,
                                 label="AgentType"
                                 onChange={handleAgentType}
                             >
-                                <MenuItem value={"default"}>Default</MenuItem>
-                                <MenuItem value={"user"}>User</MenuItem>
-                                <MenuItem value={"role"}>Role</MenuItem>
-                                <MenuItem value={"group"}>User</MenuItem>
-                                <MenuItem value={"other"}>Other</MenuItem>
+                                {agentsTypes.map((agent) => (
+                                    <MenuItem value={agent.iri}>{agent.name}</MenuItem>
+                                ))}
                             </Select>
                         </FormControl>
                     </Grid>
-                    {(agentType === "default") ?
+                    {(agentType === "acl:agent") ?
                         <Grid item xs={12}>
                             <FormControl fullWidth>
                                 <InputLabel id="agent">Agent</InputLabel>
