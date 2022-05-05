@@ -128,9 +128,6 @@ export default function ModeFilter({ data, status, setstatus,filterValue}) {
           </Grid>
         }
       />
-
-
     </div>
-
   );
 }

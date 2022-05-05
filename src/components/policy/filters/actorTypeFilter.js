@@ -128,9 +128,6 @@ export default function ActorTypeFilter({ data, status, setstatus,filterValue}) 
           </Grid>
         }
       />
-
-
     </div>
-
   );
 }

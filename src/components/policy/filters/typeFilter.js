@@ -130,9 +130,6 @@ export default function ResourceTypeFilter({ data, status, setstatus,filterValue
           </Grid>
         }
       />
-
-
     </div>
-
   );
 }

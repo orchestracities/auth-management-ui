@@ -125,9 +125,6 @@ export default function ResourceFilter({data,status,setstatus}) {
           </Grid>
         }
       />
-
-
     </div>
-
   );
 }
