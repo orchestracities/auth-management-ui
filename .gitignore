@@ -3,6 +3,7 @@
 graphql-server/main/config/config/*
 graphql-server/main/config/realm-export
 keycloak
+opa-service
 
 # Logs
 logs

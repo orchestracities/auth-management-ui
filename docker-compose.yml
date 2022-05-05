@@ -11,6 +11,9 @@ services:
       - DEFAULT_POLICIES_CONFIG_FILE=/home/apiuser/config/opa-service/default_policies.ttl
       - DEFAULT_WAC_CONFIG_FILE=/home/apiuser/config/opa-service/default_wac_config.yml
       - DB_TYPE=sqlite
+    volumes:
+      - ./opa-service/default_policies.ttl:/home/apiuser/config/opa-service/default_policies.ttl
+      - ./opa-service/default_wac_config.yml:/home/apiuser/config/opa-service/default_wac_config.yml
     ports:
       - "8085:8000"
       
