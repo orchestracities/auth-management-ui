@@ -12,7 +12,8 @@ const usrPreference = new mongoose.Schema({
 });
 
 const Preferences = connection.model('UsrPreferences', usrPreference);
-
+Preferences.deleteMany({}, function (err, small) {
+console.log("clear everything before..")
 Preferences.create({
     name: "Tenant1",
     icon: "none",
@@ -34,4 +35,4 @@ Preferences.create({
         });
     }
 });
-
+});
