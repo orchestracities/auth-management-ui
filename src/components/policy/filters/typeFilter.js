@@ -94,7 +94,7 @@ export default function ResourceTypeFilter({ data, status, setstatus,filterValue
           variant="outlined"
           onClick={handleClick}
         >
-          Resource Type
+          {"Resource Type" + ((filterValue.value !== null) ? ":" + filterValue.value.resource_type : "")}
         </Button>
       </Grow>
       <StyledMenu

@@ -37,7 +37,7 @@ const CustomDialogTitle = styled(AppBar)({
 });
 
 
-export default function PolicyForm({ title, close, action, tenantName, services, access_modes,agentsTypes,getServices }) {
+export default function PolicyForm({ title, close, action, tenantName, services, access_modes, agentsTypes, getServices }) {
     const handleClose = () => {
         close(false);
     };
@@ -77,10 +77,10 @@ export default function PolicyForm({ title, close, action, tenantName, services,
         setAgentType(event.target.value);
     };
 
-    const [otherAgent,setOtherAgent] = React.useState("");
+    const [agentName, setAgentName] = React.useState("");
 
-    const handleOtherAgent = (event) => {
-        setOtherAgent(event.target.value);
+    const handleAgentName = (event) => {
+        setAgentName(event.target.value);
     }
 
     //AGENT
@@ -233,7 +233,22 @@ export default function PolicyForm({ title, close, action, tenantName, services,
                             </Select>
                         </FormControl>
                     </Grid>
-                    {(agentType === "acl:agent") ?
+                                    {(agentType !== "") ?
+                        <Grid item xs={12}>
+                            <TextField
+                                id="agentName"
+                                variant="outlined"
+                                value={agentName}
+                                label="Name"
+                                onChange={handleAgentName}
+                                sx={{
+                                    width: '100%',
+                                }}
+                            />
+                        </Grid>
+                        :
+                        ""}
+                         {(agentType !== "") ?
                         <Grid item xs={12}>
                             <FormControl fullWidth>
                                 <InputLabel id="agent">Agent</InputLabel>
@@ -252,22 +267,6 @@ export default function PolicyForm({ title, close, action, tenantName, services,
                                     <MenuItem value={"oc-acl:ResourceTenantAgent"}>Resource Tenant Agent</MenuItem>
                                 </Select>
                             </FormControl>
-                        </Grid>
-                        :
-                        ""}
-
-                    {(agentType === "other") ?
-                        <Grid item xs={12}>
-                            <TextField
-                            id="OtherAgent"
-                            variant="outlined"
-                            value={otherAgent}
-                            label="Other Agent"
-                            onChange={handleOtherAgent}
-                            sx={{
-                                width: '100%',
-                            }}
-                        />
                         </Grid>
                         :
                         ""}

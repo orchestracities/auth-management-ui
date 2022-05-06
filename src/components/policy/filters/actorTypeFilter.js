@@ -31,7 +31,7 @@ const StyledMenu = styled((props) => (
   '& .MuiPaper-root': {
     borderRadius: 6,
     marginTop: theme.spacing(1),
- minWidth:document.getElementById('filterContainer').clientWidth,    top: "13rem !important",
+    minWidth: document.getElementById('filterContainer').clientWidth, top: "13rem !important",
     color:
       theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
     boxShadow:
@@ -55,13 +55,13 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-export default function ActorTypeFilter({ data, status, setstatus,filterValue}) {
+export default function ActorTypeFilter({ data, status, setstatus, filterValue }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [target, setarget] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setarget(event.currentTarget);
-    if(event.target.id !==""){
+    if (event.target.id !== "") {
       setstatus(event.target.id);
     }
   };
@@ -70,7 +70,7 @@ export default function ActorTypeFilter({ data, status, setstatus,filterValue}) 
   };
 
   React.useEffect(() => {
-    if (status !== null && status==="ActorTypeFilter") {
+    if (status !== null && status === "ActorTypeFilter") {
       setAnchorEl(target);
     } else {
       setAnchorEl(null);
@@ -79,7 +79,7 @@ export default function ActorTypeFilter({ data, status, setstatus,filterValue}) 
 
 
   return (
-    <div style={{ height:  75 }}>
+    <div style={{ height: 75 }}>
       <Grow
         in={!open}
         style={{ transformOrigin: '0 0 0' }}
@@ -93,7 +93,7 @@ export default function ActorTypeFilter({ data, status, setstatus,filterValue}) 
           variant="outlined"
           onClick={handleClick}
         >
-          Actor type
+          {" Actor type" + ((filterValue.value !== null) ? ":" + filterValue.value.name : "")}
         </Button>
       </Grow>
       <StyledMenu

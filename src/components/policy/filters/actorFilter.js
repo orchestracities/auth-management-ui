@@ -93,7 +93,7 @@ export default function ActorFilter({ data, status, setstatus, filterValue }) {
           variant="outlined"
           onClick={handleClick}
         >
-          Actor
+         { "Actor" +((filterValue.value !==null)?":" + filterValue.value.name:"")}
         </Button>
       </Grow>
       <StyledMenu

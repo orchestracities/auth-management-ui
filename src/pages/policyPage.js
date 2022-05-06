@@ -24,7 +24,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
     return tenantArray[0].name;
   }
   //services
-  const [services, setServices] = React.useState([{ children: [] }]);
+  const [services, setServices] = React.useState([]);
   const getServices = () => {
     axios.get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/tenants/' + thisTenant + "/service_paths")
       .then((response) => {
@@ -39,7 +39,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
       });
   }
   //policies
-  const [policies, setPolicies] = React.useState([{ children: [] }]);
+  const [policies, setPolicies] = React.useState([]);
   const getPolicies = (servicesResponse) => {
     let datAccumulator = [];
     for (let service of servicesResponse) {
@@ -62,7 +62,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
     console.log(policies);
   }
   //policiesFiltered
-  const [policiesFiltered, setPoliciesFiltered] = React.useState([{ children: [] }]);
+  const [policiesFiltered, setPoliciesFiltered] = React.useState([]);
   const getPoliciesFiltered = (servicesResponse) => {
     let queryParameters = "/?" + ((mode !== null) ? "&mode=" + mode.iri : "") + ((agent !== null) ? "&agent=" + agent.iri : "") + ((resourceType !== null) ? "&resource_type=" + resourceType.resource_type : "") + ((agentType !== null) ? "&agent_type=" + agentType : "");
     let datAccumulator = [];
@@ -140,7 +140,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
   }
 
   React.useEffect(() => {
-    if(policies.length > 1){
+    if(policies.length > 0){
       getPoliciesFiltered(services)
     }
   }, [mode, agent, resource, resourceType, agentType, policyFilter]);
@@ -153,7 +153,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
           ? ""
           : <AddButton pageType={<PolicyForm tenantName={tenantName_id} action="create" agentsTypes={agentsTypes} services={services} getServices={getServices} access_modes={access_modes} title={"New Policy"} close={setOpen} ></PolicyForm>} setOpen={setOpen} status={open}></AddButton>
       }
-      {(policies.length > 1) ? <Grid container spacing={2} sx={{ marginLeft: "15px " }}>
+      {(policies.length > 0) ? <Grid container spacing={2} sx={{ marginLeft: "15px " }}>
         <Grid item xs={12} >
           <PolicyFilters data={policies} access_modes={access_modes} agentsTypes={agentsTypes} mapper={filterMapper} />
         </Grid>

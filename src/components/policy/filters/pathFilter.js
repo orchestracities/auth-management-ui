@@ -94,7 +94,7 @@ export default function PathFilter({ data, status, setstatus,filterValue }) {
           variant="outlined"
           onClick={handleClick}
         >
-          PATH
+          {"Path" + ((filterValue.value !== null) ? ":" + filterValue.value.fiware_service_path : "")}
         </Button>
       </Grow>
       <StyledMenu

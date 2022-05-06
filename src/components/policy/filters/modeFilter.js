@@ -93,7 +93,7 @@ export default function ModeFilter({ data, status, setstatus,filterValue}) {
           variant="outlined"
           onClick={handleClick}
         >
-          Mode
+          {"Mode" + ((filterValue.value !== null) ? ":" + filterValue.value.name : "")}
         </Button>
       </Grow>
       <StyledMenu
