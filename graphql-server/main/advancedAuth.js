@@ -10,9 +10,7 @@ const graphqlPath = '/graphql'
 
 const { keycloak } = configureKeycloak(app, graphqlPath)
 
-const {get,update,add,deleteTenant} = require('./mongo/tenantsQueries')
-
-
+const { get, update, add, deleteTenant } = require('./mongo/tenantsQueries')
 
 const typeDefs = gql`
   type TenantConfiguration {
@@ -34,19 +32,19 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     listTenants: async (obj, args, context, info) => {
-      return await get(args.tenantNames);
+      return await get(args.tenantNames)
     }
   },
   Mutation: {
     publishTenants: async (object, args, context, info) => {
-      return await [add(args)];
+      return await [add(args)]
     },
     modifyTenants: async (object, args, context, info) => {
-      return await [update(args)];
+      return await [update(args)]
     },
     removeTenants: async (object, args, context, info) => {
-      return await deleteTenant(args);
-    },
+      return await deleteTenant(args)
+    }
   }
 }
 
@@ -64,4 +62,4 @@ server.applyMiddleware({ app })
 
 const port = 4000
 
-app.listen({ port }, () =>console.log(`🚀 Server ready at http://localhost:${port}${server.graphqlPath}`));
+app.listen({ port }, () => console.log(`🚀 Server ready at http://localhost:${port}${server.graphqlPath}`))

@@ -1,83 +1,82 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
-import IconList from '../tenant/iconList';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Avatar from '@mui/material/Avatar';
+import * as React from 'react'
+import Box from '@mui/material/Box'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import Select from '@mui/material/Select'
+import { createTheme, ThemeProvider, styled } from '@mui/material/styles'
+import IconList from '../tenant/iconList'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import Avatar from '@mui/material/Avatar'
 
 const TenantSelect = styled(Select)(
   {
     '& .MuiSelect-outlined': {
-        color: 'green',
+      color: 'green'
     },
     '& .MuiSelect-outlined:after': {
-        borderBottomColor: 'green',
+      borderBottomColor: 'green'
     },
     '& .MuiSelect-outlined': {
-        '& fieldset': {
-            borderColor: 'red',
-        },
-        '&:hover fieldset': {
-            borderColor: 'yellow',
-        },
-        '&.Mui-focused fieldset': {
-            borderColor: 'green',
-        },
-        
+      '& fieldset': {
+        borderColor: 'red'
+      },
+      '&:hover fieldset': {
+        borderColor: 'yellow'
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: 'green'
+      }
+
     }
   }
-  
-  );
 
-  
-  const theme = createTheme({
-    components: {
-        // Name of the component
-        MuiSelect: {
-            styleOverrides: {
-                // Name of the slot
-                root: {
-                    // Some CSS
-                    color: 'white',
-                
-                },
-            },
-        },
-        MuiInputLabel: {
-            styleOverrides: {
-                // Name of the slot
-                root: {
-                    // Some CSS
-                    color: 'white !important',
-                },
-            },
-        },
-        MuiSvgIcon: {
-            styleOverrides: {
-                // Name of the slot
-                root: {
-                    // Some CSS
-                },
-            },
+)
+
+const theme = createTheme({
+  components: {
+    // Name of the component
+    MuiSelect: {
+      styleOverrides: {
+        // Name of the slot
+        root: {
+          // Some CSS
+          color: 'white'
+
         }
-
+      }
     },
-});
-export default function TenantSelection({tenantValues,seTenant,correntValue}) {
-  const [Tenant, set_Tenant] = React.useState(correntValue);
-  const listOfIcons=IconList();
-  const iconMapper=(iconName)=>{
-   let thisIcon= listOfIcons.filter((e) => e.name === iconName)
-    return thisIcon[0].icon;
+    MuiInputLabel: {
+      styleOverrides: {
+        // Name of the slot
+        root: {
+          // Some CSS
+          color: 'white !important'
+        }
+      }
+    },
+    MuiSvgIcon: {
+      styleOverrides: {
+        // Name of the slot
+        root: {
+          // Some CSS
+        }
+      }
+    }
+
+  }
+})
+export default function TenantSelection ({ tenantValues, seTenant, correntValue }) {
+  const [Tenant, set_Tenant] = React.useState(correntValue)
+  const listOfIcons = IconList()
+  const iconMapper = (iconName) => {
+    const thisIcon = listOfIcons.filter((e) => e.name === iconName)
+    return thisIcon[0].icon
   }
   const handleChange = (event) => {
-    set_Tenant(event.target.value);
-    seTenant(event.target.value);
-  };
+    set_Tenant(event.target.value)
+    seTenant(event.target.value)
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -98,10 +97,10 @@ export default function TenantSelection({tenantValues,seTenant,correntValue}) {
                                 {iconMapper(tenant.props.icon)}
                             </ListItemIcon>
                         {tenant.name}</MenuItem>
-                ))}
+            ))}
         </TenantSelect>
       </FormControl>
     </Box>
     </ThemeProvider>
-  );
+  )
 }
