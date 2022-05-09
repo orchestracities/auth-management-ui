@@ -26,8 +26,7 @@ import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import TenantForm from '../tenant/tenantForm'
 import DeleteDialog from '../shared/messages/cardDelete'
-import { styled } from '@mui/material/styles'
-import { Trans } from "react-i18next"
+import { Trans } from 'react-i18next'
 
 const DialogRounded = styled(Dialog)(({ theme }) => ({
   '& .MuiPaper-rounded': {
@@ -121,7 +120,7 @@ export default function PoliciesTable ({ data, getData }) {
       id: 'Access',
       numeric: false,
       disablePadding: false,
-      label: 'Access'
+      label: <Trans>policies.titles.access</Trans>
     },
     {
       id: 'path',
@@ -133,25 +132,25 @@ export default function PoliciesTable ({ data, getData }) {
       id: 'resource',
       numeric: false,
       disablePadding: false,
-      label: 'Resource'
+      label: <Trans>policies.titles.resource</Trans>
     },
     {
       id: 'resourceType',
       numeric: false,
       disablePadding: false,
-      label: 'Resource Type'
+      label: <Trans>policies.titles.resourceType</Trans>
     },
     {
       id: 'actor',
       numeric: false,
       disablePadding: false,
-      label: 'Actor'
+      label: <Trans>policies.titles.actor</Trans>
     },
     {
       id: 'actorType',
       numeric: false,
       disablePadding: false,
-      label: 'Actor Type'
+      label: <Trans>policies.titles.actorType</Trans>
     },
     {
       id: 'action',
@@ -168,95 +167,7 @@ export default function PoliciesTable ({ data, getData }) {
       onRequestSort(event, property)
     }
 
-    function descendingComparator(a, b, orderBy) {
-        if (b[orderBy] < a[orderBy]) {
-            return -1;
-        }
-        if (b[orderBy] > a[orderBy]) {
-            return 1;
-        }
-        return 0;
-    }
-
-    function getComparator(order, orderBy) {
-        return order === 'desc'
-            ? (a, b) => descendingComparator(a, b, orderBy)
-            : (a, b) => -descendingComparator(a, b, orderBy);
-    }
-
-    // This method is created for cross-browser compatibility, if you don't
-    // need to support IE11, you can use Array.prototype.sort() directly
-    function stableSort(array, comparator) {
-        const stabilizedThis = array.map((el, index) => [el, index]);
-        stabilizedThis.sort((a, b) => {
-            const order = comparator(a[0], b[0]);
-            if (order !== 0) {
-                return order;
-            }
-            return a[1] - b[1];
-        });
-        return stabilizedThis.map((el) => el[0]);
-    }
-
-    const headCells = [
-        {
-            id: 'id',
-            numeric: false,
-            disablePadding: false,
-            label: 'ID',
-        },
-        {
-            id: 'Access',
-            numeric: false,
-            disablePadding: false,
-            label: <Trans>policies.titles.access</Trans>,
-        },
-        {
-            id: 'path',
-            numeric: false,
-            disablePadding: false,
-            label: 'Path',
-        },
-        {
-            id: 'resource',
-            numeric: false,
-            disablePadding: false,
-            label: <Trans>policies.titles.resource</Trans>,
-        },
-        {
-            id: 'resourceType',
-            numeric: false,
-            disablePadding: false,
-            label: <Trans>policies.titles.resourceType</Trans>,
-        },
-        {
-            id: 'actor',
-            numeric: false,
-            disablePadding: false,
-            label: <Trans>policies.titles.actor</Trans>,
-        },
-        {
-            id: 'actorType',
-            numeric: false,
-            disablePadding: false,
-            label: <Trans>policies.titles.actorType</Trans>,
-        },
-        {
-            id: 'action',
-            numeric: false,
-            disablePadding: true,
-            label: '',
-        },
-    ];
-
-    function PoliciesTableHead(props) {
-        const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
-            props;
-        const createSortHandler = (property) => (event) => {
-            onRequestSort(event, property);
-        };
-
-        return (
+    return (
             <TableHead>
                 <TableRow>
                     <TableCell padding="checkbox">
@@ -329,7 +240,7 @@ export default function PoliciesTable ({ data, getData }) {
                         variant="subtitle1"
                         component="div"
                     >
-                          <Trans i18nKey="common.table.selected" values={{data:numSelected}}/>
+                          <Trans i18nKey="common.table.selected" values={{ data: numSelected }}/>
                     </Typography>
                     )
                   : (
@@ -343,16 +254,17 @@ export default function PoliciesTable ({ data, getData }) {
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
-                ) : (
+                    )
+                  : (
                     <Typography
                     sx={{ flex: '1 1 100%' }}
                     variant="h6"
                     id="tableTitle"
                     component="div"
                 >
-                    {((stableSort(rows, getComparator(order, orderBy)).length > 1) ?  <Trans i18nKey="common.table.counterPlural" values={{data:data.length}}/> :  <Trans i18nKey="common.table.counterSingle" values={{data:data.length}}/>)}
+                    {((stableSort(rows, getComparator(order, orderBy)).length > 1) ? <Trans i18nKey="common.table.counterPlural" values={{ data: data.length }}/> : <Trans i18nKey="common.table.counterSingle" values={{ data: data.length }}/>)}
                     </Typography>
-                )}
+                    )}
             </Toolbar>
     )
   }
