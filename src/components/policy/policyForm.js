@@ -218,13 +218,13 @@ export default function PolicyForm({ title, close, action, tenantName, services,
                     </Grid>
                     <Grid item xs={12}>
                         <FormControl fullWidth>
-                            <InputLabel id="agentType">Agent-Type</InputLabel>
+                            <InputLabel id="ActorType">Actor-Type</InputLabel>
                             <Select
-                                labelId="agentType"
-                                id="agentType"
+                                labelId="ActorType"
+                                id="ActorType"
                                 variant="outlined"
                                 value={agentType}
-                                label="AgentType"
+                                label="ActorType"
                                 onChange={handleAgentType}
                             >
                                 {agentsTypes.map((agent) => (
@@ -233,7 +233,29 @@ export default function PolicyForm({ title, close, action, tenantName, services,
                             </Select>
                         </FormControl>
                     </Grid>
-                                    {(agentType !== "") ?
+                    {(agentType !== "" ) ?
+                        <Grid item xs={12}>
+                            <FormControl fullWidth>
+                                <InputLabel id="Actor">Actor</InputLabel>
+                                <Select
+                                    labelId="Actor"
+                                    id="Actor"
+                                    variant="outlined"
+                                    value={agent}
+                                    label="Actor"
+                                    multiple
+                                    input={<OutlinedInput label="Mode" />}
+                                    onChange={handleAgent}
+                                >
+                                    <MenuItem value={"acl:AuthenticatedAgent"}>Authenticated Actor</MenuItem>
+                                    <MenuItem value={"foaf:Agent"}>Actor</MenuItem>
+                                    <MenuItem value={"oc-acl:ResourceTenantAgent"}>Resource Tenant Actor</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        :
+                        ""}
+                    {(agentType !== "" && agentType !== "acl:agent") ?
                         <Grid item xs={12}>
                             <TextField
                                 id="agentName"
@@ -245,28 +267,6 @@ export default function PolicyForm({ title, close, action, tenantName, services,
                                     width: '100%',
                                 }}
                             />
-                        </Grid>
-                        :
-                        ""}
-                         {(agentType !== "") ?
-                        <Grid item xs={12}>
-                            <FormControl fullWidth>
-                                <InputLabel id="agent">Agent</InputLabel>
-                                <Select
-                                    labelId="agent"
-                                    id="agent"
-                                    variant="outlined"
-                                    value={agent}
-                                    label="Agent"
-                                    multiple
-                                    input={<OutlinedInput label="Mode" />}
-                                    onChange={handleAgent}
-                                >
-                                    <MenuItem value={"acl:AuthenticatedAgent"}>Authenticated Agent</MenuItem>
-                                    <MenuItem value={"foaf:Agent"}>Agent</MenuItem>
-                                    <MenuItem value={"oc-acl:ResourceTenantAgent"}>Resource Tenant Agent</MenuItem>
-                                </Select>
-                            </FormControl>
                         </Grid>
                         :
                         ""}
