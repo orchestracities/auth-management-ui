@@ -41,4 +41,4 @@ jobs:
           eslint: true
           prettier: true
           auto_fix: true
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.TOKEN }}
