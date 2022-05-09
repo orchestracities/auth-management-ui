@@ -52,7 +52,6 @@ import {
 } from "react-router-dom"
 import { ThirtyFpsOutlined } from '@mui/icons-material'
 import jwt_decode from "jwt-decode"
-import { createTheme, ThemeProvider } from '@mui/material/styles'
 import UserMenu from './components/shared/userMenu'
 
 const drawerWidth = 240
