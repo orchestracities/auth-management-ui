@@ -11,7 +11,7 @@ const graphqlPath = '/graphql'
 const { keycloak } = configureKeycloak(app, graphqlPath)
 
 const { get, update, add, deleteTenant } = require('./mongo/tenantsQueries')
-const {getUserPref,updateUserPref} = require ('./mongo/usrSettings')
+const { getUserPref, updateUserPref } = require('./mongo/usrSettings')
 
 const typeDefs = gql`
   type TenantConfiguration {
@@ -42,12 +42,12 @@ const resolvers = {
       return await get(args.tenantNames)
     },
     getUserPreferences: async (obj, args, context, info) => {
-      return await getUserPref(args.usrName);
+      return await getUserPref(args.usrName)
     }
   },
   Mutation: {
     modifyUserPreferences: async (object, args, context, info) => {
-      return await [updateUserPref(args)];
+      return await [updateUserPref(args)]
     },
     publishTenants: async (object, args, context, info) => {
       return await [add(args)]

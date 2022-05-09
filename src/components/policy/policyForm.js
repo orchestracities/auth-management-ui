@@ -27,9 +27,9 @@ import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 import { InputLabel } from '@mui/material'
 import OutlinedInput from '@mui/material/OutlinedInput'
-import axios from "axios"
+import axios from 'axios'
 import { Mode } from '@mui/icons-material'
-import { Trans } from "react-i18next"
+import { Trans } from 'react-i18next'
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',

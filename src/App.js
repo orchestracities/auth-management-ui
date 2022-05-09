@@ -49,9 +49,9 @@ import {
   Routes,
   Route,
   NavLink
-} from "react-router-dom"
+} from 'react-router-dom'
 import { ThirtyFpsOutlined } from '@mui/icons-material'
-import jwt_decode from "jwt-decode"
+import jwt_decode from 'jwt-decode'
 import UserMenu from './components/shared/userMenu'
 
 const drawerWidth = 240
@@ -120,9 +120,9 @@ export default class App extends Component {
     tokenData: [],
     keycloak: '',
     groups: [],
-    language: "",
+    language: '',
     setAppLanguage: (newLanguagePreference) => {
-      this.setState({ language: newLanguagePreference });
+      this.setState({ language: newLanguagePreference })
     },
     catchColor: (newID) => {
       const data = this.state.tenants.filter((e) => e.id === newID)
@@ -237,11 +237,11 @@ export default class App extends Component {
                   }
                 })
                 .then((result) => {
-                  this.state.setAppLanguage(result.data.getUserPreferences[0].language);
-                });
-              this.setState({ tenants: this.state.preferencesMapper(result.data.listTenants, userTenants) });
-              this.state.seTenant(this.state.thisTenant);
-            });
+                  this.state.setAppLanguage(result.data.getUserPreferences[0].language)
+                })
+              this.setState({ tenants: this.state.preferencesMapper(result.data.listTenants, userTenants) })
+              this.state.seTenant(this.state.thisTenant)
+            })
         })
         .catch((e) => {
           console.error(e)
@@ -319,7 +319,7 @@ export default class App extends Component {
                   < TenantSelection seTenant={this.state.seTenant} tenantValues={this.state.tenants} correntValue={this.state.thisTenant}></TenantSelection>
                 </div>
                 <div>
-                  <UserMenu keycloakToken={this.state.keycloak.token} language={{language:this.state.language,setLanguage:this.state.setAppLanguage}} userData={this.state.keycloak}></UserMenu>
+                  <UserMenu keycloakToken={this.state.keycloak.token} language={{ language: this.state.language, setLanguage: this.state.setAppLanguage }} userData={this.state.keycloak}></UserMenu>
                 </div>
               </CustomToolbar>
             </AppBar>

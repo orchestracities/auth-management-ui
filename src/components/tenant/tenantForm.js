@@ -34,7 +34,7 @@ import {
   createHttpLink
 } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
-import { Trans } from "react-i18next";
+import { Trans } from 'react-i18next'
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -136,7 +136,7 @@ export default function TenantForm ({ title, close, action, tenant, getTenants, 
                     >
                         <CloseIcon />
                     </IconButton>
-                    <Typography sx={{ ml: 2, flex: 1, color: "black" }} variant="h6" component="div">
+                    <Typography sx={{ ml: 2, flex: 1, color: 'black' }} variant="h6" component="div">
                         {title}
                     </Typography>
                     <Button autoFocus color="secondary" onClick={handleSave}>
@@ -169,8 +169,8 @@ export default function TenantForm ({ title, close, action, tenant, getTenants, 
                     </Grid>}
 
                     <Grid item xs={12}>
-                        <TextField id="Description"  label={ <Trans>tenant.form.description</Trans>} variant="outlined" sx={{
-                            width: '100%',
+                        <TextField id="Description" label={ <Trans>tenant.form.description</Trans>} variant="outlined" sx={{
+                          width: '100%'
                         }} />
                     </Grid>
                     <Grid item lg={12} md={12} xs={12} container direction="column"
