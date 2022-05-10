@@ -11,6 +11,7 @@ To start the docker compose and populate keycloack use the script:
 ```
 start.sh
 ```
+
 The default user/password inside keycloack is admin/admin
 
 ## How to setup the Webapp
@@ -37,7 +38,7 @@ after that we can start our application with
 npm start
 ```
 
-###  Keycloack and graphql
+### Keycloack and graphql
 
 To setup the connection between keycloack and graphql open a new window and move to the graphql-server folder
 

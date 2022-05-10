@@ -1,89 +1,112 @@
+import * as React from "react";
+import { MainTitle } from "../components/shared/mainTitle";
+import AddButton from "../components/shared/addButton";
+import { Grid } from "@mui/material";
+import PolicyFilters from "../components/policy/policyFilters";
+import PolicyTable from "../components/policy/policiesTable";
+import PolicyForm from "../components/policy/policyForm";
+import axios from "axios";
+import Typography from "@mui/material/Typography";
+import { Trans } from "react-i18next";
 
-import * as React from 'react'
-import { MainTitle } from '../components/shared/mainTitle'
-import AddButton from '../components/shared/addButton'
-import { Grid } from '@mui/material'
-import PolicyFilters from '../components/policy/policyFilters'
-import PolicyTable from '../components/policy/policiesTable'
-import PolicyForm from '../components/policy/policyForm'
-import axios from 'axios'
-import Typography from '@mui/material/Typography'
-
-export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
-  const [open, setOpen] = React.useState(false)
+export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
+  const [open, setOpen] = React.useState(false);
   const tenantName_id = () => {
-    const tenantArray = tenantValues.filter((e) => e.id === thisTenant)
-    return tenantArray[0].name
-  }
+    const tenantArray = tenantValues.filter((e) => e.id === thisTenant);
+    return tenantArray[0].name;
+  };
   // services
-  const [services, setServices] = React.useState([{ children: [] }])
+  const [services, setServices] = React.useState([{ children: [] }]);
   const getServices = () => {
-    axios.get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/tenants/' + thisTenant + '/service_paths')
+    axios
+      .get(
+        process.env.REACT_APP_ANUBIS_API_URL +
+          "v1/tenants/" +
+          thisTenant +
+          "/service_paths"
+      )
       .then((response) => {
-        console.log(response.data)
-        setServices(response.data)
-        getPolicies(response.data)
-        getTenants()
+        console.log(response.data);
+        setServices(response.data);
+        getPolicies(response.data);
+        getTenants();
       })
       .catch((e) => {
-        console.error(e)
-      })
-  }
+        console.error(e);
+      });
+  };
   // policies
-  const [policies, setPolicies] = React.useState([{ children: [] }])
+  const [policies, setPolicies] = React.useState([{ children: [] }]);
   const getPolicies = (servicesResponse) => {
-    let datAccumulator = []
+    let datAccumulator = [];
     for (const service of servicesResponse) {
-      axios.get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies', {
-        headers: {
-          fiware_service: tenantName_id(),
-          fiware_service_path: service.path
-        }
-      })
+      axios
+        .get(process.env.REACT_APP_ANUBIS_API_URL + "v1/policies", {
+          headers: {
+            fiware_service: tenantName_id(),
+            fiware_service_path: service.path,
+          },
+        })
         .then((response) => {
-          response.data.forEach(e => e.fiware_service = tenantName_id())
-          response.data.forEach(e => e.fiware_service_path = service.path)
-          datAccumulator = [...datAccumulator, ...response.data]
-          setPolicies(datAccumulator)
+          response.data.forEach((e) => (e.fiware_service = tenantName_id()));
+          response.data.forEach((e) => (e.fiware_service_path = service.path));
+          datAccumulator = [...datAccumulator, ...response.data];
+          setPolicies(datAccumulator);
         })
         .catch((e) => {
-          console.error(e)
-        })
+          console.error(e);
+        });
     }
-    console.log(policies)
-  }
-  const [access_modes, setAccess_modes] = React.useState([])
+    console.log(policies);
+  };
+  const [access_modes, setAccess_modes] = React.useState([]);
 
   React.useEffect(() => {
-    getServices()
-    axios.get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies/access-modes')
-      .then(response => setAccess_modes(response.data))
-      .catch(err => console.log(err))
-  }, [thisTenant])
+    getServices();
+    axios
+      .get(process.env.REACT_APP_ANUBIS_API_URL + "v1/policies/access-modes")
+      .then((response) => setAccess_modes(response.data))
+      .catch((err) => console.log(err));
+  }, [thisTenant]);
 
-  const mainTitle = 'Policies'
+  const mainTitle = <Trans>policies.titles.page</Trans>;
 
   return (
     <div>
       <MainTitle mainTitle={mainTitle}></MainTitle>
-      {
-        (typeof thisTenant === undefined || thisTenant === '')
-          ? ''
-          : <AddButton pageType={<PolicyForm tenantName={tenantName_id} action="create" services={services} getServices={getServices} access_modes={access_modes} title={'New Policy'} close={setOpen} ></PolicyForm>} setOpen={setOpen} status={open}></AddButton>
-      }
-      {(policies.length > 1)
-        ? <Grid container spacing={2} sx={{ marginLeft: '15px ' }}>
-        <Grid item xs={12}>
-          <PolicyFilters></PolicyFilters>
+      {typeof thisTenant === undefined || thisTenant === "" ? (
+        ""
+      ) : (
+        <AddButton
+          pageType={
+            <PolicyForm
+              tenantName={tenantName_id}
+              action="create"
+              services={services}
+              getServices={getServices}
+              access_modes={access_modes}
+              title={<Trans>policies.titles.new</Trans>}
+              close={setOpen}
+            ></PolicyForm>
+          }
+          setOpen={setOpen}
+          status={open}
+        ></AddButton>
+      )}
+      {policies.length > 1 ? (
+        <Grid container spacing={2} sx={{ marginLeft: "15px " }}>
+          <Grid item xs={12}>
+            <PolicyFilters></PolicyFilters>
+          </Grid>
+          <Grid item xs={12}>
+            <PolicyTable data={policies} getData={getServices}></PolicyTable>
+          </Grid>
         </Grid>
-        <Grid item xs={12}>
-          <PolicyTable data={policies} getData={getServices}></PolicyTable>
-        </Grid>
-      </Grid>
-        : <Typography sx={{ padding: '20px' }} variant="h6" component="h3">
-            No data avaitable
-      </Typography>}
-
+      ) : (
+        <Typography sx={{ padding: "20px" }} variant="h6" component="h3">
+          <Trans>policies.titles.noData</Trans>
+        </Typography>
+      )}
     </div>
-  )
+  );
 }
