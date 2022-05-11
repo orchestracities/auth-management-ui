@@ -13,6 +13,7 @@ import Autocomplete from '@mui/material/Autocomplete'
 import TextField from '@mui/material/TextField'
 import Grid from '@mui/material/Grid'
 import Grow from '@mui/material/Grow'
+import { Trans } from "react-i18next";
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -93,7 +94,10 @@ export default function ModeFilter ({ data, status, setstatus, filterValue }) {
           variant="outlined"
           onClick={handleClick}
         >
-          {'Mode' + ((filterValue.value !== null) ? ':' + filterValue.value.name : '')}
+          {<Trans
+            i18nKey="policies.filters.mode"
+            values={{ name: ((filterValue.value !== null) ? ':' + filterValue.value.name : '') }}
+          />}
         </Button>
       </Grow>
       <StyledMenu

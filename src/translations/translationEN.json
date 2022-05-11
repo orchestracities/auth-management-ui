@@ -30,21 +30,36 @@
     "titles": {
       "page": "Policies",
       "new": "New Policy",
-      "resource": "Resource",
-      "access": "access",
-      "resourceType": "Resource Type",
-      "actor": "Actor",
-      "actoryType": "Actor Type",
-      "noData": "No data avaitable"
+      "noData": "No data avaitable please select a Tenant"
+    },
+    "table":{
+      "access":"Access",
+      "path":"Path",
+      "resource":"Resource",
+      "resource_type":"Resource Type",
+      "actor":"Actor",
+      "mode":"Mode",
+      "total_sngl":"One element",
+      "total_plur":"Elements: {{name}}",
+      "selected":"{{name}} selected"
+    },
+    "filters":{
+      "mode":"Mode {{name}}",
+      "path":"Path {{name}}",
+      "actor_type":"Actor Type <0>{{name}}</0>",
+      "resource_type":"Resource Type {{name}}",
+      "actor":"Actor {{name}}"
+      
     },
     "form": {
       "servicePath": "Service Path",
       "acessTo": "Access To",
       "resourceType": "Resource Type",
       "mode": "Mode",
-      "agentType": "Agent Type",
-      "agent": "Agent",
-      "otherAgent": "Other Agent"
+      "actorType": "Agent Type",
+      "actor": "Actor",
+      "otherAgent": "Other Agent",
+      "userType":"User Type"
     }
   },
   "common": {

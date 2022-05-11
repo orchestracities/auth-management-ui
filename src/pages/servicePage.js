@@ -9,15 +9,6 @@ import axios from "axios";
 import Grow from "@mui/material/Grow";
 import { Trans } from "react-i18next";
 
-import * as React from 'react'
-import { MainTitle } from '../components/shared/mainTitle'
-import AddButton from '../components/shared/addButton'
-import { Grid } from '@mui/material'
-import SortButton from '../components/shared/sortButton'
-import DashboardCard from '../components/shared/cards'
-import ServiceForm from '../components/service/serviceForm'
-import axios from 'axios'
-import Grow from '@mui/material/Grow'
 
 export default function ServicePage ({ getTenants, tenantValues, thisTenant }) {
   const [createOpen, setCreateOpen] = React.useState(false)
@@ -36,7 +27,7 @@ export default function ServicePage ({ getTenants, tenantValues, thisTenant }) {
   React.useEffect(() => {
     getServices()
   }, [thisTenant])
-
+  const mainTitle = <Trans>service.titles.page</Trans>;
 
   return (
     <div>

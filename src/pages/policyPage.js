@@ -8,6 +8,7 @@ import PolicyTable from '../components/policy/policiesTable'
 import PolicyForm from '../components/policy/policyForm'
 import axios from 'axios'
 import Typography from '@mui/material/Typography'
+import { Trans } from "react-i18next";
 
 export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
   const [mode, setMode] = React.useState(null)
@@ -109,7 +110,7 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
       .catch(err => console.log(err))
   }, [thisTenant])
 
-  const mainTitle = 'Policies'
+  const mainTitle = <Trans>policies.titles.page</Trans>
 
   const filterMapper = {
     mode: {
@@ -150,7 +151,7 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
       {
         (typeof thisTenant === undefined || thisTenant === '')
           ? ''
-          : <AddButton pageType={<PolicyForm tenantName={tenantName_id} action="create" agentsTypes={agentsTypes} services={services} getServices={getServices} access_modes={access_modes} title={'New Policy'} close={setOpen} ></PolicyForm>} setOpen={setOpen} status={open}></AddButton>
+          : <AddButton pageType={<PolicyForm tenantName={tenantName_id} action="create" agentsTypes={agentsTypes} services={services} getServices={getServices} access_modes={access_modes} title={<Trans>policies.titles.new</Trans>} close={setOpen} ></PolicyForm>} setOpen={setOpen} status={open}></AddButton>
       }
       {(policies.length > 0)
         ? <Grid container spacing={2} sx={{ marginLeft: '15px ' }}>
@@ -162,7 +163,7 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
         </Grid>
       </Grid>
         : <Typography sx={{ padding: '20px' }} variant="h6" component="h3">
-        No data avaitable please select a Tenant
+          <Trans>policies.titles.noData</Trans>
       </Typography>}
 
     </div>

@@ -26,6 +26,7 @@ import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import TenantForm from '../tenant/tenantForm'
 import DeleteDialog from '../shared/messages/cardDelete'
+import { Trans } from "react-i18next";
 
 const DialogRounded = styled(Dialog)(({ theme }) => ({
   '& .MuiPaper-rounded': {
@@ -126,37 +127,37 @@ export default function PoliciesTable ({ data, getData, access_modes, agentsType
       id: 'access_to',
       numeric: false,
       disablePadding: false,
-      label: 'Access'
+      label: <Trans>policies.table.access</Trans>
     },
     {
       id: 'fiware_service_path',
       numeric: false,
       disablePadding: false,
-      label: 'Path'
+      label: <Trans>policies.table.path</Trans>
     },
     {
       id: 'resource',
       numeric: false,
       disablePadding: false,
-      label: 'Resource'
+      label: <Trans>policies.table.resource</Trans>
     },
     {
       id: 'resource_type',
       numeric: false,
       disablePadding: false,
-      label: 'Resource Type'
+      label: <Trans>policies.table.resource_type</Trans>
     },
     {
       id: 'agent',
       numeric: false,
       disablePadding: false,
-      label: 'Actor'
+      label: <Trans>policies.table.actor</Trans>
     },
     {
       id: 'mode',
       numeric: false,
       disablePadding: false,
-      label: 'Mode'
+      label: <Trans>policies.table.mode</Trans>
     },
     {
       id: 'action',
@@ -246,7 +247,10 @@ export default function PoliciesTable ({ data, getData, access_modes, agentsType
                         variant="subtitle1"
                         component="div"
                     >
-                        {numSelected} selected
+                      <Trans
+            i18nKey="policies.table.selected"
+            values={{ name: numSelected }}
+          />
                     </Typography>
                     )
                   : (
@@ -255,15 +259,18 @@ export default function PoliciesTable ({ data, getData, access_modes, agentsType
 
                 {numSelected > 0
                   ? (
-                    <Tooltip title="Delete">
+                    <Tooltip title={<Trans>common.deleteTooltip</Trans>}>
                         <IconButton onClick={handleClickOpenDeleteDialog}>
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
                     )
                   : (
-                      'Total elements: ' + stableSort(rows, getComparator(order, orderBy)).length
-                    )}
+                    <Trans
+                    i18nKey="policies.table.total_plur"
+                    values={{ name: stableSort(rows, getComparator(order, orderBy)).length }}
+                  />
+                          )}
             </Toolbar>
     )
   }

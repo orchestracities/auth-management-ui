@@ -30,21 +30,36 @@
     "titles": {
       "page": "Policies",
       "new": "Nuova Policy",
-      "resource": "Risorse",
-      "access": "Accesso",
-      "resourceType": "Tipologia risorse",
-      "actor": "Attore",
-      "actoryType": "Tipo di Attore",
-      "noData": "Nessun Dato disponibile"
+      "noData": "Nessun dato disponibile, per favore seleziona un Tenant"
+    },
+    "table":{
+      "access":"Acessi",
+      "path":"Percorso",
+      "resource":"Risorse",
+      "resource_type":"Tipologia Risorse",
+      "actor":"Utente",
+      "mode":"Modalità",
+      "total_sngl":"Un elemento",
+      "total_plur":"Elementi disponibili: {{name}}",
+      "selected":"{{name}} Selezionati"
+    },
+    "filters":{
+      "mode":"Modalità {{name}}",
+      "path":"Percorso {{name}}",
+      "actor_type":"Tipologia Utente <0>{{name}}</0>",
+      "resource_type":"Tipologia Risorsa {{name}}",
+      "actor":"Utente {{name}}"
+      
     },
     "form": {
-      "servicePath": "Paths dei Servizi",
-      "acessTo": "Accesso A",
-      "resourceType": "Tipo risorsa",
+      "servicePath": "Percorso dei servizi",
+      "acessTo": "Accesso a:",
+      "resourceType": "Tipologia risorse",
       "mode": "Modalità",
-      "agentType": "Tipologia di Attore",
-      "agent": "Attore",
-      "otherAgent": "Altri possibili Attori"
+      "actorType": "Tipologia Utente",
+      "actor": "Utente",
+      "otherAgent": "Altre Utenze",
+      "userType":"Tipologia Utenti"
     }
   },
   "common": {

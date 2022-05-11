@@ -13,6 +13,7 @@ import Autocomplete from '@mui/material/Autocomplete'
 import TextField from '@mui/material/TextField'
 import Grid from '@mui/material/Grid'
 import Grow from '@mui/material/Grow'
+import { Trans } from "react-i18next";
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -93,7 +94,10 @@ export default function ResourceTypeFilter ({ data, status, setstatus, filterVal
           variant="outlined"
           onClick={handleClick}
         >
-          {'Resource Type' + ((filterValue.value !== null) ? ':' + filterValue.value.resource_type : '')}
+          {<Trans
+            i18nKey="policies.filters.path"
+            values={{ name: ((filterValue.value !== null) ? ':' + filterValue.value.resource_type : '') }}
+          />}
         </Button>
       </Grow>
       <StyledMenu
