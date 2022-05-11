@@ -16,7 +16,7 @@ services:
       - ./opa-service/default_wac_config.yml:/home/apiuser/config/opa-service/default_wac_config.yml
     ports:
       - "8085:8000"
-      
+
   mongo:
     image: mongo:4.4
     ports:
