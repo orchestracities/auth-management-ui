@@ -1,35 +1,22 @@
 import * as React from 'react'
 import Button from '@mui/material/Button'
-import DeleteIcon from '@mui/icons-material/Delete'
-import Stack from '@mui/material/Stack'
 import IconButton from '@mui/material/IconButton'
 import { styled } from '@mui/material/styles'
-import AddIcon from '@mui/icons-material/Add'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
-import DialogContentText from '@mui/material/DialogContentText'
-import DialogTitle from '@mui/material/DialogTitle'
-import ListItemText from '@mui/material/ListItemText'
-import ListItem from '@mui/material/ListItem'
-import List from '@mui/material/List'
-import Divider from '@mui/material/Divider'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import CloseIcon from '@mui/icons-material/Close'
-import Slide from '@mui/material/Slide'
 import Grid from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
-import TextareaAutosize from '@mui/material/TextareaAutosize'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 import { InputLabel } from '@mui/material'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import axios from 'axios'
-import { Mode } from '@mui/icons-material'
-
+import Chip from '@mui/material/Chip';
+import Autocomplete from '@mui/material/Autocomplete';
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
   background: 'white',
@@ -76,11 +63,17 @@ export default function PolicyForm({ title, close, action, tenantName, services,
     setAgentType(event.target.value)
   }
 
-  const [agentName, setAgentName] = React.useState('')
 
-  const handleAgentName = (event) => {
-    setAgentName(event.target.value)
+
+  // FORM- tyoe
+  const [formType, setFormType] = React.useState("")
+
+  const handleFormType = (event) => {
+    setFormType(event.target.value)
   }
+
+
+
 
   // AGENT
   const [agent, setAgent] = React.useState([])
@@ -89,15 +82,56 @@ export default function PolicyForm({ title, close, action, tenantName, services,
     setAgent(event.target.value)
   }
 
+  // AGENT
+  const [agentOthers, setAgentOthers] = React.useState([])
+
+  const handleAgentOthers = (event) => {
+    setAgentOthers(event.target.value)
+  }
+
+  // AGENT NAME
+  const [agentName, setAgentName] = React.useState([])
+  // CLASS NAME
+  const [className, setClassName] = React.useState([])
+  // GROUP NAME
+  const [groupName, setGroupName] = React.useState([])
+
+  const agentMapper = () => {
+    let agentMapped = [];
+    if (formType === 'specific') {
+      for (let thisAgent of agent) {
+        let appList = [];
+        switch (thisAgent) {
+          case 'acl:agent':
+            agentName.map((name) => (appList.push("acl:agent:" + name)));
+            agentMapped = [...agentMapped, ...appList];
+            break;
+          case 'acl:agentGroup':
+            groupName.map((name) => (appList.push("acl:agentGroup:" + name)));
+            agentMapped = [...agentMapped, ...appList];
+            break;
+          case 'acl:agentClass':
+            className.map((name) => (appList.push("acl:agentClass:" + name)));
+            agentMapped = [...agentMapped, ...appList];
+            break;
+          default:
+            break;
+        }
+      }
+      return agentMapped;
+    } else {
+      return agentOthers
+    }
+  }
+
   const handleSave = () => {
     switch (action) {
       case 'create':
-
         axios.post(process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies/', {
           access_to: access,
           resource_type: resource,
-          mode,
-          agent
+          mode: mode,
+          agent:agentMapper()
         }, {
           headers: {
             'fiware-service': tenantName(),
@@ -212,76 +246,155 @@ export default function PolicyForm({ title, close, action, tenantName, services,
               </Select>
             </FormControl>
           </Grid>
+
           <Grid item xs={12}>
             <FormControl fullWidth>
-              <InputLabel id="ActorType">Actor-Type</InputLabel>
+              <InputLabel id="FormType">User-Type</InputLabel>
               <Select
-                labelId="ActorType"
-                id="ActorType"
+                labelId="FormType"
+                id="FormType"
                 variant="outlined"
-                value={agentType}
-                label="ActorType"
-                onChange={handleAgentType}
+                value={formType}
+                label="FormType"
+                onChange={handleFormType}
               >
-                {agentsTypes.map((agent) => (
-                  <MenuItem value={agent.iri}>{agent.name}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12}>
-            <FormControl fullWidth>
-              <InputLabel id="ActorType">Actor-Type</InputLabel>
-              <Select
-                labelId="ActorType"
-                id="ActorType"
-                variant="outlined"
-                value={agentType}
-                label="ActorType"
-                onChange={handleAgentType}
-              >
-                <MenuItem value={'main'}>Mains</MenuItem>
+                <MenuItem value={'specific'}>Specific</MenuItem>
                 <MenuItem value={'others'}>Others</MenuItem>
               </Select>
             </FormControl>
           </Grid>
-          {(agentType !== '' && agentType !== 'main')
-            ? <Grid item xs={12}>
-              <FormControl fullWidth>
-                <InputLabel id="Actor">Actor</InputLabel>
-                <Select
-                  labelId="Actor"
-                  id="Actor"
-                  variant="outlined"
-                  value={agent}
-                  label="Actor"
-                  multiple
-                  input={<OutlinedInput label="Mode" />}
-                  onChange={handleAgent}
-                >
-                  <MenuItem value={'acl:AuthenticatedAgent'}>Authenticated Actor</MenuItem>
-                  <MenuItem value={'foaf:Agent'}>Anyone</MenuItem>
-                  <MenuItem value={'oc-alc:ResourceTenantAgent'}>Resource Tenant Agent</MenuItem>
-                </Select>
-              </FormControl>
+          <Grid item xs={12} sx={{ display: (formType !== "" && formType === 'specific') ? 'block' : 'none' }}>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <InputLabel id="Actor">Actor</InputLabel>
+                  <Select
+                    labelId="Actor"
+                    id="Actor"
+                    variant="outlined"
+                    value={agent}
+                    label="Actor"
+                    multiple
+                    input={<OutlinedInput label="Mode" />}
+                    onChange={handleAgent}
+                  >
+                    {agentsTypes.map((agents) => (
+                      <MenuItem value={agents.iri}>{agents.name}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sx={{ display: (agent !== "" && agent.includes("acl:agent")) ? 'block' : 'none' }}>
+                <FormControl fullWidth>
+                  <Autocomplete
+                    limitTags={2}
+                    multiple
+                    id="Agent"
+                    options={agentName}
+                    defaultValue={agentName}
+                    freeSolo
+                    onChange={(event, newValue) => {
+                      setAgentName(newValue);
+                    }}
+                    renderTags={(value, getTagProps) =>
+                      value.map((option, index) => (
+                        <Chip variant="outlined" color="secondary" label={option} {...getTagProps({ index })} />
+                      ))
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        label="Agent"
+                        placeholder="Agent"
+                      />
+                    )}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sx={{ display: (agent !== "" && agent.includes("acl:agentGroup")) ? 'block' : 'none' }}>
+                <FormControl fullWidth>
+                  <Autocomplete
+                    limitTags={2}
+                    multiple
+                    id="Group"
+                    options={groupName}
+                    onChange={(event, newValue) => {
+                      setGroupName(newValue);
+                    }}
+                    defaultValue={groupName}
+                    freeSolo
+                    renderTags={(value, getTagProps) =>
+                      value.map((option, index) => (
+                        <Chip variant="outlined" color="secondary" label={option} {...getTagProps({ index })} />
+                      ))
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        label="Group"
+                        placeholder="Group"
+                      />
+                    )}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sx={{ display: (agent !== "" && agent.includes("acl:agentClass")) ? 'block' : 'none' }}>
+                <FormControl fullWidth>
+                  <Autocomplete
+                    limitTags={2}
+                    multiple
+                    id="Class"
+                    options={className}
+                    defaultValue={className}
+                    onChange={(event, newValue) => {
+                      setClassName(newValue);
+                    }}
+                    freeSolo
+                    renderTags={(value, getTagProps) =>
+                      value.map((option, index) => (
+                        <Chip variant="outlined" color="secondary" label={option} {...getTagProps({ index })} />
+                      ))
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        label="Class"
+                        placeholder="Class"
+                      />
+                    )}
+                  />
+                </FormControl>
+              </Grid>
             </Grid>
-            : ''}
-          {(agentType !== '' && agentType !== 'acl:agent')
-            ? <Grid item xs={12}>
-              <TextField
-                id="agentName"
-                variant="outlined"
-                value={agentName}
-                label="Name"
-                onChange={handleAgentName}
-                sx={{
-                  width: '100%'
-                }}
-              />
+          </Grid>
+          <Grid item xs={12} sx={{ display: (formType !== "" && formType === 'others') ? 'block' : 'none' }}>
+            <Grid item xs={12}>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <InputLabel id="ActorOthers">Actor</InputLabel>
+                  <Select
+                    labelId="Actor"
+                    id="ActorOthers"
+                    variant="outlined"
+                    value={agentOthers}
+                    label="Actor"
+                    multiple
+                    input={<OutlinedInput label="Mode" />}
+                    onChange={handleAgentOthers}
+                  >
+                    <MenuItem value={'acl:AuthenticatedAgent'}>Authenticated Actor</MenuItem>
+                    <MenuItem value={'foaf:Agent'}>Anyone</MenuItem>
+                    <MenuItem value={'oc-alc:ResourceTenantAgent'}>Resource Tenant Agent</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
             </Grid>
-            : ''}
+          </Grid>
         </Grid>
       </DialogContent>
-    </div>
+    </div >
   )
 }
