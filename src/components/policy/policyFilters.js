@@ -7,14 +7,27 @@ import PathFilter from './filters/pathFilter'
 import ResourceTypeFilter from './filters/typeFilter'
 import ModeFilter from './filters/modeFilter'
 
-export default function PolicyFilters ({ data, access_modes, agentsTypes, mapper }) {
+export default function PolicyFilters({ data, access_modes, agentsTypes, mapper }) {
   const [status, setstatus] = React.useState(null)
   const getUniqueListBy = (arr, key) => {
     return [...new Map(arr.map(item => [item[key], item])).values()]
   }
+
+  const getAgentsNames = () => {
+    let agents = [];
+    for (const thisPolicy of data) {
+      for (const thisAgent of thisPolicy.agent) {
+        let thisAgentSplit = thisAgent.split(':').slice('2').join(':');
+        if (thisAgentSplit !== "") {
+          agents.push({ iri: thisAgent, name: thisAgentSplit })
+        }
+      }
+    }
+    return getUniqueListBy(agents, 'iri')
+  }
+  const agentsNames = [...agentsTypes, ...[{ iri: 'acl:AuthenticatedAgent', name: 'authenticated agent' }, { iri: 'foaf:Agent', name: 'anyone' }, { iri: 'oc-acl:ResourceTenantAgent', name: 'resource tenant agent' }]]
   const fiware_service_path = getUniqueListBy(data, 'fiware_service_path')
   const resource_type = getUniqueListBy(data, 'resource_type')
-  const agentsNames = [{ iri: 'acl:AuthenticatedAgent', name: 'Authenticated Agent' }, { iri: 'foaf:Agent', name: 'Agent' }, { iri: 'oc-acl:ResourceTenantAgent', name: 'Resource Tenant Agent' }, { iri: 'default', name: 'Default' }]
   React.useEffect(() => {
     if (status === '') {
       setstatus(null)
@@ -37,10 +50,10 @@ export default function PolicyFilters ({ data, access_modes, agentsTypes, mapper
         <ResourceTypeFilter filterValue={mapper.resourceType} data={resource_type} status={status} setstatus={setstatus} />
       </Grid>
       <Grid item xs={(status === 'ActorFilter') ? 12 : 'auto'} sx={{ display: (status === null || status === 'ActorFilter') ? 'flex' : 'none' }} zeroMinWidth>
-        <ActorFilter filterValue={mapper.agent} data={agentsNames} status={status} setstatus={setstatus} />
+        <ActorFilter filterValue={mapper.agent} data={getAgentsNames()} status={status} setstatus={setstatus} />
       </Grid>
       <Grid item xs={(status === 'ActorTypeFilter') ? 12 : 'auto'} sx={{ display: (status === null || status === 'ActorTypeFilter') ? 'flex' : 'none' }} zeroMinWidth>
-        <ActorTypeFilter filterValue={mapper.agentType} data={agentsTypes} status={status} setstatus={setstatus} />
+        <ActorTypeFilter filterValue={mapper.agentType} data={agentsNames} status={status} setstatus={setstatus} />
       </Grid>
       <Grid item xs={(status === 'ActorTypeFilter') ? 12 : 'auto'} sx={{ display: (status === null || status === 'ActorTypeFilter') ? 'flex' : 'none' }}>
       </Grid>

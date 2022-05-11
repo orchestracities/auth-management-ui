@@ -56,11 +56,12 @@ export default function PoliciesTable ({ data, getData, access_modes, agentsType
   }
 
   const agentToString = (agents) => {
-    const agentsNames = [{ iri: 'acl:AuthenticatedAgent', name: 'Authenticated Agent' }, { iri: 'foaf:Agent', name: 'Agent' }, { iri: 'oc-acl:ResourceTenantAgent', name: 'Resource Tenant Agent' }, { iri: 'default', name: 'Default' }]
+    const agentsNames = [...agentsTypes,...[{ iri: 'acl:AuthenticatedAgent', name: 'authenticated agent' }, { iri: 'foaf:Agent', name: 'anyone' }, { iri: 'oc-acl:ResourceTenantAgent', name: 'resource tenant agent' }]]
     let agentString = ''
     for (const thisAgent of agents) {
-      const foundAgent = agentsNames.filter((e) => e.iri === thisAgent)
-      agentString = agentString + foundAgent[0].name + ' '
+      let thisAgentSplit=thisAgent.split(':').slice('2').join(':');
+      const foundAgent =   (thisAgentSplit==="")?agentsNames.filter((e) => e.iri === thisAgent):agentsNames.filter((e) => e.iri === thisAgent.replace(":"+thisAgentSplit,''))
+      agentString = agentString + foundAgent[0].name +  ((thisAgentSplit==="")?" ":' : ')+thisAgentSplit+ "  "
     }
     return agentString
   }
@@ -150,12 +151,6 @@ export default function PoliciesTable ({ data, getData, access_modes, agentsType
       numeric: false,
       disablePadding: false,
       label: 'Actor'
-    },
-    {
-      id: 'actorType',
-      numeric: false,
-      disablePadding: false,
-      label: 'Actor Type'
     },
     {
       id: 'mode',
@@ -422,7 +417,6 @@ export default function PoliciesTable ({ data, getData, access_modes, agentsType
                                             <TableCell align="left">{row.resource}</TableCell>
                                             <TableCell align="left">{row.resource_type}</TableCell>
                                             <TableCell align="left">{agentToString(row.agent)}</TableCell>
-                                            <TableCell align="left">{row.actorType}</TableCell>
                                             <TableCell align="left">{modeToString(row.mode)}</TableCell>
                                             <TableCell align="left">{row.action}</TableCell>
                                         </TableRow>

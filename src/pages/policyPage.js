@@ -63,7 +63,7 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
   // policiesFiltered
   const [policiesFiltered, setPoliciesFiltered] = React.useState([])
   const getPoliciesFiltered = (servicesResponse) => {
-    const queryParameters = '/?' + ((mode !== null) ? '&mode=' + mode.iri : '') + ((agent !== null) ? '&agent=' + agent.iri : '') + ((resourceType !== null) ? '&resource_type=' + resourceType.resource_type : '') + ((agentType !== null) ? '&agent_type=' + agentType : '')
+    const queryParameters = '/?' + ((mode !== null) ? '&mode=' + mode.iri : '') + ((agent !== null) ? '&agent=' + agent.iri : '') + ((resourceType !== null) ? '&resource_type=' + resourceType.resource_type : '') + ((agentType !== null) ? '&agent_type=' + agentType.iri : '')
     let datAccumulator = []
     for (const service of servicesResponse) {
       axios.get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies' + queryParameters, {

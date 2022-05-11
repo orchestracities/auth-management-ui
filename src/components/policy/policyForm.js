@@ -36,7 +36,7 @@ const CustomDialogTitle = styled(AppBar)({
   boxShadow: 'none'
 })
 
-export default function PolicyForm ({ title, close, action, tenantName, services, access_modes, agentsTypes, getServices }) {
+export default function PolicyForm({ title, close, action, tenantName, services, access_modes, agentsTypes, getServices }) {
   const handleClose = () => {
     close(false)
   }
@@ -121,151 +121,167 @@ export default function PolicyForm ({ title, close, action, tenantName, services
   }
 
   return (
-        <div>
-            <CustomDialogTitle >
-                <Toolbar>
-                    <IconButton
-                        edge="start"
-                        onClick={handleClose}
-                        aria-label="close"
-                    >
-                        <CloseIcon />
-                    </IconButton>
-                    <Typography sx={{ ml: 2, flex: 1, color: 'black' }} variant="h6" component="div">
-                        {title}
-                    </Typography>
-                    <Button autoFocus color="secondary" onClick={handleSave}>
-                        save
-                    </Button>
-                </Toolbar>
-            </CustomDialogTitle>
-            <DialogContent sx={{ minHeight: '400px' }}>
-                <Grid container
-                    spacing={3}
+    <div>
+      <CustomDialogTitle >
+        <Toolbar>
+          <IconButton
+            edge="start"
+            onClick={handleClose}
+            aria-label="close"
+          >
+            <CloseIcon />
+          </IconButton>
+          <Typography sx={{ ml: 2, flex: 1, color: 'black' }} variant="h6" component="div">
+            {title}
+          </Typography>
+          <Button autoFocus color="secondary" onClick={handleSave}>
+            save
+          </Button>
+        </Toolbar>
+      </CustomDialogTitle>
+      <DialogContent sx={{ minHeight: '400px' }}>
+        <Grid container
+          spacing={3}
+        >
+
+          <Grid item xs={12}>
+            <TextField id="Service" label="Service" variant="outlined" defaultValue={tenantName()} disabled sx={{
+              width: '100%'
+            }} />
+
+          </Grid>
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <InputLabel id="path">Service Path</InputLabel>
+              <Select
+                labelId="path"
+                id="path"
+                variant="outlined"
+                value={path}
+                label="Service Path"
+                onChange={handlePath}
+              >
+                {services.slice(1).map((service) => (
+                  <MenuItem value={service.path}>{service.path}</MenuItem>
+                ))}
+
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              id="access"
+              variant="outlined"
+              value={access}
+              label="Access To"
+              onChange={handleAccess}
+              sx={{
+                width: '100%'
+              }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              id="resource"
+              variant="outlined"
+              value={resource}
+              label="Resource Type"
+              onChange={handleResource}
+              sx={{
+                width: '100%'
+              }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <InputLabel id="mode">Mode</InputLabel>
+
+              <Select
+                labelId="mode"
+                id="mode"
+                variant="outlined"
+                value={mode}
+                label="Mode"
+                multiple
+                input={<OutlinedInput label="Mode" />}
+                onChange={handleMode}
+              >
+                {access_modes.map((service) => (
+                  <MenuItem value={service.iri}>{service.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <InputLabel id="ActorType">Actor-Type</InputLabel>
+              <Select
+                labelId="ActorType"
+                id="ActorType"
+                variant="outlined"
+                value={agentType}
+                label="ActorType"
+                onChange={handleAgentType}
+              >
+                {agentsTypes.map((agent) => (
+                  <MenuItem value={agent.iri}>{agent.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <InputLabel id="ActorType">Actor-Type</InputLabel>
+              <Select
+                labelId="ActorType"
+                id="ActorType"
+                variant="outlined"
+                value={agentType}
+                label="ActorType"
+                onChange={handleAgentType}
+              >
+                <MenuItem value={'main'}>Mains</MenuItem>
+                <MenuItem value={'others'}>Others</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          {(agentType !== '' && agentType !== 'main')
+            ? <Grid item xs={12}>
+              <FormControl fullWidth>
+                <InputLabel id="Actor">Actor</InputLabel>
+                <Select
+                  labelId="Actor"
+                  id="Actor"
+                  variant="outlined"
+                  value={agent}
+                  label="Actor"
+                  multiple
+                  input={<OutlinedInput label="Mode" />}
+                  onChange={handleAgent}
                 >
-
-                    <Grid item xs={12}>
-                        <TextField id="Service" label="Service" variant="outlined" defaultValue={tenantName()} disabled sx={{
-                          width: '100%'
-                        }} />
-
-                    </Grid>
-                    <Grid item xs={12}>
-                        <FormControl fullWidth>
-                            <InputLabel id="path">Service Path</InputLabel>
-                            <Select
-                                labelId="path"
-                                id="path"
-                                variant="outlined"
-                                value={path}
-                                label="Service Path"
-                                onChange={handlePath}
-                            >
-                                {services.slice(1).map((service) => (
-                                    <MenuItem value={service.path}>{service.path}</MenuItem>
-                                ))}
-
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                            id="access"
-                            variant="outlined"
-                            value={access}
-                            label="Access To"
-                            onChange={handleAccess}
-                            sx={{
-                              width: '100%'
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                            id="resource"
-                            variant="outlined"
-                            value={resource}
-                            label="Resource Type"
-                            onChange={handleResource}
-                            sx={{
-                              width: '100%'
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <FormControl fullWidth>
-                            <InputLabel id="mode">Mode</InputLabel>
-
-                            <Select
-                                labelId="mode"
-                                id="mode"
-                                variant="outlined"
-                                value={mode}
-                                label="Mode"
-                                multiple
-                                input={<OutlinedInput label="Mode" />}
-                                onChange={handleMode}
-                            >
-                                {access_modes.map((service) => (
-                                    <MenuItem value={service.iri}>{service.name}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <FormControl fullWidth>
-                            <InputLabel id="ActorType">Actor-Type</InputLabel>
-                            <Select
-                                labelId="ActorType"
-                                id="ActorType"
-                                variant="outlined"
-                                value={agentType}
-                                label="ActorType"
-                                onChange={handleAgentType}
-                            >
-                                {agentsTypes.map((agent) => (
-                                    <MenuItem value={agent.iri}>{agent.name}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    {(agentType !== '')
-                      ? <Grid item xs={12}>
-                            <FormControl fullWidth>
-                                <InputLabel id="Actor">Actor</InputLabel>
-                                <Select
-                                    labelId="Actor"
-                                    id="Actor"
-                                    variant="outlined"
-                                    value={agent}
-                                    label="Actor"
-                                    multiple
-                                    input={<OutlinedInput label="Mode" />}
-                                    onChange={handleAgent}
-                                >
-                                    <MenuItem value={'acl:AuthenticatedAgent'}>Authenticated Actor</MenuItem>
-                                    <MenuItem value={'foaf:Agent'}>Actor</MenuItem>
-                                    <MenuItem value={'oc-acl:ResourceTenantAgent'}>Resource Tenant Actor</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                      : ''}
-                    {(agentType !== '' && agentType !== 'acl:agent')
-                      ? <Grid item xs={12}>
-                            <TextField
-                                id="agentName"
-                                variant="outlined"
-                                value={agentName}
-                                label="Name"
-                                onChange={handleAgentName}
-                                sx={{
-                                  width: '100%'
-                                }}
-                            />
-                        </Grid>
-                      : ''}
-                </Grid>
-            </DialogContent>
-        </div>
+                  <MenuItem value={'acl:AuthenticatedAgent'}>Authenticated Actor</MenuItem>
+                  <MenuItem value={'foaf:Agent'}>Anyone</MenuItem>
+                  <MenuItem value={'oc-alc:ResourceTenantAgent'}>Resource Tenant Agent</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            : ''}
+          {(agentType !== '' && agentType !== 'acl:agent')
+            ? <Grid item xs={12}>
+              <TextField
+                id="agentName"
+                variant="outlined"
+                value={agentName}
+                label="Name"
+                onChange={handleAgentName}
+                sx={{
+                  width: '100%'
+                }}
+              />
+            </Grid>
+            : ''}
+        </Grid>
+      </DialogContent>
+    </div>
   )
 }
