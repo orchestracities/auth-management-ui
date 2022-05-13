@@ -91,6 +91,7 @@ export default function PathFilter ({ data, status, setstatus, filterValue }) {
           aria-controls={open ? 'demo-customized-menu' : undefined}
           aria-haspopup="true"
           aria-expanded={open ? 'true' : undefined}
+          disabled={(data.length<=0)?true:false}
           variant="outlined"
           onClick={handleClick}
         >

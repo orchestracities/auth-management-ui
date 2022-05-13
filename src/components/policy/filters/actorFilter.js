@@ -88,6 +88,7 @@ export default function ActorFilter({ data, status, setstatus, filterValue }) {
       >
         <Button
           id="ActorFilter"
+          disabled={(data.length<=0)?true:false}
           aria-controls={open ? 'demo-customized-menu' : undefined}
           aria-haspopup="true"
           aria-expanded={open ? 'true' : undefined}

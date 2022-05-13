@@ -90,6 +90,7 @@ export default function ActorTypeFilter ({ data, status, setstatus, filterValue 
           id="ActorTypeFilter"
           aria-controls={open ? 'demo-customized-menu' : undefined}
           aria-haspopup="true"
+          disabled={(data.length<=0)?true:false}
           aria-expanded={open ? 'true' : undefined}
           variant="outlined"
           onClick={handleClick}
