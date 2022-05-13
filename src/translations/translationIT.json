@@ -32,24 +32,23 @@
       "new": "Nuova Policy",
       "noData": "Nessun dato disponibile, per favore seleziona un Tenant"
     },
-    "table":{
-      "access":"Acessi",
-      "path":"Percorso",
-      "resource":"Risorse",
-      "resource_type":"Tipologia Risorse",
-      "actor":"Utente",
-      "mode":"Modalità",
-      "total_sngl":"Un elemento",
-      "total_plur":"Elementi disponibili: {{name}}",
-      "selected":"{{name}} Selezionati"
+    "table": {
+      "access": "Acessi",
+      "path": "Percorso",
+      "resource": "Risorse",
+      "resource_type": "Tipologia Risorse",
+      "actor": "Utente",
+      "mode": "Modalità",
+      "total_sngl": "Un elemento",
+      "total_plur": "Elementi disponibili: {{name}}",
+      "selected": "{{name}} Selezionati"
     },
-    "filters":{
-      "mode":"Modalità {{name}}",
-      "path":"Percorso {{name}}",
-      "actor_type":"Tipologia Utente <0>{{name}}</0>",
-      "resource_type":"Tipologia Risorsa {{name}}",
-      "actor":"Utente {{name}}"
-      
+    "filters": {
+      "mode": "Modalità {{name}}",
+      "path": "Percorso {{name}}",
+      "actor_type": "Tipologia Utente <0>{{name}}</0>",
+      "resource_type": "Tipologia Risorsa {{name}}",
+      "actor": "Utente {{name}}"
     },
     "form": {
       "servicePath": "Percorso dei servizi",
@@ -59,7 +58,7 @@
       "actorType": "Tipologia Utente",
       "actor": "Utente",
       "otherAgent": "Altre Utenze",
-      "userType":"Tipologia Utenti",
+      "userType": "Tipologia Utenti",
       "agent": "Nome Utente",
       "agentGroup": "Nome Gruppo",
       "agentClass": "Nome Classe"
