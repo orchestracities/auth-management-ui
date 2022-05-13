@@ -32,24 +32,23 @@
       "new": "New Policy",
       "noData": "No data avaitable please select a Tenant"
     },
-    "table":{
-      "access":"Access",
-      "path":"Path",
-      "resource":"Resource",
-      "resource_type":"Resource Type",
-      "actor":"Actor",
-      "mode":"Mode",
-      "total_sngl":"One element",
-      "total_plur":"Elements: {{name}}",
-      "selected":"{{name}} selected"
+    "table": {
+      "access": "Access",
+      "path": "Path",
+      "resource": "Resource",
+      "resource_type": "Resource Type",
+      "actor": "Actor",
+      "mode": "Mode",
+      "total_sngl": "One element",
+      "total_plur": "Elements: {{name}}",
+      "selected": "{{name}} selected"
     },
-    "filters":{
-      "mode":"Mode {{name}}",
-      "path":"Path {{name}}",
-      "actor_type":"Actor Type <0>{{name}}</0>",
-      "resource_type":"Resource Type {{name}}",
-      "actor":"Actor {{name}}"
-      
+    "filters": {
+      "mode": "Mode {{name}}",
+      "path": "Path {{name}}",
+      "actor_type": "Actor Type <0>{{name}}</0>",
+      "resource_type": "Resource Type {{name}}",
+      "actor": "Actor {{name}}"
     },
     "form": {
       "servicePath": "Service Path",
@@ -59,7 +58,10 @@
       "actorType": "Agent Type",
       "actor": "Actor",
       "otherAgent": "Other Agent",
-      "userType":"User Type"
+      "userType": "User Type",
+      "agent": "Agent Name",
+      "agentGroup": "Group Name",
+      "agentClass": "Class Name"
     }
   },
   "common": {

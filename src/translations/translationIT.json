@@ -59,7 +59,10 @@
       "actorType": "Tipologia Utente",
       "actor": "Utente",
       "otherAgent": "Altre Utenze",
-      "userType":"Tipologia Utenti"
+      "userType":"Tipologia Utenti",
+      "agent": "Nome Utente",
+      "agentGroup": "Nome Gruppo",
+      "agentClass": "Nome Classe"
     }
   },
   "common": {

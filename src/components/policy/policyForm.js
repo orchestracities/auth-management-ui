@@ -15,9 +15,10 @@ import Select from '@mui/material/Select'
 import { InputLabel } from '@mui/material'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import axios from 'axios'
-import Chip from '@mui/material/Chip';
-import Autocomplete from '@mui/material/Autocomplete';
+import AddIcon from '@mui/icons-material/Add';
 import { Trans } from "react-i18next";
+import DeleteIcon from '@mui/icons-material/Delete';
+import Tooltip from '@mui/material/Tooltip';
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -77,12 +78,6 @@ export default function PolicyForm({ title, close, action, tenantName, services,
 
 
 
-  // AGENT
-  const [agent, setAgent] = React.useState([])
-
-  const handleAgent = (event) => {
-    setAgent(event.target.value)
-  }
 
   // AGENT
   const [agentOthers, setAgentOthers] = React.useState([])
@@ -91,39 +86,46 @@ export default function PolicyForm({ title, close, action, tenantName, services,
     setAgentOthers(event.target.value)
   }
 
-  // AGENT NAME
-  const [agentName, setAgentName] = React.useState([])
-  // CLASS NAME
-  const [className, setClassName] = React.useState([])
-  // GROUP NAME
-  const [groupName, setGroupName] = React.useState([])
+  // AGENT
+  const [agentsMap, setAgentsMap] = React.useState([])
+  const [index, setIndex] = React.useState(0)
+
+  const handleAgentsName = (event) => {
+    let newArray = agentsMap;
+    newArray[Number(event.target.id)].name = event.target.value;
+    setAgentsMap(newArray);
+    setIndex(Math.random());
+  }
+  const handleAgentsType = (event) => {
+    let newArray = agentsMap;
+    newArray[Number(event.target.name)].type = event.target.value;
+    setAgentsMap(newArray);
+    setIndex(Math.random());
+  }
+  const addAgents = () => {
+    setAgentsMap([...agentsMap, { type: null, name: "" }]);
+  }
+  const removeAgents = (index) => {
+    let newArray = agentsMap;
+    newArray.splice(index, 1)
+    setAgentsMap(newArray);
+    setIndex(Math.random());
+  }
+
+
 
   const agentMapper = () => {
+    
     let agentMapped = [];
     if (formType === 'specific') {
-      for (let thisAgent of agent) {
-        let appList = [];
-        switch (thisAgent) {
-          case 'acl:agent':
-            agentName.map((name) => (appList.push("acl:agent:" + name)));
-            agentMapped = [...agentMapped, ...appList];
-            break;
-          case 'acl:agentGroup':
-            groupName.map((name) => (appList.push("acl:agentGroup:" + name)));
-            agentMapped = [...agentMapped, ...appList];
-            break;
-          case 'acl:agentClass':
-            className.map((name) => (appList.push("acl:agentClass:" + name)));
-            agentMapped = [...agentMapped, ...appList];
-            break;
-          default:
-            break;
-        }
+      for (let thisAgent of agentsMap) {
+      agentMapped.push(thisAgent.type+":"+thisAgent.name);
       }
       return agentMapped;
     } else {
       return agentOthers
     }
+    
   }
 
   const handleSave = () => {
@@ -133,7 +135,7 @@ export default function PolicyForm({ title, close, action, tenantName, services,
           access_to: access,
           resource_type: resource,
           mode: mode,
-          agent:agentMapper()
+          agent: agentMapper()
         }, {
           headers: {
             'fiware-service': tenantName(),
@@ -155,7 +157,21 @@ export default function PolicyForm({ title, close, action, tenantName, services,
         break
     }
   }
-
+  const getLabelName = (name) => {
+    switch (name) {
+      case 'acl:agent':
+        return <Trans>policies.form.agent</Trans>
+        break;
+      case 'acl:agentGroup':
+        return <Trans>policies.form.agentGroup</Trans>
+        break;
+      case 'acl:agentClass':
+        return <Trans>policies.form.agentClass</Trans>
+        break;
+      default:
+        break;
+    }
+  }
   return (
     <div>
       <CustomDialogTitle >
@@ -266,109 +282,83 @@ export default function PolicyForm({ title, close, action, tenantName, services,
             </FormControl>
           </Grid>
           <Grid item xs={12} sx={{ display: (formType !== "" && formType === 'specific') ? 'block' : 'none' }}>
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <InputLabel id="Actor"><Trans>policies.form.actor</Trans></InputLabel>
-                  <Select
-                    labelId="Actor"
-                    id="Actor"
-                    variant="outlined"
-                    value={agent}
-                    label={<Trans>policies.form.actor</Trans>}
-                    multiple
-                    input={<OutlinedInput label="Mode" />}
-                    onChange={handleAgent}
-                  >
-                    {agentsTypes.map((agents) => (
-                      <MenuItem value={agents.iri}>{agents.name}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+            <Grid container spacing={6}>
+              <Grid item xs={12} sx={{ marginTop: "20px", marginBottom: "0px !important" }}>
+                <Typography variant="h5" component="div" sx={{ marginLeft: "5%" }}>
+                  Actors:
+                </Typography>
               </Grid>
-              <Grid item xs={12} sx={{ display: (agent !== "" && agent.includes("acl:agent")) ? 'block' : 'none' }}>
-                <FormControl fullWidth>
-                  <Autocomplete
-                    limitTags={2}
-                    multiple
-                    id="Agent"
-                    options={agentName}
-                    defaultValue={agentName}
-                    freeSolo
-                    onChange={(event, newValue) => {
-                      setAgentName(newValue);
-                    }}
-                    renderTags={(value, getTagProps) =>
-                      value.map((option, index) => (
-                        <Chip variant="outlined" color="secondary" label={option} {...getTagProps({ index })} />
-                      ))
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="outlined"
-                        label="Agent"
-                        placeholder="Agent"
-                      />
-                    )}
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sx={{ display: (agent !== "" && agent.includes("acl:agentGroup")) ? 'block' : 'none' }}>
-                <FormControl fullWidth>
-                  <Autocomplete
-                    limitTags={2}
-                    multiple
-                    id="Group"
-                    options={groupName}
-                    onChange={(event, newValue) => {
-                      setGroupName(newValue);
-                    }}
-                    defaultValue={groupName}
-                    freeSolo
-                    renderTags={(value, getTagProps) =>
-                      value.map((option, index) => (
-                        <Chip variant="outlined" color="secondary" label={option} {...getTagProps({ index })} />
-                      ))
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="outlined"
-                        label="Group"
-                        placeholder="Group"
-                      />
-                    )}
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sx={{ display: (agent !== "" && agent.includes("acl:agentClass")) ? 'block' : 'none' }}>
-                <FormControl fullWidth>
-                  <Autocomplete
-                    limitTags={2}
-                    multiple
-                    id="Class"
-                    options={className}
-                    defaultValue={className}
-                    onChange={(event, newValue) => {
-                      setClassName(newValue);
-                    }}
-                    freeSolo
-                    renderTags={(value, getTagProps) =>
-                      value.map((option, index) => (
-                        <Chip variant="outlined" color="secondary" label={option} {...getTagProps({ index })} />
-                      ))
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="outlined"
-                        label="Class"
-                        placeholder="Class"
-                      />
-                    )}
-                  />
-                </FormControl>
+              {agentsMap.map((agent, i) => (
+
+                <React.Fragment>
+                  <Grid item xs={2} ></Grid>
+                  <Grid item xs={10} >
+                    <Grid container spacing={12} direction="row"
+                      justifyContent="center"
+                      alignItems="center">
+                      <Grid item xs={10} >
+                        <Grid container spacing={4}>
+                          <Grid item xs={12} >
+                            <FormControl fullWidth>
+                              <InputLabel id={"Actor" + i}><Trans>policies.form.actor</Trans></InputLabel>
+                              <Select
+                                labelId={"Actor" + i}
+                                id={"Actor" + i}
+                                name={i}
+                                key={"Actor" + i}
+                                value={agent.type}
+                                variant="outlined"
+                                onChange={handleAgentsType}
+                                label={<Trans>policies.form.actor</Trans>}
+                                input={<OutlinedInput label="Mode" />}
+
+                              >
+                                {agentsTypes.map((agents) => (
+                                  <MenuItem value={agents.iri}>{agents.name}</MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                          </Grid>
+                          <Grid item xs={12} sx={{ display: (agent.type !== null) ? 'block' : 'none' }}>
+                            <TextField
+                              id={i}
+                              key={"actorName" + i}
+                              variant="outlined"
+                              label={getLabelName(agent.type)}
+                              value={agent.name}
+                              onChange={handleAgentsName}
+                              sx={{
+                                width: '100%'
+                              }}
+                            />
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                      <Grid item xs={2}>
+                        <Grid container direction="column"
+                          justifyContent="center"
+                          alignItems="center" spacing={4}>
+                          <Grid item xs={12} >
+                            <Tooltip title={<Trans>common.deleteTooltip</Trans>} >
+                              <IconButton aria-label="delete" size="large" onClick={() => { removeAgents(i) }}>
+                                <DeleteIcon fontSize="inherit" />
+                              </IconButton>
+                            </Tooltip>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </React.Fragment>
+              ))}
+              <Grid item xs={12}
+              >  <Grid container direction="row"
+                justifyContent="center"
+                alignItems="center" spacing={0}>
+                  <Button variant="outlined" startIcon={<AddIcon />} onClick={() => { addAgents() }}>
+                    New Actor
+                  </Button>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>

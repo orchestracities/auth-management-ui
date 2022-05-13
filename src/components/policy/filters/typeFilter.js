@@ -95,7 +95,7 @@ export default function ResourceTypeFilter ({ data, status, setstatus, filterVal
           onClick={handleClick}
         >
           {<Trans
-            i18nKey="policies.filters.path"
+            i18nKey="policies.filters.resource_type"
             values={{ name: ((filterValue.value !== null) ? ':' + filterValue.value.resource_type : '') }}
           />}
         </Button>
