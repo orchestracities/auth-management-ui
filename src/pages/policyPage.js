@@ -8,7 +8,7 @@ import PolicyTable from '../components/policy/policiesTable'
 import PolicyForm from '../components/policy/policyForm'
 import axios from 'axios'
 import Typography from '@mui/material/Typography'
-import { Trans } from "react-i18next";
+import { Trans } from 'react-i18next'
 
 export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
   const [mode, setMode] = React.useState(null)

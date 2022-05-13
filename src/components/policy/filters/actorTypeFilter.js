@@ -13,7 +13,7 @@ import Autocomplete from '@mui/material/Autocomplete'
 import TextField from '@mui/material/TextField'
 import Grid from '@mui/material/Grid'
 import Grow from '@mui/material/Grow'
-import { Trans } from "react-i18next";
+import { Trans } from 'react-i18next'
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -90,7 +90,7 @@ export default function ActorTypeFilter ({ data, status, setstatus, filterValue 
           id="ActorTypeFilter"
           aria-controls={open ? 'demo-customized-menu' : undefined}
           aria-haspopup="true"
-          disabled={(data.length<=0)?true:false}
+          disabled={(data.length <= 0)}
           aria-expanded={open ? 'true' : undefined}
           variant="outlined"
           onClick={handleClick}

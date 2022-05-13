@@ -26,7 +26,7 @@ import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import TenantForm from '../tenant/tenantForm'
 import DeleteDialog from '../shared/messages/cardDelete'
-import { Trans } from "react-i18next";
+import { Trans } from 'react-i18next'
 
 const DialogRounded = styled(Dialog)(({ theme }) => ({
   '& .MuiPaper-rounded': {
@@ -57,12 +57,12 @@ export default function PoliciesTable ({ data, getData, access_modes, agentsType
   }
 
   const agentToString = (agents) => {
-    const agentsNames = [...agentsTypes,...[{ iri: 'acl:AuthenticatedAgent', name: 'authenticated agent' }, { iri: 'foaf:Agent', name: 'anyone' }, { iri: 'oc-acl:ResourceTenantAgent', name: 'resource tenant agent' }]]
+    const agentsNames = [...agentsTypes, ...[{ iri: 'acl:AuthenticatedAgent', name: 'authenticated agent' }, { iri: 'foaf:Agent', name: 'anyone' }, { iri: 'oc-acl:ResourceTenantAgent', name: 'resource tenant agent' }]]
     let agentString = ''
     for (const thisAgent of agents) {
-      let thisAgentSplit=thisAgent.split(':').slice('2').join(':');
-      const foundAgent =   (thisAgentSplit==="")?agentsNames.filter((e) => e.iri === thisAgent):agentsNames.filter((e) => e.iri === thisAgent.replace(":"+thisAgentSplit,''))
-      agentString = agentString + foundAgent[0].name +  ((thisAgentSplit==="")?" ":' : ')+thisAgentSplit+ "  "
+      const thisAgentSplit = thisAgent.split(':').slice('2').join(':')
+      const foundAgent = (thisAgentSplit === '') ? agentsNames.filter((e) => e.iri === thisAgent) : agentsNames.filter((e) => e.iri === thisAgent.replace(':' + thisAgentSplit, ''))
+      agentString = agentString + foundAgent[0].name + ((thisAgentSplit === '') ? ' ' : ' : ') + thisAgentSplit + '  '
     }
     return agentString
   }
@@ -270,7 +270,7 @@ export default function PoliciesTable ({ data, getData, access_modes, agentsType
                     i18nKey="policies.table.total_plur"
                     values={{ name: stableSort(rows, getComparator(order, orderBy)).length }}
                   />
-                          )}
+                    )}
             </Toolbar>
     )
   }

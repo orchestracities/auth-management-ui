@@ -7,19 +7,19 @@ import PathFilter from './filters/pathFilter'
 import ResourceTypeFilter from './filters/typeFilter'
 import ModeFilter from './filters/modeFilter'
 
-export default function PolicyFilters({ data, access_modes, agentsTypes, mapper }) {
+export default function PolicyFilters ({ data, access_modes, agentsTypes, mapper }) {
   const [status, setstatus] = React.useState(null)
   const getUniqueListBy = (arr, key) => {
     return [...new Map(arr.map(item => [item[key], item])).values()]
   }
 
   const getAllAgentsNames = () => {
-    let agents = [];
+    const agents = []
     for (const thisPolicy of data) {
       for (const thisAgent of thisPolicy.agent) {
-        let thisAgentSplit = thisAgent.split(':').slice('2').join(':');
-        let agentType=thisAgent.split(":", 2).join(":");
-        if (thisAgentSplit !== "") {
+        const thisAgentSplit = thisAgent.split(':').slice('2').join(':')
+        const agentType = thisAgent.split(':', 2).join(':')
+        if (thisAgentSplit !== '') {
           agents.push({ iri: thisAgent, name: thisAgentSplit })
         }
       }
@@ -27,12 +27,12 @@ export default function PolicyFilters({ data, access_modes, agentsTypes, mapper 
     return getUniqueListBy(agents, 'iri')
   }
   const getSpecificAgentsNames = (selectedAgentType) => {
-    let agents = [];
+    const agents = []
     for (const thisPolicy of data) {
       for (const thisAgent of thisPolicy.agent) {
-        let thisAgentSplit = thisAgent.split(':').slice('2').join(':');
-        let agentType=thisAgent.split(":", 2).join(":");
-        if (thisAgentSplit !== ""&& agentType===selectedAgentType) {
+        const thisAgentSplit = thisAgent.split(':').slice('2').join(':')
+        const agentType = thisAgent.split(':', 2).join(':')
+        if (thisAgentSplit !== '' && agentType === selectedAgentType) {
           agents.push({ iri: thisAgent, name: thisAgentSplit })
         }
       }
@@ -65,7 +65,7 @@ export default function PolicyFilters({ data, access_modes, agentsTypes, mapper 
         <ResourceTypeFilter filterValue={mapper.resourceType} data={resource_type} status={status} setstatus={setstatus} />
       </Grid>
       <Grid item xs={(status === 'ActorFilter') ? 12 : 'auto'} sx={{ display: (status === null || status === 'ActorFilter') ? 'flex' : 'none' }} zeroMinWidth>
-        <ActorFilter filterValue={mapper.agent} data={(mapper.agentType.value===null)?getAllAgentsNames():getSpecificAgentsNames(mapper.agentType.value.iri)} status={status} setstatus={setstatus} />
+        <ActorFilter filterValue={mapper.agent} data={(mapper.agentType.value === null) ? getAllAgentsNames() : getSpecificAgentsNames(mapper.agentType.value.iri)} status={status} setstatus={setstatus} />
       </Grid>
       <Grid item xs={(status === 'ActorTypeFilter') ? 12 : 'auto'} sx={{ display: (status === null || status === 'ActorTypeFilter') ? 'flex' : 'none' }} zeroMinWidth>
         <ActorTypeFilter filterValue={mapper.agentType} data={agentsNames} status={status} setstatus={setstatus} />

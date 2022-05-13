@@ -13,7 +13,7 @@ import Autocomplete from '@mui/material/Autocomplete'
 import TextField from '@mui/material/TextField'
 import Grid from '@mui/material/Grid'
 import Grow from '@mui/material/Grow'
-import { Trans } from "react-i18next";
+import { Trans } from 'react-i18next'
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -57,7 +57,7 @@ const StyledMenu = styled((props) => (
   }
 }))
 
-export default function ActorFilter({ data, status, setstatus, filterValue }) {
+export default function ActorFilter ({ data, status, setstatus, filterValue }) {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [target, setarget] = React.useState(null)
   const open = Boolean(anchorEl)
@@ -88,7 +88,7 @@ export default function ActorFilter({ data, status, setstatus, filterValue }) {
       >
         <Button
           id="ActorFilter"
-          disabled={(data.length<=0)?true:false}
+          disabled={(data.length <= 0)}
           aria-controls={open ? 'demo-customized-menu' : undefined}
           aria-haspopup="true"
           aria-expanded={open ? 'true' : undefined}
