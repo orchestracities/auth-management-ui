@@ -1,0 +1,11 @@
+FROM node:12.18.3
+LABEL version="0.1"
+LABEL description="Graphql configs for the webapp"
+LABEL maintainer = ["valerio.cantore@martel-innovate.com"]
+WORKDIR /graphql-server
+COPY ["package.json", "package-lock.json", "./"]
+RUN ls
+RUN npm install --force
+COPY . .
+EXPOSE 4000
+CMD ["node", "main/advancedAuth.js"]
