@@ -62,8 +62,8 @@
       "agent": "Nome Utente",
       "agentGroup": "Nome Gruppo",
       "agentClass": "Nome Classe",
-      "actorTitle":"Settaggi utenti",
-      "mainTitle":"Dati principali"
+      "actorTitle": "Settaggi utenti",
+      "mainTitle": "Dati principali"
     }
   },
   "common": {

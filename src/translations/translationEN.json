@@ -62,8 +62,8 @@
       "agent": "Agent Name",
       "agentGroup": "Group Name",
       "agentClass": "Class Name",
-      "actorTitle":"Actors settings",
-      "mainTitle":"Main data"
+      "actorTitle": "Actors settings",
+      "mainTitle": "Main data"
     }
   },
   "common": {
