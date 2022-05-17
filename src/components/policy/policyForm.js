@@ -1,34 +1,34 @@
-import * as React from "react";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import { styled } from "@mui/material/styles";
-import DialogContent from "@mui/material/DialogContent";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import CloseIcon from "@mui/icons-material/Close";
-import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import { InputLabel } from "@mui/material";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import axios from "axios";
-import AddIcon from "@mui/icons-material/Add";
-import { Trans } from "react-i18next";
-import DeleteIcon from "@mui/icons-material/Delete";
-import Tooltip from "@mui/material/Tooltip";
-import Grow from "@mui/material/Grow";
-import Zoom from '@mui/material/Zoom';
+import * as React from 'react'
+import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
+import { styled } from '@mui/material/styles'
+import DialogContent from '@mui/material/DialogContent'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
+import CloseIcon from '@mui/icons-material/Close'
+import Grid from '@mui/material/Grid'
+import TextField from '@mui/material/TextField'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import Select from '@mui/material/Select'
+import { InputLabel } from '@mui/material'
+import OutlinedInput from '@mui/material/OutlinedInput'
+import axios from 'axios'
+import AddIcon from '@mui/icons-material/Add'
+import { Trans } from 'react-i18next'
+import DeleteIcon from '@mui/icons-material/Delete'
+import Tooltip from '@mui/material/Tooltip'
+import Grow from '@mui/material/Grow'
+import Zoom from '@mui/material/Zoom'
 
 const CustomDialogTitle = styled(AppBar)({
-  position: "relative",
-  background: "white",
-  boxShadow: "none",
-});
+  position: 'relative',
+  background: 'white',
+  boxShadow: 'none'
+})
 
-export default function PolicyForm({
+export default function PolicyForm ({
   title,
   close,
   action,
@@ -36,147 +36,147 @@ export default function PolicyForm({
   services,
   access_modes,
   agentsTypes,
-  getServices,
+  getServices
 }) {
   const handleClose = () => {
-    close(false);
-  };
+    close(false)
+  }
 
   // SERVICE PATH
-  const [path, setPath] = React.useState();
+  const [path, setPath] = React.useState()
 
   const handlePath = (event) => {
-    setPath(event.target.value);
-  };
+    setPath(event.target.value)
+  }
 
   // ACCESS
-  const [access, setAccess] = React.useState("");
+  const [access, setAccess] = React.useState('')
 
   const handleAccess = (event) => {
-    setAccess(event.target.value);
-  };
+    setAccess(event.target.value)
+  }
 
   // RESOURCE
-  const [resource, setResource] = React.useState("");
+  const [resource, setResource] = React.useState('')
 
   const handleResource = (event) => {
-    setResource(event.target.value);
-  };
+    setResource(event.target.value)
+  }
 
   // MODE
-  const [mode, setMode] = React.useState([]);
+  const [mode, setMode] = React.useState([])
 
   const handleMode = (event) => {
-    setMode(event.target.value);
-  };
+    setMode(event.target.value)
+  }
 
   // AGENT-TYPE
-  const [agentType, setAgentType] = React.useState("");
+  const [agentType, setAgentType] = React.useState('')
 
   const handleAgentType = (event) => {
-    setAgentType(event.target.value);
-  };
+    setAgentType(event.target.value)
+  }
 
   // FORM- tyoe
-  const [formType, setFormType] = React.useState("");
+  const [formType, setFormType] = React.useState('')
 
   const handleFormType = (event) => {
-    setFormType(event.target.value);
-  };
+    setFormType(event.target.value)
+  }
 
   // AGENT
-  const [agentOthers, setAgentOthers] = React.useState([]);
+  const [agentOthers, setAgentOthers] = React.useState([])
 
   const handleAgentOthers = (event) => {
-    setAgentOthers(event.target.value);
-  };
+    setAgentOthers(event.target.value)
+  }
 
   // AGENT
-  const [agentsMap, setAgentsMap] = React.useState([]);
-  const [index, setIndex] = React.useState(0);
+  const [agentsMap, setAgentsMap] = React.useState([])
+  const [index, setIndex] = React.useState(0)
 
   const handleAgentsName = (event) => {
-    const newArray = agentsMap;
-    newArray[Number(event.target.id)].name = event.target.value;
-    setAgentsMap(newArray);
-    setIndex(Math.random());
-  };
+    const newArray = agentsMap
+    newArray[Number(event.target.id)].name = event.target.value
+    setAgentsMap(newArray)
+    setIndex(Math.random())
+  }
   const handleAgentsType = (event) => {
-    const newArray = agentsMap;
-    newArray[Number(event.target.name)].type = event.target.value;
-    setAgentsMap(newArray);
-    setIndex(Math.random());
-  };
+    const newArray = agentsMap
+    newArray[Number(event.target.name)].type = event.target.value
+    setAgentsMap(newArray)
+    setIndex(Math.random())
+  }
   const addAgents = () => {
-    setAgentsMap([...agentsMap, { type: null, name: "" }]);
-  };
+    setAgentsMap([...agentsMap, { type: null, name: '' }])
+  }
   const removeAgents = (index) => {
-    const newArray = agentsMap;
-    newArray.splice(index, 1);
-    setAgentsMap(newArray);
-    setIndex(Math.random());
-  };
+    const newArray = agentsMap
+    newArray.splice(index, 1)
+    setAgentsMap(newArray)
+    setIndex(Math.random())
+  }
 
   const agentMapper = () => {
-    const agentMapped = [];
-    if (formType === "specific") {
+    const agentMapped = []
+    if (formType === 'specific') {
       for (const thisAgent of agentsMap) {
-        agentMapped.push(thisAgent.type + ":" + thisAgent.name);
+        agentMapped.push(thisAgent.type + ':' + thisAgent.name)
       }
-      return agentMapped;
+      return agentMapped
     } else {
-      return agentOthers;
+      return agentOthers
     }
-  };
+  }
 
   const handleSave = () => {
     switch (action) {
-      case "create":
+      case 'create':
         axios
           .post(
-            process.env.REACT_APP_ANUBIS_API_URL + "v1/policies/",
+            process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies/',
             {
               access_to: access,
               resource_type: resource,
               mode,
-              agent: agentMapper(),
+              agent: agentMapper()
             },
             {
               headers: {
-                "fiware-service": tenantName(),
-                "fiware-servicepath": path,
-              },
+                'fiware-service': tenantName(),
+                'fiware-servicepath': path
+              }
             }
           )
           .then((response) => {
-            getServices();
-            close(false);
+            getServices()
+            close(false)
           })
           .catch((e) => {
-            console.error(e);
-          });
-        break;
-      case "modify":
-        break;
+            console.error(e)
+          })
+        break
+      case 'modify':
+        break
       default:
-        break;
+        break
     }
-  };
+  }
   const getLabelName = (name) => {
     switch (name) {
-      case "acl:agent":
-        return <Trans>policies.form.agent</Trans>;
-        break;
-      case "acl:agentGroup":
-        return <Trans>policies.form.agentGroup</Trans>;
-        break;
-      case "acl:agentClass":
-        return <Trans>policies.form.agentClass</Trans>;
-        break;
+      case 'acl:agent':
+        return <Trans>policies.form.agent</Trans>
+        break
+      case 'acl:agentGroup':
+        return <Trans>policies.form.agentGroup</Trans>
+        break
+      case 'acl:agentClass':
+        return <Trans>policies.form.agentClass</Trans>
+        break
       default:
-        break;
+        break
     }
-  };
+  }
   return (
     <div>
       <CustomDialogTitle>
@@ -185,7 +185,7 @@ export default function PolicyForm({
             <CloseIcon />
           </IconButton>
           <Typography
-            sx={{ ml: 2, flex: 1, color: "black" }}
+            sx={{ ml: 2, flex: 1, color: 'black' }}
             variant="h6"
             component="div"
           >
@@ -196,7 +196,7 @@ export default function PolicyForm({
           </Button>
         </Toolbar>
       </CustomDialogTitle>
-      <DialogContent sx={{ minHeight: "400px" }}>
+      <DialogContent sx={{ minHeight: '400px' }}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <TextField
@@ -206,7 +206,7 @@ export default function PolicyForm({
               defaultValue={tenantName()}
               disabled
               sx={{
-                width: "100%",
+                width: '100%'
               }}
             />
           </Grid>
@@ -215,7 +215,7 @@ export default function PolicyForm({
             xs={12}
           >
             <Typography
-            variant="subtitle1" 
+            variant="subtitle1"
             gutterBottom
               component="div"
               color="primary"
@@ -226,7 +226,7 @@ export default function PolicyForm({
           <Grid item xs={12}>
             <FormControl fullWidth>
               <InputLabel id="path">
-                {" "}
+                {' '}
                 <Trans>policies.form.servicePath</Trans>
               </InputLabel>
               <Select
@@ -251,7 +251,7 @@ export default function PolicyForm({
               label={<Trans>policies.form.acessTo</Trans>}
               onChange={handleAccess}
               sx={{
-                width: "100%",
+                width: '100%'
               }}
             />
           </Grid>
@@ -263,7 +263,7 @@ export default function PolicyForm({
               label={<Trans>policies.form.resourceType</Trans>}
               onChange={handleResource}
               sx={{
-                width: "100%",
+                width: '100%'
               }}
             />
           </Grid>
@@ -290,13 +290,12 @@ export default function PolicyForm({
             </FormControl>
           </Grid>
 
-
           <Grid
             item
             xs={12}
           >
             <Typography
-            variant="subtitle1" 
+            variant="subtitle1"
             gutterBottom
               component="div"
               color="primary"
@@ -304,8 +303,8 @@ export default function PolicyForm({
               <Trans>policies.form.actorTitle</Trans>
             </Typography>
           </Grid>
-          <Grid item xs={12} sx={{marginBottom: "2%" }} >
-          
+          <Grid item xs={12} sx={{ marginBottom: '2%' }} >
+
                 <FormControl fullWidth>
                   <InputLabel id="FormType">
                     <Trans>policies.form.userType</Trans>
@@ -319,23 +318,23 @@ export default function PolicyForm({
                     label={<Trans>policies.form.userType</Trans>}
                     onChange={handleFormType}
                   >
-                    <MenuItem value={"specific"}>Specific</MenuItem>
-                    <MenuItem value={"others"}>Others</MenuItem>
+                    <MenuItem value={'specific'}>Specific</MenuItem>
+                    <MenuItem value={'others'}>Others</MenuItem>
                   </Select>
                 </FormControl>
-             
+
           </Grid>
           <Zoom
-            in={(formType !== "" && formType === "specific")}
-            style={{ transformOrigin: "0 0 0" }}
-            {...((formType !== "" && formType === "specific") ? { timeout: 500 } : {})}
+            in={(formType !== '' && formType === 'specific')}
+            style={{ transformOrigin: '0 0 0' }}
+            {...((formType !== '' && formType === 'specific') ? { timeout: 500 } : {})}
           >
             <Grid
               item
               xs={12}
               sx={{
                 display:
-                  formType !== "" && formType === "specific" ? "block" : "none",
+                  formType !== '' && formType === 'specific' ? 'block' : 'none'
               }}
             >
               <Grid container spacing={6}>
@@ -355,15 +354,15 @@ export default function PolicyForm({
                           <Grid container spacing={4}>
                             <Grid item xs={12}>
                               <FormControl fullWidth>
-                                <InputLabel id={"Actor" + i}>
+                                <InputLabel id={'Actor' + i}>
                                   <Trans>policies.form.actor</Trans>
                                 </InputLabel>
                                 <Select
                                   color="secondary"
-                                  labelId={"Actor" + i}
-                                  id={"Actor" + i}
+                                  labelId={'Actor' + i}
+                                  id={'Actor' + i}
                                   name={i}
-                                  key={"Actor" + i}
+                                  key={'Actor' + i}
                                   value={agent.type}
                                   variant="outlined"
                                   onChange={handleAgentsType}
@@ -380,26 +379,26 @@ export default function PolicyForm({
                             </Grid>
                             <Grow
                               in={(agent.type !== null)}
-                              style={{ transformOrigin: "0 0 0" }}
+                              style={{ transformOrigin: '0 0 0' }}
                               {...((agent.type !== null) ? { timeout: 500 } : {})}
                             >
                               <Grid
                                 item
                                 xs={12}
                                 sx={{
-                                  display: agent.type !== null ? "block" : "none",
+                                  display: agent.type !== null ? 'block' : 'none'
                                 }}
                               >
                                 <TextField
                                   color="secondary"
                                   id={i}
-                                  key={"actorName" + i}
+                                  key={'actorName' + i}
                                   variant="outlined"
                                   label={getLabelName(agent.type)}
                                   value={agent.name}
                                   onChange={handleAgentsName}
                                   sx={{
-                                    width: "100%",
+                                    width: '100%'
                                   }}
                                 />
                               </Grid>
@@ -422,7 +421,7 @@ export default function PolicyForm({
                                   aria-label="delete"
                                   size="large"
                                   onClick={() => {
-                                    removeAgents(i);
+                                    removeAgents(i)
                                   }}
                                 >
                                   <DeleteIcon fontSize="inherit" />
@@ -436,7 +435,7 @@ export default function PolicyForm({
                   </React.Fragment>
                 ))}
                 <Grid item xs={12}>
-                  {" "}
+                  {' '}
                   <Grid
                     container
                     direction="row"
@@ -448,7 +447,7 @@ export default function PolicyForm({
                       variant="outlined"
                       startIcon={<AddIcon />}
                       onClick={() => {
-                        addAgents();
+                        addAgents()
                       }}
                     >
                       New Actor
@@ -459,16 +458,16 @@ export default function PolicyForm({
             </Grid>
           </Zoom>
           <Zoom
-            in={(formType !== "" && formType === "others")}
-            style={{ transformOrigin: "0 0 0" }}
-            {...((formType !== "" && formType === "others") ? { timeout: 500 } : {})}
+            in={(formType !== '' && formType === 'others')}
+            style={{ transformOrigin: '0 0 0' }}
+            {...((formType !== '' && formType === 'others') ? { timeout: 500 } : {})}
           >
             <Grid
               item
               xs={12}
               sx={{
                 display:
-                  formType !== "" && formType === "others" ? "block" : "none",
+                  formType !== '' && formType === 'others' ? 'block' : 'none'
               }}
             >
               <Grid item xs={12}>
@@ -488,11 +487,11 @@ export default function PolicyForm({
                       input={<OutlinedInput label="Mode" />}
                       onChange={handleAgentOthers}
                     >
-                      <MenuItem value={"acl:AuthenticatedAgent"}>
+                      <MenuItem value={'acl:AuthenticatedAgent'}>
                         Authenticated Actor
                       </MenuItem>
-                      <MenuItem value={"foaf:Agent"}>Anyone</MenuItem>
-                      <MenuItem value={"oc-alc:ResourceTenantAgent"}>
+                      <MenuItem value={'foaf:Agent'}>Anyone</MenuItem>
+                      <MenuItem value={'oc-alc:ResourceTenantAgent'}>
                         Resource Tenant Agent
                       </MenuItem>
                     </Select>
@@ -504,5 +503,5 @@ export default function PolicyForm({
         </Grid>
       </DialogContent>
     </div>
-  );
+  )
 }
