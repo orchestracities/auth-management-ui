@@ -19,6 +19,8 @@ import AddIcon from "@mui/icons-material/Add";
 import { Trans } from "react-i18next";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Tooltip from "@mui/material/Tooltip";
+import Grow from "@mui/material/Grow";
+import Zoom from '@mui/material/Zoom';
 
 const CustomDialogTitle = styled(AppBar)({
   position: "relative",
@@ -208,6 +210,19 @@ export default function PolicyForm({
               }}
             />
           </Grid>
+          <Grid
+            item
+            xs={12}
+          >
+            <Typography
+            variant="subtitle1" 
+            gutterBottom
+              component="div"
+              color="primary"
+            >
+              <Trans>policies.form.mainTitle</Trans>
+            </Typography>
+          </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>
               <InputLabel id="path">
@@ -275,191 +290,217 @@ export default function PolicyForm({
             </FormControl>
           </Grid>
 
-          <Grid item xs={12}>
-            <FormControl fullWidth>
-              <InputLabel id="FormType">
-                <Trans>policies.form.userType</Trans>
-              </InputLabel>
-              <Select
-                labelId="FormType"
-                id="FormType"
-                variant="outlined"
-                value={formType}
-                label={<Trans>policies.form.userType</Trans>}
-                onChange={handleFormType}
-              >
-                <MenuItem value={"specific"}>Specific</MenuItem>
-                <MenuItem value={"others"}>Others</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
+
           <Grid
             item
             xs={12}
-            sx={{
-              display:
-                formType !== "" && formType === "specific" ? "block" : "none",
-            }}
           >
-            <Grid container spacing={6}>
-              <Grid
-                item
-                xs={12}
-                sx={{ marginTop: "20px", marginBottom: "0px !important" }}
-              >
-                <Typography
-                  variant="h5"
-                  component="div"
-                  sx={{ marginLeft: "5%" }}
-                >
-                  Actors:
-                </Typography>
-              </Grid>
-              {agentsMap.map((agent, i) => (
-                <React.Fragment>
-                  <Grid item xs={2}></Grid>
-                  <Grid item xs={10}>
-                    <Grid
-                      container
-                      spacing={12}
-                      direction="row"
-                      justifyContent="center"
-                      alignItems="center"
-                    >
-                      <Grid item xs={10}>
-                        <Grid container spacing={4}>
-                          <Grid item xs={12}>
-                            <FormControl fullWidth>
-                              <InputLabel id={"Actor" + i}>
-                                <Trans>policies.form.actor</Trans>
-                              </InputLabel>
-                              <Select
-                                labelId={"Actor" + i}
-                                id={"Actor" + i}
-                                name={i}
-                                key={"Actor" + i}
-                                value={agent.type}
-                                variant="outlined"
-                                onChange={handleAgentsType}
-                                label={<Trans>policies.form.actor</Trans>}
-                                input={<OutlinedInput label="Mode" />}
-                              >
-                                {agentsTypes.map((agents) => (
-                                  <MenuItem value={agents.iri}>
-                                    {agents.name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
-                          </Grid>
-                          <Grid
-                            item
-                            xs={12}
-                            sx={{
-                              display: agent.type !== null ? "block" : "none",
-                            }}
-                          >
-                            <TextField
-                              id={i}
-                              key={"actorName" + i}
-                              variant="outlined"
-                              label={getLabelName(agent.type)}
-                              value={agent.name}
-                              onChange={handleAgentsName}
-                              sx={{
-                                width: "100%",
-                              }}
-                            />
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                      <Grid item xs={2}>
-                        <Grid
-                          container
-                          direction="column"
-                          justifyContent="center"
-                          alignItems="center"
-                          spacing={4}
-                        >
-                          <Grid item xs={12}>
-                            <Tooltip
-                              title={<Trans>common.deleteTooltip</Trans>}
+            <Typography
+            variant="subtitle1" 
+            gutterBottom
+              component="div"
+              color="primary"
+            >
+              <Trans>policies.form.actorTitle</Trans>
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sx={{marginBottom: "2%" }} >
+          
+                <FormControl fullWidth>
+                  <InputLabel id="FormType">
+                    <Trans>policies.form.userType</Trans>
+                  </InputLabel>
+                  <Select
+                     color="secondary"
+                    labelId="FormType"
+                    id="FormType"
+                    variant="outlined"
+                    value={formType}
+                    label={<Trans>policies.form.userType</Trans>}
+                    onChange={handleFormType}
+                  >
+                    <MenuItem value={"specific"}>Specific</MenuItem>
+                    <MenuItem value={"others"}>Others</MenuItem>
+                  </Select>
+                </FormControl>
+             
+          </Grid>
+          <Zoom
+            in={(formType !== "" && formType === "specific")}
+            style={{ transformOrigin: "0 0 0" }}
+            {...((formType !== "" && formType === "specific") ? { timeout: 500 } : {})}
+          >
+            <Grid
+              item
+              xs={12}
+              sx={{
+                display:
+                  formType !== "" && formType === "specific" ? "block" : "none",
+              }}
+            >
+              <Grid container spacing={6}>
+
+                {agentsMap.map((agent, i) => (
+                  <React.Fragment>
+                    <Grid item xs={2}></Grid>
+                    <Grid item xs={10}>
+                      <Grid
+                        container
+                        spacing={12}
+                        direction="row"
+                        justifyContent="center"
+                        alignItems="center"
+                      >
+                        <Grid item xs={10}>
+                          <Grid container spacing={4}>
+                            <Grid item xs={12}>
+                              <FormControl fullWidth>
+                                <InputLabel id={"Actor" + i}>
+                                  <Trans>policies.form.actor</Trans>
+                                </InputLabel>
+                                <Select
+                                  color="secondary"
+                                  labelId={"Actor" + i}
+                                  id={"Actor" + i}
+                                  name={i}
+                                  key={"Actor" + i}
+                                  value={agent.type}
+                                  variant="outlined"
+                                  onChange={handleAgentsType}
+                                  label={<Trans>policies.form.actor</Trans>}
+                                  input={<OutlinedInput label="Mode" />}
+                                >
+                                  {agentsTypes.map((agents) => (
+                                    <MenuItem value={agents.iri}>
+                                      {agents.name}
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+                              </FormControl>
+                            </Grid>
+                            <Grow
+                              in={(agent.type !== null)}
+                              style={{ transformOrigin: "0 0 0" }}
+                              {...((agent.type !== null) ? { timeout: 500 } : {})}
                             >
-                              <IconButton
-                                aria-label="delete"
-                                size="large"
-                                onClick={() => {
-                                  removeAgents(i);
+                              <Grid
+                                item
+                                xs={12}
+                                sx={{
+                                  display: agent.type !== null ? "block" : "none",
                                 }}
                               >
-                                <DeleteIcon fontSize="inherit" />
-                              </IconButton>
-                            </Tooltip>
+                                <TextField
+                                  color="secondary"
+                                  id={i}
+                                  key={"actorName" + i}
+                                  variant="outlined"
+                                  label={getLabelName(agent.type)}
+                                  value={agent.name}
+                                  onChange={handleAgentsName}
+                                  sx={{
+                                    width: "100%",
+                                  }}
+                                />
+                              </Grid>
+                            </Grow>
+                          </Grid>
+                        </Grid>
+                        <Grid item xs={2}>
+                          <Grid
+                            container
+                            direction="column"
+                            justifyContent="center"
+                            alignItems="center"
+                            spacing={4}
+                          >
+                            <Grid item xs={12}>
+                              <Tooltip
+                                title={<Trans>common.deleteTooltip</Trans>}
+                              >
+                                <IconButton
+                                  aria-label="delete"
+                                  size="large"
+                                  onClick={() => {
+                                    removeAgents(i);
+                                  }}
+                                >
+                                  <DeleteIcon fontSize="inherit" />
+                                </IconButton>
+                              </Tooltip>
+                            </Grid>
                           </Grid>
                         </Grid>
                       </Grid>
                     </Grid>
-                  </Grid>
-                </React.Fragment>
-              ))}
-              <Grid item xs={12}>
-                {" "}
-                <Grid
-                  container
-                  direction="row"
-                  justifyContent="center"
-                  alignItems="center"
-                  spacing={0}
-                >
-                  <Button
-                    variant="outlined"
-                    startIcon={<AddIcon />}
-                    onClick={() => {
-                      addAgents();
-                    }}
+                  </React.Fragment>
+                ))}
+                <Grid item xs={12}>
+                  {" "}
+                  <Grid
+                    container
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="center"
+                    spacing={0}
                   >
-                    New Actor
-                  </Button>
+                    <Button
+                      variant="outlined"
+                      startIcon={<AddIcon />}
+                      onClick={() => {
+                        addAgents();
+                      }}
+                    >
+                      New Actor
+                    </Button>
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sx={{
-              display:
-                formType !== "" && formType === "others" ? "block" : "none",
-            }}
+          </Zoom>
+          <Zoom
+            in={(formType !== "" && formType === "others")}
+            style={{ transformOrigin: "0 0 0" }}
+            {...((formType !== "" && formType === "others") ? { timeout: 500 } : {})}
           >
-            <Grid item xs={12}>
+            <Grid
+              item
+              xs={12}
+              sx={{
+                display:
+                  formType !== "" && formType === "others" ? "block" : "none",
+              }}
+            >
               <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <InputLabel id="ActorOthers">
-                    <Trans>policies.form.actor</Trans>
-                  </InputLabel>
-                  <Select
-                    labelId="Actor"
-                    id="ActorOthers"
-                    variant="outlined"
-                    value={agentOthers}
-                    label={<Trans>policies.form.actor</Trans>}
-                    multiple
-                    input={<OutlinedInput label="Mode" />}
-                    onChange={handleAgentOthers}
-                  >
-                    <MenuItem value={"acl:AuthenticatedAgent"}>
-                      Authenticated Actor
-                    </MenuItem>
-                    <MenuItem value={"foaf:Agent"}>Anyone</MenuItem>
-                    <MenuItem value={"oc-alc:ResourceTenantAgent"}>
-                      Resource Tenant Agent
-                    </MenuItem>
-                  </Select>
-                </FormControl>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <InputLabel id="ActorOthers">
+                      <Trans>policies.form.actor</Trans>
+                    </InputLabel>
+                    <Select
+                      color="secondary"
+                      labelId="Actor"
+                      id="ActorOthers"
+                      variant="outlined"
+                      value={agentOthers}
+                      label={<Trans>policies.form.actor</Trans>}
+                      multiple
+                      input={<OutlinedInput label="Mode" />}
+                      onChange={handleAgentOthers}
+                    >
+                      <MenuItem value={"acl:AuthenticatedAgent"}>
+                        Authenticated Actor
+                      </MenuItem>
+                      <MenuItem value={"foaf:Agent"}>Anyone</MenuItem>
+                      <MenuItem value={"oc-alc:ResourceTenantAgent"}>
+                        Resource Tenant Agent
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
+          </Zoom>
         </Grid>
       </DialogContent>
     </div>

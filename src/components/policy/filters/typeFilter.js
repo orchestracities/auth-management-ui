@@ -106,7 +106,7 @@ export default function ResourceTypeFilter({
               values={{
                 name:
                   filterValue.value !== null
-                    ? ":" + filterValue.value.resource_type
+                    ? ": " + filterValue.value.resource_type
                     : "",
               }}
             />

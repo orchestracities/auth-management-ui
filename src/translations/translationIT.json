@@ -44,11 +44,11 @@
       "selected": "{{name}} Selezionati"
     },
     "filters": {
-      "mode": "Modalità {{name}}",
-      "path": "Percorso {{name}}",
-      "actor_type": "Tipologia Utente <0>{{name}}</0>",
-      "resource_type": "Tipologia Risorsa {{name}}",
-      "actor": "Utente {{name}}"
+      "mode": "Modalità{{name}}",
+      "path": "Percorso{{name}}",
+      "actor_type": "Tipologia Utente<0>{{name}}</0>",
+      "resource_type": "Tipologia Risorsa{{name}}",
+      "actor": "Utente{{name}}"
     },
     "form": {
       "servicePath": "Percorso dei servizi",
@@ -61,7 +61,9 @@
       "userType": "Tipologia Utenti",
       "agent": "Nome Utente",
       "agentGroup": "Nome Gruppo",
-      "agentClass": "Nome Classe"
+      "agentClass": "Nome Classe",
+      "actorTitle":"Settaggi utenti",
+      "mainTitle":"Dati principali"
     }
   },
   "common": {

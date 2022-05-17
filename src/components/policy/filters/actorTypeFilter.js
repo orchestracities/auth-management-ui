@@ -106,7 +106,7 @@ export default function ActorTypeFilter({
               values={{
                 name:
                   filterValue.value !== null
-                    ? ":" + filterValue.value.name
+                    ? ": " + filterValue.value.name
                     : "",
               }}
             />

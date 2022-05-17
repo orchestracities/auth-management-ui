@@ -101,7 +101,7 @@ export default function ModeFilter({ data, status, setstatus, filterValue }) {
               values={{
                 name:
                   filterValue.value !== null
-                    ? ":" + filterValue.value.name
+                    ? ": " + filterValue.value.name
                     : "",
               }}
             />

@@ -101,7 +101,7 @@ export default function PathFilter({ data, status, setstatus, filterValue }) {
               values={{
                 name:
                   filterValue.value !== null
-                    ? ":" + filterValue.value.fiware_service_path
+                    ? ": " + filterValue.value.fiware_service_path
                     : "",
               }}
             />

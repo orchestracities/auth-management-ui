@@ -44,11 +44,11 @@
       "selected": "{{name}} selected"
     },
     "filters": {
-      "mode": "Mode {{name}}",
-      "path": "Path {{name}}",
-      "actor_type": "Actor Type <0>{{name}}</0>",
-      "resource_type": "Resource Type {{name}}",
-      "actor": "Actor {{name}}"
+      "mode": "Mode{{name}}",
+      "path": "Path{{name}}",
+      "actor_type": "Actor Type<0>{{name}}</0>",
+      "resource_type": "Resource Type{{name}}",
+      "actor": "Actor{{name}}"
     },
     "form": {
       "servicePath": "Service Path",
@@ -61,7 +61,9 @@
       "userType": "User Type",
       "agent": "Agent Name",
       "agentGroup": "Group Name",
-      "agentClass": "Class Name"
+      "agentClass": "Class Name",
+      "actorTitle":"Actors settings",
+      "mainTitle":"Main data"
     }
   },
   "common": {
