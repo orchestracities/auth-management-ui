@@ -245,7 +245,7 @@ export default function PolicyForm({
               id="access"
               variant="outlined"
               value={access}
-              label={<Trans>policies.form.acessTo</Trans>}
+              label={<Trans>policies.form.accessTo</Trans>}
               onChange={handleAccess}
               sx={{
                 width: "100%",
