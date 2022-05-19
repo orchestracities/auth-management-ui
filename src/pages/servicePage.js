@@ -29,7 +29,11 @@ export default function ServicePage({ getTenants, tenantValues, thisTenant }) {
       });
   };
 
+  React.useEffect(() => {
+    getServices();
+  }, [thisTenant]);
   const mainTitle = <Trans>service.titles.page</Trans>;
+
   return (
     <div>
       <MainTitle mainTitle={mainTitle}></MainTitle>
@@ -52,7 +56,15 @@ export default function ServicePage({ getTenants, tenantValues, thisTenant }) {
       )}
       <Grid container spacing={2} sx={{ marginLeft: "15px " }}>
         <Grid item xs={12}>
-          <SortButton></SortButton>
+          {services[0].children.length > 0 ? (
+            <SortButton
+              data={services[0].children}
+              id={"path"}
+              sortData={setServices}
+            ></SortButton>
+          ) : (
+            ""
+          )}
         </Grid>
         {services[0].children.map((service, index) => (
           <Grow

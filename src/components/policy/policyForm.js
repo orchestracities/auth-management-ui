@@ -1,35 +1,26 @@
 import * as React from "react";
 import Button from "@mui/material/Button";
-import DeleteIcon from "@mui/icons-material/Delete";
-import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
 import { styled } from "@mui/material/styles";
-import AddIcon from "@mui/icons-material/Add";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import ListItemText from "@mui/material/ListItemText";
-import ListItem from "@mui/material/ListItem";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
-import Slide from "@mui/material/Slide";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import TextareaAutosize from "@mui/material/TextareaAutosize";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { InputLabel } from "@mui/material";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import axios from "axios";
-import { Mode } from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
 import { Trans } from "react-i18next";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Tooltip from "@mui/material/Tooltip";
+import Grow from "@mui/material/Grow";
+import Zoom from "@mui/material/Zoom";
 
 const CustomDialogTitle = styled(AppBar)({
   position: "relative",
@@ -44,6 +35,7 @@ export default function PolicyForm({
   tenantName,
   services,
   access_modes,
+  agentsTypes,
   getServices,
 }) {
   const handleClose = () => {
@@ -85,17 +77,56 @@ export default function PolicyForm({
     setAgentType(event.target.value);
   };
 
-  const [otherAgent, setOtherAgent] = React.useState("");
+  // FORM- tyoe
+  const [formType, setFormType] = React.useState("");
 
-  const handleOtherAgent = (event) => {
-    setOtherAgent(event.target.value);
+  const handleFormType = (event) => {
+    setFormType(event.target.value);
   };
 
   // AGENT
-  const [agent, setAgent] = React.useState([]);
+  const [agentOthers, setAgentOthers] = React.useState([]);
 
-  const handleAgent = (event) => {
-    setAgent(event.target.value);
+  const handleAgentOthers = (event) => {
+    setAgentOthers(event.target.value);
+  };
+
+  // AGENT
+  const [agentsMap, setAgentsMap] = React.useState([]);
+  const [index, setIndex] = React.useState(0);
+
+  const handleAgentsName = (event) => {
+    const newArray = agentsMap;
+    newArray[Number(event.target.id)].name = event.target.value;
+    setAgentsMap(newArray);
+    setIndex(Math.random());
+  };
+  const handleAgentsType = (event) => {
+    const newArray = agentsMap;
+    newArray[Number(event.target.name)].type = event.target.value;
+    setAgentsMap(newArray);
+    setIndex(Math.random());
+  };
+  const addAgents = () => {
+    setAgentsMap([...agentsMap, { type: null, name: "" }]);
+  };
+  const removeAgents = (index) => {
+    const newArray = agentsMap;
+    newArray.splice(index, 1);
+    setAgentsMap(newArray);
+    setIndex(Math.random());
+  };
+
+  const agentMapper = () => {
+    const agentMapped = [];
+    if (formType === "specific") {
+      for (const thisAgent of agentsMap) {
+        agentMapped.push(thisAgent.type + ":" + thisAgent.name);
+      }
+      return agentMapped;
+    } else {
+      return agentOthers;
+    }
   };
 
   const handleSave = () => {
@@ -108,12 +139,12 @@ export default function PolicyForm({
               access_to: access,
               resource_type: resource,
               mode,
-              agent,
+              agent: agentMapper(),
             },
             {
               headers: {
-                fiware_service: tenantName(),
-                fiware_service_path: path,
+                "fiware-service": tenantName(),
+                "fiware-servicepath": path,
               },
             }
           )
@@ -131,7 +162,21 @@ export default function PolicyForm({
         break;
     }
   };
-
+  const getLabelName = (name) => {
+    switch (name) {
+      case "acl:agent":
+        return <Trans>policies.form.agent</Trans>;
+        break;
+      case "acl:agentGroup":
+        return <Trans>policies.form.agentGroup</Trans>;
+        break;
+      case "acl:agentClass":
+        return <Trans>policies.form.agentClass</Trans>;
+        break;
+      default:
+        break;
+    }
+  };
   return (
     <div>
       <CustomDialogTitle>
@@ -147,7 +192,7 @@ export default function PolicyForm({
             {title}
           </Typography>
           <Button autoFocus color="secondary" onClick={handleSave}>
-            save
+            <Trans>common.saveButton</Trans>
           </Button>
         </Toolbar>
       </CustomDialogTitle>
@@ -166,8 +211,19 @@ export default function PolicyForm({
             />
           </Grid>
           <Grid item xs={12}>
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              component="div"
+              color="primary"
+            >
+              <Trans>policies.form.mainTitle</Trans>
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
             <FormControl fullWidth>
               <InputLabel id="path">
+                {" "}
                 <Trans>policies.form.servicePath</Trans>
               </InputLabel>
               <Select
@@ -189,7 +245,7 @@ export default function PolicyForm({
               id="access"
               variant="outlined"
               value={access}
-              label={<Trans>policies.form.acessTo</Trans>}
+              label={<Trans>policies.form.accessTo</Trans>}
               onChange={handleAccess}
               sx={{
                 width: "100%",
@@ -230,73 +286,216 @@ export default function PolicyForm({
               </Select>
             </FormControl>
           </Grid>
+
           <Grid item xs={12}>
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              component="div"
+              color="primary"
+            >
+              <Trans>policies.form.actorTitle</Trans>
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sx={{ marginBottom: "2%" }}>
             <FormControl fullWidth>
-              <InputLabel id="agentType">
-                <Trans>policies.form.agentType</Trans>
+              <InputLabel id="FormType">
+                <Trans>policies.form.userType</Trans>
               </InputLabel>
               <Select
-                labelId="agentType"
-                id="agentType"
+                color="secondary"
+                labelId="FormType"
+                id="FormType"
                 variant="outlined"
-                value={agentType}
-                label={<Trans>policies.form.agentType</Trans>}
-                onChange={handleAgentType}
+                value={formType}
+                label={<Trans>policies.form.userType</Trans>}
+                onChange={handleFormType}
               >
-                <MenuItem value={"default"}>Default</MenuItem>
-                <MenuItem value={"user"}>User</MenuItem>
-                <MenuItem value={"role"}>Role</MenuItem>
-                <MenuItem value={"group"}>User</MenuItem>
-                <MenuItem value={"other"}>Other</MenuItem>
+                <MenuItem value={"specific"}>Specific</MenuItem>
+                <MenuItem value={"others"}>Others</MenuItem>
               </Select>
             </FormControl>
           </Grid>
-          {agentType === "default" ? (
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <InputLabel id="agent">
-                  <Trans>policies.form.agent</Trans>
-                </InputLabel>
-                <Select
-                  labelId="agent"
-                  id="agent"
-                  variant="outlined"
-                  value={agent}
-                  label={<Trans>policies.form.agent</Trans>}
-                  multiple
-                  input={<OutlinedInput label="Mode" />}
-                  onChange={handleAgent}
-                >
-                  <MenuItem value={"acl:AuthenticatedAgent"}>
-                    Authenticated Agent
-                  </MenuItem>
-                  <MenuItem value={"foaf:Agent"}>Agent</MenuItem>
-                  <MenuItem value={"oc-acl:ResourceTenantAgent"}>
-                    Resource Tenant Agent
-                  </MenuItem>
-                </Select>
-              </FormControl>
+          <Zoom
+            in={formType !== "" && formType === "specific"}
+            style={{ transformOrigin: "0 0 0" }}
+            {...(formType !== "" && formType === "specific"
+              ? { timeout: 500 }
+              : {})}
+          >
+            <Grid
+              item
+              xs={12}
+              sx={{
+                display:
+                  formType !== "" && formType === "specific" ? "block" : "none",
+              }}
+            >
+              <Grid container spacing={6}>
+                {agentsMap.map((agent, i) => (
+                  <React.Fragment>
+                    <Grid item xs={2}></Grid>
+                    <Grid item xs={10}>
+                      <Grid
+                        container
+                        spacing={12}
+                        direction="row"
+                        justifyContent="center"
+                        alignItems="center"
+                      >
+                        <Grid item xs={10}>
+                          <Grid container spacing={4}>
+                            <Grid item xs={12}>
+                              <FormControl fullWidth>
+                                <InputLabel id={"User" + i}>
+                                  <Trans>policies.form.user</Trans>
+                                </InputLabel>
+                                <Select
+                                  color="secondary"
+                                  labelId={"User" + i}
+                                  id={"User" + i}
+                                  name={i}
+                                  key={"User" + i}
+                                  value={agent.type}
+                                  variant="outlined"
+                                  onChange={handleAgentsType}
+                                  label={<Trans>policies.form.user</Trans>}
+                                  input={<OutlinedInput label="Mode" />}
+                                >
+                                  {agentsTypes.map((agents) => (
+                                    <MenuItem value={agents.iri}>
+                                      {agents.name}
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+                              </FormControl>
+                            </Grid>
+                            <Grow
+                              in={agent.type !== null}
+                              style={{ transformOrigin: "0 0 0" }}
+                              {...(agent.type !== null ? { timeout: 500 } : {})}
+                            >
+                              <Grid
+                                item
+                                xs={12}
+                                sx={{
+                                  display:
+                                    agent.type !== null ? "block" : "none",
+                                }}
+                              >
+                                <TextField
+                                  color="secondary"
+                                  id={i}
+                                  key={"actorName" + i}
+                                  variant="outlined"
+                                  label={getLabelName(agent.type)}
+                                  value={agent.name}
+                                  onChange={handleAgentsName}
+                                  sx={{
+                                    width: "100%",
+                                  }}
+                                />
+                              </Grid>
+                            </Grow>
+                          </Grid>
+                        </Grid>
+                        <Grid item xs={2}>
+                          <Grid
+                            container
+                            direction="column"
+                            justifyContent="center"
+                            alignItems="center"
+                            spacing={4}
+                          >
+                            <Grid item xs={12}>
+                              <Tooltip
+                                title={<Trans>common.deleteTooltip</Trans>}
+                              >
+                                <IconButton
+                                  aria-label="delete"
+                                  size="large"
+                                  onClick={() => {
+                                    removeAgents(i);
+                                  }}
+                                >
+                                  <DeleteIcon fontSize="inherit" />
+                                </IconButton>
+                              </Tooltip>
+                            </Grid>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </React.Fragment>
+                ))}
+                <Grid item xs={12}>
+                  {" "}
+                  <Grid
+                    container
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="center"
+                    spacing={0}
+                  >
+                    <Button
+                      variant="outlined"
+                      startIcon={<AddIcon />}
+                      onClick={() => {
+                        addAgents();
+                      }}
+                    >
+                      New Actor
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Grid>
             </Grid>
-          ) : (
-            ""
-          )}
-
-          {agentType === "other" ? (
-            <Grid item xs={12}>
-              <TextField
-                id="OtherAgent"
-                variant="outlined"
-                value={otherAgent}
-                label={<Trans>policies.form.otherAgent</Trans>}
-                onChange={handleOtherAgent}
-                sx={{
-                  width: "100%",
-                }}
-              />
+          </Zoom>
+          <Zoom
+            in={formType !== "" && formType === "others"}
+            style={{ transformOrigin: "0 0 0" }}
+            {...(formType !== "" && formType === "others"
+              ? { timeout: 500 }
+              : {})}
+          >
+            <Grid
+              item
+              xs={12}
+              sx={{
+                display:
+                  formType !== "" && formType === "others" ? "block" : "none",
+              }}
+            >
+              <Grid item xs={12}>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <InputLabel id="ActorOthers">
+                      <Trans>policies.form.actor</Trans>
+                    </InputLabel>
+                    <Select
+                      color="secondary"
+                      labelId="Actor"
+                      id="ActorOthers"
+                      variant="outlined"
+                      value={agentOthers}
+                      label={<Trans>policies.form.actor</Trans>}
+                      multiple
+                      input={<OutlinedInput label="Mode" />}
+                      onChange={handleAgentOthers}
+                    >
+                      <MenuItem value={"acl:AuthenticatedAgent"}>
+                        Authenticated Actor
+                      </MenuItem>
+                      <MenuItem value={"foaf:Agent"}>Anyone</MenuItem>
+                      <MenuItem value={"oc-alc:ResourceTenantAgent"}>
+                        Resource Tenant Agent
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
             </Grid>
-          ) : (
-            ""
-          )}
+          </Zoom>
         </Grid>
       </DialogContent>
     </div>

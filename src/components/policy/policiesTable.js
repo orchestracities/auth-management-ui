@@ -34,7 +34,12 @@ const DialogRounded = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-export default function PoliciesTable({ data, getData }) {
+export default function PoliciesTable({
+  data,
+  getData,
+  access_modes,
+  agentsTypes,
+}) {
   // DELETE
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
 
@@ -56,27 +61,42 @@ export default function PoliciesTable({ data, getData }) {
     setOpen(false);
   };
 
-  function createData(
-    id,
-    access,
-    path,
-    resource,
-    resourceType,
-    actor,
-    actorType,
-    action
-  ) {
-    return {
-      id,
-      access,
-      path,
-      resource,
-      resourceType,
-      actor,
-      actorType,
-      action,
-    };
-  }
+  const agentToString = (agents) => {
+    const agentsNames = [
+      ...agentsTypes,
+      ...[
+        { iri: "acl:AuthenticatedAgent", name: "authenticated agent" },
+        { iri: "foaf:Agent", name: "anyone" },
+        { iri: "oc-acl:ResourceTenantAgent", name: "resource tenant agent" },
+      ],
+    ];
+    let agentString = "";
+    for (const thisAgent of agents) {
+      const thisAgentSplit = thisAgent.split(":").slice("2").join(":");
+      const foundAgent =
+        thisAgentSplit === ""
+          ? agentsNames.filter((e) => e.iri === thisAgent)
+          : agentsNames.filter(
+              (e) => e.iri === thisAgent.replace(":" + thisAgentSplit, "")
+            );
+      agentString =
+        agentString +
+        foundAgent[0].name +
+        (thisAgentSplit === "" ? " " : " : ") +
+        thisAgentSplit +
+        "  ";
+    }
+    return agentString;
+  };
+
+  const modeToString = (modes) => {
+    let modeString = "";
+    for (const mode of modes) {
+      const foundMode = access_modes.filter((e) => e.iri === mode);
+      modeString = modeString + foundMode[0].name + " ";
+    }
+    return modeString;
+  };
 
   const rows = data;
 
@@ -128,40 +148,40 @@ export default function PoliciesTable({ data, getData }) {
       label: "ID",
     },
     {
-      id: "Access",
+      id: "access_to",
       numeric: false,
       disablePadding: false,
-      label: <Trans>policies.titles.access</Trans>,
+      label: <Trans>policies.table.access</Trans>,
     },
     {
-      id: "path",
+      id: "fiware_service_path",
       numeric: false,
       disablePadding: false,
-      label: "Path",
+      label: <Trans>policies.table.path</Trans>,
     },
     {
       id: "resource",
       numeric: false,
       disablePadding: false,
-      label: <Trans>policies.titles.resource</Trans>,
+      label: <Trans>policies.table.resource</Trans>,
     },
     {
-      id: "resourceType",
+      id: "resource_type",
       numeric: false,
       disablePadding: false,
-      label: <Trans>policies.titles.resourceType</Trans>,
+      label: <Trans>policies.table.resource_type</Trans>,
     },
     {
-      id: "actor",
+      id: "agent",
       numeric: false,
       disablePadding: false,
-      label: <Trans>policies.titles.actor</Trans>,
+      label: <Trans>policies.table.actor</Trans>,
     },
     {
-      id: "actorType",
+      id: "mode",
       numeric: false,
       disablePadding: false,
-      label: <Trans>policies.titles.actorType</Trans>,
+      label: <Trans>policies.table.mode</Trans>,
     },
     {
       id: "action",
@@ -260,8 +280,8 @@ export default function PoliciesTable({ data, getData }) {
             component="div"
           >
             <Trans
-              i18nKey="common.table.selected"
-              values={{ data: numSelected }}
+              i18nKey="policies.table.selected"
+              values={{ name: numSelected }}
             />
           </Typography>
         ) : (
@@ -269,30 +289,18 @@ export default function PoliciesTable({ data, getData }) {
         )}
 
         {numSelected > 0 ? (
-          <Tooltip title="Delete">
+          <Tooltip title={<Trans>common.deleteTooltip</Trans>}>
             <IconButton onClick={handleClickOpenDeleteDialog}>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
         ) : (
-          <Typography
-            sx={{ flex: "1 1 100%" }}
-            variant="h6"
-            id="tableTitle"
-            component="div"
-          >
-            {stableSort(rows, getComparator(order, orderBy)).length > 1 ? (
-              <Trans
-                i18nKey="common.table.counterPlural"
-                values={{ data: data.length }}
-              />
-            ) : (
-              <Trans
-                i18nKey="common.table.counterSingle"
-                values={{ data: data.length }}
-              />
-            )}
-          </Typography>
+          <Trans
+            i18nKey="policies.table.total_plur"
+            values={{
+              name: stableSort(rows, getComparator(order, orderBy)).length,
+            }}
+          />
         )}
       </Toolbar>
     );
@@ -325,11 +333,12 @@ export default function PoliciesTable({ data, getData }) {
     for (const id of policyIDs) {
       const foundPolicy = data.filter((e) => e.id === id);
       if (foundPolicy.length > 0) {
+        const thisPolicy = foundPolicy[0];
         arrayOfData.push({
-          id: foundPolicy[0].id,
-          access_to: foundPolicy[0].access_to,
-          fiware_service: foundPolicy[0].fiware_service,
-          fiware_service_path: foundPolicy[0].fiware_service_path,
+          id: thisPolicy.id,
+          access_to: thisPolicy.access_to,
+          fiware_service: thisPolicy.fiware_service,
+          fiware_service_path: thisPolicy.fiware_service_path,
         });
       }
     }
@@ -447,8 +456,12 @@ export default function PoliciesTable({ data, getData }) {
                       </TableCell>
                       <TableCell align="left">{row.resource}</TableCell>
                       <TableCell align="left">{row.resource_type}</TableCell>
-                      <TableCell align="left">{row.actor}</TableCell>
-                      <TableCell align="left">{row.actorType}</TableCell>
+                      <TableCell align="left">
+                        {agentToString(row.agent)}
+                      </TableCell>
+                      <TableCell align="left">
+                        {modeToString(row.mode)}
+                      </TableCell>
                       <TableCell align="left">{row.action}</TableCell>
                     </TableRow>
                   );

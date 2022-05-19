@@ -16,7 +16,19 @@ export default function TenantPage({
   keycloakToken,
 }) {
   const [createOpen, setCreateOpen] = React.useState(false);
+  const [sortedTenants, sortTenants] = React.useState([]);
+  const [count, counter] = React.useState(1);
+  React.useEffect(() => {
+    sortTenants(
+      tenantValues.reverse((a, b) => parseFloat(a.name) - parseFloat(b.name))
+    );
+  }, [tenantValues]);
   const mainTitle = <Trans>tenant.titles.page</Trans>;
+  const rerOder = (newData) => {
+    sortTenants(newData);
+    counter(count + 1);
+  };
+
   return (
     <div>
       <MainTitle mainTitle={mainTitle}></MainTitle>
@@ -35,7 +47,11 @@ export default function TenantPage({
       ></AddButton>
       <Grid container spacing={2} sx={{ marginLeft: "15px " }}>
         <Grid item xs={12}>
-          <SortButton></SortButton>
+          <SortButton
+            data={sortedTenants}
+            id={"name"}
+            sortData={rerOder}
+          ></SortButton>
         </Grid>
         {tenantValues.map((tenant, index) => (
           <Grow

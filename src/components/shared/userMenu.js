@@ -123,6 +123,7 @@ export default function UserMenu({ language, userData, keycloakToken }) {
           <IconButton
             onClick={handleClick}
             size="small"
+            color="inherit"
             sx={{ ml: 2 }}
             aria-controls={open ? "account-menu" : undefined}
             aria-haspopup="true"

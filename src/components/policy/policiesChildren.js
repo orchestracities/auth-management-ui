@@ -32,8 +32,8 @@ export default function PoliciesChildren({ tenantId, tenantName, seTenant }) {
       axios
         .get(process.env.REACT_APP_ANUBIS_API_URL + "v1/policies", {
           headers: {
-            fiware_service: tenantName,
-            fiware_service_path: service.path,
+            "fiware-service": tenantName,
+            "fiware-servicepath": service.path,
           },
         })
         .then((response) => {
