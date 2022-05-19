@@ -1,21 +1,21 @@
-const express = require('express')
-const { ApolloServer, gql } = require('apollo-server-express')
-const { configureKeycloak } = require('./lib/common')
-require('dotenv').config({ path: '../.env' })
+const express = require("express");
+const { ApolloServer, gql } = require("apollo-server-express");
+const { configureKeycloak } = require("./lib/common");
+require("dotenv").config({ path: "../.env" });
 const {
   KeycloakContext,
   KeycloakTypeDefs,
-  KeycloakSchemaDirectives
-} = require('keycloak-connect-graphql')
+  KeycloakSchemaDirectives,
+} = require("keycloak-connect-graphql");
 
-const app = express()
+const app = express();
 
-const graphqlPath = '/graphql'
+const graphqlPath = "/graphql";
 
-const { keycloak } = configureKeycloak(app, graphqlPath)
+const { keycloak } = configureKeycloak(app, graphqlPath);
 
-const { get, update, add, deleteTenant } = require('./mongo/tenantsQueries')
-const { getUserPref, updateUserPref } = require('./mongo/usrSettings')
+const { get, update, add, deleteTenant } = require("./mongo/tenantsQueries");
+const { getUserPref, updateUserPref } = require("./mongo/usrSettings");
 
 const typeDefs = gql`
   type TenantConfiguration {
@@ -51,32 +51,32 @@ const typeDefs = gql`
       secondaryColor: String!
     ): [TenantConfiguration]
   }
-`
+`;
 
 const resolvers = {
   Query: {
     listTenants: async (obj, args, context, info) => {
-      return await get(args.tenantNames)
+      return await get(args.tenantNames);
     },
     getUserPreferences: async (obj, args, context, info) => {
-      return await getUserPref(args.usrName)
-    }
+      return await getUserPref(args.usrName);
+    },
   },
   Mutation: {
     modifyUserPreferences: async (object, args, context, info) => {
-      return await [updateUserPref(args)]
+      return await [updateUserPref(args)];
     },
     publishTenants: async (object, args, context, info) => {
-      return await [add(args)]
+      return await [add(args)];
     },
     modifyTenants: async (object, args, context, info) => {
-      return await [update(args)]
+      return await [update(args)];
     },
     removeTenants: async (object, args, context, info) => {
-      return await deleteTenant(args)
-    }
-  }
-}
+      return await deleteTenant(args);
+    },
+  },
+};
 
 const server = new ApolloServer({
   typeDefs: [KeycloakTypeDefs, typeDefs],
@@ -85,17 +85,17 @@ const server = new ApolloServer({
   context: ({ req }) => {
     return {
       kauth: new KeycloakContext({ req }, keycloak, {
-        resource_server_id: process.env.GRAPHQL_RESOURCE_SERVER_NAME
-      })
-    }
-  }
-})
-server.applyMiddleware({ app })
+        resource_server_id: process.env.GRAPHQL_RESOURCE_SERVER_NAME,
+      }),
+    };
+  },
+});
+server.applyMiddleware({ app });
 
-const port = 4000
+const port = 4000;
 
 app.listen({ port }, () =>
   console.log(
     `🚀 Server ready at http://localhost:${port}${server.graphqlPath}`
   )
-)
+);
