@@ -1,208 +1,208 @@
-import * as React from 'react'
-import PropTypes from 'prop-types'
-import { alpha, styled } from '@mui/material/styles'
-import Box from '@mui/material/Box'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TablePagination from '@mui/material/TablePagination'
-import TableRow from '@mui/material/TableRow'
-import TableSortLabel from '@mui/material/TableSortLabel'
-import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
-import Paper from '@mui/material/Paper'
-import Checkbox from '@mui/material/Checkbox'
-import IconButton from '@mui/material/IconButton'
-import Tooltip from '@mui/material/Tooltip'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Switch from '@mui/material/Switch'
-import DeleteIcon from '@mui/icons-material/Delete'
-import FilterListIcon from '@mui/icons-material/FilterList'
-import EditIcon from '@mui/icons-material/Edit'
-import { visuallyHidden } from '@mui/utils'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import TenantForm from '../tenant/tenantForm'
-import DeleteDialog from '../shared/messages/cardDelete'
-import { Trans } from 'react-i18next'
+import * as React from "react";
+import PropTypes from "prop-types";
+import { alpha, styled } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TablePagination from "@mui/material/TablePagination";
+import TableRow from "@mui/material/TableRow";
+import TableSortLabel from "@mui/material/TableSortLabel";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import Checkbox from "@mui/material/Checkbox";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
+import DeleteIcon from "@mui/icons-material/Delete";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import EditIcon from "@mui/icons-material/Edit";
+import { visuallyHidden } from "@mui/utils";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import TenantForm from "../tenant/tenantForm";
+import DeleteDialog from "../shared/messages/cardDelete";
+import { Trans } from "react-i18next";
 
 const DialogRounded = styled(Dialog)(({ theme }) => ({
-  '& .MuiPaper-rounded': {
-    borderRadius: 15
-  }
-}))
+  "& .MuiPaper-rounded": {
+    borderRadius: 15,
+  },
+}));
 
-export default function PoliciesTable ({
+export default function PoliciesTable({
   data,
   getData,
   access_modes,
-  agentsTypes
+  agentsTypes,
 }) {
   // DELETE
-  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false)
+  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
 
   const handleClickOpenDeleteDialog = () => {
-    setOpenDeleteDialog(true)
-  }
+    setOpenDeleteDialog(true);
+  };
 
   const handleCloseDeleteDialog = (value) => {
-    setOpenDeleteDialog(false)
-  }
+    setOpenDeleteDialog(false);
+  };
   // EDIT
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
-    setOpen(true)
-  }
+    setOpen(true);
+  };
 
   const handleClose = () => {
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
   const agentToString = (agents) => {
     const agentsNames = [
       ...agentsTypes,
       ...[
-        { iri: 'acl:AuthenticatedAgent', name: 'authenticated agent' },
-        { iri: 'foaf:Agent', name: 'anyone' },
-        { iri: 'oc-acl:ResourceTenantAgent', name: 'resource tenant agent' }
-      ]
-    ]
-    let agentString = ''
+        { iri: "acl:AuthenticatedAgent", name: "authenticated agent" },
+        { iri: "foaf:Agent", name: "anyone" },
+        { iri: "oc-acl:ResourceTenantAgent", name: "resource tenant agent" },
+      ],
+    ];
+    let agentString = "";
     for (const thisAgent of agents) {
-      const thisAgentSplit = thisAgent.split(':').slice('2').join(':')
+      const thisAgentSplit = thisAgent.split(":").slice("2").join(":");
       const foundAgent =
-        thisAgentSplit === ''
+        thisAgentSplit === ""
           ? agentsNames.filter((e) => e.iri === thisAgent)
           : agentsNames.filter(
-            (e) => e.iri === thisAgent.replace(':' + thisAgentSplit, '')
-          )
+              (e) => e.iri === thisAgent.replace(":" + thisAgentSplit, "")
+            );
       agentString =
         agentString +
         foundAgent[0].name +
-        (thisAgentSplit === '' ? ' ' : ' : ') +
+        (thisAgentSplit === "" ? " " : " : ") +
         thisAgentSplit +
-        '  '
+        "  ";
     }
-    return agentString
-  }
+    return agentString;
+  };
 
   const modeToString = (modes) => {
-    let modeString = ''
+    let modeString = "";
     for (const mode of modes) {
-      const foundMode = access_modes.filter((e) => e.iri === mode)
-      modeString = modeString + foundMode[0].name + ' '
+      const foundMode = access_modes.filter((e) => e.iri === mode);
+      modeString = modeString + foundMode[0].name + " ";
     }
-    return modeString
-  }
+    return modeString;
+  };
 
-  const rows = data
+  const rows = data;
 
-  function EditButton (data) {
+  function EditButton(data) {
     return (
       <Tooltip title="Edit">
         <IconButton onClick={handleClickOpen}>
           <EditIcon />
         </IconButton>
       </Tooltip>
-    )
+    );
   }
 
-  function descendingComparator (a, b, orderBy) {
+  function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
-      return -1
+      return -1;
     }
     if (b[orderBy] > a[orderBy]) {
-      return 1
+      return 1;
     }
-    return 0
+    return 0;
   }
 
-  function getComparator (order, orderBy) {
-    return order === 'desc'
+  function getComparator(order, orderBy) {
+    return order === "desc"
       ? (a, b) => descendingComparator(a, b, orderBy)
-      : (a, b) => -descendingComparator(a, b, orderBy)
+      : (a, b) => -descendingComparator(a, b, orderBy);
   }
 
   // This method is created for cross-browser compatibility, if you don't
   // need to support IE11, you can use Array.prototype.sort() directly
-  function stableSort (array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index])
+  function stableSort(array, comparator) {
+    const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
-      const order = comparator(a[0], b[0])
+      const order = comparator(a[0], b[0]);
       if (order !== 0) {
-        return order
+        return order;
       }
-      return a[1] - b[1]
-    })
-    return stabilizedThis.map((el) => el[0])
+      return a[1] - b[1];
+    });
+    return stabilizedThis.map((el) => el[0]);
   }
 
   const headCells = [
     {
-      id: 'id',
+      id: "id",
       numeric: false,
       disablePadding: false,
-      label: 'ID'
+      label: "ID",
     },
     {
-      id: 'access_to',
+      id: "access_to",
       numeric: false,
       disablePadding: false,
-      label: <Trans>policies.table.access</Trans>
+      label: <Trans>policies.table.access</Trans>,
     },
     {
-      id: 'fiware_service_path',
+      id: "fiware_service_path",
       numeric: false,
       disablePadding: false,
-      label: <Trans>policies.table.path</Trans>
+      label: <Trans>policies.table.path</Trans>,
     },
     {
-      id: 'resource',
+      id: "resource",
       numeric: false,
       disablePadding: false,
-      label: <Trans>policies.table.resource</Trans>
+      label: <Trans>policies.table.resource</Trans>,
     },
     {
-      id: 'resource_type',
+      id: "resource_type",
       numeric: false,
       disablePadding: false,
-      label: <Trans>policies.table.resource_type</Trans>
+      label: <Trans>policies.table.resource_type</Trans>,
     },
     {
-      id: 'agent',
+      id: "agent",
       numeric: false,
       disablePadding: false,
-      label: <Trans>policies.table.actor</Trans>
+      label: <Trans>policies.table.actor</Trans>,
     },
     {
-      id: 'mode',
+      id: "mode",
       numeric: false,
       disablePadding: false,
-      label: <Trans>policies.table.mode</Trans>
+      label: <Trans>policies.table.mode</Trans>,
     },
     {
-      id: 'action',
+      id: "action",
       numeric: false,
       disablePadding: true,
-      label: ''
-    }
-  ]
+      label: "",
+    },
+  ];
 
-  function PoliciesTableHead (props) {
+  function PoliciesTableHead(props) {
     const {
       onSelectAllClick,
       order,
       orderBy,
       numSelected,
       rowCount,
-      onRequestSort
-    } = props
+      onRequestSort,
+    } = props;
     const createSortHandler = (property) => (event) => {
-      onRequestSort(event, property)
-    }
+      onRequestSort(event, property);
+    };
 
     return (
       <TableHead>
@@ -214,51 +214,49 @@ export default function PoliciesTable ({
               checked={rowCount > 0 && numSelected === rowCount}
               onChange={onSelectAllClick}
               inputProps={{
-                'aria-label': 'select all desserts'
+                "aria-label": "select all desserts",
               }}
             />
           </TableCell>
           {headCells.map((headCell) => (
             <TableCell
               key={headCell.id}
-              align={headCell.numeric ? 'right' : 'left'}
-              padding={headCell.disablePadding ? 'none' : 'normal'}
+              align={headCell.numeric ? "right" : "left"}
+              padding={headCell.disablePadding ? "none" : "normal"}
               sortDirection={orderBy === headCell.id ? order : false}
             >
               <TableSortLabel
                 active={orderBy === headCell.id}
-                direction={orderBy === headCell.id ? order : 'asc'}
+                direction={orderBy === headCell.id ? order : "asc"}
                 onClick={createSortHandler(headCell.id)}
               >
                 {headCell.label}
-                {orderBy === headCell.id
-                  ? (
+                {orderBy === headCell.id ? (
                   <Box component="span" sx={visuallyHidden}>
-                    {order === 'desc'
-                      ? 'sorted descending'
-                      : 'sorted ascending'}
+                    {order === "desc"
+                      ? "sorted descending"
+                      : "sorted ascending"}
                   </Box>
-                    )
-                  : null}
+                ) : null}
               </TableSortLabel>
             </TableCell>
           ))}
         </TableRow>
       </TableHead>
-    )
+    );
   }
 
   PoliciesTableHead.propTypes = {
     numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
     onSelectAllClick: PropTypes.func.isRequired,
-    order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+    order: PropTypes.oneOf(["asc", "desc"]).isRequired,
     orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired
-  }
+    rowCount: PropTypes.number.isRequired,
+  };
 
   const PoliciesTableToolbar = (props) => {
-    const { numSelected } = props
+    const { numSelected } = props;
 
     return (
       <Toolbar
@@ -270,14 +268,13 @@ export default function PoliciesTable ({
               alpha(
                 theme.palette.primary.main,
                 theme.palette.action.activatedOpacity
-              )
-          })
+              ),
+          }),
         }}
       >
-        {numSelected > 0
-          ? (
+        {numSelected > 0 ? (
           <Typography
-            sx={{ flex: '1 1 100%' }}
+            sx={{ flex: "1 1 100%" }}
             color="inherit"
             variant="subtitle1"
             component="div"
@@ -287,129 +284,126 @@ export default function PoliciesTable ({
               values={{ name: numSelected }}
             />
           </Typography>
-            )
-          : (
-              ''
-            )}
+        ) : (
+          ""
+        )}
 
-        {numSelected > 0
-          ? (
+        {numSelected > 0 ? (
           <Tooltip title={<Trans>common.deleteTooltip</Trans>}>
             <IconButton onClick={handleClickOpenDeleteDialog}>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
-            )
-          : (
+        ) : (
           <Trans
             i18nKey="policies.table.total_plur"
             values={{
-              name: stableSort(rows, getComparator(order, orderBy)).length
+              name: stableSort(rows, getComparator(order, orderBy)).length,
             }}
           />
-            )}
+        )}
       </Toolbar>
-    )
-  }
+    );
+  };
 
   PoliciesTableToolbar.propTypes = {
-    numSelected: PropTypes.number.isRequired
-  }
+    numSelected: PropTypes.number.isRequired,
+  };
 
-  const [order, setOrder] = React.useState('asc')
-  const [orderBy, setOrderBy] = React.useState('resource')
-  const [selected, setSelected] = React.useState([])
-  const [page, setPage] = React.useState(0)
-  const [rowsPerPage, setRowsPerPage] = React.useState(5)
+  const [order, setOrder] = React.useState("asc");
+  const [orderBy, setOrderBy] = React.useState("resource");
+  const [selected, setSelected] = React.useState([]);
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const fromIdToText = (policyIDs) => {
-    let textDisplay = '\n'
-    let foundPolicy
+    let textDisplay = "\n";
+    let foundPolicy;
     for (const id of policyIDs) {
-      foundPolicy = data.filter((e) => e.id === id)
+      foundPolicy = data.filter((e) => e.id === id);
       if (foundPolicy.length > 0) {
-        textDisplay = textDisplay + ' -- ' + foundPolicy[0].id + '\n'
+        textDisplay = textDisplay + " -- " + foundPolicy[0].id + "\n";
       }
     }
-    return textDisplay
-  }
+    return textDisplay;
+  };
 
   const dataCreator = (policyIDs) => {
-    const arrayOfData = []
+    const arrayOfData = [];
     for (const id of policyIDs) {
-      const foundPolicy = data.filter((e) => e.id === id)
+      const foundPolicy = data.filter((e) => e.id === id);
       if (foundPolicy.length > 0) {
-        const thisPolicy = foundPolicy[0]
+        const thisPolicy = foundPolicy[0];
         arrayOfData.push({
           id: thisPolicy.id,
           access_to: thisPolicy.access_to,
           fiware_service: thisPolicy.fiware_service,
-          fiware_service_path: thisPolicy.fiware_service_path
-        })
+          fiware_service_path: thisPolicy.fiware_service_path,
+        });
       }
     }
-    return arrayOfData
-  }
+    return arrayOfData;
+  };
 
   const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc'
-    setOrder(isAsc ? 'desc' : 'asc')
-    setOrderBy(property)
-  }
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+  };
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.id)
-      setSelected(newSelecteds)
-      return
+      const newSelecteds = rows.map((n) => n.id);
+      setSelected(newSelecteds);
+      return;
     }
-    setSelected([])
-  }
+    setSelected([]);
+  };
 
   const handleClick = (event, id) => {
-    const selectedIndex = selected.indexOf(id)
-    let newSelected = []
+    const selectedIndex = selected.indexOf(id);
+    let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id)
+      newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1))
+      newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1))
+      newSelected = newSelected.concat(selected.slice(0, -1));
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
         selected.slice(selectedIndex + 1)
-      )
+      );
     }
 
-    setSelected(newSelected)
-  }
+    setSelected(newSelected);
+  };
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage)
-  }
+    setPage(newPage);
+  };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10))
-    setPage(0)
-  }
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
-  const isSelected = (id) => selected.indexOf(id) !== -1
+  const isSelected = (id) => selected.indexOf(id) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
+    <Box sx={{ width: "100%" }}>
+      <Paper sx={{ width: "100%", mb: 2 }}>
         <PoliciesTableToolbar numSelected={selected.length} />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
-            size={'medium'}
+            size={"medium"}
           >
             <PoliciesTableHead
               numSelected={selected.length}
@@ -425,8 +419,8 @@ export default function PoliciesTable ({
               {stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.id)
-                  const labelId = `enhanced-table-checkbox-${index}`
+                  const isItemSelected = isSelected(row.id);
+                  const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
@@ -443,7 +437,7 @@ export default function PoliciesTable ({
                           color="primary"
                           checked={isItemSelected}
                           inputProps={{
-                            'aria-labelledby': labelId
+                            "aria-labelledby": labelId,
                           }}
                         />
                       </TableCell>
@@ -470,12 +464,12 @@ export default function PoliciesTable ({
                       </TableCell>
                       <TableCell align="left">{row.action}</TableCell>
                     </TableRow>
-                  )
+                  );
                 })}
               {emptyRows > 0 && (
                 <TableRow
                   style={{
-                    height: 53 * emptyRows
+                    height: 53 * emptyRows,
                   }}
                 >
                   <TableCell colSpan={6} />
@@ -502,20 +496,20 @@ export default function PoliciesTable ({
           dataValues: dataCreator(selected),
           multiple: true,
           selectedText: fromIdToText(selected),
-          setSelected
+          setSelected,
         }}
       />
       <DialogRounded
         open={open}
         fullWidth={true}
-        maxWidth={'xl'}
+        maxWidth={"xl"}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <TenantForm title={'Edit Tenant'} close={setOpen}></TenantForm>
+        <TenantForm title={"Edit Tenant"} close={setOpen}></TenantForm>
         <DialogActions></DialogActions>
       </DialogRounded>
     </Box>
-  )
+  );
 }

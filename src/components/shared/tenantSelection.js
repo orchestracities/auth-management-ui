@@ -1,87 +1,87 @@
-import * as React from 'react'
-import Box from '@mui/material/Box'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
-import Select from '@mui/material/Select'
-import { createTheme, ThemeProvider, styled } from '@mui/material/styles'
-import IconList from '../tenant/iconList'
-import ListItemIcon from '@mui/material/ListItemIcon'
+import * as React from "react";
+import Box from "@mui/material/Box";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
+import IconList from "../tenant/iconList";
+import ListItemIcon from "@mui/material/ListItemIcon";
 
 const TenantSelect = styled(Select)(({ theme }) => ({
-  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
     borderColor: theme.palette.primary.contrastText,
-    color: theme.palette.primary.contrastText
+    color: theme.palette.primary.contrastText,
   },
-  '& .MuiOutlinedInput-notchedOutline': {
+  "& .MuiOutlinedInput-notchedOutline": {
     borderColor: theme.palette.primary.contrastText,
-    color: theme.palette.primary.contrastText
+    color: theme.palette.primary.contrastText,
   },
 
-  '& .MuiInputLabel': {
-    color: theme.palette.primary.contrastText
+  "& .MuiInputLabel": {
+    color: theme.palette.primary.contrastText,
   },
-  '& .MuiInputLabel': {
-    color: theme.palette.primary.contrastText
+  "& .MuiInputLabel": {
+    color: theme.palette.primary.contrastText,
   },
-  '& .MuiSvgIcon-root': {
-    color: theme.palette.primary.contrastText
+  "& .MuiSvgIcon-root": {
+    color: theme.palette.primary.contrastText,
   },
-  '& :hover .MuiOutlinedInput-notchedOutline': {
+  "& :hover .MuiOutlinedInput-notchedOutline": {
     borderColor: theme.palette.primary.contrastText,
-    color: theme.palette.primary.contrastText
+    color: theme.palette.primary.contrastText,
   },
-  '& .MuiOutlinedInput-root': {
+  "& .MuiOutlinedInput-root": {
     borderColor: theme.palette.primary.contrastText,
-    color: theme.palette.primary.contrastText
+    color: theme.palette.primary.contrastText,
   },
-  '& .MuiOutlinedInput-input': {
-    color: theme.palette.primary.contrastText
+  "& .MuiOutlinedInput-input": {
+    color: theme.palette.primary.contrastText,
   },
-  '& .MuiInputLabel-root': {
-    color: theme.palette.primary.contrastText
+  "& .MuiInputLabel-root": {
+    color: theme.palette.primary.contrastText,
   },
-  '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-    borderColor: theme.palette.primary.contrastText
+  "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+    borderColor: theme.palette.primary.contrastText,
   },
-  '&:hover .MuiOutlinedInput-input': {
-    color: theme.palette.primary.contrastText
+  "&:hover .MuiOutlinedInput-input": {
+    color: theme.palette.primary.contrastText,
   },
-  '&:hover .MuiInputLabel-root': {
-    color: theme.palette.primary.contrastText
+  "&:hover .MuiInputLabel-root": {
+    color: theme.palette.primary.contrastText,
   },
-  '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-    borderColor: theme.palette.primary.contrastText
+  "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+    borderColor: theme.palette.primary.contrastText,
   },
-  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-input': {
-    color: theme.palette.primary.contrastText
+  "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-input": {
+    color: theme.palette.primary.contrastText,
   },
-  '& .MuiInputLabel-root.Mui-focused': {
-    color: theme.palette.primary.contrastText
+  "& .MuiInputLabel-root.Mui-focused": {
+    color: theme.palette.primary.contrastText,
   },
-  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-    borderColor: theme.palette.primary.contrastText
-  }
-}))
+  "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+    borderColor: theme.palette.primary.contrastText,
+  },
+}));
 
 const TenantLabel = styled(InputLabel)(({ theme }) => ({
-  color: theme.palette.primary.contrastText + ' !important'
-}))
-export default function TenantSelection ({
+  color: theme.palette.primary.contrastText + " !important",
+}));
+export default function TenantSelection({
   tenantValues,
   seTenant,
-  correntValue
+  correntValue,
 }) {
-  const [Tenant, set_Tenant] = React.useState(correntValue)
-  const listOfIcons = IconList()
+  const [Tenant, set_Tenant] = React.useState(correntValue);
+  const listOfIcons = IconList();
   const iconMapper = (iconName) => {
-    const thisIcon = listOfIcons.filter((e) => e.name === iconName)
-    return thisIcon[0].icon
-  }
+    const thisIcon = listOfIcons.filter((e) => e.name === iconName);
+    return thisIcon[0].icon;
+  };
   const handleChange = (event) => {
-    set_Tenant(event.target.value)
-    seTenant(event.target.value)
-  }
+    set_Tenant(event.target.value);
+    seTenant(event.target.value);
+  };
 
   return (
     <Box sx={{ minWidth: 300 }}>
@@ -104,5 +104,5 @@ export default function TenantSelection ({
         </TenantSelect>
       </FormControl>
     </Box>
-  )
+  );
 }
