@@ -347,19 +347,19 @@ export default function PolicyForm({
                           <Grid container spacing={4}>
                             <Grid item xs={12}>
                               <FormControl fullWidth>
-                                <InputLabel id={"Actor" + i}>
-                                  <Trans>policies.form.actor</Trans>
+                                <InputLabel id={"User" + i}>
+                                  <Trans>policies.form.user</Trans>
                                 </InputLabel>
                                 <Select
                                   color="secondary"
-                                  labelId={"Actor" + i}
-                                  id={"Actor" + i}
+                                  labelId={"User" + i}
+                                  id={"User" + i}
                                   name={i}
-                                  key={"Actor" + i}
+                                  key={"User" + i}
                                   value={agent.type}
                                   variant="outlined"
                                   onChange={handleAgentsType}
-                                  label={<Trans>policies.form.actor</Trans>}
+                                  label={<Trans>policies.form.user</Trans>}
                                   input={<OutlinedInput label="Mode" />}
                                 >
                                   {agentsTypes.map((agents) => (

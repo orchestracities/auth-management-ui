@@ -30,7 +30,7 @@
     "titles": {
       "page": "Policies",
       "new": "New Policy",
-      "noData": "No data avaitable please select a Tenant"
+      "noData": "No data available. Please select a Tenant"
     },
     "table": {
       "access": "Access",
@@ -46,22 +46,23 @@
     "filters": {
       "mode": "Mode{{name}}",
       "path": "Path{{name}}",
-      "actor_type": "Actor Type<0>{{name}}</0>",
-      "resource_type": "Resource Type{{name}}",
+      "actor_type": "Actor type<0>{{name}}</0>",
+      "resource_type": "Resource type{{name}}",
       "actor": "Actor{{name}}"
     },
     "form": {
-      "servicePath": "Service Path",
-      "acessTo": "Access To",
-      "resourceType": "Resource Type",
+      "servicePath": "Service path",
+      "accessTo": "Access to",
+      "resourceType": "Resource type",
       "mode": "Mode",
-      "actorType": "Agent Type",
-      "actor": "Actor",
-      "otherAgent": "Other Agent",
-      "userType": "User Type",
-      "agent": "Agent Name",
-      "agentGroup": "Group Name",
-      "agentClass": "Class Name",
+      "actorType": "Agent type",
+      "user": "User",
+      "otherUser": "Other user",
+      "userType": "User type",
+      "acessTo":"acess to",
+      "agent": "Agent name",
+      "agentGroup": "Group name",
+      "agentClass": "User role",
       "actorTitle": "Actors settings",
       "mainTitle": "Main data"
     }
