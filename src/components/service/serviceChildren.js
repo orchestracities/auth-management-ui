@@ -1,108 +1,108 @@
-import * as React from 'react'
-import IconButton from '@mui/material/IconButton'
-import { styled, alpha } from '@mui/material/styles'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import AppBar from '@mui/material/AppBar'
-import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
-import CloseIcon from '@mui/icons-material/Close'
-import Grid from '@mui/material/Grid'
-import Badge from '@mui/material/Badge'
-import FolderIcon from '@mui/icons-material/Folder'
-import PropTypes from 'prop-types'
-import Box from '@mui/material/Box'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TablePagination from '@mui/material/TablePagination'
-import TableRow from '@mui/material/TableRow'
-import TableSortLabel from '@mui/material/TableSortLabel'
-import Paper from '@mui/material/Paper'
-import Checkbox from '@mui/material/Checkbox'
-import Tooltip from '@mui/material/Tooltip'
-import DeleteIcon from '@mui/icons-material/Delete'
-import { visuallyHidden } from '@mui/utils'
-import DeleteDialog from '../shared/messages/cardDelete'
-import { Trans } from 'react-i18next'
+import * as React from "react";
+import IconButton from "@mui/material/IconButton";
+import { styled, alpha } from "@mui/material/styles";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import CloseIcon from "@mui/icons-material/Close";
+import Grid from "@mui/material/Grid";
+import Badge from "@mui/material/Badge";
+import FolderIcon from "@mui/icons-material/Folder";
+import PropTypes from "prop-types";
+import Box from "@mui/material/Box";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TablePagination from "@mui/material/TablePagination";
+import TableRow from "@mui/material/TableRow";
+import TableSortLabel from "@mui/material/TableSortLabel";
+import Paper from "@mui/material/Paper";
+import Checkbox from "@mui/material/Checkbox";
+import Tooltip from "@mui/material/Tooltip";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { visuallyHidden } from "@mui/utils";
+import DeleteDialog from "../shared/messages/cardDelete";
+import { Trans } from "react-i18next";
 
 const DialogRounded = styled(Dialog)(({ theme }) => ({
-  '& .MuiPaper-rounded': {
-    borderRadius: 15
-  }
-}))
+  "& .MuiPaper-rounded": {
+    borderRadius: 15,
+  },
+}));
 
 const CustomDialogTitle = styled(AppBar)({
-  position: 'relative',
-  background: 'white',
-  boxShadow: 'none'
-})
-export default function ServiceChildren ({
+  position: "relative",
+  background: "white",
+  boxShadow: "none",
+});
+export default function ServiceChildren({
   masterTitle,
   setOpen,
   status,
   data,
-  getData
+  getData,
 }) {
   // DELETE
-  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false)
+  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
 
   const handleClickOpenDeleteDialog = () => {
-    setOpenDeleteDialog(true)
-  }
+    setOpenDeleteDialog(true);
+  };
 
   const handleCloseDeleteDialog = (value) => {
-    setOpenDeleteDialog(false)
-  }
+    setOpenDeleteDialog(false);
+  };
 
-  const rows = data
+  const rows = data;
   const descendingComparator = (a, b, orderBy) => {
     if (b[orderBy] < a[orderBy]) {
-      return -1
+      return -1;
     }
     if (b[orderBy] > a[orderBy]) {
-      return 1
+      return 1;
     }
-    return 0
-  }
+    return 0;
+  };
 
   const getComparator = (order, orderBy) => {
-    return order === 'desc'
+    return order === "desc"
       ? (a, b) => descendingComparator(a, b, orderBy)
-      : (a, b) => -descendingComparator(a, b, orderBy)
-  }
+      : (a, b) => -descendingComparator(a, b, orderBy);
+  };
 
   // This method is created for cross-browser compatibility, if you don't
   // need to support IE11, you can use Array.prototype.sort() directly
   const stableSort = (array, comparator) => {
-    const stabilizedThis = array.map((el, index) => [el, index])
+    const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
-      const order = comparator(a[0], b[0])
+      const order = comparator(a[0], b[0]);
       if (order !== 0) {
-        return order
+        return order;
       }
-      return a[1] - b[1]
-    })
-    return stabilizedThis.map((el) => el[0])
-  }
+      return a[1] - b[1];
+    });
+    return stabilizedThis.map((el) => el[0]);
+  };
 
   const headCells = [
     {
-      id: 'id',
+      id: "id",
       numeric: false,
       disablePadding: true,
-      label: 'ID'
+      label: "ID",
     },
     {
-      id: 'path',
+      id: "path",
       numeric: true,
       disablePadding: false,
-      label: 'Path'
-    }
-  ]
+      label: "Path",
+    },
+  ];
 
   const EnhancedTableHead = (props) => {
     const {
@@ -111,11 +111,11 @@ export default function ServiceChildren ({
       orderBy,
       numSelected,
       rowCount,
-      onRequestSort
-    } = props
+      onRequestSort,
+    } = props;
     const createSortHandler = (property) => (event) => {
-      onRequestSort(event, property)
-    }
+      onRequestSort(event, property);
+    };
 
     return (
       <TableHead>
@@ -127,51 +127,49 @@ export default function ServiceChildren ({
               checked={rowCount > 0 && numSelected === rowCount}
               onChange={onSelectAllClick}
               inputProps={{
-                'aria-label': 'select all desserts'
+                "aria-label": "select all desserts",
               }}
             />
           </TableCell>
           {headCells.map((headCell) => (
             <TableCell
               key={headCell.id}
-              align={headCell.numeric ? 'right' : 'left'}
-              padding={headCell.disablePadding ? 'none' : 'normal'}
+              align={headCell.numeric ? "right" : "left"}
+              padding={headCell.disablePadding ? "none" : "normal"}
               sortDirection={orderBy === headCell.id ? order : false}
             >
               <TableSortLabel
                 active={orderBy === headCell.id}
-                direction={orderBy === headCell.id ? order : 'asc'}
+                direction={orderBy === headCell.id ? order : "asc"}
                 onClick={createSortHandler(headCell.id)}
               >
                 {headCell.label}
-                {orderBy === headCell.id
-                  ? (
+                {orderBy === headCell.id ? (
                   <Box component="span" sx={visuallyHidden}>
-                    {order === 'desc'
-                      ? 'sorted descending'
-                      : 'sorted ascending'}
+                    {order === "desc"
+                      ? "sorted descending"
+                      : "sorted ascending"}
                   </Box>
-                    )
-                  : null}
+                ) : null}
               </TableSortLabel>
             </TableCell>
           ))}
         </TableRow>
       </TableHead>
-    )
-  }
+    );
+  };
 
   EnhancedTableHead.propTypes = {
     numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
     onSelectAllClick: PropTypes.func.isRequired,
-    order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+    order: PropTypes.oneOf(["asc", "desc"]).isRequired,
     orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired
-  }
+    rowCount: PropTypes.number.isRequired,
+  };
 
   const EnhancedTableToolbar = (props) => {
-    const { numSelected } = props
+    const { numSelected } = props;
 
     return (
       <Toolbar
@@ -183,14 +181,13 @@ export default function ServiceChildren ({
               alpha(
                 theme.palette.primary.main,
                 theme.palette.action.activatedOpacity
-              )
-          })
+              ),
+          }),
         }}
       >
-        {numSelected > 0
-          ? (
+        {numSelected > 0 ? (
           <Typography
-            sx={{ flex: '1 1 100%' }}
+            sx={{ flex: "1 1 100%" }}
             color="inherit"
             variant="subtitle1"
             component="div"
@@ -200,137 +197,132 @@ export default function ServiceChildren ({
               values={{ data: numSelected }}
             />
           </Typography>
-            )
-          : (
+        ) : (
           <Typography
-            sx={{ flex: '1 1 100%' }}
+            sx={{ flex: "1 1 100%" }}
             variant="h6"
             id="tableTitle"
             component="div"
           >
-            {data.length > 1
-              ? (
+            {data.length > 1 ? (
               <Trans
                 i18nKey="common.table.counterPlural"
                 values={{ data: data.length }}
               />
-                )
-              : (
+            ) : (
               <Trans
                 i18nKey="common.table.counterSingle"
                 values={{ data: data.length }}
               />
-                )}
-          </Typography>
             )}
+          </Typography>
+        )}
 
-        {numSelected > 0
-          ? (
+        {numSelected > 0 ? (
           <Tooltip title={<Trans>common.deleteTooltip</Trans>}>
             <IconButton onClick={handleClickOpenDeleteDialog}>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
-            )
-          : (
-              ''
-            )}
+        ) : (
+          ""
+        )}
       </Toolbar>
-    )
-  }
+    );
+  };
 
   EnhancedTableToolbar.propTypes = {
-    numSelected: PropTypes.number.isRequired
-  }
+    numSelected: PropTypes.number.isRequired,
+  };
   const handleClickOpen = () => {
-    setOpen(true)
-  }
+    setOpen(true);
+  };
 
   const handleClose = () => {
-    setOpen(false)
-  }
-  const [order, setOrder] = React.useState('asc')
-  const [orderBy, setOrderBy] = React.useState('calories')
-  const [selected, setSelected] = React.useState([])
-  const [page, setPage] = React.useState(0)
-  const [rowsPerPage, setRowsPerPage] = React.useState(5)
+    setOpen(false);
+  };
+  const [order, setOrder] = React.useState("asc");
+  const [orderBy, setOrderBy] = React.useState("calories");
+  const [selected, setSelected] = React.useState([]);
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const fromIdToText = (servicesIDs) => {
-    let textDisplay = '\n'
-    let foundPath
+    let textDisplay = "\n";
+    let foundPath;
     for (const id of servicesIDs) {
-      foundPath = data.filter((e) => e.id === id)
+      foundPath = data.filter((e) => e.id === id);
       if (foundPath.length > 0) {
-        textDisplay = textDisplay + ' -- ' + foundPath[0].path + '\n'
+        textDisplay = textDisplay + " -- " + foundPath[0].path + "\n";
       }
     }
-    return textDisplay
-  }
+    return textDisplay;
+  };
 
   const dataCreator = (servicesIDs) => {
-    const arrayOfData = []
+    const arrayOfData = [];
     for (const id of servicesIDs) {
-      const foundPath = data.filter((e) => e.id === id)
+      const foundPath = data.filter((e) => e.id === id);
       if (foundPath.length > 0) {
         arrayOfData.push({
           path: foundPath[0].path,
           tenant_id: foundPath[0].tenant_id,
-          id: foundPath[0].id
-        })
+          id: foundPath[0].id,
+        });
       }
     }
-    return arrayOfData
-  }
+    return arrayOfData;
+  };
 
   const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc'
-    setOrder(isAsc ? 'desc' : 'asc')
-    setOrderBy(property)
-  }
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+  };
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.id)
-      console.log(newSelecteds)
-      setSelected(newSelecteds)
-      return
+      const newSelecteds = rows.map((n) => n.id);
+      console.log(newSelecteds);
+      setSelected(newSelecteds);
+      return;
     }
-    setSelected([])
-  }
+    setSelected([]);
+  };
 
   const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name)
-    let newSelected = []
+    const selectedIndex = selected.indexOf(name);
+    let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name)
+      newSelected = newSelected.concat(selected, name);
     } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1))
+      newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1))
+      newSelected = newSelected.concat(selected.slice(0, -1));
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
         selected.slice(selectedIndex + 1)
-      )
+      );
     }
 
-    setSelected(newSelected)
-  }
+    setSelected(newSelected);
+  };
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage)
-  }
+    setPage(newPage);
+  };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10))
-    setPage(0)
-  }
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
-  const isSelected = (name) => selected.indexOf(name) !== -1
+  const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
   return (
     <div>
       <IconButton aria-label="path" onClick={handleClickOpen}>
@@ -341,7 +333,7 @@ export default function ServiceChildren ({
       <DialogRounded
         open={status}
         fullWidth={true}
-        maxWidth={'xl'}
+        maxWidth={"xl"}
         onClose={handleClose}
         aria-labelledby="alert-dialog-titlel"
         aria-describedby="alert-dialog-descriptionl"
@@ -352,7 +344,7 @@ export default function ServiceChildren ({
               <CloseIcon />
             </IconButton>
             <Typography
-              sx={{ ml: 2, flex: 1, color: 'black' }}
+              sx={{ ml: 2, flex: 1, color: "black" }}
               variant="h6"
               component="div"
             >
@@ -360,17 +352,17 @@ export default function ServiceChildren ({
             </Typography>
           </Toolbar>
         </CustomDialogTitle>
-        <DialogContent sx={{ minHeight: '400px' }}>
+        <DialogContent sx={{ minHeight: "400px" }}>
           <Grid container>
             <Grid item xs={12}>
-              <Box sx={{ width: '100%' }}>
-                <Paper sx={{ width: '100%', mb: 2 }}>
+              <Box sx={{ width: "100%" }}>
+                <Paper sx={{ width: "100%", mb: 2 }}>
                   <EnhancedTableToolbar numSelected={selected.length} />
                   <TableContainer>
                     <Table
                       sx={{ minWidth: 750 }}
                       aria-labelledby="tableTitle"
-                      size={'medium'}
+                      size={"medium"}
                     >
                       <EnhancedTableHead
                         numSelected={selected.length}
@@ -387,8 +379,8 @@ export default function ServiceChildren ({
                             page * rowsPerPage + rowsPerPage
                           )
                           .map((row, index) => {
-                            const isItemSelected = isSelected(row.id)
-                            const labelId = `enhanced-table-checkbox-${index}`
+                            const isItemSelected = isSelected(row.id);
+                            const labelId = `enhanced-table-checkbox-${index}`;
 
                             return (
                               <TableRow
@@ -405,7 +397,7 @@ export default function ServiceChildren ({
                                     color="primary"
                                     checked={isItemSelected}
                                     inputProps={{
-                                      'aria-labelledby': labelId
+                                      "aria-labelledby": labelId,
                                     }}
                                   />
                                 </TableCell>
@@ -419,12 +411,12 @@ export default function ServiceChildren ({
                                 </TableCell>
                                 <TableCell align="right">{row.path}</TableCell>
                               </TableRow>
-                            )
+                            );
                           })}
                         {emptyRows > 0 && (
                           <TableRow
                             style={{
-                              height: 53 * emptyRows
+                              height: 53 * emptyRows,
                             }}
                           >
                             <TableCell colSpan={6} />
@@ -451,7 +443,7 @@ export default function ServiceChildren ({
                     dataValues: dataCreator(selected),
                     multiple: true,
                     selectedText: fromIdToText(selected),
-                    setSelected
+                    setSelected,
                   }}
                 />
               </Box>
@@ -461,5 +453,5 @@ export default function ServiceChildren ({
         <DialogActions></DialogActions>
       </DialogRounded>
     </div>
-  )
+  );
 }
