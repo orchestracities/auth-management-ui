@@ -9,17 +9,21 @@ import ArchiveIcon from "@mui/icons-material/Archive";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
+import Grid from "@mui/material/Grid";
+import Grow from "@mui/material/Grow";
+import { Trans } from "react-i18next";
 
 const StyledMenu = styled((props) => (
   <Menu
-    elevation={0}
     anchorOrigin={{
-      vertical: "bottom",
-      horizontal: "right",
+      vertical: "top",
+      horizontal: "left",
     }}
     transformOrigin={{
       vertical: "top",
-      horizontal: "right",
+      horizontal: "left",
     }}
     {...props}
   />
@@ -27,13 +31,13 @@ const StyledMenu = styled((props) => (
   "& .MuiPaper-root": {
     borderRadius: 6,
     marginTop: theme.spacing(1),
-    minWidth: 120,
+    minWidth: document.getElementById("filterContainer").clientWidth,
+    top: "13rem !important",
     color:
       theme.palette.mode === "light"
         ? "rgb(55, 65, 81)"
         : theme.palette.grey[300],
-    boxShadow:
-      "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
+    boxShadow: "none !important",
     "& .MuiMenu-list": {
       padding: "4px 0",
     },
@@ -53,47 +57,94 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-export default function PathFilter() {
+export default function PathFilter({ data, status, setstatus, filterValue }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [target, setarget] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+    setarget(event.currentTarget);
+    if (event.target.id !== "") {
+      setstatus(event.target.id);
+    }
   };
   const handleClose = () => {
-    setAnchorEl(null);
+    setstatus(null);
   };
 
+  React.useEffect(() => {
+    if (status !== null && status === "PathFilter") {
+      setAnchorEl(target);
+    } else {
+      setAnchorEl(null);
+    }
+  }, [status]);
+
   return (
-    <div>
-      <Button
-        sx={{ marginBottom: "30px" }}
-        id="demo-customized-button"
-        aria-controls={open ? "demo-customized-menu" : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? "true" : undefined}
-        variant="outlined"
-        disableElevation
-        onClick={handleClick}
-        endIcon={<KeyboardArrowDownIcon />}
+    <div style={{ height: 75 }}>
+      <Grow
+        in={!open}
+        style={{ transformOrigin: "0 0 0" }}
+        {...(!open ? { timeout: 500 } : {})}
       >
-        PATH
-      </Button>
+        <Button
+          id="PathFilter"
+          aria-controls={open ? "demo-customized-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? "true" : undefined}
+          disabled={data.length <= 0}
+          variant="outlined"
+          onClick={handleClick}
+        >
+          {
+            <Trans
+              i18nKey="policies.filters.path"
+              values={{
+                name:
+                  filterValue.value !== null
+                    ? ": " + filterValue.value.fiware_service_path
+                    : "",
+              }}
+            />
+          }
+        </Button>
+      </Grow>
       <StyledMenu
         id="demo-customized-menu"
-        MenuListProps={{
-          "aria-labelledby": "demo-customized-button",
-        }}
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-      >
-        <MenuItem onClick={handleClose} disableRipple>
-          String
-        </MenuItem>
-        <MenuItem onClick={handleClose} disableRipple>
-          String
-        </MenuItem>
-      </StyledMenu>
+        children={
+          <Grid
+            item
+            xs={12}
+            container
+            direction="column"
+            justifyContent="space-between"
+            alignItems="left"
+          >
+            <Grow
+              in={open}
+              style={{ transformOrigin: "0 0 0" }}
+              {...(open ? { timeout: 500 } : {})}
+            >
+              <Autocomplete
+                id="multiple-limit-tags"
+                options={data}
+                getOptionLabel={(option) => option.fiware_service_path}
+                defaultValue={filterValue.value}
+                renderInput={(params) => (
+                  <TextField {...params} label="Path" placeholder="Path" />
+                )}
+                onChange={(event, value) => filterValue.set(value)}
+                isOptionEqualToValue={(option, value) =>
+                  option.fiware_service_path === value.fiware_service_path
+                }
+                sx={{ width: "100%", marginTop: "10px" }}
+              />
+            </Grow>
+          </Grid>
+        }
+      />
     </div>
   );
 }

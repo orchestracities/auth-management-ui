@@ -57,12 +57,7 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-export default function ResourceTypeFilter({
-  data,
-  status,
-  setstatus,
-  filterValue,
-}) {
+export default function ModeFilter({ data, status, setstatus, filterValue }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [target, setarget] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -77,7 +72,7 @@ export default function ResourceTypeFilter({
   };
 
   React.useEffect(() => {
-    if (status !== null && status === "ResourceTypeFilter") {
+    if (status !== null && status === "ModeFilter") {
       setAnchorEl(target);
     } else {
       setAnchorEl(null);
@@ -92,7 +87,7 @@ export default function ResourceTypeFilter({
         {...(!open ? { timeout: 500 } : {})}
       >
         <Button
-          id="ResourceTypeFilter"
+          id="ModeFilter"
           aria-controls={open ? "demo-customized-menu" : undefined}
           aria-haspopup="true"
           disabled={data.length <= 0}
@@ -102,11 +97,11 @@ export default function ResourceTypeFilter({
         >
           {
             <Trans
-              i18nKey="policies.filters.resource_type"
+              i18nKey="policies.filters.mode"
               values={{
                 name:
                   filterValue.value !== null
-                    ? ": " + filterValue.value.resource_type
+                    ? ": " + filterValue.value.name
                     : "",
               }}
             />
@@ -135,18 +130,14 @@ export default function ResourceTypeFilter({
               <Autocomplete
                 id="multiple-limit-tags"
                 options={data}
-                getOptionLabel={(option) => option.resource_type}
                 defaultValue={filterValue.value}
+                getOptionLabel={(option) => option.name}
                 renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Resource Type"
-                    placeholder="Resource Type"
-                  />
+                  <TextField {...params} label="Mode" placeholder="Mode" />
                 )}
                 onChange={(event, value) => filterValue.set(value)}
                 isOptionEqualToValue={(option, value) =>
-                  option.resource_type === value.resource_type
+                  option.iri === value.iri
                 }
                 sx={{ width: "100%", marginTop: "10px" }}
               />

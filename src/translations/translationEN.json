@@ -30,21 +30,40 @@
     "titles": {
       "page": "Policies",
       "new": "New Policy",
+      "noData": "No data available. Please select a Tenant"
+    },
+    "table": {
+      "access": "Access",
+      "path": "Path",
       "resource": "Resource",
-      "access": "access",
-      "resourceType": "Resource Type",
+      "resource_type": "Resource Type",
       "actor": "Actor",
-      "actoryType": "Actor Type",
-      "noData": "No data avaitable"
+      "mode": "Mode",
+      "total_sngl": "One element",
+      "total_plur": "Elements: {{name}}",
+      "selected": "{{name}} selected"
+    },
+    "filters": {
+      "mode": "Mode{{name}}",
+      "path": "Path{{name}}",
+      "actor_type": "Actor type<0>{{name}}</0>",
+      "resource_type": "Resource type{{name}}",
+      "actor": "Actor{{name}}"
     },
     "form": {
-      "servicePath": "Service Path",
-      "acessTo": "Access To",
-      "resourceType": "Resource Type",
+      "servicePath": "Service path",
+      "accessTo": "Access to",
+      "resourceType": "Resource type",
       "mode": "Mode",
-      "agentType": "Agent Type",
-      "agent": "Agent",
-      "otherAgent": "Other Agent"
+      "actorType": "Agent type",
+      "user": "User",
+      "otherUser": "Other user",
+      "userType": "User type",
+      "agent": "Agent name",
+      "agentGroup": "Group name",
+      "agentClass": "User role",
+      "actorTitle": "Actors settings",
+      "mainTitle": "Main data"
     }
   },
   "common": {

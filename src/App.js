@@ -391,6 +391,7 @@ export default class App extends Component {
             </Drawer>
             {this.state.authenticated ? (
               <Main open={this.state.open}>
+                <Grid container id="filterContainer"></Grid>
                 <Routes>
                   <Route
                     path="Tenant"
