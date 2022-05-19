@@ -1,184 +1,186 @@
-import * as React from "react";
-import { MainTitle } from "../components/shared/mainTitle";
-import AddButton from "../components/shared/addButton";
-import { Grid } from "@mui/material";
-import PolicyFilters from "../components/policy/policyFilters";
-import PolicyTable from "../components/policy/policiesTable";
-import PolicyForm from "../components/policy/policyForm";
-import axios from "axios";
-import Typography from "@mui/material/Typography";
-import { Trans } from "react-i18next";
+import * as React from 'react'
+import { MainTitle } from '../components/shared/mainTitle'
+import AddButton from '../components/shared/addButton'
+import { Grid } from '@mui/material'
+import PolicyFilters from '../components/policy/policyFilters'
+import PolicyTable from '../components/policy/policiesTable'
+import PolicyForm from '../components/policy/policyForm'
+import axios from 'axios'
+import Typography from '@mui/material/Typography'
+import { Trans } from 'react-i18next'
 
-export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
-  const [mode, setMode] = React.useState(null);
-  const [agent, setAgent] = React.useState(null);
-  const [resource, setResource] = React.useState(null);
-  const [resourceType, setResourceType] = React.useState(null);
-  const [agentType, setAgentype] = React.useState(null);
-  const [policyFilter, setPolicyFilter] = React.useState(null);
+export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
+  const [mode, setMode] = React.useState(null)
+  const [agent, setAgent] = React.useState(null)
+  const [resource, setResource] = React.useState(null)
+  const [resourceType, setResourceType] = React.useState(null)
+  const [agentType, setAgentype] = React.useState(null)
+  const [policyFilter, setPolicyFilter] = React.useState(null)
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false)
   const tenantName_id = () => {
-    const tenantArray = tenantValues.filter((e) => e.id === thisTenant);
-    return tenantArray[0].name;
-  };
+    const tenantArray = tenantValues.filter((e) => e.id === thisTenant)
+    return tenantArray[0].name
+  }
   // services
-  const [services, setServices] = React.useState([]);
+  const [services, setServices] = React.useState([])
   const getServices = () => {
     axios
       .get(
         process.env.REACT_APP_ANUBIS_API_URL +
-          "v1/tenants/" +
+          'v1/tenants/' +
           thisTenant +
-          "/service_paths"
+          '/service_paths'
       )
       .then((response) => {
-        console.log(response.data);
-        setServices(response.data);
-        getPolicies(response.data);
-        getPoliciesFiltered(response.data);
-        getTenants();
+        console.log(response.data)
+        setServices(response.data)
+        getPolicies(response.data)
+        getPoliciesFiltered(response.data)
+        getTenants()
       })
       .catch((e) => {
-        console.error(e);
-      });
-  };
+        console.error(e)
+      })
+  }
   // policies
-  const [policies, setPolicies] = React.useState([]);
+  const [policies, setPolicies] = React.useState([])
   const getPolicies = (servicesResponse) => {
-    let datAccumulator = [];
+    let datAccumulator = []
     for (const service of servicesResponse) {
       axios
-        .get(process.env.REACT_APP_ANUBIS_API_URL + "v1/policies", {
+        .get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies', {
           headers: {
-            "fiware-service": tenantName_id(),
-            "fiware-servicepath": service.path,
-          },
+            'fiware-service': tenantName_id(),
+            'fiware-servicepath': service.path
+          }
         })
         .then((response) => {
-          response.data.forEach((e) => (e.fiware_service = tenantName_id()));
-          response.data.forEach((e) => (e.fiware_service_path = service.path));
-          datAccumulator = [...datAccumulator, ...response.data];
-          setPolicies(datAccumulator);
+          response.data.forEach((e) => (e.fiware_service = tenantName_id()))
+          response.data.forEach((e) => (e.fiware_service_path = service.path))
+          datAccumulator = [...datAccumulator, ...response.data]
+          setPolicies(datAccumulator)
         })
         .catch((e) => {
-          console.error(e);
-        });
+          console.error(e)
+        })
     }
-    console.log(policies);
-  };
+    console.log(policies)
+  }
   // policiesFiltered
-  const [policiesFiltered, setPoliciesFiltered] = React.useState([]);
+  const [policiesFiltered, setPoliciesFiltered] = React.useState([])
   const getPoliciesFiltered = (servicesResponse) => {
     const queryParameters =
-      "/?" +
-      (mode !== null ? "&mode=" + mode.iri : "") +
-      (agent !== null ? "&agent=" + agent.iri : "") +
+      '/?' +
+      (mode !== null ? '&mode=' + mode.iri : '') +
+      (agent !== null ? '&agent=' + agent.iri : '') +
       (resourceType !== null
-        ? "&resource_type=" + resourceType.resource_type
-        : "") +
-      (agentType !== null ? "&agent_type=" + agentType.iri : "");
-    let datAccumulator = [];
+        ? '&resource_type=' + resourceType.resource_type
+        : '') +
+      (agentType !== null ? '&agent_type=' + agentType.iri : '')
+    let datAccumulator = []
     for (const service of servicesResponse) {
       axios
         .get(
           process.env.REACT_APP_ANUBIS_API_URL +
-            "v1/policies" +
+            'v1/policies' +
             queryParameters,
           {
             headers: {
-              "fiware-service": tenantName_id(),
-              "fiware-servicepath":
+              'fiware-service': tenantName_id(),
+              'fiware-servicepath':
                 policyFilter !== null
                   ? policyFilter.fiware_service_path
-                  : service.path,
-            },
+                  : service.path
+            }
           }
         )
         .then((response) => {
           if (policyFilter === null) {
-            response.data.forEach((e) => (e.fiware_service = tenantName_id()));
+            response.data.forEach((e) => (e.fiware_service = tenantName_id()))
             response.data.forEach(
               (e) => (e.fiware_service_path = service.path)
-            );
-            datAccumulator = [...datAccumulator, ...response.data];
-            setPoliciesFiltered(datAccumulator);
+            )
+            datAccumulator = [...datAccumulator, ...response.data]
+            setPoliciesFiltered(datAccumulator)
           } else {
-            response.data.forEach((e) => (e.fiware_service = tenantName_id()));
+            response.data.forEach((e) => (e.fiware_service = tenantName_id()))
             response.data.forEach(
               (e) => (e.fiware_service_path = policyFilter.fiware_service_path)
-            );
-            setPoliciesFiltered(response.data);
+            )
+            setPoliciesFiltered(response.data)
           }
         })
         .catch((e) => {
-          console.error(e);
-        });
+          console.error(e)
+        })
     }
-    console.log(policies);
-  };
+    console.log(policies)
+  }
 
-  const [access_modes, setAccess_modes] = React.useState([]);
+  const [access_modes, setAccess_modes] = React.useState([])
 
   React.useEffect(() => {
-    getServices();
+    getServices()
     axios
-      .get(process.env.REACT_APP_ANUBIS_API_URL + "v1/policies/access-modes")
+      .get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies/access-modes')
       .then((response) => setAccess_modes(response.data))
-      .catch((err) => console.log(err));
-  }, [thisTenant]);
+      .catch((err) => console.log(err))
+  }, [thisTenant])
 
-  const [agentsTypes, setagentsTypes] = React.useState([]);
+  const [agentsTypes, setagentsTypes] = React.useState([])
 
   React.useEffect(() => {
-    getServices();
+    getServices()
     axios
-      .get(process.env.REACT_APP_ANUBIS_API_URL + "v1/policies/agent-types")
+      .get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies/agent-types')
       .then((response) => setagentsTypes(response.data))
-      .catch((err) => console.log(err));
-  }, [thisTenant]);
+      .catch((err) => console.log(err))
+  }, [thisTenant])
 
-  const mainTitle = <Trans>policies.titles.page</Trans>;
+  const mainTitle = <Trans>policies.titles.page</Trans>
 
   const filterMapper = {
     mode: {
       value: mode,
-      set: setMode,
+      set: setMode
     },
     agent: {
       value: agent,
-      set: setAgent,
+      set: setAgent
     },
     resource: {
       value: resource,
-      set: setResource,
+      set: setResource
     },
     resourceType: {
       value: resourceType,
-      set: setResourceType,
+      set: setResourceType
     },
     agentType: {
       value: agentType,
-      set: setAgentype,
+      set: setAgentype
     },
     policy: {
       value: policyFilter,
-      set: setPolicyFilter,
-    },
-  };
+      set: setPolicyFilter
+    }
+  }
 
   React.useEffect(() => {
     if (policies.length > 0) {
-      getPoliciesFiltered(services);
+      getPoliciesFiltered(services)
     }
-  }, [mode, agent, resource, resourceType, agentType, policyFilter]);
+  }, [mode, agent, resource, resourceType, agentType, policyFilter])
 
   return (
     <div>
       <MainTitle mainTitle={mainTitle}></MainTitle>
-      {typeof thisTenant === undefined || thisTenant === "" ? (
-        ""
-      ) : (
+      {typeof thisTenant === undefined || thisTenant === ''
+        ? (
+            ''
+          )
+        : (
         <AddButton
           pageType={
             <PolicyForm
@@ -195,9 +197,10 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
           setOpen={setOpen}
           status={open}
         ></AddButton>
-      )}
-      {policies.length > 0 ? (
-        <Grid container spacing={2} sx={{ marginLeft: "15px " }}>
+          )}
+      {policies.length > 0
+        ? (
+        <Grid container spacing={2} sx={{ marginLeft: '15px ' }}>
           <Grid item xs={12}>
             <PolicyFilters
               data={policies}
@@ -215,11 +218,12 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
             ></PolicyTable>
           </Grid>
         </Grid>
-      ) : (
-        <Typography sx={{ padding: "20px" }} variant="h6" component="h3">
+          )
+        : (
+        <Typography sx={{ padding: '20px' }} variant="h6" component="h3">
           <Trans>policies.titles.noData</Trans>
         </Typography>
-      )}
+          )}
     </div>
-  );
+  )
 }
