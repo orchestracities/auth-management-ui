@@ -24,6 +24,7 @@ To setup the webapp first of all let's create a .env file inside the main folder
 REACT_APP_ANUBIS_API_URL=http://localhost:8085/
 GRAPHQL_MONGO_DB=mongodb://localhost:27017/graphql
 GRAPHQL_RESOURCE_SERVER_NAME=graphql-config-server
+GRAPHQL_SEED=mongodb://localhost:27017/graphql
 ```
 If you are using docker the configuration should be:
 
@@ -31,6 +32,7 @@ If you are using docker the configuration should be:
 REACT_APP_ANUBIS_API_URL=http://localhost:8085/
 GRAPHQL_MONGO_DB=mongodb://mongo:27017/graphql
 GRAPHQL_RESOURCE_SERVER_NAME=graphql-config-server
+GRAPHQL_SEED=mongodb://localhost:27017/graphql
 ```
 Then let's start the package required with
 

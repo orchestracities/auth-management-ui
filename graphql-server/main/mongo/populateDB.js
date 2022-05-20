@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 require("dotenv").config({ path: "../.env" });
 
-const connection = mongoose.createConnection(process.env.GRAPHQL_MONGO_DB);
+const connection = mongoose.createConnection(process.env.GRAPHQL_SEED);
 
 const usrPreference = new mongoose.Schema({
   name: String,

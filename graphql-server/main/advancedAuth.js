@@ -2,7 +2,6 @@ const express = require("express");
 const { ApolloServer, gql } = require("apollo-server-express");
 const { configureKeycloak } = require("./lib/common");
 require("dotenv").config({ path: "../.env" });
-const Keycloak = require("keycloak-connect");
 const {
   KeycloakContext,
   KeycloakTypeDefs,
@@ -13,6 +12,7 @@ const app = express();
 
 const graphqlPath = "/graphql";
 
+const { keycloak } = configureKeycloak(app, graphqlPath);
 const { get, update, add, deleteTenant } = require("./mongo/tenantsQueries");
 const { getUserPref, updateUserPref } = require("./mongo/usrSettings");
 
@@ -28,8 +28,8 @@ const typeDefs = gql`
     language: String!
   }
   type Query {
-    listTenants(tenantNames: [String]!): [TenantConfiguration]
-    getUserPreferences(usrName: String!): [UserPreferencies]
+    listTenants(tenantNames: [String]!): [TenantConfiguration] @auth
+    getUserPreferences(usrName: String!): [UserPreferencies] @auth
   }
   type Mutation {
     modifyUserPreferences(
@@ -55,7 +55,7 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     listTenants: async (obj, args, context, info) => {
-      console.log(context);
+      console.log(context)
       return await get(args.tenantNames);
     },
     getUserPreferences: async (obj, args, context, info) => {
@@ -78,34 +78,31 @@ const resolvers = {
   },
 };
 
-const keycloak = new Keycloak({
-  realm: "master",
-  "auth-server-url": "http://localhost:8080/auth",
-  "ssl-required": "none",
-  resource: "keycloak-connect-graphql-public",
-  "public-client": true,
-  "use-resource-role-mappings": true,
-  "confidential-port": 0,
-});
 
-app.use(graphqlPath, keycloak.middleware());
-const server = new ApolloServer({
+app.use(graphqlPath, keycloak.middleware())
+
+
+async function startServer() {
+const apolloServer = new ApolloServer({
   typeDefs: [KeycloakTypeDefs, typeDefs], // 1. Add the Keycloak Type Defs
   schemaDirectives: KeycloakSchemaDirectives, // 2. Add the KeycloakSchemaDirectives
   resolvers,
   context: ({ req }) => {
     return {
-      kauth: new KeycloakContext({ req }, keycloak), // 3. add the KeycloakContext to `kauth`
-    };
-  },
-});
+      kauth: new KeycloakContext({ req }, keycloak) // 3. add the KeycloakContext to `kauth`
+    }
+  }
+})
+  await apolloServer.start();
+  apolloServer.applyMiddleware({ app });
+  app.listen({ port }, () =>
+  console.log(
+    `🚀 Server ready at http://localhost:${port}${apolloServer.graphqlPath}`
+  )
+);
 
-server.applyMiddleware({ app });
+}
+startServer();
 
 const port = 4000;
 
-app.listen({ port }, () =>
-  console.log(
-    `🚀 Server ready at http://localhost:${port}${server.graphqlPath}`
-  )
-);
