@@ -52,11 +52,6 @@ Then let's start the package required with
 npm install
 ```
 
-After that we need to populate MongoDB with some default values related to Tenant1 & Tenant2:
-
-```
-node main/mongo/populateDB.js
-```
 
 After that we can run the example with:
 

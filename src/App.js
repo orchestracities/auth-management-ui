@@ -41,7 +41,7 @@ import {
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
-  useQuery,
+  ApolloLink,
   gql,
   createHttpLink,
 } from "@apollo/client";
@@ -198,19 +198,24 @@ export default class App extends Component {
             uri: "http://localhost:4000/graphql",
           });
 
-          const authLink = setContext((_, { headers }) => {
-            return {
+          const authLink =  new ApolloLink((operation, forward) => {
+            // add the authorization to the headers
+            operation.setContext(({ headers = {} }) => ({
               headers: {
                 ...headers,
-                Authorization: `Bearer ${this.state.keycloak.token}`,
-              },
-            };
-          });
+                authorization: `Bearer ${this.state.keycloak.token}`,
+              }
+            }));
+          
+            return forward(operation);
+          })
 
           const client = new ApolloClient({
             link: authLink.concat(httpLink),
             cache: new InMemoryCache(),
           });
+
+  
 
           client
             .query({

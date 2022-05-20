@@ -16,7 +16,7 @@ services:
       - ./opa-service/default_wac_config.yml:/home/apiuser/config/opa-service/default_wac_config.yml
     ports:
       - "8085:8000"
-      
+
   mongo:
     image: mongo:4.4
     ports:
@@ -41,13 +41,7 @@ services:
       - JAVA_TOOL_OPTIONS=-Dkeycloak.profile.feature.scripts=enabled -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.file=/opt/jboss/realm-export.json -Dkeycloak.migration.strategy=OVERWRITE_EXISTING
     networks:
       - envoymesh
-  graphql-server:
-    build:
-      context: ./graphql-server
-      dockerfile: ./Dockerfile
-    image: "graphql-server"
-    ports:
-      - "4000:4000"
+
   App:
     build:
       context: ./
@@ -55,6 +49,20 @@ services:
     image: "webapp"
     ports:
       - "3000:3000"
+    networks:
+      - envoymesh
+      
+  graphql-server:
+    build:
+      context: ./graphql-server
+      dockerfile: ./Dockerfile
+    env_file: .env
+    image: "graphql-server"
+    ports:
+      - "4000:4000"
+    networks:
+      - envoymesh
+ 
 
 volumes:
   mongodata:

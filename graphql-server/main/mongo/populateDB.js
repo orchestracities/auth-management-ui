@@ -20,34 +20,38 @@ const usrSettings = new mongoose.Schema({
 
 const Settings = connection.model("UsrSettings", usrSettings);
 
-Preferences.create(
-  {
-    name: "Tenant1",
-    icon: "none",
-    primaryColor: "#8086ba",
-    secondaryColor: "#8086ba",
-  },
-  function (err, small) {
-    if (err) {
-      return handleError(err);
-    } else {
-      console.log("Tenant1 created!");
-      Preferences.create(
-        {
-          name: "Tenant2",
-          icon: "none",
-          primaryColor: "#8086ba",
-          secondaryColor: "#8086ba",
-        },
-        function (err, small) {
-          if (err) {
-            return handleError(err);
-          } else {
-            console.log("Tenant2 created!");
-            process.exit();
+Preferences.deleteMany({}, function (err, small) {
+  console.log('clear everything that was here before..');
+  Preferences.create(
+    {
+      name: "Tenant1",
+      icon: "none",
+      primaryColor: "#8086ba",
+      secondaryColor: "#8086ba",
+    },
+    function (err, small) {
+      if (err) {
+        return handleError(err);
+      } else {
+        console.log("Tenant1 created!");
+        Preferences.create(
+          {
+            name: "Tenant2",
+            icon: "none",
+            primaryColor: "#8086ba",
+            secondaryColor: "#8086ba",
+          },
+          function (err, small) {
+            if (err) {
+              return handleError(err);
+            } else {
+              console.log("Tenant2 created!");
+              process.exit();
+            }
           }
-        }
-      );
+        );
+      }
     }
-  }
+  )
+}
 );
