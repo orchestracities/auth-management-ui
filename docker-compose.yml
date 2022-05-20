@@ -51,7 +51,7 @@ services:
       - "3000:3000"
     networks:
       - envoymesh
-      
+
   graphql-server:
     build:
       context: ./graphql-server
@@ -62,7 +62,6 @@ services:
       - "4000:4000"
     networks:
       - envoymesh
- 
 
 volumes:
   mongodata:
