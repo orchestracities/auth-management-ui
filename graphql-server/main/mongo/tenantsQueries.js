@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
 
+require("dotenv").config({ path: "../.env" });
+const connection = mongoose.createConnection(process.env.GRAPHQL_MONGO_DB);
+
 const usrPreference = new mongoose.Schema({
   name: String,
   icon: String,
@@ -7,15 +10,14 @@ const usrPreference = new mongoose.Schema({
   secondaryColor: String,
 });
 
-const Preferences = mongoose.model("UsrPreferences", usrPreference);
+const Preferences = connection.model("UsrPreferences", usrPreference);
 
-require("dotenv").config({ path: "../.env" });
+const usrSettings = new mongoose.Schema({
+  usrName: String,
+  language: String,
+});
 
-main().catch((err) => console.log(err));
-
-async function main() {
-  await mongoose.connect(process.env.GRAPHQL_MONGO_DB);
-}
+const Settings = connection.model("UsrSettings", usrSettings);
 
 async function get(data) {
   const thisUser = await Preferences.find({ name: { $in: data } });

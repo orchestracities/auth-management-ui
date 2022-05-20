@@ -37,7 +37,7 @@ function configureKeycloak(app, graphqlPath) {
   // Protect the main route for all graphql services
   // Disable unauthenticated access
   app.use(graphqlPath, keycloak.middleware());
-
+console.log(keycloak);
   return { keycloak };
 }
 

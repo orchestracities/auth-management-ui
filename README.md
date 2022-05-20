@@ -25,18 +25,14 @@ REACT_APP_ANUBIS_API_URL=http://localhost:8085/
 GRAPHQL_MONGO_DB=mongodb://localhost:27017/graphql
 GRAPHQL_RESOURCE_SERVER_NAME=graphql-config-server
 ```
+If you are using docker the configuration should be:
 
+```
+REACT_APP_ANUBIS_API_URL=http://localhost:8085/
+GRAPHQL_MONGO_DB=mongodb://mongo:27017/graphql
+GRAPHQL_RESOURCE_SERVER_NAME=graphql-config-server
+```
 Then let's start the package required with
-
-```
-npm install
-```
-
-after that we can start our application with
-
-```
-npm start
-```
 
 ### Keycloack and graphql
 

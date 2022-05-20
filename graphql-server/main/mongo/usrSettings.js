@@ -1,19 +1,26 @@
 const mongoose = require("mongoose");
 
+
+
+require("dotenv").config({ path: "../.env" });
+
+const connection = mongoose.createConnection(process.env.GRAPHQL_MONGO_DB);
+
+const usrPreference = new mongoose.Schema({
+  name: String,
+  icon: String,
+  primaryColor: String,
+  secondaryColor: String,
+});
+
+const Preferences = connection.model("UsrPreferences", usrPreference);
+
 const usrSettings = new mongoose.Schema({
   usrName: String,
   language: String,
 });
 
-const Settings = mongoose.model("UsrSettings", usrSettings);
-
-require("dotenv").config({ path: "../.env" });
-
-main().catch((err) => console.log(err));
-
-async function main() {
-  await mongoose.connect(process.env.GRAPHQL_MONGO_DB);
-}
+const Settings = connection.model("UsrSettings", usrSettings);
 
 async function getUserPref(data) {
   const thisUser = await Settings.find({ usrName: data });

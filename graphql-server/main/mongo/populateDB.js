@@ -31,7 +31,7 @@ Preferences.deleteMany({}, function (err, small) {
     },
     function (err, small) {
       if (err) {
-        return handleError(err);
+        console.log(err);
       } else {
         console.log("Tenant1 created!");
         Preferences.create(
@@ -43,7 +43,7 @@ Preferences.deleteMany({}, function (err, small) {
           },
           function (err, small) {
             if (err) {
-              return handleError(err);
+              console.log(err);
             } else {
               console.log("Tenant2 created!");
               process.exit();

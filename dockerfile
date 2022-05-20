@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:latest
 LABEL version="0.1"
 LABEL description="Management UI for Anubis: https://anubis-pep.readthedocs.io/en/latest/."
 LABEL maintainer = ["valerio.cantore@martel-innovate.com"]
