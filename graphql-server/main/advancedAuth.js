@@ -2,13 +2,16 @@ const express = require("express");
 const { ApolloServer, gql } = require("apollo-server-express");
 const { configureKeycloak } = require("./lib/common");
 require("dotenv").config({ path: "../.env" });
-const Keycloak = require('keycloak-connect')
-const { KeycloakContext, KeycloakTypeDefs, KeycloakSchemaDirectives } = require('keycloak-connect-graphql')
+const Keycloak = require("keycloak-connect");
+const {
+  KeycloakContext,
+  KeycloakTypeDefs,
+  KeycloakSchemaDirectives,
+} = require("keycloak-connect-graphql");
 
 const app = express();
 
 const graphqlPath = "/graphql";
-
 
 const { get, update, add, deleteTenant } = require("./mongo/tenantsQueries");
 const { getUserPref, updateUserPref } = require("./mongo/usrSettings");
@@ -25,8 +28,8 @@ const typeDefs = gql`
     language: String!
   }
   type Query {
-    listTenants(tenantNames: [String]!): [TenantConfiguration] 
-    getUserPreferences(usrName: String!): [UserPreferencies] 
+    listTenants(tenantNames: [String]!): [TenantConfiguration]
+    getUserPreferences(usrName: String!): [UserPreferencies]
   }
   type Mutation {
     modifyUserPreferences(
@@ -76,26 +79,26 @@ const resolvers = {
 };
 
 const keycloak = new Keycloak({
-  "realm": "master",
+  realm: "master",
   "auth-server-url": "http://localhost:8080/auth",
   "ssl-required": "none",
-  "resource": "keycloak-connect-graphql-public",
+  resource: "keycloak-connect-graphql-public",
   "public-client": true,
   "use-resource-role-mappings": true,
-  "confidential-port": 0
-})
+  "confidential-port": 0,
+});
 
-app.use(graphqlPath, keycloak.middleware())
+app.use(graphqlPath, keycloak.middleware());
 const server = new ApolloServer({
   typeDefs: [KeycloakTypeDefs, typeDefs], // 1. Add the Keycloak Type Defs
   schemaDirectives: KeycloakSchemaDirectives, // 2. Add the KeycloakSchemaDirectives
   resolvers,
   context: ({ req }) => {
     return {
-      kauth: new KeycloakContext({ req }, keycloak) // 3. add the KeycloakContext to `kauth`
-    }
-  }
-})
+      kauth: new KeycloakContext({ req }, keycloak), // 3. add the KeycloakContext to `kauth`
+    };
+  },
+});
 
 server.applyMiddleware({ app });
 

@@ -48,7 +48,6 @@ Then let's start the package required with
 npm install
 ```
 
-
 After that we can run the example with:
 
 ```

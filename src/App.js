@@ -198,24 +198,22 @@ export default class App extends Component {
             uri: "http://localhost:4000/graphql",
           });
 
-          const authLink =  new ApolloLink((operation, forward) => {
+          const authLink = new ApolloLink((operation, forward) => {
             // add the authorization to the headers
             operation.setContext(({ headers = {} }) => ({
               headers: {
                 ...headers,
                 authorization: `Bearer ${this.state.keycloak.token}`,
-              }
+              },
             }));
-          
+
             return forward(operation);
-          })
+          });
 
           const client = new ApolloClient({
             link: authLink.concat(httpLink),
             cache: new InMemoryCache(),
           });
-
-  
 
           client
             .query({

@@ -21,7 +21,7 @@ const usrSettings = new mongoose.Schema({
 const Settings = connection.model("UsrSettings", usrSettings);
 
 Preferences.deleteMany({}, function (err, small) {
-  console.log('clear everything that was here before..');
+  console.log("clear everything that was here before..");
   Preferences.create(
     {
       name: "Tenant1",
@@ -52,6 +52,5 @@ Preferences.deleteMany({}, function (err, small) {
         );
       }
     }
-  )
-}
-);
+  );
+});
