@@ -26,6 +26,7 @@ GRAPHQL_MONGO_DB=mongodb://localhost:27017/graphql
 GRAPHQL_RESOURCE_SERVER_NAME=graphql-config-server
 GRAPHQL_SEED=mongodb://localhost:27017/graphql
 ```
+
 If you are using docker the configuration should be:
 
 ```
@@ -34,6 +35,7 @@ GRAPHQL_MONGO_DB=mongodb://mongo:27017/graphql
 GRAPHQL_RESOURCE_SERVER_NAME=graphql-config-server
 GRAPHQL_SEED=mongodb://localhost:27017/graphql
 ```
+
 Then let's start the package required with
 
 ### Keycloack and graphql
