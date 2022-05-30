@@ -55,7 +55,6 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     listTenants: async (obj, args, context, info) => {
-      console.log(context);
       return await get(args.tenantNames);
     },
     getUserPreferences: async (obj, args, context, info) => {
