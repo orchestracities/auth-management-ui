@@ -1,69 +1,69 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose')
 
-require("dotenv").config({ path: "../.env" });
-const connection = mongoose.createConnection(process.env.GRAPHQL_MONGO_DB);
+require('dotenv').config({ path: '../.env' })
+const connection = mongoose.createConnection(process.env.GRAPHQL_MONGO_DB)
 
 const usrPreference = new mongoose.Schema({
   name: String,
   icon: String,
   primaryColor: String,
-  secondaryColor: String,
-});
+  secondaryColor: String
+})
 
-const Preferences = connection.model("UsrPreferences", usrPreference);
+const Preferences = connection.model('UsrPreferences', usrPreference)
 
 const usrSettings = new mongoose.Schema({
   usrName: String,
-  language: String,
-});
+  language: String
+})
 
-const Settings = connection.model("UsrSettings", usrSettings);
+const Settings = connection.model('UsrSettings', usrSettings)
 
-async function get(data) {
-  const thisUser = await Preferences.find({ name: { $in: data } });
+async function get (data) {
+  const thisUser = await Preferences.find({ name: { $in: data } })
 
-  return await thisUser;
+  return await thisUser
 }
 
-async function update(data) {
-  const filter = { name: data.name };
+async function update (data) {
+  const filter = { name: data.name }
   const update = {
     name: data.name,
     icon: data.icon,
     primaryColor: data.primaryColor,
-    secondaryColor: data.secondaryColor,
-  };
+    secondaryColor: data.secondaryColor
+  }
 
-  const thisTenant = await Preferences.findOneAndUpdate(filter, update);
-  return await thisTenant;
+  const thisTenant = await Preferences.findOneAndUpdate(filter, update)
+  return await thisTenant
 }
 
-async function add(data) {
+async function add (data) {
   const arrayOfData = {
     name: data.name,
     icon: data.icon,
     primaryColor: data.primaryColor,
-    secondaryColor: data.secondaryColor,
-  };
+    secondaryColor: data.secondaryColor
+  }
 
   const thisTenant = await arrayOfData.save(function (err) {
-    if (err) return handleError(err);
-  });
-  return await thisTenant;
+    if (err) return handleError(err)
+  })
+  return await thisTenant
 }
 
-async function deleteTenant(data) {
-  const thisUser = await Preferences.find({ name: { $in: data } });
+async function deleteTenant (data) {
+  const thisUser = await Preferences.find({ name: { $in: data } })
 
   for (const e of thisUser) {
-    const deletedOwner = await Preferences.findByIdAndRemove(e._id);
+    const deletedOwner = await Preferences.findByIdAndRemove(e._id)
   }
-  return !!(await (typeof deletedOwner === "object"));
+  return !!(await (typeof deletedOwner === 'object'))
 }
 
 module.exports = {
   get,
   update,
   add,
-  deleteTenant,
-};
+  deleteTenant
+}
