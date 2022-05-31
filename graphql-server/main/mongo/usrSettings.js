@@ -4,15 +4,6 @@ require('dotenv').config({ path: '../.env' })
 
 const connection = mongoose.createConnection(process.env.GRAPHQL_MONGO_DB)
 
-const usrPreference = new mongoose.Schema({
-  name: String,
-  icon: String,
-  primaryColor: String,
-  secondaryColor: String
-})
-
-const Preferences = connection.model('UsrPreferences', usrPreference)
-
 const usrSettings = new mongoose.Schema({
   usrName: String,
   language: String
@@ -46,7 +37,7 @@ async function addUserPref (data) {
     language: 'defaultBrowser'
   }
 
-  Settings.create(arrayOfData, function (err, small) {
+  Settings.create(arrayOfData, function (err) {
     if (err) {
       return handleError(err)
     } else {
