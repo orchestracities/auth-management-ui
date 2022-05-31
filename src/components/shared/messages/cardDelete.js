@@ -1,5 +1,4 @@
 import * as React from 'react'
-import ReactDOM from 'react-dom'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
@@ -10,10 +9,10 @@ import { styled } from '@mui/material/styles'
 import axios from 'axios'
 import { Trans } from 'react-i18next'
 
-const DialogDiv = styled('div')(({ theme }) => ({
+const DialogDiv = styled('div')(() => ({
   background: '#ff000040'
 }))
-const DialogRounded = styled(Dialog)(({ theme }) => ({
+const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
     borderRadius: 15
   }
@@ -28,7 +27,6 @@ export default function DeleteDialog (props) {
         return (
           process.env.REACT_APP_ANUBIS_API_URL + 'v1/tenants/' + thisData.id
         )
-        break
       case typeof thisData.path !== 'undefined':
         return (
           process.env.REACT_APP_ANUBIS_API_URL +
@@ -37,12 +35,10 @@ export default function DeleteDialog (props) {
           '/service_paths/' +
           thisData.id
         )
-        break
       case typeof thisData.access_to !== 'undefined':
         return (
           process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies/' + thisData.id
         )
-        break
       default:
         break
     }
@@ -52,16 +48,12 @@ export default function DeleteDialog (props) {
     switch (true) {
       case typeof data.name !== 'undefined':
         return data.name
-        break
       case typeof data.path !== 'undefined':
         return data.path
-        break
       case typeof data.multiple !== 'undefined':
         return data.selectedText
-        break
       case typeof data.access_to !== 'undefined':
         return ''
-        break
       default:
         break
     }
@@ -84,7 +76,7 @@ export default function DeleteDialog (props) {
                   headers: {}
                 }
           )
-          .then((response) => {
+          .then(() => {
             getData()
           })
           .catch((e) => {
@@ -96,7 +88,7 @@ export default function DeleteDialog (props) {
     } else {
       axios
         .delete(deleteMapper(data))
-        .then((response) => {
+        .then(() => {
           onClose(false)
           getData()
         })

@@ -16,11 +16,7 @@ import Paper from '@mui/material/Paper'
 import Checkbox from '@mui/material/Checkbox'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Switch from '@mui/material/Switch'
 import DeleteIcon from '@mui/icons-material/Delete'
-import FilterListIcon from '@mui/icons-material/FilterList'
-import EditIcon from '@mui/icons-material/Edit'
 import { visuallyHidden } from '@mui/utils'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
@@ -28,7 +24,7 @@ import TenantForm from '../tenant/tenantForm'
 import DeleteDialog from '../shared/messages/cardDelete'
 import { Trans } from 'react-i18next'
 
-const DialogRounded = styled(Dialog)(({ theme }) => ({
+const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
     borderRadius: 15
   }
@@ -47,15 +43,12 @@ export default function PoliciesTable ({
     setOpenDeleteDialog(true)
   }
 
-  const handleCloseDeleteDialog = (value) => {
+  const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false)
   }
   // EDIT
   const [open, setOpen] = React.useState(false)
 
-  const handleClickOpen = () => {
-    setOpen(true)
-  }
 
   const handleClose = () => {
     setOpen(false)
@@ -100,16 +93,6 @@ export default function PoliciesTable ({
 
   const rows = data
 
-  function EditButton (data) {
-    return (
-      <Tooltip title="Edit">
-        <IconButton onClick={handleClickOpen}>
-          <EditIcon />
-        </IconButton>
-      </Tooltip>
-    )
-  }
-
   function descendingComparator (a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
       return -1
@@ -126,8 +109,7 @@ export default function PoliciesTable ({
       : (a, b) => -descendingComparator(a, b, orderBy)
   }
 
-  // This method is created for cross-browser compatibility, if you don't
-  // need to support IE11, you can use Array.prototype.sort() directly
+
   function stableSort (array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index])
     stabilizedThis.sort((a, b) => {

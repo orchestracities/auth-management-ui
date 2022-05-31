@@ -176,7 +176,7 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
   return (
     <div>
       <MainTitle mainTitle={mainTitle}></MainTitle>
-      {typeof thisTenant === undefined || thisTenant === ''
+      {typeof thisTenant === "undefined" || thisTenant === ''
         ? (
             ''
           )

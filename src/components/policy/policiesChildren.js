@@ -1,14 +1,12 @@
 import * as React from 'react'
 import IconButton from '@mui/material/IconButton'
-import { styled } from '@mui/material/styles'
 import Badge from '@mui/material/Badge'
 import PolicyIcon from '@mui/icons-material/Policy'
 import axios from 'axios'
-import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
+import {NavLink } from 'react-router-dom'
 
 export default function PoliciesChildren ({ tenantId, tenantName, seTenant }) {
   // services
-  const [services, setServices] = React.useState([{ children: [] }])
   const getServices = () => {
     axios
       .get(

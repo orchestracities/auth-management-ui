@@ -55,9 +55,10 @@ export default function TenantPage ({
         </Grid>
         {tenantValues.map((tenant, index) => (
           <Grow
+          key={index}
             in={true}
             style={{ transformOrigin: '0 0 0' }}
-            {...(true ? { timeout: index * 600 } : {})}
+            {...(index===index ? { timeout: index * 600 } : {})}
           >
             <Grid item xs={4}>
               <DashboardCard

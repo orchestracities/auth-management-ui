@@ -4,7 +4,7 @@ import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
-import { createTheme, ThemeProvider, styled } from '@mui/material/styles'
+import {styled } from '@mui/material/styles'
 import IconList from '../tenant/iconList'
 import ListItemIcon from '@mui/material/ListItemIcon'
 
@@ -18,9 +18,6 @@ const TenantSelect = styled(Select)(({ theme }) => ({
     color: theme.palette.primary.contrastText
   },
 
-  '& .MuiInputLabel': {
-    color: theme.palette.primary.contrastText
-  },
   '& .MuiInputLabel': {
     color: theme.palette.primary.contrastText
   },
@@ -72,14 +69,12 @@ export default function TenantSelection ({
   seTenant,
   correntValue
 }) {
-  const [Tenant, set_Tenant] = React.useState(correntValue)
   const listOfIcons = IconList()
   const iconMapper = (iconName) => {
     const thisIcon = listOfIcons.filter((e) => e.name === iconName)
     return thisIcon[0].icon
   }
   const handleChange = (event) => {
-    set_Tenant(event.target.value)
     seTenant(event.target.value)
   }
 
@@ -96,7 +91,7 @@ export default function TenantSelection ({
           onChange={handleChange}
         >
           {tenantValues.map((tenant) => (
-            <MenuItem value={tenant.id}>
+            <MenuItem key={tenant.id} value={tenant.id}>
               <ListItemIcon>{iconMapper(tenant.props.icon)}</ListItemIcon>
               {tenant.name}
             </MenuItem>

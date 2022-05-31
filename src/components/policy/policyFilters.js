@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { styled, useTheme } from '@mui/material/styles'
 import Grid from '@mui/material/Grid'
 import ActorFilter from './filters/actorFilter'
 import ActorTypeFilter from './filters/actorTypeFilter'
@@ -23,7 +22,6 @@ export default function PolicyFilters ({
     for (const thisPolicy of data) {
       for (const thisAgent of thisPolicy.agent) {
         const thisAgentSplit = thisAgent.split(':').slice('2').join(':')
-        const agentType = thisAgent.split(':', 2).join(':')
         if (thisAgentSplit !== '') {
           agents.push({ iri: thisAgent, name: thisAgentSplit })
         }

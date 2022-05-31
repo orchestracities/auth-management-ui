@@ -1,23 +1,17 @@
 import * as React from 'react'
 import Box from '@mui/material/Box'
 import SpeedDial from '@mui/material/SpeedDial'
-import SpeedDialIcon from '@mui/material/SpeedDialIcon'
 import SpeedDialAction from '@mui/material/SpeedDialAction'
-import FileCopyIcon from '@mui/icons-material/FileCopyOutlined'
-import SaveIcon from '@mui/icons-material/Save'
-import PrintIcon from '@mui/icons-material/Print'
-import ShareIcon from '@mui/icons-material/Share'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import DeleteDialog from './messages/cardDelete'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
-import TenantForm from '../tenant/tenantForm'
 import { styled } from '@mui/material/styles'
 import { Trans } from 'react-i18next'
 
-const DialogRounded = styled(Dialog)(({ theme }) => ({
+const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
     borderRadius: 15
   }
@@ -47,7 +41,7 @@ export default function MultifunctionButton ({
     setOpenDeleteDialog(true)
   }
 
-  const handleCloseDeleteDialog = (value) => {
+  const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false)
   }
 

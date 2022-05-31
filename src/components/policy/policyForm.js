@@ -70,13 +70,6 @@ export default function PolicyForm ({
     setMode(event.target.value)
   }
 
-  // AGENT-TYPE
-  const [agentType, setAgentType] = React.useState('')
-
-  const handleAgentType = (event) => {
-    setAgentType(event.target.value)
-  }
-
   // FORM- tyoe
   const [formType, setFormType] = React.useState('')
 
@@ -148,7 +141,7 @@ export default function PolicyForm ({
               }
             }
           )
-          .then((response) => {
+          .then(() => {
             getServices()
             close(false)
           })
@@ -166,19 +159,16 @@ export default function PolicyForm ({
     switch (name) {
       case 'acl:agent':
         return <Trans>policies.form.agent</Trans>
-        break
       case 'acl:agentGroup':
         return <Trans>policies.form.agentGroup</Trans>
-        break
       case 'acl:agentClass':
         return <Trans>policies.form.agentClass</Trans>
-        break
       default:
         break
     }
   }
   return (
-    <div>
+    <div key={index}>
       <CustomDialogTitle>
         <Toolbar>
           <IconButton edge="start" onClick={handleClose} aria-label="close">
@@ -234,8 +224,8 @@ export default function PolicyForm ({
                 label={<Trans>policies.form.servicePath</Trans>}
                 onChange={handlePath}
               >
-                {services.slice(1).map((service) => (
-                  <MenuItem value={service.path}>{service.path}</MenuItem>
+                {services.slice(1).map((service,index) => (
+                  <MenuItem key={index} value={service.path}>{service.path}</MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -281,7 +271,7 @@ export default function PolicyForm ({
                 onChange={handleMode}
               >
                 {access_modes.map((service) => (
-                  <MenuItem value={service.iri}>{service.name}</MenuItem>
+                  <MenuItem key={service.iri} value={service.iri}>{service.name}</MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -333,7 +323,7 @@ export default function PolicyForm ({
             >
               <Grid container spacing={6}>
                 {agentsMap.map((agent, i) => (
-                  <React.Fragment>
+                  <React.Fragment key={i}>
                     <Grid item xs={2}></Grid>
                     <Grid item xs={10}>
                       <Grid
@@ -363,7 +353,7 @@ export default function PolicyForm ({
                                   input={<OutlinedInput label="Mode" />}
                                 >
                                   {agentsTypes.map((agents) => (
-                                    <MenuItem value={agents.iri}>
+                                    <MenuItem key={agents.iri} value={agents.iri}>
                                       {agents.name}
                                     </MenuItem>
                                   ))}

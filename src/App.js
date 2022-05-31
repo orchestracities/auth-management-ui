@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import {
   styled,
-  useTheme,
   createTheme,
   ThemeProvider
 } from '@mui/material/styles'
@@ -15,42 +14,27 @@ import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 import MenuIcon from '@mui/icons-material/Menu'
-import AccountCircle from '@mui/icons-material/AccountCircle'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import InboxIcon from '@mui/icons-material/MoveToInbox'
-import MailIcon from '@mui/icons-material/Mail'
-import { MainTitle } from './components/shared/mainTitle'
-import SortButton from './components/shared/sortButton'
-import Container from '@mui/material/Container'
-import DashboardCard from './components/shared/cards'
 import Grid from '@mui/material/Grid'
-import AddButton from './components/shared/addButton'
 import TenantSelection from './components/shared/tenantSelection'
-import PolicyFilters from './components/policy/policyFilters'
-import PoliciesTable from './components/policy/policiesTable'
 import Keycloak from 'keycloak-js'
-import { WebSocketLink } from 'apollo-link-ws'
-import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
-import { createClient } from 'graphql-ws'
 import axios from 'axios'
 import {
   ApolloClient,
   InMemoryCache,
-  ApolloProvider,
   ApolloLink,
   gql,
   createHttpLink
 } from '@apollo/client'
-import { setContext } from '@apollo/client/link/context'
 import TenantPage from './pages/tenantPage'
 import ServicePage from './pages/servicePage'
 import PolicyPage from './pages/policyPage'
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
-import { ThirtyFpsOutlined } from '@mui/icons-material'
 import jwt_decode from 'jwt-decode'
 import UserMenu from './components/shared/userMenu'
 
@@ -173,6 +157,7 @@ export default class App extends Component {
           })
           .indexOf(thisData.name)
         userTenants[index].props = thisData
+        return i
       })
       return userTenants
     },
@@ -190,9 +175,11 @@ export default class App extends Component {
             tenantFiltered.length > 0
               ? userTenants.push(tenantFiltered[0])
               : (tenantFiltered = [])
+            return index
           })
           userTenants.map((thisTenant, index) => {
             tenantFilteredNames.push(thisTenant.name.toString())
+            return index
           })
           const httpLink = createHttpLink({
             uri: 'http://localhost:4000/graphql'
@@ -266,19 +253,10 @@ export default class App extends Component {
     },
     login: (keycloak, authenticated) => {
       this.setState({ keycloak, authenticated })
-      this.state.keycloak.loadUserInfo().then((userInfo) => {
-        keycloak.loadUserInfo().then((userInfo) => {
+      this.state.keycloak.loadUserInfo().then(() => {
+        keycloak.loadUserInfo().then(() => {
           const decoded = jwt_decode(keycloak.token)
           this.setState({ tokenData: decoded })
-          const wsLink = new GraphQLWsLink(
-            createClient({
-              url: 'ws://localhost:4000/graphql',
-              options: {
-                reconnect: true
-              }
-            })
-          )
-
           this.state.getTenants()
         })
       })
@@ -310,10 +288,6 @@ export default class App extends Component {
 
   handleDrawerClose = () => {
     this.state.setOpen(false)
-  }
-
-  constructor (props) {
-    super(props)
   }
 
   render () {
@@ -384,7 +358,7 @@ export default class App extends Component {
               <Divider />
               <List>
                 {this.links.map((thisItem, index) => (
-                  <NavLink to={thisItem.route}>
+                  <NavLink to={thisItem.route} key={index}>
                     <ListItem button key={thisItem.name}>
                       <ListItemIcon>{thisItem.icon}</ListItemIcon>
                       <ListItemText primary={thisItem.name} />

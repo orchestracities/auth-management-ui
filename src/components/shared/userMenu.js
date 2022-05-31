@@ -1,20 +1,16 @@
 import * as React from 'react'
 import Box from '@mui/material/Box'
-import Avatar from '@mui/material/Avatar'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
-import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import Tooltip from '@mui/material/Tooltip'
-import PersonAdd from '@mui/icons-material/PersonAdd'
 import Settings from '@mui/icons-material/Settings'
 import Logout from '@mui/icons-material/Logout'
 import AccountCircle from '@mui/icons-material/AccountCircle'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
-import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 import AppBar from '@mui/material/AppBar'
 import DialogContent from '@mui/material/DialogContent'
@@ -25,18 +21,15 @@ import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 import { useTranslation, Trans } from 'react-i18next'
-import axios from 'axios'
 import {
   ApolloClient,
   InMemoryCache,
-  ApolloProvider,
-  useQuery,
   gql,
   createHttpLink
 } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
 
-const DialogRounded = styled(Dialog)(({ theme }) => ({
+const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
     borderRadius: 15
   }
@@ -49,7 +42,7 @@ const CustomDialogTitle = styled(AppBar)({
 })
 
 export default function UserMenu ({ language, userData, keycloakToken }) {
-  const { t, i18n } = useTranslation()
+  const { i18n } = useTranslation()
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [settings, setOpenSettings] = React.useState(false)
   const open = Boolean(anchorEl)

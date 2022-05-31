@@ -1,24 +1,12 @@
 import * as React from 'react'
 import Button from '@mui/material/Button'
-import DeleteIcon from '@mui/icons-material/Delete'
-import Stack from '@mui/material/Stack'
 import IconButton from '@mui/material/IconButton'
 import { styled } from '@mui/material/styles'
-import AddIcon from '@mui/icons-material/Add'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
-import DialogContentText from '@mui/material/DialogContentText'
-import DialogTitle from '@mui/material/DialogTitle'
-import ListItemText from '@mui/material/ListItemText'
-import ListItem from '@mui/material/ListItem'
-import List from '@mui/material/List'
-import Divider from '@mui/material/Divider'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import CloseIcon from '@mui/icons-material/Close'
-import Slide from '@mui/material/Slide'
 import Grid from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
 import axios from 'axios'
@@ -57,7 +45,7 @@ export default function ServiceForm ({
               path
             }
           )
-          .then((response) => {
+          .then(() => {
             getServices()
             close(false)
           })
@@ -76,7 +64,7 @@ export default function ServiceForm ({
               path: service.path + path
             }
           )
-          .then((response) => {
+          .then(() => {
             getServices()
             close(false)
           })
@@ -93,16 +81,12 @@ export default function ServiceForm ({
     switch (true) {
       case path[0] !== '/':
         return '/ should be the first char'
-        break
       case path.indexOf(' ') >= 0:
         return 'The string should be without spaces'
-        break
       case path[0] === '/' && typeof path[1] === 'undefined':
         return 'A value after / is mandatory'
-        break
       case path[0] === '/' && typeof path[1] !== 'undefined':
         return ''
-        break
       default:
         break
     }

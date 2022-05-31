@@ -29,7 +29,7 @@ import { visuallyHidden } from '@mui/utils'
 import DeleteDialog from '../shared/messages/cardDelete'
 import { Trans } from 'react-i18next'
 
-const DialogRounded = styled(Dialog)(({ theme }) => ({
+const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
     borderRadius: 15
   }
@@ -54,7 +54,7 @@ export default function ServiceChildren ({
     setOpenDeleteDialog(true)
   }
 
-  const handleCloseDeleteDialog = (value) => {
+  const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false)
   }
 

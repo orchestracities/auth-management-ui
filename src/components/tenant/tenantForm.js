@@ -1,35 +1,20 @@
 import * as React from 'react'
 import Button from '@mui/material/Button'
-import DeleteIcon from '@mui/icons-material/Delete'
-import Stack from '@mui/material/Stack'
 import IconButton from '@mui/material/IconButton'
 import { styled } from '@mui/material/styles'
-import AddIcon from '@mui/icons-material/Add'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
-import DialogContentText from '@mui/material/DialogContentText'
-import DialogTitle from '@mui/material/DialogTitle'
-import ListItemText from '@mui/material/ListItemText'
-import ListItem from '@mui/material/ListItem'
-import List from '@mui/material/List'
-import Divider from '@mui/material/Divider'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import CloseIcon from '@mui/icons-material/Close'
-import Slide from '@mui/material/Slide'
 import Grid from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
-import TextareaAutosize from '@mui/material/TextareaAutosize'
 import ColorPicker from './colorPicker'
 import IconPicker from './iconPicker'
 import axios from 'axios'
 import {
   ApolloClient,
   InMemoryCache,
-  ApolloProvider,
-  useQuery,
   gql,
   createHttpLink
 } from '@apollo/client'
@@ -55,7 +40,6 @@ export default function TenantForm ({
   const [name, setName] = React.useState(
     action === 'modify' ? tenant.name : ' '
   )
-  const [description, setDescription] = React.useState('')
   const [primaryColor, setPrimaryColor] = React.useState(
     action === 'modify' ? tenant.props.primaryColor : null
   )
@@ -69,7 +53,23 @@ export default function TenantForm ({
   const handleClose = () => {
     close(false)
   }
+  const httpLink = createHttpLink({
+    uri: 'http://localhost:4000/graphql'
+  })
 
+  const authLink = setContext((_, { headers }) => {
+    return {
+      headers: {
+        ...headers,
+        Authorization: `Bearer ${keycloakToken}`
+      }
+    }
+  })
+
+  const client = new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache()
+  })
   const handleSave = () => {
     switch (action) {
       case 'create':
@@ -77,7 +77,7 @@ export default function TenantForm ({
           .post(process.env.REACT_APP_ANUBIS_API_URL + 'v1/tenants', {
             name
           })
-          .then((response) => {
+          .then(() => {
             close(false)
             getTenants()
           })
@@ -87,23 +87,7 @@ export default function TenantForm ({
 
         break
       case 'modify':
-        const httpLink = createHttpLink({
-          uri: 'http://localhost:4000/graphql'
-        })
-
-        const authLink = setContext((_, { headers }) => {
-          return {
-            headers: {
-              ...headers,
-              Authorization: `Bearer ${keycloakToken}`
-            }
-          }
-        })
-
-        const client = new ApolloClient({
-          link: authLink.concat(httpLink),
-          cache: new InMemoryCache()
-        })
+      
         client
           .mutate({
             mutation: gql`
@@ -133,7 +117,7 @@ export default function TenantForm ({
               secondaryColor: secondaryColor.toString()
             }
           })
-          .then((result) => {
+          .then(() => {
             close(false)
             getTenants()
           })

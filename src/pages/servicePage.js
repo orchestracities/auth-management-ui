@@ -37,7 +37,7 @@ export default function ServicePage ({ getTenants, tenantValues, thisTenant }) {
   return (
     <div>
       <MainTitle mainTitle={mainTitle}></MainTitle>
-      {typeof thisTenant === undefined || thisTenant === ''
+      {typeof thisTenant === "undefined" || thisTenant === ''
         ? (
             ''
           )
@@ -72,9 +72,10 @@ export default function ServicePage ({ getTenants, tenantValues, thisTenant }) {
         </Grid>
         {services[0].children.map((service, index) => (
           <Grow
+            key={index}
             in={true}
             style={{ transformOrigin: '0 0 0' }}
-            {...(true ? { timeout: index * 600 } : {})}
+            {...(service.id===service.id ? { timeout: index * 600 } : {})}
           >
             <Grid item xs={4}>
               <DashboardCard
