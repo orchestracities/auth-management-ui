@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card } from './Card'
+import { CardDialog } from './CardDialog'
 import TenantForm from "../../../src/components/tenant/tenantForm";
 import ServiceForm from "../../../src/components/service/serviceForm";
 
@@ -15,8 +15,8 @@ import {
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-    title: 'Shared/Card/FullCardExamples',
-    component: Card,
+    title: 'Shared/Card/Buttons',
+    component: CardDialog,
     // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
     argTypes: {
         // foo is the property we want to remove from the UI
@@ -25,21 +25,22 @@ export default {
         },
         data: {
             control: false,
-        }
+        },
+       
     },
     parameters: {
         docs: {
             page: () => (
 
                 <>
-                    <Title >Simple Card:</Title>
+                    <Title >Multifunctional Button:</Title>
                     <Subtitle >Description:</Subtitle>
                     <Description >
-                        A simple card to Display elements, edit them or delete them.
+                        A simple multifunctional button for the card.
                     </Description>
                     <Subtitle >API Documentation:</Subtitle>
                     <Description >
-                        The Card component is inside shared/cards.js :
+                        The multifunctional button component is inside shared/speedDial.js :
                     </Description>
                     <Description >
                         The element that will be rendered inside the modal, can only be a ServiceForm with "Sub-service-creation" as a action or a TenantForm with "Modify" as a action
@@ -54,57 +55,11 @@ const emptyFunction = () => {
 
 }
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => <Card {...args} />;
-
-export const TenantExample = Template.bind({});
-TenantExample.args = {
-    pageType:
-        <TenantForm
-            keycloakToken={""}
-            title={
-                "Title"
-            }
-            action={"modify"}
-            tenant={{
-                "name": "Tenant1",
-                "id": "b2e35303-2747-4d1f-9767-519f9310b83e",
-                "props": { "name": "Tenant1", "icon": "none", "primaryColor": "#0018ef", "secondaryColor": "#8086ba", "__typename": "TenantConfiguration" },
-                "service_paths": [
-                    {
-                        "path": "/",
-                        "id": "f6a91fee-e167-45c3-8b48-458039fa5a8b",
-                        "tenant_id": "b2e35303-2747-4d1f-9767-519f9310b83e",
-                        "parent_id": null,
-                        "scope": null,
-                        "children": []
-                    }
-                ]
-            }}
-            getTenants={emptyFunction}
-        ></TenantForm>
-    ,
-    data: {
-        "name": "Tenant1",
-        "id": "b2e35303-2747-4d1f-9767-519f9310b83e",
-        "props": { "name": "Tenant1", "icon": "none", "primaryColor": "#0018ef", "secondaryColor": "#8086ba", "__typename": "TenantConfiguration" },
-        "service_paths": [
-            {
-                "path": "/",
-                "id": "f6a91fee-e167-45c3-8b48-458039fa5a8b",
-                "tenant_id": "b2e35303-2747-4d1f-9767-519f9310b83e",
-                "parent_id": null,
-                "scope": null,
-                "children": []
-            }
-        ]
-    },
-    getData: emptyFunction,
-    seTenant: emptyFunction
-};
+const Template = (args) => <CardDialog {...args} />;
 
 
-export const ServiceExample = Template.bind({});
-ServiceExample.args = {
+export const MultifunctionButton = Template.bind({});
+MultifunctionButton.args = {
     pageType:
     <ServiceForm
     title={"doc"}
@@ -144,5 +99,7 @@ ServiceExample.args = {
         tenant_id: "b2e35303-2747-4d1f-9767-519f9310b83e"
     },
     getData: emptyFunction,
-    seTenant: undefined
+    setOpen: undefined,
+    status:false
 };
+

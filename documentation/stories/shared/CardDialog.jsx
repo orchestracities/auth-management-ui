@@ -1,6 +1,7 @@
+
 import PropTypes from 'prop-types';
 import Grid from '@mui/material/Grid';
-import DashboardCard from '../../../src/components/shared/cards';
+import MultifunctionButton from '../../../src/components/shared/speedDial'
 import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
 import { orange } from '@mui/material/colors';
@@ -14,31 +15,38 @@ import "../../../src/i18n";
     },
   });
 
-export const Card = ({ pageType,
+export const CardDialog = ({ pageType,
     data,
     getData,
-    seTenant}) => {
+    status,
+    setOpen
+    }) => {
 
 
   return (
     <ThemeProvider theme={theme}>
     <BrowserRouter>
     <Grid
-
     >
-             <DashboardCard
-                pageType={pageType}
-                data={data}
-                getData={getData}
-                seTenant={seTenant}
-              ></DashboardCard>
+             <MultifunctionButton
+            key={data.id}
+            data={data}
+            getData={getData}
+            pageType={pageType}
+            setOpen={setOpen}
+            status={status}
+          ></MultifunctionButton>
     </Grid>
     </BrowserRouter>
     </ThemeProvider>
   );
 };
 
-Card.propTypes = {
+CardDialog.propTypes = {
+      /**
+   * The ID of the react element
+   */
+       key: PropTypes.string,
    /**
    * is the element that will be rendered inside the modal, can only be a ServiceForm with "Sub-service-creation" as a action or a TenantForm with "Modify" as a action
    */
@@ -53,15 +61,21 @@ Card.propTypes = {
    */
         getData: PropTypes.func,
      /**
-   * The callBack function after the modal data is saved (ONLY for the Tenants Page)
+   * The react hook function related to the opening and the closing of the button
    */
-      seTenant: PropTypes.func,
+      setOpen: PropTypes.func,
+         /**
+   * The react hook value related to the opening and the closing of the button
+   */
+          status: PropTypes.bool,
 };
 
-Card.defaultProps = {
+CardDialog.defaultProps = {
+    key:"",
     pageType: undefined,
     data:{},
     getData:undefined,
-    seTenant:undefined
+    setOpen:undefined,
+    status:false
 };
  

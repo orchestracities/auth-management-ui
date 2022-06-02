@@ -15,10 +15,6 @@ export const Sort = ({ data,
 
   return (
     <Grid
-    container
-    direction="column"
-    justifyContent="center"
-    alignItems="center"
   >
     <SortButton
     data={data}
