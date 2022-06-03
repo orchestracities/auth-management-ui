@@ -24,8 +24,12 @@ wget https://raw.githubusercontent.com/orchestracities/anubis/master/config/opa-
 cd ..
 
 echo "Deploying services via Docker Compose..."
+ docker-compose down -v
 docker image rm graphql-server 
 docker image rm webapp
+docker image rm policy-api
+docker image rm keycloak
+docker image rm mongo
 docker-compose up -d
 cd graphql-server
 node main/mongo/populateDB.js
