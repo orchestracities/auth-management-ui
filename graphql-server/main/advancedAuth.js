@@ -1,18 +1,10 @@
 const express = require('express')
+const cors = require('cors')
+const passport = require('passport')
 const { ApolloServer, gql } = require('apollo-server-express')
-const { configureKeycloak } = require('./lib/common')
 require('dotenv').config({ path: '../.env' })
-const {
-  KeycloakContext,
-  KeycloakTypeDefs,
-  KeycloakSchemaDirectives
-} = require('keycloak-connect-graphql')
-
+const {  buildContext } = require("graphql-passport");
 const app = express()
-
-const graphqlPath = '/graphql'
-
-const { keycloak } = configureKeycloak(app, graphqlPath)
 const { get, update, add, deleteTenant } = require('./mongo/tenantsQueries')
 const { getUserPref, updateUserPref } = require('./mongo/usrSettings')
 
@@ -28,8 +20,8 @@ const typeDefs = gql`
     language: String!
   }
   type Query {
-    listTenants(tenantNames: [String]!): [TenantConfiguration] @auth
-    getUserPreferences(usrName: String!): [UserPreferencies] @auth
+    listTenants(tenantNames: [String]!): [TenantConfiguration] 
+    getUserPreferences(usrName: String!): [UserPreferencies] 
   }
   type Mutation {
     modifyUserPreferences(
@@ -77,16 +69,25 @@ const resolvers = {
   }
 }
 
-app.use(graphqlPath, keycloak.middleware())
 
-async function startServer () {
+app.use(cors())
+
+app.get('/auth/keycloak',
+  passport.authenticate('keycloak', { scope: ['profile'] }));
+
+app.get('/auth/keycloak/callback', 
+  passport.authenticate('keycloak', { failureRedirect: '/login' }),
+  function(req, res) {
+    res.redirect('/');
+  });
+
+async function startServer() {
   const apolloServer = new ApolloServer({
-    typeDefs: [KeycloakTypeDefs, typeDefs], // 1. Add the Keycloak Type Defs
-    schemaDirectives: KeycloakSchemaDirectives, // 2. Add the KeycloakSchemaDirectives
+    typeDefs: [typeDefs],
     resolvers,
     context: ({ req }) => {
       return {
-        kauth: new KeycloakContext({ req }, keycloak) // 3. add the KeycloakContext to `kauth`
+        kauth: buildContext({ req })
       }
     }
   })
