@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:14-alpine AS nodeBuild
 LABEL version="0.1"
 LABEL description="Graphql configs for the webapp"
 LABEL maintainer = ["valerio.cantore@martel-innovate.com"]
