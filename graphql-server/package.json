@@ -46,6 +46,7 @@
     "keycloak-connect-graphql": "^0.7.0",
     "keycloak-request-token": "0.1.0",
     "mongoose": "^6.2.11",
+    "openid-client": "^5.1.6",
     "passport": "^0.6.0",
     "passport-keycloak-bearer": "^2.1.0",
     "passport-keycloak-oauth2-oidc": "^1.0.5",
