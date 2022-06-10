@@ -2,6 +2,7 @@ let logger = require('logops');
 logger.format = logger.formatters.pipe;
 let config = {};
 const logContext = { op: 'anubisGraphql.config' };
+
 /**
  * Sets the configuration.
  *
@@ -44,9 +45,6 @@ function loadConfig() {
     }
     if (process.env.OIDC_CLIENT_SECRET) {
         newConfig.oidc_client_secret = process.env.OIDC_CLIENT_SECRET;
-    }
-    if (process.env.OIDC_REDIRECT_URL) {
-        newConfig.oidc_redirect_url = process.env.OIDC_REDIRECT_URL;
     }
     getLogger().debug(logContext, 'New server configuration: %s', JSON.stringify(newConfig));
     setConfig(newConfig);

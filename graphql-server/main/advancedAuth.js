@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const passport = require('passport');
 const { ApolloServer, gql } = require('apollo-server-express');
-const { ApolloError } = require('apollo-server-errors');
+const { ApolloError, AuthenticationError } = require('apollo-server-errors');
 const { buildContext } = require('graphql-passport');
 const app = express();
 const { Issuer, Strategy } = require('openid-client');
@@ -110,22 +110,6 @@ const resolvers = {
 
 app.use(cors());
 
-const memoryStore = new expressSession.MemoryStore();
-app.use(
-    expressSession({
-        secret: 'another_long_secret',
-        resave: false,
-        saveUninitialized: true,
-        store: memoryStore
-    })
-);
-
-app.get('/auth/oidc', passport.authenticate('oidc', { scope: ['profile'] }));
-
-app.get('/auth/oidc/callback', passport.authenticate('oidc', { failureRedirect: '/login' }), function (req, res) {
-    res.redirect('/');
-});
-
 async function startServer() {
     const issuer = await Issuer.discover(config.getConfig().oidc_configuration_url);
     config
@@ -135,7 +119,6 @@ async function startServer() {
     const client = new issuer.Client({
         client_id: 'keycloak-connect-graphql-public', // TODO value should be loaded from configuration
         //TODO client_secret: this.settings.clientSecret, we are using a public one... not the best choice but ok for testing now
-        redirect_uri: 'http://localhost:3000' // TODO value should be loaded from configuration
     });
     config.getLogger().debug(logContext, 'Configuring client: %s', JSON.stringify(client.metadata));
 
@@ -148,11 +131,12 @@ async function startServer() {
     };
 
     app.use(passport.initialize());
-    app.use(passport.authenticate('session'));
     passport.use(
         'oidc',
         new Strategy({ client, params }, (tokenSet, userinfo, done) => {
-            config.getLogger().debug(logContext, 'Setting up strategy: %s', JSON.stringify(tokenSet));
+            config.getLogger().info(logContext, 'Setting up passport strategy');
+            config.getLogger().debug(logContext, 'tokenSet: %s', JSON.stringify(tokenSet));
+            config.getLogger().debug(logContext, 'userinfo: %s', JSON.stringify(userinfo));
             return done(null, tokenSet.claims());
         })
     );
@@ -167,12 +151,29 @@ async function startServer() {
         done(null, user);
     });
 
+    async function getUser(access_token) {
+      try {
+          const userinfo = await client.userinfo(access_token);
+          return userinfo;
+      } catch (err) {
+          config.getLogger().error(logContext, err);
+          throw new AuthenticationError({ data: { reason: err.message } });
+      }
+        return null;
+    }
+
     const apolloServer = new ApolloServer({
         typeDefs: [typeDefs],
         resolvers,
-        context: ({ req }) => {
+        csrfPrevention: true,
+        context: async ({ req, res }) => {
+            const token = req.headers.authorization.replace('Bearer ', '') || '';
+            // try to authenticate
+            const user = await getUser(token);
+
+            if (!user) throw new AuthenticationError('you must be logged in');
             return {
-                auth: buildContext({ req })
+                auth: user
             };
         }
     });
