@@ -3,9 +3,10 @@ const cors = require('cors');
 const passport = require('passport');
 const { ApolloServer, gql } = require('apollo-server-express');
 const { ApolloError, AuthenticationError } = require('apollo-server-errors');
-const { buildContext } = require('graphql-passport');
 const app = express();
-const { Issuer, Strategy } = require('openid-client');
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
+const jwksRsa = require('jwks-rsa');
 const expressSession = require('express-session');
 const config = require('./config');
 const logContext = { op: 'anubisGraphql.advancedAuth' };
@@ -110,72 +111,74 @@ const resolvers = {
 
 app.use(cors());
 
+app.use('/graphql', (req, res, next) => {
+  passport.authenticate('jwt', { session: false }, (err, user, info) => {
+    if (user) {
+      req.user = user
+    }
+    if (info) {
+      req.info = info;
+    }
+    if (err) {
+      req.err = err;
+    }
+    next()
+  })(req, res, next)
+})
+
+
+function verify(payload, verified){
+  config.getLogger().debug(logContext, payload);
+  user = {}
+  if (payload.sub) {
+    user.sub = payload.sub;
+  }
+  if (payload.preferred_username) {
+    user.preferred_username = payload.preferred_username;
+  }
+  if (payload.email) {
+    user.email = payload.email;
+  }
+  if (payload.tenants) {
+    user.tenants = payload.tenants;
+  }
+  verified(null, user, null);
+}
+
 async function startServer() {
-    const issuer = await Issuer.discover(config.getConfig().oidc_configuration_url);
-    config
-        .getLogger()
-        .debug(logContext, 'Loading open id connector configuration: %s', JSON.stringify(issuer.metadata));
-
-    const client = new issuer.Client({
-        client_id: 'keycloak-connect-graphql-public', // TODO value should be loaded from configuration
-        //TODO client_secret: this.settings.clientSecret, we are using a public one... not the best choice but ok for testing now
-    });
-    config.getLogger().debug(logContext, 'Configuring client: %s', JSON.stringify(client.metadata));
-
-    const params = {
-        // ... any authorization params override client properties
-        // client_id defaults to client.client_id
-        // redirect_uri defaults to client.redirect_uris[0]
-        // response type defaults to client.response_types[0], then 'code'
-        // scope defaults to 'openid'
-    };
-
-    app.use(passport.initialize());
+    
     passport.use(
-        'oidc',
-        new Strategy({ client, params }, (tokenSet, userinfo, done) => {
-            config.getLogger().info(logContext, 'Setting up passport strategy');
-            config.getLogger().debug(logContext, 'tokenSet: %s', JSON.stringify(tokenSet));
-            config.getLogger().debug(logContext, 'userinfo: %s', JSON.stringify(userinfo));
-            return done(null, tokenSet.claims());
-        })
+      new JwtStrategy({
+        // Dynamically provide a signing key based on the kid in the header and the signing keys provided by the JWKS endpoint.
+        secretOrKeyProvider: jwksRsa.passportJwtSecret({
+          cache: true,
+          rateLimit: true,
+          jwksRequestsPerMinute: 5,
+          jwksUri: config.getConfig().jwks_url
+        }),
+        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+
+        // Validate the audience and the issuer.
+        audience: config.getConfig().oidc_audience,
+        issuer: config.getConfig().oidc_issuer,
+        algorithms: ['RS256']
+      },
+      verify)
     );
 
-    passport.serializeUser(function (user, done) {
-        config.getLogger().debug(logContext, 'serializeUser: %s', JSON.stringify(user));
-        done(null, user);
-    });
-
-    passport.deserializeUser(function (user, done) {
-        config.getLogger().debug(logContext, 'deserializeUser: %s', JSON.stringify(user));
-        done(null, user);
-    });
-
-    async function getUser(access_token) {
-      try {
-          const userinfo = await client.userinfo(access_token);
-          return userinfo;
-      } catch (err) {
-          config.getLogger().error(logContext, err);
-          throw new AuthenticationError({ data: { reason: err.message } });
-      }
-        return null;
-    }
+    app.use(passport.initialize());
 
     const apolloServer = new ApolloServer({
         typeDefs: [typeDefs],
         resolvers,
         csrfPrevention: true,
-        context: async ({ req, res }) => {
-            const token = req.headers.authorization.replace('Bearer ', '') || '';
-            // try to authenticate
-            const user = await getUser(token);
-
-            if (!user) throw new AuthenticationError('you must be logged in');
+        context: ({ req }) => {
+            if (req.info) throw new AuthenticationError(req.info);
+            if (!req.user) throw new AuthenticationError('you must be logged in');
             return {
-                auth: user
+                auth: req.user
             };
-        }
+          }
     });
     await apolloServer.start();
     apolloServer.applyMiddleware({ app });

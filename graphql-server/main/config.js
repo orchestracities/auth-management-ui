@@ -35,16 +35,20 @@ function loadConfig() {
         newConfig.graphql_mongo_db = 'mongodb://localhost:27017/graphql';
     }
 
-    if (process.env.OIDC_CONFIGURATION_URL) {
-        newConfig.oidc_configuration_url = process.env.OIDC_CONFIGURATION_URL;
+    if (process.env.JWKS_URL) {
+        newConfig.jwks_url = process.env.JWKS_URL;
     } else {
-        newConfig.oidc_configuration_url = 'http://localhost:8080/auth/realms/master/.well-known/openid-configuration';
+        newConfig.jwks_url = 'http://localhost:8080/auth/realms/master/protocol/openid-connect/certs';
     }
-    if (process.env.OIDC_CLIENT) {
-        newConfig.oidc_client = process.env.OIDC_URL;
+    if (process.env.OIDC_ISSUER) {
+        newConfig.oidc_issuer = process.env.OIDC_ISSUER;
+    } else {
+        newConfig.oidc_issuer = 'http://localhost:8080/auth/realms/master';
     }
-    if (process.env.OIDC_CLIENT_SECRET) {
-        newConfig.oidc_client_secret = process.env.OIDC_CLIENT_SECRET;
+    if (process.env.OIDC_AUDIENCE) {
+        newConfig.oidc_audience = process.env.OIDC_AUDIENCE;
+    } else {
+        newConfig.oidc_audience = '';
     }
     getLogger().debug(logContext, 'New server configuration: %s', JSON.stringify(newConfig));
     setConfig(newConfig);
