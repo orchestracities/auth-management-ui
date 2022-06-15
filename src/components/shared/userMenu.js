@@ -41,7 +41,7 @@ const CustomDialogTitle = styled(AppBar)({
   boxShadow: 'none'
 })
 
-export default function UserMenu ({ language, userData, keycloakToken }) {
+export default function UserMenu ({ language, userData, token }) {
   const { i18n } = useTranslation()
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [settings, setOpenSettings] = React.useState(false)
@@ -77,7 +77,7 @@ export default function UserMenu ({ language, userData, keycloakToken }) {
       return {
         headers: {
           ...headers,
-          Authorization: `Bearer ${keycloakToken}`
+          Authorization: `Bearer ${token}`
         }
       }
     })
@@ -100,7 +100,7 @@ export default function UserMenu ({ language, userData, keycloakToken }) {
           }
         `,
         variables: {
-          usrName: userData.idTokenParsed.sub,
+          usrName: userData.sub,
           language: newValue
         }
       })

@@ -87,10 +87,10 @@ export default function MultifunctionButton ({
         sx={{ position: 'absolute', bottom: 0, right: 5 }}
         icon={<MoreVertIcon />}
       >
-        {actions.map((action) => (
+        {actions.map((action,index) => (
           <SpeedDialAction
             onClick={action.click}
-            key={action.name}
+            key={index}
             icon={action.icon}
             tooltipTitle={action.name}
           />

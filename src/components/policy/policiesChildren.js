@@ -44,7 +44,6 @@ export default function PoliciesChildren ({ tenantId, tenantName, seTenant }) {
           console.error(e)
         })
     }
-    console.log(policies)
   }
 
   const reiderect = () => {

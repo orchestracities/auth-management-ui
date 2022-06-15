@@ -53,7 +53,7 @@ export default function ServiceForm ({
             console.error(e)
           })
         break
-      case 'modify':
+      case "Sub-service-creation":
         axios
           .post(
             process.env.REACT_APP_ANUBIS_API_URL +
@@ -137,7 +137,7 @@ export default function ServiceForm ({
                 setPath(event.target.value)
               }}
               InputProps={
-                action === 'modify'
+                action === 'Sub-service-creation'
                   ? {
                       startAdornment: (
                         <InputAdornment position="start">

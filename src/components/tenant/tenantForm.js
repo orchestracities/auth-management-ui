@@ -35,7 +35,7 @@ export default function TenantForm ({
   action,
   tenant,
   getTenants,
-  keycloakToken
+  token
 }) {
   const [name, setName] = React.useState(
     action === 'modify' ? tenant.name : ' '
@@ -61,7 +61,7 @@ export default function TenantForm ({
     return {
       headers: {
         ...headers,
-        Authorization: `Bearer ${keycloakToken}`
+        Authorization: `Bearer ${token}`
       }
     }
   })

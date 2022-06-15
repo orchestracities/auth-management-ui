@@ -4,11 +4,31 @@ import './index.css'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 import './i18n'
+import { OidcProvider } from '@axa-fr/react-oidc';
+import { useOidc, useOidcIdToken,useOidcAccessToken} from '@axa-fr/react-oidc';
+const configuration = {
+    client_id: 'client1',
+    redirect_uri: 'http://localhost:3000/authentication/callback',
+    silent_redirect_uri: 'http://localhost:3000/authentication/silent-callback',
+    scope: 'openid profile email', 
+    authority: 'http://localhost:8080/auth/realms/master',
+   
+};
+function LoginMockup(){
+  const { login, isAuthenticated } = useOidc();
+  const {idTokenPayload } = useOidcIdToken();
+  const{ accessToken } = useOidcAccessToken();
+  return  <App login={login} isAuthenticated={isAuthenticated} accessToken={accessToken} idTokenPayload={idTokenPayload}/>
+}
+
 
 ReactDOM.render(
+  <OidcProvider configuration={configuration}
+>
   <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+   <LoginMockup></LoginMockup>
+  </React.StrictMode>
+  </OidcProvider>,
   document.getElementById('root')
 )
 

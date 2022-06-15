@@ -22,7 +22,6 @@ import ListItemText from '@mui/material/ListItemText'
 import InboxIcon from '@mui/icons-material/MoveToInbox'
 import Grid from '@mui/material/Grid'
 import TenantSelection from './components/shared/tenantSelection'
-import Keycloak from 'keycloak-js'
 import axios from 'axios'
 import {
   ApolloClient,
@@ -99,9 +98,7 @@ export default class App extends Component {
       this.setState({ open: newValue, direction: newValue ? 'ltr' : '' })
     },
     direction: 'ltr',
-    authenticated: false,
     tokenData: [],
-    keycloak: '',
     groups: [],
     language: '',
     setAppLanguage: (newLanguagePreference) => {
@@ -190,7 +187,7 @@ export default class App extends Component {
             operation.setContext(({ headers = {} }) => ({
               headers: {
                 ...headers,
-                authorization: `Bearer ${this.state.keycloak.token}`
+                authorization: `Bearer ${this.props.accessToken}`
               }
             }))
 
@@ -230,7 +227,7 @@ export default class App extends Component {
                     }
                   `,
                   variables: {
-                    usrName: this.state.keycloak.idTokenParsed.sub
+                    usrName: this.props.idTokenPayload.sub
                   }
                 })
                 .then((result) => {
@@ -251,18 +248,18 @@ export default class App extends Component {
           console.error(e)
         })
     },
-    login: (keycloak, authenticated) => {
-      this.setState({ keycloak, authenticated })
-      this.state.keycloak.loadUserInfo().then(() => {
-        keycloak.loadUserInfo().then(() => {
-          const decoded = jwt_decode(keycloak.token)
+    afterLogin: (authenticated) => {
+      if(authenticated){
+ 
+          const decoded = jwt_decode(this.props.accessToken)
           this.setState({ tokenData: decoded })
-          this.state.getTenants()
-        })
-      })
+          this.state.getTenants()}
+   
     }
   }
-
+  constructor(props) {
+    super(props);
+   }
   links = [
     { name: 'Tenant', route: '/Tenant', icon: <InboxIcon></InboxIcon> },
     { name: 'Service', route: '/Service', icon: <InboxIcon></InboxIcon> },
@@ -270,16 +267,11 @@ export default class App extends Component {
   ]
 
   componentDidMount () {
-    const keycloak = Keycloak({
-      url: 'http://localhost:8080/auth/',
-      realm: 'master',
-      clientId: 'client1'
-    })
-    keycloak
-      .init({ onLoad: 'login-required', checkLoginIframe: false })
-      .then((authenticated) => {
-        this.state.login(keycloak, authenticated)
-      })
+   if(!this.props.isAuthenticated){
+    this.props.login();
+   }else{
+     this.state.afterLogin(this.props.isAuthenticated)
+   }
   }
 
   handleDrawerOpen = () => {
@@ -321,12 +313,12 @@ export default class App extends Component {
                 </div>
                 <div>
                   <UserMenu
-                    keycloakToken={this.state.keycloak.token}
+                    token={this.props.accessToken}
                     language={{
                       language: this.state.language,
                       setLanguage: this.state.setAppLanguage
                     }}
-                    userData={this.state.keycloak}
+                    userData={ this.props.idTokenPayload}
                   ></UserMenu>
                 </div>
               </CustomToolbar>
@@ -368,7 +360,7 @@ export default class App extends Component {
               </List>
               <Divider />
             </Drawer>
-            {this.state.authenticated
+            {this.props.isAuthenticated
               ? (
               <Main open={this.state.open}>
                 <Grid container id="filterContainer"></Grid>
@@ -377,7 +369,7 @@ export default class App extends Component {
                     path="Tenant"
                     element={
                       <TenantPage
-                        keycloakToken={this.state.keycloak.token}
+                        token={this.props.accessToken}
                         getTenants={this.state.getTenants}
                         tenantValues={this.state.tenants}
                         seTenant={this.state.seTenant}

@@ -31,7 +31,7 @@ export default function ServicePage ({ getTenants, tenantValues, thisTenant }) {
 
   React.useEffect(() => {
     getServices()
-  }, [thisTenant])
+  }, [])
   const mainTitle = <Trans>service.titles.page</Trans>
 
   return (
@@ -80,6 +80,7 @@ export default function ServicePage ({ getTenants, tenantValues, thisTenant }) {
             <Grid item xs={4}>
               <DashboardCard
                 key={service.id}
+                index={index}
                 pageType={
                   <ServiceForm
                     title={<Trans>service.titles.edit</Trans>}

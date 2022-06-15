@@ -20,8 +20,9 @@ const RadiusDiv = styled('div')(({ theme }) => ({
   maxWidth: 550
 }))
 
-export default function DashboardCard ({ pageType, data, getData, seTenant }) {
+export default function DashboardCard ({ pageType, data, getData, seTenant,index}) {
   const [subpathOpen, setSubpathOpen] = React.useState(false)
+ 
   const [status, setOpen] = React.useState(false)
   const props = { close: setOpen }
   const listOfIcons = IconList()
@@ -30,6 +31,7 @@ export default function DashboardCard ({ pageType, data, getData, seTenant }) {
     return thisIcon[0].name !== 'none' ? thisIcon[0].icon : data.name[0]
   }
   const layout = React.cloneElement(pageType, props)
+ 
   const incrementColor = (color, step) => {
     let colorToInt = parseInt(color.substr(1), 16)
     const nstep = parseInt(step)
@@ -43,25 +45,29 @@ export default function DashboardCard ({ pageType, data, getData, seTenant }) {
     }
     return color
   }
+const cardColor= layout.props.action === 'Sub-service-creation'
+  ? incrementColor(
+    layout.props.tenantName_id[0].props.primaryColor,
+    index*50
+  )
+  : data.props.primaryColor;
+
   return (
     <RadiusDiv
-      key={data.id}
       sx={{
         background:
-          layout.props.action === 'Sub-service-creation' ? '' : '#8086bab8'
+          layout.props.action === 'Sub-service-creation' ? incrementColor(
+            layout.props.tenantName_id[0].props.secondaryColor,
+            index*50
+          ) : '#8086bab8'
       }}
     >
       <CardHeader
         avatar={
           <Avatar
             sx={{
-              bgcolor:
-                layout.props.action === 'Sub-service-creation'
-                  ? incrementColor(
-                    layout.props.tenantName_id[0].props.primaryColor,
-                    Math.floor(Math.random() * 500) - 20
-                  )
-                  : data.props.primaryColor
+              bgcolor:cardColor
+               
             }}
             aria-label="recipe"
           >
@@ -72,8 +78,8 @@ export default function DashboardCard ({ pageType, data, getData, seTenant }) {
         }
         action={
           <MultifunctionButton
-            key={data.id}
-            data={data}
+
+          data={data}
             getData={getData}
             pageType={layout}
             setOpen={setOpen}

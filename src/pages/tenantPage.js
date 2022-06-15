@@ -13,7 +13,7 @@ export default function TenantPage ({
   getTenants,
   seTenant,
   client,
-  keycloakToken
+  token
 }) {
   const [createOpen, setCreateOpen] = React.useState(false)
   const [sortedTenants, sortTenants] = React.useState([])
@@ -62,9 +62,11 @@ export default function TenantPage ({
           >
             <Grid item xs={4}>
               <DashboardCard
+               index={index}
+               key={index}
                 pageType={
                   <TenantForm
-                    keycloakToken={keycloakToken}
+                    token={token}
                     client={client}
                     title={
                       <Trans
