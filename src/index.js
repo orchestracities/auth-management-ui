@@ -6,14 +6,16 @@ import reportWebVitals from './reportWebVitals'
 import './i18n'
 import { OidcProvider } from '@axa-fr/react-oidc';
 import { useOidc, useOidcIdToken,useOidcAccessToken} from '@axa-fr/react-oidc';
+
 const configuration = {
-    client_id: 'client1',
-    redirect_uri: 'http://localhost:3000/authentication/callback',
-    silent_redirect_uri: 'http://localhost:3000/authentication/silent-callback',
-    scope: 'openid profile email', 
-    authority: 'http://localhost:8080/auth/realms/master',
-   
+  client_id: 'client1',
+  redirect_uri: process.env.REACT_APP_URI+'authentication/callback',
+  silent_redirect_uri: process.env.REACT_APP_URI+'authentication/silent-callback',
+  scope: 'openid profile email', 
+  authority: process.env.REACT_APP_OIDC_ISSUER,   
 };
+
+
 function LoginMockup(){
   const { login, isAuthenticated } = useOidc();
   const {idTokenPayload } = useOidcIdToken();

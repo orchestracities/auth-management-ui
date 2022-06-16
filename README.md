@@ -20,20 +20,20 @@ The default user/password inside keycloack is admin/admin
 
 To setup the webapp first of all let's create a .env file inside the main folder, the file should contain the strings:
 
-```
-REACT_APP_ANUBIS_API_URL=http://localhost:8085/
-GRAPHQL_MONGO_DB=mongodb://localhost:27017/graphql
-GRAPHQL_RESOURCE_SERVER_NAME=graphql-config-server
-GRAPHQL_SEED=mongodb://localhost:27017/graphql
-```
-
 If you are using docker the configuration should be:
 
 ```
 REACT_APP_ANUBIS_API_URL=http://localhost:8085/
+REACT_APP_GRAPHL_URL=http://localhost:4000/graphql
+REACT_APP_URI=http://localhost:3000/
+REACT_APP_OIDC_ISSUER=http://localhost:8080/auth/realms/master
 GRAPHQL_MONGO_DB=mongodb://mongo:27017/graphql
 GRAPHQL_RESOURCE_SERVER_NAME=graphql-config-server
 GRAPHQL_SEED=mongodb://localhost:27017/graphql
+GRAPHL_PORT=4000
+JWKS_URL=http://keycloak:8080/auth/realms/master/protocol/openid-connect/certs
+OIDC_ISSUER=http://localhost:8080/auth/realms/master
+OIDC_AUDIENCE=''
 ```
 
 Then let's start the package required with

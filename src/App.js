@@ -179,7 +179,7 @@ export default class App extends Component {
             return index
           })
           const httpLink = createHttpLink({
-            uri: 'http://localhost:4000/graphql'
+            uri: process.env.REACT_APP_GRAPHL_URL
           })
 
           const authLink = new ApolloLink((operation, forward) => {
