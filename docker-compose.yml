@@ -42,7 +42,7 @@ services:
     networks:
       - envoymesh
 
-  App:
+  UI:
     build:
       context: ./
       dockerfile: ./Dockerfile
