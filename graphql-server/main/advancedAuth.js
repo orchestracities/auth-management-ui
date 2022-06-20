@@ -7,7 +7,6 @@ const app = express();
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const jwksRsa = require('jwks-rsa');
-const expressSession = require('express-session');
 const config = require('./config');
 const logContext = { op: 'anubisGraphql.advancedAuth' };
 
@@ -129,7 +128,7 @@ app.use('/graphql', (req, res, next) => {
 
 function verify(payload, verified){
   config.getLogger().debug(logContext, payload);
-  user = {}
+  let user = {}
   if (payload.sub) {
     user.sub = payload.sub;
   }

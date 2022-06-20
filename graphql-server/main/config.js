@@ -40,8 +40,8 @@ function loadConfig() {
     } else {
         newConfig.jwks_url = 'http://localhost:8080/auth/realms/master/protocol/openid-connect/certs';
     }
-    if (process.env.OIDC_ISSUER) {
-        newConfig.oidc_issuer = process.env.OIDC_ISSUER;
+    if (process.env.REACT_APP_OIDC_ISSUER) {
+        newConfig.oidc_issuer = process.env.REACT_APP_OIDC_ISSUER;
     } else {
         newConfig.oidc_issuer = 'http://localhost:8080/auth/realms/master';
     }

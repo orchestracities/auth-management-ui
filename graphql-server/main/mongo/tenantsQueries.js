@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-
 const config = require('../config');
 const connection = mongoose.createConnection(config.getConfig().graphql_mongo_db);
+const logContext = { op: 'anubisGraphql.advancedAuth' };
 
 const usrPreference = new mongoose.Schema({
     name: String,
@@ -40,16 +40,16 @@ async function add(data) {
     };
 
     const thisTenant = await arrayOfData.save(function (err) {
-        if (err) return handleError(err);
+        if (err) return  config.getLogger().error(logContext, err);
     });
     return await thisTenant;
 }
 
 async function deleteTenant(data) {
     const thisUser = await Preferences.find({ name: { $in: data } });
-
+    let deletedOwner={}
     for (const e of thisUser) {
-        const deletedOwner = await Preferences.findByIdAndRemove(e._id);
+         deletedOwner = await Preferences.findByIdAndRemove(e._id);
     }
     return !!(await (typeof deletedOwner === 'object'));
 }

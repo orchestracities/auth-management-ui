@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const config = require('../config');
 const connection = mongoose.createConnection(config.getConfig().graphql_mongo_db);
-
+const logContext = { op: 'anubisGraphql.advancedAuth' };
 const usrSettings = new mongoose.Schema({
     usrName: String,
     language: String
@@ -38,7 +38,7 @@ async function addUserPref(data) {
 
     Settings.create(arrayOfData, function (err) {
         if (err) {
-            return handleError(err);
+            return config.getLogger().error(logContext, err);
         } else {
             getUserPref(data);
         }

@@ -8,5 +8,7 @@
     "ecmaVersion": 8,
     "sourceType": "module"
   },
-  "rules": {}
+  "rules": {
+    "no-unused-vars": "off"
+  }
 }
