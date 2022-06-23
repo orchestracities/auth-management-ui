@@ -24,8 +24,16 @@ wget https://raw.githubusercontent.com/orchestracities/anubis/master/config/opa-
 cd ..
 
 echo "Deploying services via Docker Compose..."
+ docker-compose down -v
+docker image rm graphql-server 
+docker image rm UI
+docker image rm policy-api
+docker image rm keycloak
+docker image rm mongo
 docker-compose up -d
-
+cd graphql-server
+node main/mongo/populateDB.js
+cd ..
 wait=0
 HOST="http://localhost:8080"
 while [ "$(curl -s -o /dev/null -L -w ''%{http_code}'' $HOST)" != "200" ] && [ $wait -le 60 ]

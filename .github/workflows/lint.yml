@@ -10,11 +10,6 @@ on:
   # plan to use this action with forks, see the Limitations section
   pull_request:
 
-# Down scope as necessary via https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
-permissions:
-  checks: write
-  contents: write
-
 jobs:
   run-linters:
     name: Run linters
@@ -31,12 +26,6 @@ jobs:
 
       # ESLint and Prettier must be in `package.json`
       - name: Install Node.js dependencies
-        run: npm ci --include=dev
-
-      - name: Run linters
-        uses: wearerequired/lint-action@v1
-        with:
-          eslint: true
-          prettier: true
-          auto_fix: true
-          github_token: ${{ secrets.TOKEN }}
+        run: npm ci
+      - name: ESLint
+        run: npx --no-install eslint src/ graphql-server/ --cache

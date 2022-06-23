@@ -1,130 +1,111 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 import {
   styled,
-  useTheme,
   createTheme,
-  ThemeProvider,
-} from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import CssBaseline from "@mui/material/CssBaseline";
-import MuiAppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import List from "@mui/material/List";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-import { MainTitle } from "./components/shared/mainTitle";
-import SortButton from "./components/shared/sortButton";
-import Container from "@mui/material/Container";
-import DashboardCard from "./components/shared/cards";
-import Grid from "@mui/material/Grid";
-import AddButton from "./components/shared/addButton";
-import TenantSelection from "./components/shared/tenantSelection";
-import PolicyFilters from "./components/policy/policyFilters";
-import PoliciesTable from "./components/policy/policiesTable";
-import Keycloak from "keycloak-js";
-import { WebSocketLink } from "apollo-link-ws";
-import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
-import { createClient } from "graphql-ws";
-import axios from "axios";
+  ThemeProvider
+} from '@mui/material/styles'
+import Box from '@mui/material/Box'
+import Drawer from '@mui/material/Drawer'
+import CssBaseline from '@mui/material/CssBaseline'
+import MuiAppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import List from '@mui/material/List'
+import Typography from '@mui/material/Typography'
+import Divider from '@mui/material/Divider'
+import IconButton from '@mui/material/IconButton'
+import MenuIcon from '@mui/icons-material/Menu'
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import ListItem from '@mui/material/ListItem'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
+import InboxIcon from '@mui/icons-material/MoveToInbox'
+import Grid from '@mui/material/Grid'
+import TenantSelection from './components/shared/tenantSelection'
+import axios from 'axios'
 import {
   ApolloClient,
   InMemoryCache,
-  ApolloProvider,
-  useQuery,
+  ApolloLink,
   gql,
-  createHttpLink,
-} from "@apollo/client";
-import { setContext } from "@apollo/client/link/context";
-import TenantPage from "./pages/tenantPage";
-import ServicePage from "./pages/servicePage";
-import PolicyPage from "./pages/policyPage";
-import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
-import { ThirtyFpsOutlined } from "@mui/icons-material";
-import jwt_decode from "jwt-decode";
-import UserMenu from "./components/shared/userMenu";
+  createHttpLink
+} from '@apollo/client'
+import TenantPage from './pages/tenantPage'
+import ServicePage from './pages/servicePage'
+import PolicyPage from './pages/policyPage'
+import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
+import jwt_decode from 'jwt-decode'
+import UserMenu from './components/shared/userMenu'
 
-const drawerWidth = 240;
+const drawerWidth = 240
 
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
+const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
     flexGrow: 1,
     padding: theme.spacing(12),
-    transition: theme.transitions.create("margin", {
+    transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
+      duration: theme.transitions.duration.leavingScreen
     }),
     marginLeft: `-${drawerWidth}px`,
     ...(open && {
-      transition: theme.transitions.create("margin", {
+      transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen,
+        duration: theme.transitions.duration.enteringScreen
       }),
-      marginLeft: 0,
-    }),
+      marginLeft: 0
+    })
   })
-);
+)
 
 const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
+  shouldForwardProp: (prop) => prop !== 'open'
 })(({ theme, open }) => ({
-  minHeight: "100px",
-  transition: theme.transitions.create(["margin", "width"], {
+  minHeight: '100px',
+  transition: theme.transitions.create(['margin', 'width'], {
     easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
+    duration: theme.transitions.duration.leavingScreen
   }),
   ...(open && {
-    minHeight: "100px",
+    minHeight: '100px',
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: `${drawerWidth}px`,
-    transition: theme.transitions.create(["margin", "width"], {
+    transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
+      duration: theme.transitions.duration.enteringScreen
+    })
+  })
+}))
 
 const CustomToolbar = styled(Toolbar)({
-  height: "100px",
-  borderRadius: 4,
-});
+  height: '100px',
+  borderRadius: 4
+})
 
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
+const DrawerHeader = styled('div')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
   padding: theme.spacing(0, 1),
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
-  justifyContent: "flex-end",
-}));
+  justifyContent: 'flex-end'
+}))
 
 export default class App extends Component {
   state = {
     open: false,
     setOpen: (newValue) => {
-      this.setState({ open: newValue, direction: newValue ? "ltr" : "" });
+      this.setState({ open: newValue, direction: newValue ? 'ltr' : '' })
     },
-    direction: "ltr",
-    authenticated: false,
+    direction: 'ltr',
     tokenData: [],
-    keycloak: "",
     groups: [],
-    language: "",
+    language: '',
     setAppLanguage: (newLanguagePreference) => {
-      this.setState({ language: newLanguagePreference });
+      this.setState({ language: newLanguagePreference })
     },
     catchColor: (newID) => {
-      const data = this.state.tenants.filter((e) => e.id === newID);
+      const data = this.state.tenants.filter((e) => e.id === newID)
       if (data.length > 0) {
         this.setState(
           {
@@ -132,85 +113,91 @@ export default class App extends Component {
               palette: {
                 primary: {
                   // light: will be calculated from palette.primary.main,
-                  main: data[0].props.primaryColor,
+                  main: data[0].props.primaryColor
                   // dark: will be calculated from palette.primary.main,
                 },
                 secondary: {
                   // light: will be calculated from palette.primary.main,
-                  main: data[0].props.secondaryColor,
+                  main: data[0].props.secondaryColor
                   // dark: will be calculated from palette.primary.main,
-                },
-              },
-            }),
+                }
+              }
+            })
           },
           () => {}
-        );
+        )
       }
     },
     tenantColor: createTheme({
       palette: {
         primary: {
-          main: "#8086ba",
+          main: '#8086ba'
         },
         secondary: {
-          main: "#4c61a9",
+          main: '#4c61a9'
         },
         contrastThreshold: 3,
-        tonalOffset: 0.2,
-      },
+        tonalOffset: 0.2
+      }
     }),
     tenants: [],
-    thisTenant: "",
+    thisTenant: '',
     seTenant: (newValue) => {
-      this.setState({ thisTenant: newValue });
-      this.state.catchColor(newValue);
+      this.setState({ thisTenant: newValue })
+      this.state.catchColor(newValue)
     },
     preferencesMapper: (data, userTenants) => {
       data.map((thisData, i) => {
         const index = userTenants
           .map(function (e) {
-            return e.name;
+            return e.name
           })
-          .indexOf(thisData.name);
-        userTenants[index].props = thisData;
-      });
-      return userTenants;
+          .indexOf(thisData.name)
+        userTenants[index].props = thisData
+        return i
+      })
+      return userTenants
     },
     getTenants: () => {
       axios
-        .get(process.env.REACT_APP_ANUBIS_API_URL + "v1/tenants")
+        .get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/tenants')
         .then((response) => {
-          const userTenants = [];
-          let tenantFiltered = [];
-          const tenantFilteredNames = [];
+          const userTenants = []
+          let tenantFiltered = []
+          const tenantFilteredNames = []
           this.state.tokenData.tenants.map((thisTenant, index) => {
             tenantFiltered = response.data.filter(
               (e) => e.name === thisTenant.name
-            );
+            )
             tenantFiltered.length > 0
               ? userTenants.push(tenantFiltered[0])
-              : (tenantFiltered = []);
-          });
+              : (tenantFiltered = [])
+            return index
+          })
           userTenants.map((thisTenant, index) => {
-            tenantFilteredNames.push(thisTenant.name.toString());
-          });
+            tenantFilteredNames.push(thisTenant.name.toString())
+            return index
+          })
           const httpLink = createHttpLink({
-            uri: "http://localhost:4000/graphql",
-          });
+            uri: process.env.REACT_APP_GRAPHL_URL
+          })
 
-          const authLink = setContext((_, { headers }) => {
-            return {
+          const authLink = new ApolloLink((operation, forward) => {
+            // add the authorization to the headers
+            operation.setContext(({ headers = {} }) => ({
               headers: {
                 ...headers,
-                Authorization: `Bearer ${this.state.keycloak.token}`,
-              },
-            };
-          });
+                authorization: `Bearer ${this.props.accessToken}`
+              }
+            }))
+
+            return forward(operation)
+          })
 
           const client = new ApolloClient({
             link: authLink.concat(httpLink),
-            cache: new InMemoryCache(),
-          });
+            cache: new InMemoryCache()
+          })
 
           client
             .query({
@@ -225,8 +212,8 @@ export default class App extends Component {
                 }
               `,
               variables: {
-                tenantNames: tenantFilteredNames,
-              },
+                tenantNames: tenantFilteredNames
+              }
             })
             .then((result) => {
               client
@@ -240,83 +227,65 @@ export default class App extends Component {
                     }
                   `,
                   variables: {
-                    usrName: this.state.keycloak.idTokenParsed.sub,
-                  },
+                    usrName: this.props.idTokenPayload.sub
+                  }
                 })
                 .then((result) => {
                   this.state.setAppLanguage(
                     result.data.getUserPreferences[0].language
-                  );
-                });
+                  )
+                })
               this.setState({
                 tenants: this.state.preferencesMapper(
                   result.data.listTenants,
                   userTenants
-                ),
-              });
-              this.state.seTenant(this.state.thisTenant);
-            });
+                )
+              })
+              this.state.seTenant(this.state.thisTenant)
+            })
         })
         .catch((e) => {
-          console.error(e);
-        });
+          console.error(e)
+        })
     },
-    login: (keycloak, authenticated) => {
-      this.setState({ keycloak, authenticated });
-      this.state.keycloak.loadUserInfo().then((userInfo) => {
-        keycloak.loadUserInfo().then((userInfo) => {
-          const decoded = jwt_decode(keycloak.token);
-          this.setState({ tokenData: decoded });
-          const wsLink = new GraphQLWsLink(
-            createClient({
-              url: "ws://localhost:4000/graphql",
-              options: {
-                reconnect: true,
-              },
-            })
-          );
-
-          this.state.getTenants();
-        });
-      });
-    },
-  };
-
+    afterLogin: (authenticated) => {
+      if(authenticated){
+ 
+          const decoded = jwt_decode(this.props.accessToken)
+          this.setState({ tokenData: decoded })
+          this.state.getTenants()}
+   
+    }
+  }
+  constructor(props) {
+    super(props);
+   }
   links = [
-    { name: "Tenant", route: "/Tenant", icon: <InboxIcon></InboxIcon> },
-    { name: "Service", route: "/Service", icon: <InboxIcon></InboxIcon> },
-    { name: "Policy", route: "/Policy", icon: <InboxIcon></InboxIcon> },
-  ];
+    { name: 'Tenant', route: '/Tenant', icon: <InboxIcon></InboxIcon> },
+    { name: 'Service', route: '/Service', icon: <InboxIcon></InboxIcon> },
+    { name: 'Policy', route: '/Policy', icon: <InboxIcon></InboxIcon> }
+  ]
 
-  componentDidMount() {
-    const keycloak = Keycloak({
-      url: "http://localhost:8080/auth/",
-      realm: "master",
-      clientId: "client1",
-    });
-    keycloak
-      .init({ onLoad: "login-required", checkLoginIframe: false })
-      .then((authenticated) => {
-        this.state.login(keycloak, authenticated);
-      });
+  componentDidMount () {
+   if(!this.props.isAuthenticated){
+    this.props.login();
+   }else{
+     this.state.afterLogin(this.props.isAuthenticated)
+   }
   }
 
   handleDrawerOpen = () => {
-    this.state.setOpen(true);
-  };
-
-  handleDrawerClose = () => {
-    this.state.setOpen(false);
-  };
-
-  constructor(props) {
-    super(props);
+    this.state.setOpen(true)
   }
 
-  render() {
+  handleDrawerClose = () => {
+    this.state.setOpen(false)
+  }
+
+  render () {
     return (
       <ThemeProvider theme={this.state.tenantColor}>
-        <Box sx={{ display: "flex" }}>
+        <Box sx={{ display: 'flex' }}>
           <BrowserRouter>
             <CssBaseline />
             <AppBar position="fixed" open={this.state.open}>
@@ -326,7 +295,7 @@ export default class App extends Component {
                   aria-label="open drawer"
                   onClick={this.handleDrawerOpen}
                   edge="start"
-                  sx={{ mr: 2, ...(this.state.open && { display: "none" }) }}
+                  sx={{ mr: 2, ...(this.state.open && { display: 'none' }) }}
                 >
                   <MenuIcon />
                 </IconButton>
@@ -344,12 +313,12 @@ export default class App extends Component {
                 </div>
                 <div>
                   <UserMenu
-                    keycloakToken={this.state.keycloak.token}
+                    token={this.props.accessToken}
                     language={{
                       language: this.state.language,
-                      setLanguage: this.state.setAppLanguage,
+                      setLanguage: this.state.setAppLanguage
                     }}
-                    userData={this.state.keycloak}
+                    userData={ this.props.idTokenPayload}
                   ></UserMenu>
                 </div>
               </CustomToolbar>
@@ -358,10 +327,10 @@ export default class App extends Component {
               sx={{
                 width: drawerWidth,
                 flexShrink: 0,
-                "& .MuiDrawer-paper": {
+                '& .MuiDrawer-paper': {
                   width: drawerWidth,
-                  boxSizing: "border-box",
-                },
+                  boxSizing: 'border-box'
+                }
               }}
               variant="persistent"
               anchor="left"
@@ -369,17 +338,19 @@ export default class App extends Component {
             >
               <DrawerHeader>
                 <IconButton onClick={this.handleDrawerClose}>
-                  {this.state.direction === "ltr" ? (
+                  {this.state.direction === 'ltr'
+                    ? (
                     <ChevronLeftIcon />
-                  ) : (
+                      )
+                    : (
                     <ChevronRightIcon />
-                  )}
+                      )}
                 </IconButton>
               </DrawerHeader>
               <Divider />
               <List>
                 {this.links.map((thisItem, index) => (
-                  <NavLink to={thisItem.route}>
+                  <NavLink to={thisItem.route} key={index}>
                     <ListItem button key={thisItem.name}>
                       <ListItemIcon>{thisItem.icon}</ListItemIcon>
                       <ListItemText primary={thisItem.name} />
@@ -389,7 +360,8 @@ export default class App extends Component {
               </List>
               <Divider />
             </Drawer>
-            {this.state.authenticated ? (
+            {this.props.isAuthenticated
+              ? (
               <Main open={this.state.open}>
                 <Grid container id="filterContainer"></Grid>
                 <Routes>
@@ -397,7 +369,7 @@ export default class App extends Component {
                     path="Tenant"
                     element={
                       <TenantPage
-                        keycloakToken={this.state.keycloak.token}
+                        token={this.props.accessToken}
                         getTenants={this.state.getTenants}
                         tenantValues={this.state.tenants}
                         seTenant={this.state.seTenant}
@@ -426,13 +398,14 @@ export default class App extends Component {
                   />
                 </Routes>
               </Main>
-            ) : (
+                )
+              : (
               <Main open={this.state.open} />
-            )}
+                )}
             <DrawerHeader />
           </BrowserRouter>
         </Box>
       </ThemeProvider>
-    );
+    )
   }
 }

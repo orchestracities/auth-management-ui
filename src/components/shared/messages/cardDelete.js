@@ -1,113 +1,105 @@
-import * as React from "react";
-import ReactDOM from "react-dom";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import { styled } from "@mui/material/styles";
-import axios from "axios";
-import { Trans } from "react-i18next";
+import * as React from 'react'
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import DialogTitle from '@mui/material/DialogTitle'
+import { styled } from '@mui/material/styles'
+import axios from 'axios'
+import { Trans } from 'react-i18next'
 
-const DialogDiv = styled("div")(({ theme }) => ({
-  background: "#ff000040",
-}));
-const DialogRounded = styled(Dialog)(({ theme }) => ({
-  "& .MuiPaper-rounded": {
-    borderRadius: 15,
-  },
-}));
+const DialogDiv = styled('div')(() => ({
+  background: '#ff000040'
+}))
+const DialogRounded = styled(Dialog)(() => ({
+  '& .MuiPaper-rounded': {
+    borderRadius: 15
+  }
+}))
 
-export default function DeleteDialog(props) {
-  const { open, onClose, getData, data } = props;
+export default function DeleteDialog (props) {
+  const { open, onClose, getData, data } = props
 
   const deleteMapper = (thisData) => {
     switch (true) {
-      case typeof thisData.name !== "undefined":
+      case typeof thisData.name !== 'undefined':
         return (
-          process.env.REACT_APP_ANUBIS_API_URL + "v1/tenants/" + thisData.id
-        );
-        break;
-      case typeof thisData.path !== "undefined":
+          process.env.REACT_APP_ANUBIS_API_URL + 'v1/tenants/' + thisData.id
+        )
+      case typeof thisData.path !== 'undefined':
         return (
           process.env.REACT_APP_ANUBIS_API_URL +
-          "v1/tenants/" +
+          'v1/tenants/' +
           thisData.tenant_id +
-          "/service_paths/" +
+          '/service_paths/' +
           thisData.id
-        );
-        break;
-      case typeof thisData.access_to !== "undefined":
+        )
+      case typeof thisData.access_to !== 'undefined':
         return (
-          process.env.REACT_APP_ANUBIS_API_URL + "v1/policies/" + thisData.id
-        );
-        break;
+          process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies/' + thisData.id
+        )
       default:
-        break;
+        break
     }
-  };
+  }
 
   const uiMapper = () => {
     switch (true) {
-      case typeof data.name !== "undefined":
-        return data.name;
-        break;
-      case typeof data.path !== "undefined":
-        return data.path;
-        break;
-      case typeof data.multiple !== "undefined":
-        return data.selectedText;
-        break;
-      case typeof data.access_to !== "undefined":
-        return "";
-        break;
+      case typeof data.name !== 'undefined':
+        return data.name
+      case typeof data.path !== 'undefined':
+        return data.path
+      case typeof data.multiple !== 'undefined':
+        return data.selectedText
+      case typeof data.access_to !== 'undefined':
+        return ''
       default:
-        break;
+        break
     }
-  };
+  }
 
   const deletElement = () => {
-    if (typeof data.multiple !== "undefined") {
+    if (typeof data.multiple !== 'undefined') {
       for (const thisData of data.dataValues) {
         axios
           .delete(
             deleteMapper(thisData),
-            typeof thisData.access_to !== "undefined"
+            typeof thisData.access_to !== 'undefined'
               ? {
                   headers: {
                     fiware_service: thisData.fiware_service,
-                    fiware_service_path: thisData.fiware_service_path,
-                  },
+                    fiware_service_path: thisData.fiware_service_path
+                  }
                 }
               : {
-                  headers: {},
+                  headers: {}
                 }
           )
-          .then((response) => {
-            getData();
+          .then(() => {
+            getData()
           })
           .catch((e) => {
-            console.error(e);
-          });
+            console.error(e)
+          })
       }
-      data.setSelected([]);
-      onClose(false);
+      data.setSelected([])
+      onClose(false)
     } else {
       axios
         .delete(deleteMapper(data))
-        .then((response) => {
-          onClose(false);
-          getData();
+        .then(() => {
+          onClose(false)
+          getData()
         })
         .catch((e) => {
-          console.error(e);
-        });
+          console.error(e)
+        })
     }
-  };
+  }
   const handleClose = () => {
-    onClose(false);
-  };
+    onClose(false)
+  }
 
   return (
     <DialogRounded
@@ -126,7 +118,7 @@ export default function DeleteDialog(props) {
             <Trans>common.deleteText</Trans>
           </DialogContentText>
           <DialogContentText id="alert-dialog-description">
-            {uiMapper() + " ?"}
+            {uiMapper() + ' ?'}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -136,5 +128,5 @@ export default function DeleteDialog(props) {
         </DialogActions>
       </DialogDiv>
     </DialogRounded>
-  );
+  )
 }
