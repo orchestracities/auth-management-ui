@@ -38,7 +38,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "fix-lints": "standardx src/**/*.ts src/**/*.tsx --fix"
+    "lint": "eslint --fix --ext .js,.jsx ."
   },
   "eslintConfig": {
     "extends": [
@@ -59,6 +59,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/preset-react": "^7.17.12",
     "eslint": "^8.14.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
