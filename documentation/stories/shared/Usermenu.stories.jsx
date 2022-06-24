@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {SimpleTitle} from "./SimpleTitle"
+import {UsrMenu} from './Usermenu'
 import {
   Title,
   Subtitle,
@@ -12,39 +12,49 @@ import {
 } from '@storybook/addon-docs';
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Shared/SimpleTitle',
-  component: SimpleTitle,
+  title: 'Shared/UserMenu',
+  component: UsrMenu,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
-  },
+    // foo is the property we want to remove from the UI
+    userData: {
+        control: false,
+    },
+    token: {
+        control: false,
+    },
+},
   parameters: {
     docs: {
       page: () => (
 
         <>
-          <Title >Main Title:</Title>
+          <Title >User Menu:</Title>
           <Subtitle >Description:</Subtitle>
           <Description >
-           The mainTitle of the page.
+          The user icon used to set the language and other settings.
           </Description>
           <Subtitle >API Documentation:</Subtitle>
           <Description >
-          The title component is inside shared/mainTitle.js :
+          The UserMenu component is inside shared/useMenu.js :
           </Description>
-
           <ArgsTable story={PRIMARY_STORY} />
         </>
       ),
     },
   },
 };
+const rerOder = () => {
 
+};
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => <SimpleTitle {...args} />;
+const Template = (args) => <UsrMenu {...args} />;
 
 export const Main = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Main.args = {
-  mainTitle: "Just a title",
+    language: { language: "defaultBrowser", setLanguage: () => { } },
+    userData: {},
+    token: "",
 };
 

@@ -32,6 +32,5 @@ SimpleTitle.propTypes = {
 };
 
 SimpleTitle.defaultProps = {
-  mainTitle: "title",
-
+  mainTitle: "",
 };
