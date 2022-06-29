@@ -54,7 +54,7 @@ export default function TenantForm ({
     close(false)
   }
   const httpLink = createHttpLink({
-    uri: 'http://localhost:4000/graphql'
+    uri:  process.env.REACT_APP_GRAPHL_URL
   })
 
   const authLink = setContext((_, { headers }) => {
