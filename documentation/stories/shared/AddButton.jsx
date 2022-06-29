@@ -26,7 +26,7 @@ const NewElement = styled(IconButton)(({ theme }) => ({
   },
 }));
 
-const DialogRounded = styled(Dialog)(({ theme }) => ({
+const DialogRounded = styled(Dialog)(() => ({
   "& .MuiPaper-rounded": {
     borderRadius: 15,
   },
@@ -34,7 +34,7 @@ const DialogRounded = styled(Dialog)(({ theme }) => ({
 
 export const AddButton = ({ status,
   pageType,
-  setOpen, ...props }) => {
+  setOpen }) => {
   const handleClickOpen = () => {
     setOpen(true);
   };

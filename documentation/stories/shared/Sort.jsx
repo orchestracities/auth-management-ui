@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import SortButton from '../../../src/components/shared/sortButton';
 import Grid from '@mui/material/Grid';
+import React from 'react';
 
 /**
  * Primary UI component for user interaction
@@ -9,8 +10,7 @@ import Grid from '@mui/material/Grid';
 
 export const Sort = ({ data,
     id,
-    sortData,
-  ...props }) => {
+    sortData }) => {
  
 
   return (

@@ -1,16 +1,13 @@
 import React from 'react';
 import { SelectTenant } from './tenantSelection'
-import TenantForm from "../../../src/components/tenant/tenantForm";
-import ServiceForm from "../../../src/components/service/serviceForm";
 
 import {
     Title,
     Subtitle,
     Description,
     ArgsTable,
-    Stories,
     PRIMARY_STORY,
-    Meta, Story, Canvas, Source
+   Source
 } from '@storybook/addon-docs';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -50,9 +47,7 @@ export default {
         },
     },
 };
-const emptyFunction = () => {
 
-}
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template = (args) => <SelectTenant {...args} />;
 

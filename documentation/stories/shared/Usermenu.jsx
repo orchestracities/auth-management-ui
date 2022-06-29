@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import UserMenu from '../../../src/components/shared/userMenu';
 import Grid from '@mui/material/Grid';
+import React from 'react';
 
 /**
  * Primary UI component for user interaction
@@ -9,8 +10,7 @@ import Grid from '@mui/material/Grid';
 
 export const UsrMenu = ({ language,
     userData,
-    token,
-    ...props }) => {
+    token}) => {
 
 
     return (

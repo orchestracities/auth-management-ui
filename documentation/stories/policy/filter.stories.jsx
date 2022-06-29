@@ -5,9 +5,7 @@ import {
     Subtitle,
     Description,
     ArgsTable,
-    Stories,
-    PRIMARY_STORY,
-    Meta, Story, Canvas, Source
+    PRIMARY_STORY, Source
 } from '@storybook/addon-docs';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -100,9 +98,7 @@ export default {
         },
     },
 };
-const emptyFunction = () => {
 
-}
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template = (args) => <PoliciesFiltering {...args} />;
 

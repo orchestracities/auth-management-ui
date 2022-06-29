@@ -1,14 +1,14 @@
 import PropTypes from 'prop-types';
 import { MainTitle } from '../../../src/components/shared/mainTitle';
 import Grid from '@mui/material/Grid';
+import React from 'react';
 
 /**
  * Primary UI component for user interaction
  */
 
 
-export const SimpleTitle = ({ mainTitle,
-  ...props }) => {
+export const SimpleTitle = ({ mainTitle }) => {
 
 
   return (

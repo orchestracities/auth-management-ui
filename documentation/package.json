@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "lint": "eslint --fix --ext .js,.jsx ."
   },
   "keywords": [],
   "author": "",
@@ -21,7 +22,15 @@
     "@storybook/manager-webpack4": "^6.5.5",
     "@storybook/react": "^6.5.5",
     "@storybook/testing-library": "^0.0.11",
-    "babel-loader": "^8.2.5"
+    "babel-loader": "^8.2.5",
+    "@babel/preset-react": "^7.17.12",
+    "eslint": "^8.14.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.2.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-react": "^7.29.4",
+    "prettier": "2.6.2"
   },
   "dependencies": {
     "@storybook/addon-docs": "^6.5.6"

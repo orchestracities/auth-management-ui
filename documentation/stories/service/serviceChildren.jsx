@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import Grid from '@mui/material/Grid';
 import ServiceChildren from '../../../src/components/service/serviceChildren'
-import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
-import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+import { BrowserRouter} from "react-router-dom";
+import { createTheme, ThemeProvider} from '@mui/material/styles';
 import { orange } from '@mui/material/colors';
 import "../../../src/i18n";
 /**
@@ -17,8 +17,6 @@ const theme = createTheme({
 });
 
 export const ChildrenOfTheService = ({
-    setOpen,
-    status,
     data,
     masterTitle,
     getData

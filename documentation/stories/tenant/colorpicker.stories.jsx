@@ -6,9 +6,7 @@ import {
   Subtitle,
   Description,
   ArgsTable,
-  Stories,
   PRIMARY_STORY,
-  Meta, Story, Canvas, Source
 } from '@storybook/addon-docs';
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -47,9 +45,7 @@ export default {
     },
   },
 };
-const rerOder = () => {
 
-};
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template = (args) => <Colors {...args} />;
 

@@ -2,10 +2,12 @@
 import PropTypes from 'prop-types';
 import Grid from '@mui/material/Grid';
 import ServiceChildren from '../../../src/components/service/serviceChildren'
-import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
-import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+import { BrowserRouter } from "react-router-dom";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { orange } from '@mui/material/colors';
 import "../../../src/i18n";
+import React from 'react';
+
 /**
  * Primary UI component for user interaction
  */
@@ -17,7 +19,6 @@ const theme = createTheme({
 
 export const ShowServicesChildren = ({
   data,
-  masterTitle,
   status,
   setOpen,
   getData

@@ -8,9 +8,7 @@ import {
     Subtitle,
     Description,
     ArgsTable,
-    Stories,
     PRIMARY_STORY,
-    Meta, Story, Canvas, Source
 } from '@storybook/addon-docs';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
