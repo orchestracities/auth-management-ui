@@ -9,12 +9,17 @@
 ### Documentation
 
 - Clean README.md
+- Code of Conduct
+- CONTRIBUTION guide
 
 ### Continuous Integration
 
 - Markdown linter
 - Docker build
 - Release note check
+- Templates for github issues
+- Templates for github PRs
+- CLA and CLA signature workflow
 
 ### Technical debt
 
