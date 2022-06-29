@@ -58,3 +58,20 @@ After that we can run the example with:
 ```
 node main/advancedAuth.js
 ```
+
+### Components dcoumentation
+
+To set up the documentation is **mandatory to set up the Webapp first**, after that we need to move inside the documentation folder
+
+```
+cd documentation 
+```
+Install the dependencies
+```
+npm install
+```
+And finally run the app on port 6006
+```
+npm run storybook
+```
+
