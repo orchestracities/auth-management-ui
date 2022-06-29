@@ -57,11 +57,11 @@ ShowServicesChildren.propTypes = {
   */
   masterTitle: PropTypes.string,
   /**
-* The value to open the modal (should be a react hooks )
+* The value to open the modal (should be a react hook )
 */
   status: PropTypes.bool,
   /**
-* The function to open the modal (should be a react hooks )
+* The function to open the modal (should be a react hook )
 */
 setOpen: PropTypes.func,
   /**

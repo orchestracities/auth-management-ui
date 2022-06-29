@@ -24,7 +24,7 @@ const StyledMenu = styled((props) => (
   '& .MuiPaper-root': {
     borderRadius: 6,
     marginTop: theme.spacing(1),
-    minWidth: document.getElementById('filterContainer').clientWidth,
+    minWidth: (document.getElementById('filterContainer')=== null)?950:document.getElementById('filterContainer').clientWidth,
     top: '13rem !important',
     color:
       theme.palette.mode === 'light'

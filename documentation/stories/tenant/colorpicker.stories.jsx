@@ -16,7 +16,7 @@ export default {
   component: Colors,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
-    // foo is the property we want to remove from the UI
+   
     setColor: {
         control: false,
     },

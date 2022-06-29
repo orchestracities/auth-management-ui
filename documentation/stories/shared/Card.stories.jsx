@@ -19,7 +19,7 @@ export default {
     component: Card,
     // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
     argTypes: {
-        // foo is the property we want to remove from the UI
+       
         pageType: {
             control: false,
         },

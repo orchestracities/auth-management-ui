@@ -57,7 +57,7 @@ CardDialog.propTypes = {
    */
       data: PropTypes.object,
        /**
-   * The callBack function after the modal data is saved (should be a react hooks )
+   * The callBack function after the modal data is saved (should be a react hook )
    */
         getData: PropTypes.func,
      /**

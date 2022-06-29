@@ -37,11 +37,11 @@ export const Colors = ({
 
 Colors.propTypes = {
     /**
- * The initial Hex code of the color (should be a react hooks )
+ * The initial Hex code of the color (should be a react hook )
  */
      defaultValue: PropTypes.string.isRequired,
     /**
-    * The callBack function to set the value (should be a react hooks )
+    * The callBack function to set the value (should be a react hook )
     */
      setColor: PropTypes.func.isRequired,
 

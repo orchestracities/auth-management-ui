@@ -35,7 +35,7 @@ Sort.propTypes = {
    */
     id: PropTypes.oneOf(['path', 'name']),
  /**
-   * The callBack function after the sort (should be a react hooks )
+   * The callBack function after the sort (should be a react hook )
    */
     sortData:PropTypes.func,
 
