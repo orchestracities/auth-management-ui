@@ -59,7 +59,7 @@ After that we can run the example with:
 node main/advancedAuth.js
 ```
 
-### Components dcoumentation
+### Components documentation
 
 To set up the documentation is **mandatory to set up the Webapp first**, after that we need to move inside the documentation folder
 
