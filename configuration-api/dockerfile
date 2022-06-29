@@ -4,7 +4,6 @@ LABEL description="Graphql configs for the webapp"
 LABEL maintainer = ["valerio.cantore@martel-innovate.com"]
 WORKDIR /configuration-api
 COPY ["package.json", "package-lock.json", "./"]
-RUN ls
 RUN npm install --force
 COPY . .
 EXPOSE 4000
