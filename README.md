@@ -14,7 +14,6 @@ in the demo) to authenticate users, [Anubis](https://github.com/orchestracities/
 to manage authorization policies, a Configuration API based on
 [Apollo GraphQL](https://www.apollographql.com/) to store user preferences.
 
-
 ```ascii
                        ┌─────────────┐
                        │    OIDC     │
@@ -72,8 +71,8 @@ The Auth Management UI depends on:
 
 - [Keycloak](https://www.keycloak.org/)
 - [Anubis](https://github.com/orchestracities/anubis)
-- The Configuration API, an [Apollo GraphQL](https://www.apollographql.com/) based API
-  available as a [docker container](https://hub.docker.com/r/orchestracities/management-configuration-api)
+- The Configuration API, an [Apollo GraphQL](https://www.apollographql.com/)
+  based API available as a [docker container](https://hub.docker.com/r/orchestracities/management-configuration-api)
   (see [configuration-api](configuration-api)).
 - [MongoDB](https://www.mongodb.com/), used as backend of the Configuration API.
 
