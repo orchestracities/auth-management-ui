@@ -23,7 +23,7 @@ function getConfig() {
 
 function loadConfig() {
     const newConfig = getConfig();
-    if (process.env.GRAPHQL_CONFIGURATION_API_PORT) {
+    if (process.env.CONFIGURATION_API_PORT) {
         newConfig.port = process.env.CONFIGURATION_API_PORT;
     } else {
         newConfig.port = 4000;

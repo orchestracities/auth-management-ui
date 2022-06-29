@@ -24,7 +24,7 @@ cd ..
 
 echo "Deploying services via Docker Compose..."
 docker-compose up -d
-docker run --env MONGO_DB=mongodb://mongo:27017/graphql --network=auth-management-ui_envoymesh configuration-api node main/mongo/populateDB.js
+docker run --env MONGO_DB="mongodb://mongo:27017/graphql" --network=auth-management-ui_envoymesh orchestracities/configuration-api node main/mongo/populateDB.js
 wait=0
 HOST="http://localhost:8080"
 while [ "$(curl -s -o /dev/null -L -w ''%{http_code}'' $HOST)" != "200" ] && [ $wait -le 60 ]

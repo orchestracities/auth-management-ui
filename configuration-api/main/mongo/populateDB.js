@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+//require('dotenv').config({ path: '../.env' });
+
 const connection = mongoose.createConnection(process.env.MONGO_DB || 'mongodb://localhost:27017/graphql');
 
 const usrPreference = new mongoose.Schema({

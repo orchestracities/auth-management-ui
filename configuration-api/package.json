@@ -1,5 +1,5 @@
 {
-  "name": "auth-configuration-api",
+  "name": "configuration-api",
   "version": "0.1.0",
   "keywords": [
     "graphql",

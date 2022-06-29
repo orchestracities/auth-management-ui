@@ -21,16 +21,16 @@ const typeDefs = gql`
         primaryColor: String!
         secondaryColor: String!
     }
-    type UserPreferences {
+    type UserPreferencies {
         usrName: String!
         language: String!
     }
     type Query {
         listTenants(tenantNames: [String]!): [TenantConfiguration]
-        getUserPreferences(usrName: String!): [UserPreferences]
+        getUserPreferences(usrName: String!): [UserPreferencies]
     }
     type Mutation {
-        modifyUserPreferences(usrName: String!, language: String!): [UserPreferences]
+        modifyUserPreferences(usrName: String!, language: String!): [UserPreferencies]
         publishTenants(
             name: String!
             icon: String!
