@@ -5,7 +5,7 @@ using [Material for you](https://m3.material.io/) (or Material v3) design system
 and [MUI](https://mui.com/) in order to provide an intuitive and a familiar look
 and feel for the end user.
 
-![Interface](https://user-images.githubusercontent.com/34061179/161280350-a7a9fa46-9176-447c-b031-050f9e17f6a7.png)
+![Interface](ui.gif)
 
 ## Architecture
 
