@@ -70,7 +70,7 @@ export default function UserMenu ({ language, userData, token }) {
       ? i18n.changeLanguage(Intl.NumberFormat().resolvedOptions().locale)
       : i18n.changeLanguage(newValue)
     const httpLink = createHttpLink({
-      uri:  process.env.REACT_APP_GRAPHL_URL
+      uri:  process.env.REACT_APP_CONFIGURATION_API_URL
     })
 
     const authLink = setContext((_, { headers }) => {

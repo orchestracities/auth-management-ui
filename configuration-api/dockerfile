@@ -1,0 +1,11 @@
+FROM node:14-alpine AS nodeBuild
+LABEL version="0.1"
+LABEL description="Graphql configs for the webapp"
+LABEL maintainer = ["valerio.cantore@martel-innovate.com"]
+WORKDIR /configuration-api
+COPY ["package.json", "package-lock.json", "./"]
+RUN ls
+RUN npm install --force
+COPY . .
+EXPOSE 4000
+CMD ["node", "main/advancedAuth.js"]

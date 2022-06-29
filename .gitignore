@@ -1,7 +1,7 @@
 .env
 #automatic setup
-graphql-server/main/config/config/*
-graphql-server/main/config/realm-export
+configuration-api/main/config/config/*
+configuration-api/main/config/realm-export
 keycloak
 opa-service
 

@@ -8,11 +8,11 @@ import { OidcProvider } from '@axa-fr/react-oidc';
 import { useOidc, useOidcIdToken,useOidcAccessToken} from '@axa-fr/react-oidc';
 
 const configuration = {
-  client_id: process.env.REACT_APP_OIDC_CLIEN,
+  client_id: process.env.REACT_APP_OIDC_CLIENT,
   redirect_uri: process.env.REACT_APP_URI+'authentication/callback',
   silent_redirect_uri: process.env.REACT_APP_URI+'authentication/silent-callback',
-  scope: process.env.REACT_APP_OIDC_SCOPE, 
-  authority: process.env.REACT_APP_OIDC_ISSUER,   
+  scope: process.env.REACT_APP_OIDC_SCOPE,
+  authority: process.env.REACT_APP_OIDC_ISSUER,
 };
 
 

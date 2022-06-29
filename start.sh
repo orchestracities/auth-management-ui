@@ -1,4 +1,3 @@
-
 #!/bin/bash -e
 
 rep=$(curl -s --unix-socket /var/run/docker.sock http://ping > /dev/null)
@@ -24,16 +23,8 @@ wget https://raw.githubusercontent.com/orchestracities/anubis/master/config/opa-
 cd ..
 
 echo "Deploying services via Docker Compose..."
- docker-compose down -v
-docker image rm graphql-server 
-docker image rm UI
-docker image rm policy-api
-docker image rm keycloak
-docker image rm mongo
 docker-compose up -d
-cd graphql-server
-node main/mongo/populateDB.js
-cd ..
+docker run --env MONGO_DB=mongodb://mongo:27017/graphql --network=auth-management-ui_envoymesh configuration-api node main/mongo/populateDB.js
 wait=0
 HOST="http://localhost:8080"
 while [ "$(curl -s -o /dev/null -L -w ''%{http_code}'' $HOST)" != "200" ] && [ $wait -le 60 ]
