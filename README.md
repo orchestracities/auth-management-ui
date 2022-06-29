@@ -123,6 +123,12 @@ and the Configuration API:
 To run the UI and the Configuration API in your local environment,
 you need to create a `.env` (an example file is provided [.env.development](.env.development)).
 
+To start the dependencies:
+
+```bash
+sh start.sh dev
+```
+
 ### Management UI
 
 To start the locally the Management UI:

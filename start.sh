@@ -23,8 +23,13 @@ wget https://raw.githubusercontent.com/orchestracities/anubis/master/config/opa-
 cd ..
 
 echo "Deploying services via Docker Compose..."
-docker-compose up -d
-docker run --env MONGO_DB="mongodb://mongo:27017/graphql" --network=auth-management-ui_envoymesh orchestracities/configuration-api node main/mongo/populateDB.js
+if [[ $1 == "dev" ]]; then
+    docker-compose -f docker-compose-dev.yml up -d
+else
+    docker-compose up -d
+    docker run --env MONGO_DB="mongodb://mongo:27017/graphql" --network=auth-management-ui_envoymesh orchestracities/configuration-api node main/mongo/populateDB.js
+fi
+
 wait=0
 HOST="http://localhost:8080"
 while [ "$(curl -s -o /dev/null -L -w ''%{http_code}'' $HOST)" != "200" ] && [ $wait -le 60 ]
@@ -87,18 +92,20 @@ curl -s -i -X 'POST' \
 "agent": ["acl:AuthenticatedAgent"]
 }'
 
-echo "Demo deployed!"
-echo "Your browser will open at: http://localhost:3000"
-echo "User: admin / Password: admin"
-
-if [ "$(uname)" == "Darwin" ]; then
-    open http://localhost:3000
-elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
-    xdg-open http://localhost:3000
-elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
-    start http://localhost:3000
-elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW64_NT" ]; then
-    start http://localhost:3000
+if [[ $1 == "dev" ]]; then
+    echo "Dev environment deployed"
+else
+    echo "Demo deployed!"
+    echo "Your browser will open at: http://localhost:3000"
+    echo "User: admin / Password: admin"
+    if [ "$(uname)" == "Darwin" ]; then
+        open http://localhost:3000
+    elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+        xdg-open http://localhost:3000
+    elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
+        start http://localhost:3000
+    elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW64_NT" ]; then
+        start http://localhost:3000
+    fi
 fi
-
 
