@@ -73,6 +73,7 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
     const queryParameters =
       '/?' +
       (mode !== null ? '&mode=' + mode.iri : '') +
+      (resource !== null ? '&resource=' + resource.access_to : '') +
       (agent !== null ? '&agent=' + agent.iri : '') +
       (resourceType !== null
         ? '&resource_type=' + resourceType.resource_type

@@ -33,9 +33,8 @@
       "noData": "No data available. Please select a Tenant"
     },
     "table": {
-      "access": "Access",
-      "path": "Path",
-      "resource": "Resource",
+      "access": "Resource",
+      "path": "service path",
       "resource_type": "Resource Type",
       "actor": "Actor",
       "mode": "Mode",
@@ -45,15 +44,16 @@
     },
     "filters": {
       "mode": "Mode{{name}}",
-      "path": "Path{{name}}",
+      "path": "service path{{name}}",
       "actor_type": "Actor type<0>{{name}}</0>",
       "resource_type": "Resource type{{name}}",
-      "actor": "Actor{{name}}"
+      "actor": "Actor{{name}}",
+      "resource": "Resource{{name}}"
     },
     "form": {
       "servicePath": "Service path",
       "defaultActor":"Other values",
-      "accessTo": "Access to",
+      "resource": "Resource",
       "resourceType": "Resource type",
       "mode": "Mode",
       "actorType": "Agent type",
