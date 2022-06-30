@@ -1,0 +1,352 @@
+import {
+    Title,
+    Subtitle,
+    Description,
+    ArgsTable,
+    Stories,
+    PRIMARY_STORY,
+    Meta, Story, Canvas, Source
+} from '@storybook/addon-docs';
+import policiesImage from './images/policies.png';
+import serviceImage from './images/service.png';
+
+<Meta title="How to document components" />
+
+<style>
+  {`
+    .subheading {
+      --mediumdark: '#999999';
+      font-weight: 900;
+      font-size: 13px;
+      color: #999;
+      letter-spacing: 6px;
+      line-height: 24px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      margin-top: 40px;
+    }
+
+    .link-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr 1fr;
+      row-gap: 10px;
+    }
+
+    @media (min-width: 620px) {
+      .link-list {
+        row-gap: 20px;
+        column-gap: 20px;
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media all and (-ms-high-contrast:none) {
+    .link-list {
+        display: -ms-grid;
+        -ms-grid-columns: 1fr 1fr;
+        -ms-grid-rows: 1fr 1fr;
+      }
+    }
+
+    .link-item {
+      display: block;
+      padding: 20px 30px 20px 15px;
+      border: 1px solid #00000010;
+      border-radius: 5px;
+      transition: background 150ms ease-out, border 150ms ease-out, transform 150ms ease-out;
+      color: #333333;
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .link-item:hover {
+      border-color: #1EA7FD50;
+      transform: translate3d(0, -3px, 0);
+      box-shadow: rgba(0, 0, 0, 0.08) 0 3px 10px 0;
+    }
+
+    .link-item:active {
+      border-color: #1EA7FD;
+      transform: translate3d(0, 0, 0);
+    }
+
+    .link-item strong {
+      font-weight: 700;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .link-item img {
+      height: 40px;
+      width: 40px;
+      margin-right: 15px;
+      flex: none;
+    }
+
+    .link-item span {
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .tip {
+      display: inline-block;
+      border-radius: 1em;
+      font-size: 11px;
+      line-height: 12px;
+      font-weight: 700;
+      background: #E7FDD8;
+      color: #66BF3C;
+      padding: 4px 12px;
+      margin-right: 10px;
+      vertical-align: top;
+    }
+
+    .tip-wrapper {
+      font-size: 13px;
+      line-height: 20px;
+      margin-top: 40px;
+      margin-bottom: 40px;
+    }
+
+    .tip-wrapper code {
+      font-size: 12px;
+      display: inline-block;
+    }
+  `}
+</style>
+
+# How to Document the components
+
+<Subtitle>Introduction</Subtitle>
+
+The documentation of components inside the App is done with
+[StoryBook](https://storybook.js.org/).
+
+StoryBook use a combination of jsx components and mdx pages to create a visual
+section and a textual one.
+
+<Subtitle>Where i need to start</Subtitle>
+
+Inside the main folder you can find the **documentation folder**.
+Inside it you can see the stories.
+
+A story is a page inside the documentation, they are organized in the same way
+of the components (`shared`,`tenant`,`policy`,`service`).
+
+<Subtitle>How to create a story</Subtitle>
+
+To create a story you need to create two files inside the correct folder:
+one is the **component** and the other one is the **story**.
+
+There are some rules to respect:
+
+for example the extension of the file **must** be `.jsx` and the story file
+**must** have `.stories` inside the name.
+
+The result are two separate files: `componentName.jsx` and
+`componentName.stories.jsx`.
+
+<Subtitle>The component</Subtitle>
+
+Inside the component file, we declare as a functional
+component the element that we want to document, this component will be
+rendered inside the **Canvas** part of Storybook.
+
+After that is **mandatory** to declare also the propTypes and the default
+values of our component props.
+
+It is also important to add a description of every property. In order to do,
+write a multiline comment inside the `propTypes` at the top of the property
+name.
+
+**EXAMPLE**
+
+  <Source
+                        language="jsx"
+                        dark={true}
+                        code={`
+                import PropTypes from 'prop-types';
+import { MainTitle } from '../../../src/components/shared/mainTitle';
+import Grid from '@mui/material/Grid';
+export const SimpleTitle = ({ mainTitle,
+  ...props }) => {
+  return (
+    <Grid
+      container
+      direction="column"
+      justifyContent="center"
+      alignItems="center"
+    >
+      <MainTitle mainTitle={mainTitle}></MainTitle>
+    </Grid>
+  );
+};
+SimpleTitle.propTypes = {
+  /**
+    * I'm a description about the property of this component that I'm documenting
+    */
+  mainTitle: PropTypes.string.isRequired,
+};
+SimpleTitle.defaultProps = {
+  mainTitle: "",
+};
+                        `}
+                    />
+
+<Subtitle>The component stories</Subtitle>
+
+To generate a **correct documentation page**, inside the stories file, we are
+going to declare the textual explanation about the component and the variation 
+of it.
+
+First of all we need to import the
+**component that we have created previously**, after that we need to change
+some setting inside the export, like the title, the controls available
+to the user and the documentation page.
+
+The title is the one that is going displayed inside the lateral bar, and
+**can be nested** using `/`, like example `Shared/SimpleTitle` or
+`Shared/Titles/SimpleTitle`.
+
+The `argTypes` **controls the user interaction on the property**,
+if we don't want that the user is able to change the data inside the canvas
+we need to add inside the `argTypes` the `propertyname` with an object with
+control: false as a property.
+
+The textual documentation is inside the class parameters property and is
+achieved using a **combination of mdx and storybook addon-docs** like
+the `ArgsTable` component to display the properties or the Source to display
+the code.
+
+To maintain the same structure of the previous documentation is recommended
+to use as schema: `title,description,argsTable` in this exact order.
+
+The `argsTable` is especially important because is containing the description
+of **every component property** that we have previously wrote.
+
+**EXAMPLE OF THE CLASS**
+
+  <Source
+                        language="jsx"
+                        dark={true}
+                        code={`
+              import React from 'react';
+import {SimpleTitle} from "./SimpleTitle"
+import {
+  Title,
+  Subtitle,
+  Description,
+  ArgsTable,
+  Stories,
+  PRIMARY_STORY,
+  Meta, Story, Canvas, Source
+} from '@storybook/addon-docs';
+export default {
+  //The title that can be nested
+  title: 'Shared/SimpleTitle',
+  //the component that we have previusly builded
+  component: SimpleTitle,
+  //the customization of the canvas controls
+  argTypes: {
+    mainTitle: {
+      control: false,
+  },
+  },
+  parameters: {
+    docs: {
+      page: () => (
+        <>
+          <Title >Main Title:</Title>
+          <Subtitle >API Documentation:</Subtitle>
+          <Description >
+          The title component is inside shared/mainTitle.js :
+          </Description>
+          <ArgsTable story={PRIMARY_STORY} />
+        </>
+      ),
+    },
+  },
+};
+                        `}
+                    />
+
+
+To Create different **versions of the same component** we need to add and export
+different versions with different property values.
+
+**EXAMPLE OF VERSIONING**
+
+  <Source
+                        language="jsx"
+                        dark={true}
+                        code={`
+                        // More on args: https://storybook.js.org/docs/react/writing-stories/args
+export const Main = Template.bind({});
+Main.args = {
+  mainTitle: "Just a title",
+};
+export const AnotherTitle = Template.bind({});
+AnotherTitle.args = {
+  mainTitle: "Just another title",
+};
+                        `}
+                    />
+
+If everything has been followed the **result** will be:
+
+
+  <Source
+                        language="jsx"
+                        dark={true}
+                        code={`
+import React from 'react';
+import {SimpleTitle} from "./SimpleTitle"
+import {
+  Title,
+  Subtitle,
+  Description,
+  ArgsTable,
+  Stories,
+  PRIMARY_STORY,
+  Meta, Story, Canvas, Source
+} from '@storybook/addon-docs';
+// More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
+export default {
+  title: 'Shared/SimpleTitle',
+  component: SimpleTitle,
+  // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
+  argTypes: {
+    mainTitle: {
+            control: false,
+        },
+  },
+  parameters: {
+    docs: {
+      page: () => (
+        <>
+          <Title >Main Title:</Title>
+          <Subtitle >Description:</Subtitle>
+          <Description >
+           The mainTitle of the page.
+          </Description>
+          <Subtitle >API Documentation:</Subtitle>
+          <Description >
+          The title component is inside shared/mainTitle.js :
+          </Description>
+          <ArgsTable story={PRIMARY_STORY} />
+        </>
+      ),
+    },
+  },
+};
+// More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
+const Template = (args) => <SimpleTitle {...args} />;
+export const Main = Template.bind({});
+// More on args: https://storybook.js.org/docs/react/writing-stories/args
+Main.args = {
+  mainTitle: "Just a title",
+};
+                        `}
+                    />
+

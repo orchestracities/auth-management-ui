@@ -58,3 +58,14 @@ After that we can run the example with:
 ```
 node main/advancedAuth.js
 ```
+
+### Generate documentation
+
+To generate the documentation is **mandatory** to set up the Management UI
+first, once completed:
+
+```bash
+$ cd documentation 
+$ npm install
+$ npm run storybook
+```
