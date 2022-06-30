@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const config = require('../config');
-const connection = mongoose.createConnection(config.getConfig().graphql_mongo_db);
-const logContext = { op: 'anubisGraphql.advancedAuth' };
+const connection = mongoose.createConnection(config.getConfig().mongo_db);
+const logContext = { op: 'configuration-api.advancedAuth' };
 
 const usrPreference = new mongoose.Schema({
     name: String,

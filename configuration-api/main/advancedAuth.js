@@ -8,7 +8,7 @@ const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const jwksRsa = require('jwks-rsa');
 const config = require('./config');
-const logContext = { op: 'anubisGraphql.advancedAuth' };
+const logContext = { op: 'configuration-api.advancedAuth' };
 
 config.loadConfig();
 
@@ -110,7 +110,7 @@ const resolvers = {
 
 app.use(cors());
 
-app.use('/graphql', (req, res, next) => {
+app.use('/configuration', (req, res, next) => {
   passport.authenticate('jwt', { session: false }, (err, user, info) => {
     if (user) {
       req.user = user
@@ -180,8 +180,8 @@ async function startServer() {
           }
     });
     await apolloServer.start();
-    apolloServer.applyMiddleware({ app });
-    const port = config.getConfig().graphql_port;
+    apolloServer.applyMiddleware({ app, path: '/configuration' });
+    const port = config.getConfig().port;
     app.listen({ port }, () =>
         config.getLogger().info(logContext, '🚀 Server ready at http://localhost:%s%s', port, apolloServer.graphqlPath)
     );

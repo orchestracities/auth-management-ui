@@ -179,7 +179,7 @@ export default class App extends Component {
             return index
           })
           const httpLink = createHttpLink({
-            uri: process.env.REACT_APP_GRAPHL_URL
+            uri: process.env.REACT_APP_CONFIGURATION_API_URL
           })
 
           const authLink = new ApolloLink((operation, forward) => {

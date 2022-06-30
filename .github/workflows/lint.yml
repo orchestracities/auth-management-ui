@@ -30,13 +30,25 @@ jobs:
         run: npx --no-install eslint src/ --cache --fix
       - name: Install Node.js dependencies Configuration API
         run: npm ci
-        working-directory: graphql-server
+        working-directory: configuration-api
       - name: ESLint Configuration API
         run: npx --no-install eslint main/ --cache --fix
-        working-directory: graphql-server
+        working-directory: configuration-api
       - name: Install Node.js dependencies Documentation
         run: npm ci
         working-directory: documentation
       - name: ESLint Documentation
         run: npx --no-install eslint . --ext .js,.jsx --cache --fix
         working-directory: documentation
+  markdown:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{github.event.pull_request.head.ref}}
+        repository: ${{github.event.pull_request.head.repo.full_name}}
+    - name: Lint
+      uses: docker://avtodev/markdown-lint:v1 # fastest way
+      with:
+        config: '.github/lint/config.json'
+        args: '**/*.md'

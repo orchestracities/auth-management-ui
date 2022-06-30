@@ -29,7 +29,7 @@ services:
   keycloak:
     image: jboss/keycloak:${KEYCLOAK_VERSION:-16.1.1}
     # if your platform is linux/arm64 use the following image
-    # image: koolwithk/keycloak-arm:16.0.0
+    #image: koolwithk/keycloak-arm:16.0.0
     ports:
       - "8080:8080"
     volumes:
@@ -39,27 +39,6 @@ services:
       - KEYCLOAK_USER=admin
       - KEYCLOAK_PASSWORD=password
       - JAVA_TOOL_OPTIONS=-Dkeycloak.profile.feature.scripts=enabled -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.file=/opt/jboss/realm-export.json -Dkeycloak.migration.strategy=OVERWRITE_EXISTING
-    networks:
-      - envoymesh
-
-  management-ui:
-    build:
-      context: ./
-      dockerfile: ./Dockerfile
-    image: orchestracities/management-ui
-    ports:
-      - "3000:3000"
-    networks:
-      - envoymesh
-
-  configuration-api:
-    build:
-      context: ./configuration-api
-      dockerfile: ./Dockerfile
-    env_file: .env
-    image: orchestracities/configuration-api
-    ports:
-      - "4000:4000"
     networks:
       - envoymesh
 

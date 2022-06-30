@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
-require('dotenv').config({ path: '../.env' });
+//require('dotenv').config({ path: '../.env' });
 
-const connection = mongoose.createConnection(process.env.GRAPHQL_SEED);
+const connection = mongoose.createConnection(process.env.MONGO_DB || 'mongodb://localhost:27017/graphql');
 
 const usrPreference = new mongoose.Schema({
     name: String,
@@ -14,7 +14,7 @@ const usrPreference = new mongoose.Schema({
 const Preferences = connection.model('UsrPreferences', usrPreference);
 
 Preferences.deleteMany({}, function (err) {
-    console.log('clear everything that was here before..');
+    console.log('PopulateDB: clear old data...');
     if (err) {
         console.log(err);
     } else {

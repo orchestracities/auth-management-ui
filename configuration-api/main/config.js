@@ -1,7 +1,7 @@
 let logger = require('logops');
 logger.format = logger.formatters.pipe;
 let config = {};
-const logContext = { op: 'anubisGraphql.config' };
+const logContext = { op: 'configuration-api.config' };
 
 /**
  * Sets the configuration.
@@ -23,16 +23,16 @@ function getConfig() {
 
 function loadConfig() {
     const newConfig = getConfig();
-    if (process.env.GRAPHQL_PORT) {
-        newConfig.graphql_port = process.env.GRAPHL_PORT;
+    if (process.env.CONFIGURATION_API_PORT) {
+        newConfig.port = process.env.CONFIGURATION_API_PORT;
     } else {
-        newConfig.graphql_port = 4000;
+        newConfig.port = 4000;
     }
     //TODO this is very basic, authentication may be needed
-    if (process.env.GRAPHQL_MONGO_DB) {
-        newConfig.graphql_mongo_db = process.env.GRAPHQL_MONGO_DB;
+    if (process.env.MONGO_DB) {
+        newConfig.mongo_db = process.env.MONGO_DB;
     } else {
-        newConfig.graphql_mongo_db = 'mongodb://localhost:27017/graphql';
+        newConfig.mongo_db = 'mongodb://localhost:27017/graphql';
     }
 
     if (process.env.JWKS_URL) {
