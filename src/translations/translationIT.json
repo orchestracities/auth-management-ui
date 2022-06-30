@@ -55,6 +55,7 @@
       "accessTo": "Accesso a:",
       "resourceType": "Tipologia risorse",
       "mode": "Modalità",
+      "defaultActor":"Altri valori predefiniti",
       "actorType": "Tipologia utente",
       "user": "Utente",
       "otherUser": "Altri utenti",
