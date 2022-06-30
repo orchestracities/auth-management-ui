@@ -8,7 +8,7 @@ on: push
 
 # List of jobs
 jobs:
-  test:
+  publish-storybook:
     # Operating System
     runs-on: ubuntu-latest
     # Job steps
