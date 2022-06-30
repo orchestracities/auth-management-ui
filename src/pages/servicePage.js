@@ -12,6 +12,24 @@ import { Trans } from 'react-i18next'
 export default function ServicePage ({ getTenants, tenantValues, thisTenant }) {
   const [createOpen, setCreateOpen] = React.useState(false)
   const [services, setServices] = React.useState([{ children: [] }])
+ const tenantFiltered= tenantValues.filter(
+    (e) => e.id === thisTenant
+  )
+  const tenantData=tenantFiltered[0]
+  const incrementColor = (color, step) => {
+    let colorToInt = parseInt(color.substr(1), 16)
+    const nstep = parseInt(step)
+    if (!isNaN(colorToInt) && !isNaN(nstep)) {
+      colorToInt += nstep
+      let ncolor = colorToInt.toString(16)
+      ncolor = '#' + new Array(7 - ncolor.length).join(0) + ncolor
+      if (/^#[0-9a-f]{6}$/i.test(ncolor)) {
+        return ncolor
+      }
+    }
+    return color
+  }
+
   const getServices = () => {
     axios
       .get(
@@ -21,6 +39,19 @@ export default function ServicePage ({ getTenants, tenantValues, thisTenant }) {
           '/service_paths'
       )
       .then((response) => {
+        response.data[0].children.map((service, index) => (
+          service.primaryColor=incrementColor(
+            tenantData.props.primaryColor,
+            index*30
+          )
+        ))
+        response.data[0].children.map((service, index) => (
+          service.secondaryColor=incrementColor(
+            tenantData.props.secondaryColor,
+            index*50
+          )
+        )) 
+       
         setServices(response.data)
         getTenants()
       })
@@ -31,7 +62,7 @@ export default function ServicePage ({ getTenants, tenantValues, thisTenant }) {
 
   React.useEffect(() => {
     getServices()
-  }, [])
+  }, [thisTenant])
   const mainTitle = <Trans>service.titles.page</Trans>
 
   return (
@@ -80,16 +111,14 @@ export default function ServicePage ({ getTenants, tenantValues, thisTenant }) {
             <Grid item xs={4}>
               <DashboardCard
                 key={service.id}
-                index={index}
+                colors={{secondaryColor:service.secondaryColor,primaryColor:service.primaryColor}}
                 pageType={
                   <ServiceForm
                     title={<Trans>service.titles.edit</Trans>}
                     action={'Sub-service-creation'}
                     service={service}
                     getServices={getServices}
-                    tenantName_id={tenantValues.filter(
-                      (e) => e.id === thisTenant
-                    )}
+                    tenantName_id={tenantData}
                   />
                 }
                 data={service}

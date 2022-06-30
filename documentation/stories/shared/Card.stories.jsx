@@ -141,6 +141,7 @@ ServiceExample.args = {
         scope: "subservice",
         tenant_id: "b2e35303-2747-4d1f-9767-519f9310b83e"
     },
+    colors:{secondaryColor:"#0018ef",primaryColor:"#0018ef"},
     getData: emptyFunction,
     seTenant: undefined
 };
