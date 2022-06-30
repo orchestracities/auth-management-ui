@@ -1,5 +1,12 @@
 # Auth Management UI
 
+[![FIWARE Security](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/security.svg)](https://www.fiware.org/developers/catalogue/)
+[![License: APACHE-2.0](https://img.shields.io/github/license/orchestracities/auth-management-ui.svg)](https://opensource.org/licenses/APACHE-2.0)
+[![Docker Status](https://img.shields.io/docker/pulls/orchestracities/management-ui.svg)](https://hub.docker.com/r/orchestracities/management-ui)
+[![Support](https://img.shields.io/badge/support-ask-yellowgreen.svg)](https://github.com/orchestracities/auth-management-ui/issues)
+
+[![Storybook](https://raw.githubusercontent.com/storybookjs/brand/master/badge/badge-storybook.svg)](https://master--62bcedd6cc1b1300eb9e1607.chromatic.com/)
+
 This web application is an UI for [Anubis](https://github.com/orchestracities/anubis)
 using [Material for you](https://m3.material.io/) (or Material v3) design system
 and [MUI](https://mui.com/) in order to provide an intuitive and a familiar look
