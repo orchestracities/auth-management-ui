@@ -31,7 +31,7 @@ jobs:
         run: npx --no-install eslint src/ --cache --fix
       - name: ESLint Configuration API
         run: |
-          cd grapqhl-server
+          cd graphql-server
           npx --no-install eslint main/ --cache --fix
           cd ..
       - name: ESLint Documentation
