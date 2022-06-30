@@ -32,14 +32,18 @@ jobs:
         run: |
           cd graphql-server
           npm ci
+          cd ..
       - name: ESLint Configuration API
         run: |
+          cd graphql-server
           npx --no-install eslint main/ --cache --fix
           cd ..
       - name: Install Node.js dependencies Documentation
         run: |
           cd documentation
           npm ci
+          cd ..
       - name: ESLint Documentation
         run: |
+          cd documentation
           npx --no-install eslint . --ext .js,.jsx --cache --fix 
