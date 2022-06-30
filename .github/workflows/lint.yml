@@ -11,7 +11,7 @@ on:
   pull_request:
 
 jobs:
-  run-linters:
+  javascript:
     name: Run linters
     runs-on: ubuntu-latest
 
@@ -27,5 +27,14 @@ jobs:
       # ESLint and Prettier must be in `package.json`
       - name: Install Node.js dependencies
         run: npm ci
-      - name: ESLint
-        run: npx --no-install eslint src/ graphql-server/ --cache
+      - name: ESLint Management UI
+        run: npx --no-install eslint src/ --cache --fix
+      - name: ESLint Configuration API
+        run: |
+          cd grapqhl-server
+          npx --no-install eslint main/ --cache --fix
+          cd ..
+      - name: ESLint Documentation
+        run: |
+          cd documentation
+          npx --no-install eslint . --ext .js,.jsx --cache --fix 
