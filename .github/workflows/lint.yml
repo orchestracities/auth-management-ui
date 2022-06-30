@@ -29,21 +29,14 @@ jobs:
       - name: ESLint Management UI
         run: npx --no-install eslint src/ --cache --fix
       - name: Install Node.js dependencies Configuration API
-        run: |
-          cd graphql-server
-          npm ci
-          cd ..
+        run: npm ci
+        working-directory: graphql-server
       - name: ESLint Configuration API
-        run: |
-          cd graphql-server
-          npx --no-install eslint main/ --cache --fix
-          cd ..
+        run: npx --no-install eslint main/ --cache --fix
+        working-directory: graphql-server
       - name: Install Node.js dependencies Documentation
-        run: |
-          cd documentation
-          npm ci
-          cd ..
+        run: npm ci
+        working-directory: documentation
       - name: ESLint Documentation
-        run: |
-          cd documentation
-          npx --no-install eslint . --ext .js,.jsx --cache --fix 
+        run: npx --no-install eslint . --ext .js,.jsx --cache --fix
+        working-directory: documentation
