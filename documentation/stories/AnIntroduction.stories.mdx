@@ -121,56 +121,79 @@ import serviceImage from './images/service.png';
 # Auth-Management UI For Anubis
 
 
- <Subtitle >Introduction: what is the Auth-Management UI?</Subtitle>
+<Subtitle>Introduction: what is the Auth-Management UI?</Subtitle>
 
-The Auth-Management UI provides a web based interface for [Anubis policy-api](https://github.com/orchestracities/anubis) using [Material for you](https://m3.material.io/) (or Material v3) design system and [MUI](https://mui.com/) tools, to provide an intuitive and a familiar look and feel for the end user.
+The Auth-Management UI provides a web based interface for
+[Anubis policy-api](https://github.com/orchestracities/anubis)
+using [Material for you](https://m3.material.io/) (or Material v3)
+design system and [MUI](https://mui.com/) tools, to provide an intuitive and
+a familiar look and feel for the end user.
 
-This section documents the react components inside the app, and how to interact with them.
+This section documents the React components inside the app, and how to interact
+with them.
 
-The UI  is built using a [component-driven](https://componentdriven.org) approach, where every component can be rendered by its own without nesting properties.
+The UI is built using a [component-driven](https://componentdriven.org)
+approach, where every component can be rendered by its own without nesting
+properties.
 
 <img src={policiesImage}  />
 
-<Subtitle >Documentation structure</Subtitle>
+<Subtitle>Documentation structure</Subtitle>
 
 
-The documentation groups components by type based on their usage. There are for examples components specific to `Tenants` or `Policies` data models and related UI areas and components that are `Shared` across different UI areas.
+The documentation groups components by type based on their usage. There are for
+examples components specific to `Tenants` or `Policies` data models and related
+UI areas and components that are `Shared` across different UI areas.
 
-Every component documentation includes a **Canvas** section to supports its testing in a controlled environment and visualize it.
+Every component documentation includes a **Canvas** section to supports its
+testing in a controlled environment and visualize it.
 
-Beside Canvas section, each component documentation has also a Docs section that provide information about the usage of the component, and its properties. Every property has a type, default values and a description.
+Beside Canvas section, each component documentation has also a Docs section that
+provide information about the usage of the component, and its properties.
+Every property has a type, default values and a description.
 
-<Subtitle >External libraries used</Subtitle>
+<Subtitle>External libraries used</Subtitle>
 
-**Auth-Management UI** For Anubis is using [MUI or material UI](https://mui.com/) to define most of the grid and components leveraging the last version of the theme engine with some customization. 
+**Auth-Management UI** For Anubis is using [MUI or material UI](https://mui.com/)
+to define most of the grid and components leveraging the last version of the
+theme engine with some customization.
 
-The goal is to create a clean code that can be easily understood based on MUI documentation.
+The goal is to create a clean code that can be easily understood based on MUI
+documentation.
 
-The UI is also using [Axios](https://github.com/axios/axios) as http client, and [apollo client](https://www.apollographql.com/docs/react/) for the interaction with graphql.
+The UI is also using [Axios](https://github.com/axios/axios) as http client,
+and [apollo client](https://www.apollographql.com/docs/react/) for
+the interaction with graphql.
 
-The authentication leverages [react oidc](https://github.com/AxaGuilDEv/react-oidc) implementation of OpenID standard.
+The authentication leverages [react oidc](https://github.com/AxaGuilDEv/react-oidc)
+implementation of OpenID standard.
 
 [React router](https://reactrouter.com/) is also used.
 
 <img src={serviceImage}  />
 
-<Subtitle >Components architecture</Subtitle>
+<Subtitle>Components architecture</Subtitle>
 
-The components inside the app are all pure functional components created using [react hooks](https://en.reactjs.org/docs/hooks-intro.html) this choice was made for rendering reasons and to make the components **less dependable on states**.
+The components inside the app are all pure functional components created using
+[react hooks](https://en.reactjs.org/docs/hooks-intro.html) this choice was made 
+or rendering reasons and to make the components **less dependable on states**.
  
-Every component can be used in an isolated way, so if a change is needed or if the components should be rendered with a different type of data inside another page this can be achieved without changing the entire nesting architecture.
+Every component can be used in an isolated way, so if a change is needed or if
+the components should be rendered with a different type of data inside another
+page this can be achieved without changing the entire nesting architecture.
 
 
-<Subtitle >Code structure</Subtitle>
+<Subtitle>Code structure</Subtitle>
 
 The UI code is organized as follow:
 
- **-App.js**
+- `src/`
+  - `App.js` - the application component
+  - `components` - the folder with all component types developed
+  - `loginComponents` - the folder with the components used to manage
+    authentication
+  - `pages` - the pages used to display the different data views
+  - `translations` - the folder with text translations
 
-  **-pages**
-
-   **-components**
-
-The App.js page is managing the login and the main data inside the states, the pages are done by pure components
-
-
+App.js manages the login and the main data inside the states,
+the pages are realized using pure components.
