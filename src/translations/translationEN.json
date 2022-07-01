@@ -34,7 +34,7 @@
     },
     "table": {
       "access": "Resource",
-      "path": "service path",
+      "path": "Service path",
       "resource_type": "Resource Type",
       "actor": "Actor",
       "mode": "Mode",

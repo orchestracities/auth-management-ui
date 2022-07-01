@@ -34,7 +34,7 @@
     },
     "table": {
       "access": "Risorse",
-      "path": "Percorso",
+      "path": "Percorso dei servizi",
       "resource_type": "Tipologia risorse",
       "actor": "Utente",
       "mode": "Modalità",
