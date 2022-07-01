@@ -7,12 +7,15 @@
 - New animations
 - New colors for the policies Cards
 - Filter by resource in the policies table
+- Modify a policy
+- Managing errors in policyform
 
 ### Bug fixes
 
 - Fix inside policies form the default path value
 - Fix inside policies form a missing translation
 - Changing translations inside the policies table
+- policy delete fix
 
 ### Documentation
 
