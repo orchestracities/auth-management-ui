@@ -34,7 +34,7 @@
     },
     "table": {
       "access": "Risorse",
-      "path": "Percorso",
+      "path": "Percorso dei servizi",
       "resource_type": "Tipologia risorse",
       "actor": "Utente",
       "mode": "Modalità",
@@ -75,6 +75,10 @@
     "deleteButton": "ELIMINA",
     "userPopup": {
       "settings": "Impostazioni"
+    },
+    "errors":{
+      "mandatory":"Campo necessario",
+      "userMap":"Bisogna almeno mappare un utente"
     },
     "userSettings": {
       "title": "Impostazioni",

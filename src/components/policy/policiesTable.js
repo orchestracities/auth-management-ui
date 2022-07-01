@@ -20,9 +20,10 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { visuallyHidden } from '@mui/utils'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
-import TenantForm from '../tenant/tenantForm'
 import DeleteDialog from '../shared/messages/cardDelete'
+import PolicyForm from './policyForm'
 import { Trans } from 'react-i18next'
+import EditIcon from '@mui/icons-material/Edit';
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -30,11 +31,13 @@ const DialogRounded = styled(Dialog)(() => ({
   }
 }))
 
-export default function PoliciesTable ({
+export default function PoliciesTable({
   data,
   getData,
   access_modes,
-  agentsTypes
+  tenantName,
+  agentsTypes,
+  services
 }) {
   // DELETE
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false)
@@ -48,7 +51,7 @@ export default function PoliciesTable ({
   }
   // EDIT
   const [open, setOpen] = React.useState(false)
-
+  const [editData, setEditData] = React.useState({})
 
   const handleClose = () => {
     setOpen(false)
@@ -90,10 +93,26 @@ export default function PoliciesTable ({
     }
     return modeString
   }
+ const handlePropagation = e => {
+    e.stopPropagation();
+  }; 
 
-  const rows = data
+const handleData=(data)=>{
+  setOpen(true)
+  setEditData(data)
+}
+  const addEdit = (data) => {
+    data.map((thisElement) => (
+      thisElement.action = 
+      <IconButton aria-label="edit" color="secondary"  key={thisElement.id} onClick={()=>handleData(thisElement)}>
+        <EditIcon />
+      </IconButton>
+    ))
+    return data;
+  }
+  const rows = addEdit(data);
 
-  function descendingComparator (a, b, orderBy) {
+  function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
       return -1
     }
@@ -103,14 +122,14 @@ export default function PoliciesTable ({
     return 0
   }
 
-  function getComparator (order, orderBy) {
+  function getComparator(order, orderBy) {
     return order === 'desc'
       ? (a, b) => descendingComparator(a, b, orderBy)
       : (a, b) => -descendingComparator(a, b, orderBy)
   }
 
 
-  function stableSort (array, comparator) {
+  function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index])
     stabilizedThis.sort((a, b) => {
       const order = comparator(a[0], b[0])
@@ -167,7 +186,7 @@ export default function PoliciesTable ({
     }
   ]
 
-  function PoliciesTableHead (props) {
+  function PoliciesTableHead(props) {
     const {
       onSelectAllClick,
       order,
@@ -209,12 +228,12 @@ export default function PoliciesTable ({
                 {headCell.label}
                 {orderBy === headCell.id
                   ? (
-                  <Box component="span" sx={visuallyHidden}>
-                    {order === 'desc'
-                      ? 'sorted descending'
-                      : 'sorted ascending'}
-                  </Box>
-                    )
+                    <Box component="span" sx={visuallyHidden}>
+                      {order === 'desc'
+                        ? 'sorted descending'
+                        : 'sorted ascending'}
+                    </Box>
+                  )
                   : null}
               </TableSortLabel>
             </TableCell>
@@ -252,38 +271,38 @@ export default function PoliciesTable ({
       >
         {numSelected > 0
           ? (
-          <Typography
-            sx={{ flex: '1 1 100%' }}
-            color="inherit"
-            variant="subtitle1"
-            component="div"
-          >
-            <Trans
-              i18nKey="policies.table.selected"
-              values={{ name: numSelected }}
-            />
-          </Typography>
-            )
+            <Typography
+              sx={{ flex: '1 1 100%' }}
+              color="inherit"
+              variant="subtitle1"
+              component="div"
+            >
+              <Trans
+                i18nKey="policies.table.selected"
+                values={{ name: numSelected }}
+              />
+            </Typography>
+          )
           : (
-              ''
-            )}
+            ''
+          )}
 
         {numSelected > 0
           ? (
-          <Tooltip title={<Trans>common.deleteTooltip</Trans>}>
-            <IconButton onClick={handleClickOpenDeleteDialog}>
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-            )
+            <Tooltip title={<Trans>common.deleteTooltip</Trans>}>
+              <IconButton onClick={handleClickOpenDeleteDialog}>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          )
           : (
-          <Trans
-            i18nKey="policies.table.total_plur"
-            values={{
-              name: stableSort(rows, getComparator(order, orderBy)).length
-            }}
-          />
-            )}
+            <Trans
+              i18nKey="policies.table.total_plur"
+              values={{
+                name: stableSort(rows, getComparator(order, orderBy)).length
+              }}
+            />
+          )}
       </Toolbar>
     )
   }
@@ -443,7 +462,7 @@ export default function PoliciesTable ({
                       <TableCell align="left">
                         {modeToString(row.mode)}
                       </TableCell>
-                      <TableCell align="left">{row.action}</TableCell>
+                      <TableCell align="left"  onClick={handlePropagation}>{row.action}</TableCell>
                     </TableRow>
                   )
                 })}
@@ -469,6 +488,27 @@ export default function PoliciesTable ({
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
+      <DialogRounded 
+          open={open}
+          fullWidth={true}
+          maxWidth={'xl'}
+          onClose={handleClose}
+          aria-labelledby="edit"
+          aria-describedby="edit"
+        >
+         <PolicyForm
+              tenantName={tenantName}
+              action="modify"
+              agentsTypes={agentsTypes}
+              services={services}
+              data={editData}
+              getServices={getData}
+              access_modes={access_modes}
+              title={<Trans>policies.titles.new</Trans>}
+              close={handleClose}
+            ></PolicyForm>
+          <DialogActions></DialogActions>
+        </DialogRounded>
       <DeleteDialog
         open={openDeleteDialog}
         onClose={handleCloseDeleteDialog}
@@ -480,17 +520,7 @@ export default function PoliciesTable ({
           setSelected
         }}
       />
-      <DialogRounded
-        open={open}
-        fullWidth={true}
-        maxWidth={'xl'}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <TenantForm title={'Edit Tenant'} close={setOpen}></TenantForm>
-        <DialogActions></DialogActions>
-      </DialogRounded>
+
     </Box>
   )
 }

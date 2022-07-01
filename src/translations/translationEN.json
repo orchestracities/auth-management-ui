@@ -34,7 +34,7 @@
     },
     "table": {
       "access": "Resource",
-      "path": "service path",
+      "path": "Service path",
       "resource_type": "Resource Type",
       "actor": "Actor",
       "mode": "Mode",
@@ -75,6 +75,10 @@
     "deleteButton": "DELETE",
     "userPopup": {
       "settings": "settings"
+    },
+    "errors":{
+      "mandatory":"Mandatory field",
+      "userMap":"You must at least map one user"
     },
     "userSettings": {
       "title": "Settings",
