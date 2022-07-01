@@ -14,7 +14,6 @@
 - Fix inside policies form a missing translation
 - Changing translations inside the policies table
 
-
 ### Documentation
 
 - Clean README.md
