@@ -80,7 +80,6 @@ PolicyCreation.args = {
         { iri: 'acl:agentGroup', name: 'group' },
 
         { iri: 'acl:agentClass', name: 'class' }],
-    action: () => { },
     services: [{
         "path": "/path",
         "id": "f6a91fee-e167-45c3-8b48-458039fa5a8b",
@@ -129,7 +128,6 @@ ModifyAPolicy.args = {
         { iri: 'acl:agentGroup', name: 'group' },
 
         { iri: 'acl:agentClass', name: 'class' }],
-    action: () => { },
     services: [{
         "path": "/path",
         "id": "f6a91fee-e167-45c3-8b48-458039fa5a8b",
