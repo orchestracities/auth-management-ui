@@ -9,6 +9,7 @@
 - Filter by resource in the policies table
 - Modify a policy
 - Managing errors in policyform
+- Policy ID on edit
 
 ### Bug fixes
 
