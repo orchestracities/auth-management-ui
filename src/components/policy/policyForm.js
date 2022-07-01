@@ -21,6 +21,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import Tooltip from '@mui/material/Tooltip'
 import Grow from '@mui/material/Grow'
 import Zoom from '@mui/material/Zoom'
+import FormHelperText from '@mui/material/FormHelperText';
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -28,7 +29,7 @@ const CustomDialogTitle = styled(AppBar)({
   boxShadow: 'none'
 })
 
-export default function PolicyForm ({
+export default function PolicyForm({
   title,
   close,
   action,
@@ -39,68 +40,70 @@ export default function PolicyForm ({
   getServices,
   data
 }) {
-  console.log(data)
   const handleClose = () => {
     close(false)
   }
 
+//errorLog
+const [error, setError] = React.useState(null)
+
   // SERVICE PATH
-  const [path, setPath] = React.useState(action ==="create"?"":data.fiware_service_path)
+  const [path, setPath] = React.useState(action === "create" ? "" : data.fiware_service_path)
 
   const handlePath = (event) => {
     setPath(event.target.value)
   }
 
   // ACCESS
-  const [access, setAccess] = React.useState(action ==="create"?"":data.access_to)
+  const [access, setAccess] = React.useState(action === "create" ? "" : data.access_to)
 
   const handleAccess = (event) => {
     setAccess(event.target.value)
   }
 
   // RESOURCE
-  const [resource, setResource] = React.useState(action ==="create"?"":data.resource_type)
+  const [resource, setResource] = React.useState(action === "create" ? "" : data.resource_type)
 
   const handleResource = (event) => {
     setResource(event.target.value)
   }
 
   // MODE
-  const [mode, setMode] = React.useState(action ==="create"?[]:data.mode)
+  const [mode, setMode] = React.useState(action === "create" ? [] : data.mode)
 
   const handleMode = (event) => {
     setMode(event.target.value)
   }
-  const checkAgenTypes=(arr, values)=>{
+  const checkAgenTypes = (arr, values) => {
     return values.every(value => {
       return arr.includes(value);
     });
   }
-  
-  
-  const specificAgenTypes = ['acl:AuthenticatedAgent','foaf:Agent','oc-acl:ResourceTenantAgent'];
-  const [formType, setFormType] = React.useState((action ==="create")?"":(checkAgenTypes(specificAgenTypes,data.agent))?"others":"specific")
+
+
+  const specificAgenTypes = ['acl:AuthenticatedAgent', 'foaf:Agent', 'oc-acl:ResourceTenantAgent'];
+  const [formType, setFormType] = React.useState((action === "create") ? "" : (checkAgenTypes(specificAgenTypes, data.agent)) ? "others" : "specific")
 
   const handleFormType = (event) => {
     setFormType(event.target.value)
   }
 
   // AGENT
-  const [agentOthers, setAgentOthers] = React.useState(action ==="create"?[]:data.agent)
+  const [agentOthers, setAgentOthers] = React.useState(action === "create" ? [] : data.agent)
 
   const handleAgentOthers = (event) => {
     setAgentOthers(event.target.value)
   }
-  const createAgentMap=(agents)=>{
-    let newMap=[];
-    for (let agent of agents){
+  const createAgentMap = (agents) => {
+    let newMap = [];
+    for (let agent of agents) {
       const agentName = agent.split(':').slice('2').join(':')
-      const agenType=agent.replace(":"+agentName, "");
-      newMap.push({type: agenType, name: agentName});
+      const agenType = agent.replace(":" + agentName, "");
+      newMap.push({ type: agenType, name: agentName });
     }
     return newMap;
-    }
-  const [agentsMap, setAgentsMap] = React.useState(action ==="create"?[]:createAgentMap(data.agent))
+  }
+  const [agentsMap, setAgentsMap] = React.useState(action === "create" ? [] : createAgentMap(data.agent))
 
   // AGENT
 
@@ -112,14 +115,14 @@ export default function PolicyForm ({
   const handleAgentsName = (event) => {
     const newArray = agentsMap
     agentsMap[Number(event.target.id)].name = event.target.value
-    setAgentsMap([...[],...newArray])
-  
+    setAgentsMap([...[], ...newArray])
+
   }
   const handleAgentsType = (event) => {
     const newArray = agentsMap
     newArray[Number(event.target.name)].type = event.target.value
-    setAgentsMap([...[],...newArray])
-  
+    setAgentsMap([...[], ...newArray])
+
   }
   const addAgents = () => {
     setAgentsMap([...agentsMap, { type: null, name: '' }])
@@ -127,7 +130,7 @@ export default function PolicyForm ({
   const removeAgents = (index) => {
     const newArray = agentsMap
     newArray.splice(index, 1)
-    setAgentsMap([...[],...newArray])
+    setAgentsMap([...[], ...newArray])
   }
 
   const agentMapper = () => {
@@ -166,34 +169,35 @@ export default function PolicyForm ({
             close(false)
           })
           .catch((e) => {
+            setError(e);
             console.error(e)
           })
         break
       case 'modify':
         axios
-        .put(
-          process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies/'+data.id,
-          {
-            access_to: access,
-            resource_type: resource,
-            mode,
-            agent: agentMapper()
-          },
-          {
-            headers: {
-              "policy_id":data.id,
-              'fiware-service': tenantName(),
-              'fiware-servicepath': path
+          .put(
+            process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies/' + data.id,
+            {
+              access_to: access,
+              resource_type: resource,
+              mode,
+              agent: agentMapper()
+            },
+            {
+              headers: {
+                "policy_id": data.id,
+                'fiware-service': tenantName(),
+                'fiware-servicepath': path
+              }
             }
-          }
-        )
-        .then(() => {
-          getServices()
-          close(false)
-        })
-        .catch((e) => {
-          console.error(e)
-        })
+          )
+          .then(() => {
+            getServices()
+            close(false)
+          })
+          .catch((e) => {
+            console.error(e)
+          })
         break
       default:
         break
@@ -211,6 +215,38 @@ export default function PolicyForm ({
         break
     }
   }
+
+  const errorCases = (value) => {
+   if (error!==null){
+    switch (true) {
+      case value === '' || typeof value === 'undefined' || value===null:
+        return true
+      case value.length === 0:
+        return true
+      case value === "specific" && ((agentsMap.length === 0) || (agentsMap[0].type === null || agentsMap[0].name === "")):
+        return true
+      default:
+        return false
+    }}else{
+      return false
+    }
+  }
+  const errorText = (value) => {
+    if (error!==null){
+    switch (true) {
+      case value === '' || typeof value === 'undefined' || value===null:
+        return <Trans>common.errors.mandatory</Trans>
+      case value.length === 0:
+        return <Trans>common.errors.mandatory</Trans>
+      case value === "specific" && ((agentsMap.length === 0) || (agentsMap[0].type === null || agentsMap[0].name === "")):
+        return <Trans>common.errors.userMap</Trans>
+      default:
+        return false
+    }}else{
+      return false
+    }
+  }
+
   return (
     <div>
       <CustomDialogTitle>
@@ -256,7 +292,9 @@ export default function PolicyForm ({
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>
-              <InputLabel id="path">
+              <InputLabel id="path" error={
+                errorCases(path)
+              }>
                 {' '}
                 <Trans>policies.form.servicePath</Trans>
               </InputLabel>
@@ -267,11 +305,17 @@ export default function PolicyForm ({
                 value={path}
                 label={<Trans>policies.form.servicePath</Trans>}
                 onChange={handlePath}
+                error={
+                  errorCases(path)
+                }
               >
-                {services.map((service,index) => (
+                {services.map((service, index) => (
                   <MenuItem key={index} value={service.path}>{service.path}</MenuItem>
                 ))}
               </Select>
+              <FormHelperText error={
+                errorCases(path)
+              }>{errorText(path)}</FormHelperText>
             </FormControl>
           </Grid>
           <Grid item xs={12}>
@@ -281,6 +325,10 @@ export default function PolicyForm ({
               value={access}
               label={<Trans>policies.form.resource</Trans>}
               onChange={handleAccess}
+              error={
+                errorCases(access)
+              }
+              helperText={errorText(access)}
               sx={{
                 width: '100%'
               }}
@@ -293,6 +341,10 @@ export default function PolicyForm ({
               value={resource}
               label={<Trans>policies.form.resourceType</Trans>}
               onChange={handleResource}
+              error={
+                errorCases(resource)
+              }
+              helperText={errorText(resource)}
               sx={{
                 width: '100%'
               }}
@@ -300,7 +352,9 @@ export default function PolicyForm ({
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>
-              <InputLabel id="mode">
+              <InputLabel id="mode" error={
+                errorCases(mode)
+              }>
                 <Trans>policies.form.mode</Trans>
               </InputLabel>
 
@@ -313,11 +367,18 @@ export default function PolicyForm ({
                 multiple
                 input={<OutlinedInput label="Mode" />}
                 onChange={handleMode}
+                error={
+                  errorCases(mode)
+                }
               >
                 {access_modes.map((service) => (
                   <MenuItem key={service.iri} value={service.iri}>{service.name}</MenuItem>
                 ))}
+
               </Select>
+              <FormHelperText error={
+                errorCases(mode)
+              }>{errorText(mode)}</FormHelperText>
             </FormControl>
           </Grid>
 
@@ -333,7 +394,9 @@ export default function PolicyForm ({
           </Grid>
           <Grid item xs={12} sx={{ marginBottom: '2%' }}>
             <FormControl fullWidth>
-              <InputLabel id="FormType">
+              <InputLabel id="FormType" error={
+                errorCases(formType)
+              }>
                 <Trans>policies.form.userType</Trans>
               </InputLabel>
               <Select
@@ -344,10 +407,16 @@ export default function PolicyForm ({
                 value={formType}
                 label={<Trans>policies.form.userType</Trans>}
                 onChange={handleFormType}
+                error={
+                  errorCases(formType)
+                }
               >
                 <MenuItem value={'specific'}>Specific</MenuItem>
                 <MenuItem value={'others'}>Others</MenuItem>
               </Select>
+              <FormHelperText error={
+                errorCases(formType)
+              }>{errorText(formType)}</FormHelperText>
             </FormControl>
           </Grid>
           <Zoom
@@ -381,7 +450,9 @@ export default function PolicyForm ({
                           <Grid container spacing={4}>
                             <Grid item xs={12}>
                               <FormControl fullWidth>
-                                <InputLabel id={'User' + i}>
+                                <InputLabel id={'User' + i} error={
+                                  errorCases(agent.type)
+                                }>
                                   <Trans>policies.form.user</Trans>
                                 </InputLabel>
                                 <Select
@@ -395,6 +466,9 @@ export default function PolicyForm ({
                                   onChange={handleAgentsType}
                                   label={<Trans>policies.form.user</Trans>}
                                   input={<OutlinedInput label="Mode" />}
+                                  error={
+                                    errorCases(agent.type)
+                                  }
                                 >
                                   {agentsTypes.map((agents) => (
                                     <MenuItem key={agents.iri} value={agents.iri}>
@@ -402,6 +476,9 @@ export default function PolicyForm ({
                                     </MenuItem>
                                   ))}
                                 </Select>
+                                <FormHelperText error={
+                                  errorCases(agent.type)
+                                }>{errorText(agent.type)}</FormHelperText>
                               </FormControl>
                             </Grid>
                             <Grow
@@ -428,6 +505,10 @@ export default function PolicyForm ({
                                   sx={{
                                     width: '100%'
                                   }}
+                                  error={
+                                    errorCases(agent.name)
+                                  }
+                                  helperText={errorText(agent.name)}
                                 />
                               </Grid>
                             </Grow>
@@ -488,7 +569,7 @@ export default function PolicyForm ({
           <Zoom
             in={formType !== '' && formType === 'others'}
             style={{ transformOrigin: '0 0 0' }}
-            {...(formType !== '' && formType !== 'others' 
+            {...(formType !== '' && formType !== 'others'
               ? { timeout: 500 }
               : {})}
           >
@@ -503,7 +584,10 @@ export default function PolicyForm ({
               <Grid item xs={12}>
                 <Grid item xs={12}>
                   <FormControl fullWidth>
-                    <InputLabel id="ActorOthers">
+                    <InputLabel id="ActorOthers"
+                       error={
+                        errorCases(agentOthers)
+                      }>
                       <Trans>policies.form.defaultActor</Trans>
                     </InputLabel>
                     <Select
@@ -516,6 +600,9 @@ export default function PolicyForm ({
                       multiple
                       input={<OutlinedInput label="ActorOthers" />}
                       onChange={handleAgentOthers}
+                      error={
+                        errorCases(agentOthers)
+                      }
                     >
                       <MenuItem value={'acl:AuthenticatedAgent'}>
                         Authenticated Actor
@@ -525,6 +612,9 @@ export default function PolicyForm ({
                         Resource Tenant Agent
                       </MenuItem>
                     </Select>
+                    <FormHelperText error={
+                                  errorCases(agentOthers)
+                                }>{errorText(agentOthers)}</FormHelperText>
                   </FormControl>
                 </Grid>
               </Grid>

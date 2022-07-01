@@ -76,6 +76,10 @@
     "userPopup": {
       "settings": "Impostazioni"
     },
+    "errors":{
+      "mandatory":"Campo necessario",
+      "userMap":"Bisogna almeno mappare un utente"
+    },
     "userSettings": {
       "title": "Impostazioni",
       "language": "Lingua"

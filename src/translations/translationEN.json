@@ -76,6 +76,10 @@
     "userPopup": {
       "settings": "settings"
     },
+    "errors":{
+      "mandatory":"Mandatory field",
+      "userMap":"You must at least map one user"
+    },
     "userSettings": {
       "title": "Settings",
       "language": "Language"
