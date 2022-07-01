@@ -68,8 +68,9 @@ export default function DeleteDialog (props) {
             typeof thisData.access_to !== 'undefined'
               ? {
                   headers: {
-                    fiware_service: thisData.fiware_service,
-                    fiware_service_path: thisData.fiware_service_path
+                    "policy_id": thisData.id,
+                   "fiware-service": thisData.fiware_service,
+                    "fiware-servicepath": thisData.fiware_service_path
                   }
                 }
               : {
