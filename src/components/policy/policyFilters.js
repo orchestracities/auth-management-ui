@@ -5,7 +5,7 @@ import ActorTypeFilter from './filters/actorTypeFilter'
 import PathFilter from './filters/pathFilter'
 import ResourceTypeFilter from './filters/typeFilter'
 import ModeFilter from './filters/modeFilter'
-
+import AcessToFilter from './filters/resourceFilter'
 export default function PolicyFilters ({
   data,
   access_modes,
@@ -53,6 +53,7 @@ export default function PolicyFilters ({
   ]
   const fiware_service_path = getUniqueListBy(data, 'fiware_service_path')
   const resource_type = getUniqueListBy(data, 'resource_type')
+  const access_to = getUniqueListBy(data, 'access_to')
   React.useEffect(() => {
     if (status === '') {
       setstatus(null)
@@ -93,6 +94,24 @@ export default function PolicyFilters ({
         <ModeFilter
           filterValue={mapper.mode}
           data={access_modes}
+          status={status}
+          setstatus={setstatus}
+        />
+      </Grid>
+      <Grid
+        item
+        xs={status === 'AcessToFilter' ? 12 : 'auto'}
+        sx={{
+          display:
+            status === null || status === 'AcessToFilter'
+              ? 'flex'
+              : 'none'
+        }}
+        zeroMinWidth
+      >
+        <AcessToFilter
+          filterValue={mapper.resource}
+          data={access_to}
           status={status}
           setstatus={setstatus}
         />

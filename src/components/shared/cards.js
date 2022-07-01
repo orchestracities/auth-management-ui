@@ -20,7 +20,7 @@ const RadiusDiv = styled('div')(({ theme }) => ({
   maxWidth: 550
 }))
 
-export default function DashboardCard ({ pageType, data, getData, seTenant,index}) {
+export default function DashboardCard ({ pageType, data, getData, seTenant,colors}) {
   const [subpathOpen, setSubpathOpen] = React.useState(false)
  
   const [status, setOpen] = React.useState(false)
@@ -31,43 +31,27 @@ export default function DashboardCard ({ pageType, data, getData, seTenant,index
     return thisIcon[0].name !== 'none' ? thisIcon[0].icon : data.name[0]
   }
   const layout = React.cloneElement(pageType, props)
- 
-  const incrementColor = (color, step) => {
-    let colorToInt = parseInt(color.substr(1), 16)
-    const nstep = parseInt(step)
-    if (!isNaN(colorToInt) && !isNaN(nstep)) {
-      colorToInt += nstep
-      let ncolor = colorToInt.toString(16)
-      ncolor = '#' + new Array(7 - ncolor.length).join(0) + ncolor
-      if (/^#[0-9a-f]{6}$/i.test(ncolor)) {
-        return ncolor
-      }
-    }
-    return color
-  }
-const cardColor= layout.props.action === 'Sub-service-creation'
-  ? incrementColor(
-    layout.props.tenantName_id[0].props.primaryColor,
-    index*50
-  )
+
+const cardColor= typeof colors !=="undefined"
+  ? colors.primaryColor
   : data.props.primaryColor;
+
+  const avatarColor= layout.props.action === 'Sub-service-creation'
+  ? colors.secondaryColor : data.props.primaryColor;
 
   return (
     <RadiusDiv
       sx={{
         background:
-          layout.props.action === 'Sub-service-creation' ? incrementColor(
-            layout.props.tenantName_id[0].props.secondaryColor,
-            index*50
-          ) : '#8086bab8'
+          layout.props.action === 'Sub-service-creation' ? cardColor : '#8086bab8'
       }}
     >
       <CardHeader
         avatar={
           <Avatar
             sx={{
-              bgcolor:cardColor
-               
+              bgcolor: avatarColor
+             
             }}
             aria-label="recipe"
           >
@@ -94,7 +78,7 @@ const cardColor= layout.props.action === 'Sub-service-creation'
       <CardContent>
         <Typography variant="body2">
           {layout.props.action === 'Sub-service-creation'
-            ? layout.props.tenantName_id[0].name
+            ? layout.props.tenantName_id.name
             : 'description'}
         </Typography>
       </CardContent>

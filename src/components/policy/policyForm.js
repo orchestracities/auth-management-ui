@@ -86,19 +86,23 @@ export default function PolicyForm ({
 
   // AGENT
   const [agentsMap, setAgentsMap] = React.useState([])
-  const [index, setIndex] = React.useState(0)
+
+  React.useEffect(() => {
+    setAgentsMap(agentsMap)
+  }, [agentsMap])
+
 
   const handleAgentsName = (event) => {
     const newArray = agentsMap
-    newArray[Number(event.target.id)].name = event.target.value
-    setAgentsMap(newArray)
-    setIndex(Math.random())
+    agentsMap[Number(event.target.id)].name = event.target.value
+    setAgentsMap([...[],...newArray])
+  
   }
   const handleAgentsType = (event) => {
     const newArray = agentsMap
     newArray[Number(event.target.name)].type = event.target.value
-    setAgentsMap(newArray)
-    setIndex(Math.random())
+    setAgentsMap([...[],...newArray])
+  
   }
   const addAgents = () => {
     setAgentsMap([...agentsMap, { type: null, name: '' }])
@@ -106,8 +110,7 @@ export default function PolicyForm ({
   const removeAgents = (index) => {
     const newArray = agentsMap
     newArray.splice(index, 1)
-    setAgentsMap(newArray)
-    setIndex(Math.random())
+    setAgentsMap([...[],...newArray])
   }
 
   const agentMapper = () => {
@@ -168,7 +171,7 @@ export default function PolicyForm ({
     }
   }
   return (
-    <div key={index}>
+    <div>
       <CustomDialogTitle>
         <Toolbar>
           <IconButton edge="start" onClick={handleClose} aria-label="close">
@@ -224,7 +227,7 @@ export default function PolicyForm ({
                 label={<Trans>policies.form.servicePath</Trans>}
                 onChange={handlePath}
               >
-                {services.slice(1).map((service,index) => (
+                {services.map((service,index) => (
                   <MenuItem key={index} value={service.path}>{service.path}</MenuItem>
                 ))}
               </Select>
@@ -235,7 +238,7 @@ export default function PolicyForm ({
               id="access"
               variant="outlined"
               value={access}
-              label={<Trans>policies.form.accessTo</Trans>}
+              label={<Trans>policies.form.resource</Trans>}
               onChange={handleAccess}
               sx={{
                 width: '100%'
@@ -309,7 +312,7 @@ export default function PolicyForm ({
           <Zoom
             in={formType !== '' && formType === 'specific'}
             style={{ transformOrigin: '0 0 0' }}
-            {...(formType !== '' && formType === 'specific'
+            {...(formType !== '' && formType !== 'specific'
               ? { timeout: 500 }
               : {})}
           >
@@ -444,7 +447,7 @@ export default function PolicyForm ({
           <Zoom
             in={formType !== '' && formType === 'others'}
             style={{ transformOrigin: '0 0 0' }}
-            {...(formType !== '' && formType === 'others'
+            {...(formType !== '' && formType !== 'others' 
               ? { timeout: 500 }
               : {})}
           >
@@ -460,17 +463,17 @@ export default function PolicyForm ({
                 <Grid item xs={12}>
                   <FormControl fullWidth>
                     <InputLabel id="ActorOthers">
-                      <Trans>policies.form.actor</Trans>
+                      <Trans>policies.form.defaultActor</Trans>
                     </InputLabel>
                     <Select
                       color="secondary"
-                      labelId="Actor"
+                      labelId="ActorOthers"
                       id="ActorOthers"
                       variant="outlined"
                       value={agentOthers}
-                      label={<Trans>policies.form.actor</Trans>}
+                      label={<Trans>policies.form.defaultActor</Trans>}
                       multiple
-                      input={<OutlinedInput label="Mode" />}
+                      input={<OutlinedInput label="ActorOthers" />}
                       onChange={handleAgentOthers}
                     >
                       <MenuItem value={'acl:AuthenticatedAgent'}>

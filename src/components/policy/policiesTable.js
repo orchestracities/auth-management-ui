@@ -142,12 +142,6 @@ export default function PoliciesTable ({
       label: <Trans>policies.table.path</Trans>
     },
     {
-      id: 'resource',
-      numeric: false,
-      disablePadding: false,
-      label: <Trans>policies.table.resource</Trans>
-    },
-    {
       id: 'resource_type',
       numeric: false,
       disablePadding: false,
@@ -442,7 +436,6 @@ export default function PoliciesTable ({
                       <TableCell align="left">
                         {row.fiware_service_path}
                       </TableCell>
-                      <TableCell align="left">{row.resource}</TableCell>
                       <TableCell align="left">{row.resource_type}</TableCell>
                       <TableCell align="left">
                         {agentToString(row.agent)}

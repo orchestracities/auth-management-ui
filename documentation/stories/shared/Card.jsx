@@ -18,6 +18,7 @@ import React from 'react';
 
 export const Card = ({ pageType,
     data,
+    colors,
     getData,
     seTenant}) => {
 
@@ -31,6 +32,7 @@ export const Card = ({ pageType,
              <DashboardCard
                 pageType={pageType}
                 data={data}
+                colors={colors}
                 getData={getData}
                 seTenant={seTenant}
               ></DashboardCard>
@@ -50,6 +52,11 @@ Card.propTypes = {
    * The object with the data
    */
       data: PropTypes.object,
+          /**
+   * An Object composed by two properties the primaryColor and the secondaryColor, is mandatory for the serviceCard
+   */
+           colors: PropTypes.object,
+      
        /**
    * The callBack function after the modal data is saved (should be a react hook )
    */
@@ -63,6 +70,7 @@ Card.propTypes = {
 Card.defaultProps = {
     pageType: undefined,
     data:{},
+    colors:{secondaryColor:"",primaryColor:""},
     getData:undefined,
     seTenant:undefined
 };
