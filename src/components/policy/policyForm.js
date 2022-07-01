@@ -326,7 +326,6 @@ const [error, setError] = React.useState(null)
               value={access}
               label={<Trans>policies.form.resource</Trans>}
               onChange={handleAccess}
-             
               sx={{
                 width: '100%'
               }}
