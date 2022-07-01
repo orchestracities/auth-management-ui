@@ -196,6 +196,7 @@ const [error, setError] = React.useState(null)
             close(false)
           })
           .catch((e) => {
+            setError(e);
             console.error(e)
           })
         break
@@ -325,10 +326,7 @@ const [error, setError] = React.useState(null)
               value={access}
               label={<Trans>policies.form.resource</Trans>}
               onChange={handleAccess}
-              error={
-                errorCases(access)
-              }
-              helperText={errorText(access)}
+             
               sx={{
                 width: '100%'
               }}
@@ -341,10 +339,6 @@ const [error, setError] = React.useState(null)
               value={resource}
               label={<Trans>policies.form.resourceType</Trans>}
               onChange={handleResource}
-              error={
-                errorCases(resource)
-              }
-              helperText={errorText(resource)}
               sx={{
                 width: '100%'
               }}

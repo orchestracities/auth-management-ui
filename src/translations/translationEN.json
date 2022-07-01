@@ -30,6 +30,7 @@
     "titles": {
       "page": "Policies",
       "new": "New Policy",
+      "edit": "Edit {{name}}",
       "noData": "No data available. Please select a Tenant"
     },
     "table": {
