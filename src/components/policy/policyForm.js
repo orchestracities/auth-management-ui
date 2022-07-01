@@ -36,56 +36,73 @@ export default function PolicyForm ({
   services,
   access_modes,
   agentsTypes,
-  getServices
+  getServices,
+  data
 }) {
+  console.log(data)
   const handleClose = () => {
     close(false)
   }
 
   // SERVICE PATH
-  const [path, setPath] = React.useState()
+  const [path, setPath] = React.useState(action ==="create"?"":data.fiware_service_path)
 
   const handlePath = (event) => {
     setPath(event.target.value)
   }
 
   // ACCESS
-  const [access, setAccess] = React.useState('')
+  const [access, setAccess] = React.useState(action ==="create"?"":data.access_to)
 
   const handleAccess = (event) => {
     setAccess(event.target.value)
   }
 
   // RESOURCE
-  const [resource, setResource] = React.useState('')
+  const [resource, setResource] = React.useState(action ==="create"?"":data.resource_type)
 
   const handleResource = (event) => {
     setResource(event.target.value)
   }
 
   // MODE
-  const [mode, setMode] = React.useState([])
+  const [mode, setMode] = React.useState(action ==="create"?[]:data.mode)
 
   const handleMode = (event) => {
     setMode(event.target.value)
   }
-
-  // FORM- tyoe
-  const [formType, setFormType] = React.useState('')
+  const checkAgenTypes=(arr, values)=>{
+    return values.every(value => {
+      return arr.includes(value);
+    });
+  }
+  
+  
+  const specificAgenTypes = ['acl:AuthenticatedAgent','foaf:Agent','oc-acl:ResourceTenantAgent'];
+  const [formType, setFormType] = React.useState((action ==="create")?"":(checkAgenTypes(specificAgenTypes,data.agent))?"others":"specific")
 
   const handleFormType = (event) => {
     setFormType(event.target.value)
   }
 
   // AGENT
-  const [agentOthers, setAgentOthers] = React.useState([])
+  const [agentOthers, setAgentOthers] = React.useState(action ==="create"?[]:data.agent)
 
   const handleAgentOthers = (event) => {
     setAgentOthers(event.target.value)
   }
+  const createAgentMap=(agents)=>{
+    let newMap=[];
+    for (let agent of agents){
+      const agentName = agent.split(':').slice('2').join(':')
+      const agenType=agent.replace(":"+agentName, "");
+      newMap.push({type: agenType, name: agentName});
+    }
+    return newMap;
+    }
+  const [agentsMap, setAgentsMap] = React.useState(action ==="create"?[]:createAgentMap(data.agent))
 
   // AGENT
-  const [agentsMap, setAgentsMap] = React.useState([])
 
   React.useEffect(() => {
     setAgentsMap(agentsMap)
@@ -153,6 +170,30 @@ export default function PolicyForm ({
           })
         break
       case 'modify':
+        axios
+        .put(
+          process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies/'+data.id,
+          {
+            access_to: access,
+            resource_type: resource,
+            mode,
+            agent: agentMapper()
+          },
+          {
+            headers: {
+              "policy_id":data.id,
+              'fiware-service': tenantName(),
+              'fiware-servicepath': path
+            }
+          }
+        )
+        .then(() => {
+          getServices()
+          close(false)
+        })
+        .catch((e) => {
+          console.error(e)
+        })
         break
       default:
         break

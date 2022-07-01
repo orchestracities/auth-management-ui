@@ -24,7 +24,8 @@ export const PolicyMainForm = ({
     getServices,
     access_modes,
     title,
-    close
+    close,
+    data
 }) => {
     const getTenantName=()=>{
         return "Tenant1"
@@ -42,6 +43,7 @@ export const PolicyMainForm = ({
                     access_modes={access_modes}
                     title={title}
                     close={close}
+                    data={data}
                 ></PolicyForm>
                 </Grid>
             </BrowserRouter>
@@ -58,11 +60,14 @@ PolicyMainForm.propTypes = {
     * The callBack function after the modal data is saved (should be a react hook )
     */
     close: PropTypes.func,
-
+  /**
+  * The policy data that should be modified
+  */
+   data: PropTypes.object,
     /**
   * The form action
   */
-    action: PropTypes.oneOf(['create']),
+    action: PropTypes.oneOf(['create','modify']),
         /**
 * The function to get the services data after a save
 */
@@ -96,6 +101,7 @@ PolicyMainForm.defaultProps = {
     getServices:()=>{},
     access_modes:[],
     title:"",
-    close:()=>{}
+    close:()=>{},
+    data:{}
 };
 

@@ -212,6 +212,8 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
           </Grid>
           <Grid item xs={12}>
             <PolicyTable
+              tenantName={tenantName_id}
+              services={services}
               data={policiesFiltered}
               getData={getServices}
               access_modes={access_modes}
