@@ -15,7 +15,8 @@
 - Fix inside policies form the default path value
 - Fix inside policies form a missing translation
 - Changing translations inside the policies table
-- policy delete fix
+- Policy delete fix
+- Fix misspelled Resource Tenant Agent urn 
 
 ### Documentation
 
