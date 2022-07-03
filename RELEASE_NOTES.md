@@ -16,7 +16,7 @@
 - Fix inside policies form a missing translation
 - Changing translations inside the policies table
 - Policy delete fix
-- Fix misspelled Resource Tenant Agent urn 
+- Fix misspelled Resource Tenant Agent urn
 
 ### Documentation
 
