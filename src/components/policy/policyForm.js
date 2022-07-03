@@ -608,7 +608,7 @@ const [error, setError] = React.useState(null)
                         Authenticated Actor
                       </MenuItem>
                       <MenuItem value={'foaf:Agent'}>Anyone</MenuItem>
-                      <MenuItem value={'oc-alc:ResourceTenantAgent'}>
+                      <MenuItem value={'oc-acl:ResourceTenantAgent'}>
                         Resource Tenant Agent
                       </MenuItem>
                     </Select>
