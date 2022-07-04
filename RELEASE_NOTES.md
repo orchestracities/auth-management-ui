@@ -19,6 +19,7 @@
 - Changing translations inside the policies table
 - Policy delete fix
 - Fix misspelled Resource Tenant Agent urn
+- Fix docker image for ui to load env variables dynamically
 
 ### Documentation
 
