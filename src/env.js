@@ -12,7 +12,9 @@ export const envNames = [
     "CONFIGURATION_API_URL",
     "OIDC_ISSUER",
     "OIDC_CLIENT",
-    "OIDC_SCOPE"
+    "OIDC_SCOPE",
+    "TITLE",
+    "DESCRIPTION"
 ];
 
 let env = undefined;
