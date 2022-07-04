@@ -101,6 +101,7 @@ jobs:
           node-version: 12
       - name: Install Node.js dependencies Management UI
         run: |
+              npm ci
               npx generate-env-getter js
       -
         name: Build and push
