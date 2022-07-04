@@ -49,7 +49,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Generate env file
-        run: copy .env.docker .env
+        run: cp .env.docker .env
       -
         name: Build and push
         uses: docker/build-push-action@v2
