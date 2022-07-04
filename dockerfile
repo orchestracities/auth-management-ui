@@ -3,7 +3,8 @@ LABEL version="0.1"
 LABEL description="Management UI for Anubis: https://anubis-pep.readthedocs.io/en/latest/."
 LABEL maintainer = ["valerio.cantore@martel-innovate.com"]
 WORKDIR /app
-COPY package.json package-lock.json .env ./
+COPY package.json package-lock.json ./
+COPY .env.docker .env
 RUN npm install --frozen-lockfile
 COPY . .
 RUN npm run build
