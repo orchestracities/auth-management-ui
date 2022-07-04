@@ -4,9 +4,13 @@ import Badge from '@mui/material/Badge'
 import PolicyIcon from '@mui/icons-material/Policy'
 import axios from 'axios'
 import {NavLink } from 'react-router-dom'
+import useNotification from '../shared/messages/alerts'
 
 export default function PoliciesChildren ({ tenantId, tenantName, seTenant }) {
   // services
+  const [msg, sendNotification] = useNotification()
+  console.log(msg)
+
   const getServices = () => {
     axios
       .get(
@@ -20,6 +24,11 @@ export default function PoliciesChildren ({ tenantId, tenantName, seTenant }) {
       })
       .catch((e) => {
         console.error(e)
+        if (e.response) {
+          e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
+        } else {
+          sendNotification({msg:e.message, variant: 'error'})
+        }
       })
   }
   // policies
@@ -42,6 +51,11 @@ export default function PoliciesChildren ({ tenantId, tenantName, seTenant }) {
         })
         .catch((e) => {
           console.error(e)
+          if (e.response) {
+            e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
+          } else {
+            sendNotification({msg:e.message, variant: 'error'})
+          }
         })
     }
   }

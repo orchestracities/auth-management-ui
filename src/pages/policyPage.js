@@ -8,6 +8,7 @@ import PolicyForm from '../components/policy/policyForm'
 import axios from 'axios'
 import Typography from '@mui/material/Typography'
 import { Trans } from 'react-i18next'
+import useNotification from '../components/shared/messages/alerts'
 
 export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
   const [mode, setMode] = React.useState(null)
@@ -18,6 +19,9 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
   const [policyFilter, setPolicyFilter] = React.useState(null)
 
   const [open, setOpen] = React.useState(false)
+  const [msg, sendNotification] = useNotification()
+  console.log(msg)
+
   const tenantName_id = () => {
     const tenantArray = tenantValues.filter((e) => e.id === thisTenant)
     return tenantArray[0].name
@@ -41,6 +45,11 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
       })
       .catch((e) => {
         console.error(e)
+        if (e.response) {
+          e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
+        } else {
+          sendNotification({msg:e.message, variant: 'error'})
+        }
       })
   }
   // policies
@@ -63,6 +72,11 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
         })
         .catch((e) => {
           console.error(e)
+          if (e.response) {
+            e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
+          } else {
+            sendNotification({msg:e.message, variant: 'error'})
+          }
         })
     }
     console.log(policies)
@@ -114,6 +128,11 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
         })
         .catch((e) => {
           console.error(e)
+          if (e.response) {
+            e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
+          } else {
+            sendNotification({msg:e.message, variant: 'error'})
+          }
         })
     }
     console.log(policies)
