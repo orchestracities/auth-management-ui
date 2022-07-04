@@ -41,7 +41,9 @@ import jwt_decode from 'jwt-decode'
 import UserMenu from './components/shared/userMenu'
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import { getEnv } from './env'
 
+const env = getEnv()
 
 const drawerWidth = 240
 
@@ -192,7 +194,7 @@ if(thisError !==""){
     },
     getTenants: () => {
       axios
-        .get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/tenants')
+        .get(env.ANUBIS_API_URL + 'v1/tenants')
         .then((response) => {
           const userTenants = []
           let tenantFiltered = []
@@ -211,7 +213,7 @@ if(thisError !==""){
             return index
           })
           const httpLink = createHttpLink({
-            uri: process.env.REACT_APP_CONFIGURATION_API_URL
+            uri: env.CONFIGURATION_API_URL
           })
 
           const errorLink = onError(({ graphQLErrors, networkError, operation }) => {

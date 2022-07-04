@@ -5,8 +5,9 @@ import PolicyIcon from '@mui/icons-material/Policy'
 import axios from 'axios'
 import {NavLink } from 'react-router-dom'
 import useNotification from '../shared/messages/alerts'
+import { getEnv } from "../../env";
 
-
+const env = getEnv()
 
 export default function PoliciesChildren ({ tenantId, tenantName, seTenant }) {
   // services
@@ -15,7 +16,7 @@ export default function PoliciesChildren ({ tenantId, tenantName, seTenant }) {
   const getServices = () => {
     axios
       .get(
-        process.env.REACT_APP_ANUBIS_API_URL +
+        env.ANUBIS_API_URL +
           'v1/tenants/' +
           tenantId +
           '/service_paths'
@@ -37,7 +38,7 @@ export default function PoliciesChildren ({ tenantId, tenantName, seTenant }) {
     let datAccumulator = []
     for (const service of servicesResponse) {
       axios
-        .get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies', {
+        .get(env.ANUBIS_API_URL + 'v1/policies', {
           headers: {
             'fiware-service': tenantName,
             'fiware-servicepath': service.path

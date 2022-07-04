@@ -21,6 +21,9 @@ import {
 import { setContext } from '@apollo/client/link/context'
 import { Trans } from 'react-i18next'
 import useNotification from '../shared/messages/alerts'
+import { getEnv } from "../../env";
+
+const env = getEnv()
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -58,7 +61,7 @@ export default function TenantForm ({
     close(false)
   }
   const httpLink = createHttpLink({
-    uri:  process.env.REACT_APP_CONFIGURATION_API_URL
+    uri:  env.CONFIGURATION_API_URL
   })
 
   const authLink = setContext((_, { headers }) => {
@@ -78,7 +81,7 @@ export default function TenantForm ({
     switch (action) {
       case 'create':
         axios
-          .post(process.env.REACT_APP_ANUBIS_API_URL + 'v1/tenants', {
+          .post(env.ANUBIS_API_URL + 'v1/tenants', {
             name
           })
           .then(() => {

@@ -9,6 +9,10 @@ import { styled } from '@mui/material/styles'
 import axios from 'axios'
 import { Trans } from 'react-i18next'
 import useNotification from './alerts'
+import { getEnv } from "../../../env";
+
+const env = getEnv()
+
 const DialogDiv = styled('div')(() => ({
   background: '#ff000040'
 }))
@@ -27,11 +31,11 @@ export default function DeleteDialog (props) {
     switch (true) {
       case typeof thisData.name !== 'undefined':
         return (
-          process.env.REACT_APP_ANUBIS_API_URL + 'v1/tenants/' + thisData.id
+          env.ANUBIS_API_URL + 'v1/tenants/' + thisData.id
         )
       case typeof thisData.path !== 'undefined':
         return (
-          process.env.REACT_APP_ANUBIS_API_URL +
+          env.ANUBIS_API_URL +
           'v1/tenants/' +
           thisData.tenant_id +
           '/service_paths/' +
@@ -39,7 +43,7 @@ export default function DeleteDialog (props) {
         )
       case typeof thisData.access_to !== 'undefined':
         return (
-          process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies/' + thisData.id
+          env.ANUBIS_API_URL + 'v1/policies/' + thisData.id
         )
       default:
         break

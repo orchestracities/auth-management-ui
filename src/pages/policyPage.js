@@ -9,6 +9,9 @@ import axios from 'axios'
 import Typography from '@mui/material/Typography'
 import { Trans } from 'react-i18next'
 import useNotification from '../components/shared/messages/alerts'
+import { getEnv } from "../env"
+
+const env = getEnv()
 
 export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
   const [mode, setMode] = React.useState(null)
@@ -31,7 +34,7 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
   const getServices = () => {
     axios
       .get(
-        process.env.REACT_APP_ANUBIS_API_URL +
+        env.ANUBIS_API_URL +
           'v1/tenants/' +
           thisTenant +
           '/service_paths'
@@ -58,7 +61,7 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
     let datAccumulator = []
     for (const service of servicesResponse) {
       axios
-        .get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies', {
+        .get(env.ANUBIS_API_URL + 'v1/policies', {
           headers: {
             'fiware-service': tenantName_id(),
             'fiware-servicepath': service.path
@@ -96,7 +99,7 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
     for (const service of servicesResponse) {
       axios
         .get(
-          process.env.REACT_APP_ANUBIS_API_URL +
+          env.ANUBIS_API_URL +
             'v1/policies' +
             queryParameters,
           {
@@ -141,7 +144,7 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
   React.useEffect(() => {
     getServices()
     axios
-      .get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies/access-modes')
+      .get(env.ANUBIS_API_URL + 'v1/policies/access-modes')
       .then((response) => setAccess_modes(response.data))
       .catch((err) => sendNotification({msg:err.message + ": cannot reach policy managenent api", variant: 'error'}))
   }, [thisTenant])
@@ -151,7 +154,7 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
   React.useEffect(() => {
     getServices()
     axios
-      .get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies/agent-types')
+      .get(env.ANUBIS_API_URL + 'v1/policies/agent-types')
       .then((response) => setagentsTypes(response.data))
       .catch((err) => sendNotification({msg:err.message + ": cannot reach policy managenent api", variant: 'error'}))
   }, [thisTenant])

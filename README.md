@@ -133,7 +133,14 @@ you need to create a `.env` (an example file is provided [.env.development](.env
 To start the dependencies:
 
 ```bash
-sh start.sh dev
+$ sh start.sh dev
+```
+
+In case you add new environment variables, don't forget to re-generate
+the `src/env.js` file:
+
+```bash
+$ npx generate-env-getter js
 ```
 
 ### Management UI

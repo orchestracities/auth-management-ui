@@ -4,6 +4,7 @@ configuration-api/main/config/config/*
 configuration-api/main/config/realm-export
 keycloak
 opa-service
+/src/env.js
 
 # Logs
 logs
