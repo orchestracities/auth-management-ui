@@ -17,17 +17,17 @@ jobs:
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v2
-
       - name: Set up Node.js
         uses: actions/setup-node@v1
         with:
           node-version: 12
-
-      # ESLint and Prettier must be in `package.json`
+      -
+        name: Generate env file
+        run: cp .env.docker .env
       - name: Install Node.js dependencies Management UI
         run: |
               npm ci
-              npx generate-env-getter js   
+              npx generate-env-getter js
       - name: ESLint Management UI
         run: npx --no-install eslint src/ --cache --fix
       - name: Install Node.js dependencies Configuration API
