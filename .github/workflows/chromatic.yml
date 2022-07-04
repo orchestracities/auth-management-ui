@@ -30,9 +30,7 @@ jobs:
         with:
           node-version: 12
       - name: Install Node.js dependencies Management UI
-        run: |
-              npm ci
-              npx generate-env-getter js
+        run: npm ci
       - name: Install Node.js dependencies Documentation
         run: npm ci
         working-directory: documentation

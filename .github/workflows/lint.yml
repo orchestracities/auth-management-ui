@@ -21,13 +21,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12
-      -
-        name: Generate env file
-        run: cp .env.docker .env
       - name: Install Node.js dependencies Management UI
-        run: |
-              npm ci
-              npx generate-env-getter js
+        run: npm ci
       - name: ESLint Management UI
         run: npx --no-install eslint src/ --cache --fix
       - name: Install Node.js dependencies Configuration API
