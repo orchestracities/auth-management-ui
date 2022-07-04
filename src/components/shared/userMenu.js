@@ -44,12 +44,13 @@ const CustomDialogTitle = styled(AppBar)({
   boxShadow: 'none'
 })
 
+const [msg, sendNotification] = useNotification()
+console.log(msg)
+
 export default function UserMenu ({ language, userData, token }) {
   const { i18n } = useTranslation()
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [settings, setOpenSettings] = React.useState(false)
-  const [msg, sendNotification] = useNotification()
-  console.log(msg)
 
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
@@ -125,7 +126,7 @@ export default function UserMenu ({ language, userData, token }) {
       })
       .then((result) => {
         console.log(result)
-        sendNotification({msg:`User Preference Stored`, variant: 'info'})
+        sendNotification({msg:`User Preference Stored`, variant: 'success'})
       })
   }
 
