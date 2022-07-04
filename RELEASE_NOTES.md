@@ -10,6 +10,7 @@
 - Modify a policy
 - Managing errors in policyform
 - Policy ID on edit
+- Notification system for deleting,creating,updating elements
 
 ### Bug fixes
 

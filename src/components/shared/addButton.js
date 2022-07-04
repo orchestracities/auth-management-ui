@@ -9,8 +9,8 @@ import DialogActions from '@mui/material/DialogActions'
 
 const bottomStyle = {
   position: 'fixed',
-  bottom: '50px',
-  right: '20px'
+  bottom: '25px',
+  right: '25px'
 }
 
 const NewElement = styled(IconButton)(({ theme }) => ({

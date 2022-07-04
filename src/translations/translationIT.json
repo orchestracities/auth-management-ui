@@ -69,6 +69,11 @@
     }
   },
   "common": {
+    "messages":{
+      "sucessUpdate": "{{data}}  Aggiornato",
+      "sucessCreate": "Un nuovo elemento {{data}} è stato creato",
+      "sucessDelete": "{{data}} è stato eliminato"
+    },
     "deleteTooltip": "Elimina",
     "deleteText": "Sei davvero sicuro di voler eliminare:",
     "deleteTextTitle": "Sei sicuro di procedere?",

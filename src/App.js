@@ -36,6 +36,7 @@ import PolicyPage from './pages/policyPage'
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
 import jwt_decode from 'jwt-decode'
 import UserMenu from './components/shared/userMenu'
+import { SnackbarProvider } from "notistack";
 
 const drawerWidth = 240
 
@@ -284,6 +285,7 @@ export default class App extends Component {
 
   render () {
     return (
+      <SnackbarProvider maxSnack={5}>
       <ThemeProvider theme={this.state.tenantColor}>
         <Box sx={{ display: 'flex' }}>
           <BrowserRouter>
@@ -406,6 +408,7 @@ export default class App extends Component {
           </BrowserRouter>
         </Box>
       </ThemeProvider>
+      </SnackbarProvider>
     )
   }
 }
