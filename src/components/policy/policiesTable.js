@@ -504,7 +504,10 @@ const handleData=(data)=>{
               data={editData}
               getServices={getData}
               access_modes={access_modes}
-              title={<Trans>policies.titles.new</Trans>}
+              title={ <Trans
+                i18nKey="policies.titles.edit"
+                values={{ name: editData.id }}
+              />}
               close={handleClose}
             ></PolicyForm>
           <DialogActions></DialogActions>

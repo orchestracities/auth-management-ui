@@ -30,7 +30,8 @@
     "titles": {
       "page": "Policies",
       "new": "Nuova Policy",
-      "noData": "Nessun dato disponibile, per favore seleziona un Tenant"
+      "noData": "Nessun dato disponibile, per favore seleziona un Tenant",
+      "edit": "Modifica {{name}}"
     },
     "table": {
       "access": "Risorse",
