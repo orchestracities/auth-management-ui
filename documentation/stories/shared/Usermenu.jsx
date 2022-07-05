@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import UserMenu from '../../../src/components/shared/userMenu';
 import Grid from '@mui/material/Grid';
 import React from 'react';
+import { SnackbarProvider } from "notistack";
 
 /**
  * Primary UI component for user interaction
@@ -14,6 +15,7 @@ export const UsrMenu = ({ language,
 
 
     return (
+      <SnackbarProvider maxSnack={5}>
         <Grid
         >
             <UserMenu
@@ -22,6 +24,7 @@ export const UsrMenu = ({ language,
                 userData={userData}
             ></UserMenu>
         </Grid>
+        </SnackbarProvider>
     );
 };
 
