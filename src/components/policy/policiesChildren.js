@@ -6,12 +6,12 @@ import axios from 'axios'
 import {NavLink } from 'react-router-dom'
 import useNotification from '../shared/messages/alerts'
 
-const [msg, sendNotification] = useNotification()
-console.log(msg)
+
 
 export default function PoliciesChildren ({ tenantId, tenantName, seTenant }) {
   // services
-
+  const [msg, sendNotification] = useNotification()
+  console.log(msg)
   const getServices = () => {
     axios
       .get(
