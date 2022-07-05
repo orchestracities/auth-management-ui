@@ -93,6 +93,7 @@ export default function TenantForm ({
             getTenants()
           })
           .catch((e) => {
+            getTenants()
             e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
           })
 
@@ -140,6 +141,7 @@ export default function TenantForm ({
             />, variant: 'success'})
           })
           .catch((e) => {
+            getTenants()
             e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
           })
         break

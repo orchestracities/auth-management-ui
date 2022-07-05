@@ -80,12 +80,10 @@ export default function UserMenu ({ language, userData, token }) {
         onError(({ graphQLErrors, networkError }) => {
           if (graphQLErrors)
             graphQLErrors.map(({ message, locations, path }) => {
-                console.error(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
                 sendNotification({msg:`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`, variant: 'error'})
               }
             );
           if (networkError) {
-            console.error(`[Network error]: ${networkError}`);
             sendNotification({msg:`[Network error]: ${networkError}`, variant: 'error'})
           }
         }),

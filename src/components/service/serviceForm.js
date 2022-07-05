@@ -62,6 +62,7 @@ export default function ServiceForm ({
             />, variant: 'success'})
           })
           .catch((e) => {
+            getServices()
            sendNotification({msg: e.response.data.detail, variant: 'error'})
           })
         break
@@ -88,6 +89,7 @@ export default function ServiceForm ({
             />, variant: 'success'})
           })
           .catch((e) => {
+            getServices()
             sendNotification({msg: e.response.data.detail, variant: 'error'})
                     })
         break

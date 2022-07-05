@@ -24,7 +24,6 @@ export default function PoliciesChildren ({ tenantId, tenantName, seTenant }) {
         getPolicies(response.data)
       })
       .catch((e) => {
-        console.error(e)
         if (e.response) {
           e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
         } else {
@@ -51,7 +50,6 @@ export default function PoliciesChildren ({ tenantId, tenantName, seTenant }) {
           setPolicies(datAccumulator)
         })
         .catch((e) => {
-          console.error(e)
           if (e.response) {
             e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
           } else {

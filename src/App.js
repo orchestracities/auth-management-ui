@@ -164,16 +164,31 @@ export default class App extends Component {
       })
       return userTenants
     },
-    connectionIssue:"",
-    getNetworkError:(thisError)=>{
-      this.setState({ connectionIssue:
-      <Snackbar open={true} sx={{width:"100%",left:"0px !important",right:"0px !important",bottom:"0px !important"}}>
-      <Alert variant="filled" severity="error"  sx={{width:"100%",left:"0px",right:"0px",bottom:"0px"}}>
-      {thisError}
-      </Alert>
-  </Snackbar>
+    connectionIssue: false,
+    recall:null,
+    getNetworkError: (thisError) => {
+if(thisError !==""){
+  this.setState({
+    connectionIssue:
+      <Snackbar open={true} sx={{ width: "100%", left: "0px !important", right: "0px !important", bottom: "0px !important" }}>
+        <Alert variant="filled" severity="error" sx={{ width: "100%", left: "0px", right: "0px", bottom: "0px" }}>
+          {thisError}
+        </Alert>
+      </Snackbar>
   })
-  
+  this.setState({recall:  setInterval(() => this.state.getTenants(), 10000)})
+}else{
+  this.setState({
+    connectionIssue:
+      <Snackbar open={true} sx={{ width: "100%", left: "0px !important", right: "0px !important", bottom: "0px !important" }}>
+        <Alert variant="filled" severity="info" sx={{ width: "100%", left: "0px", right: "0px", bottom: "0px" }}>
+          Online
+        </Alert>
+      </Snackbar>
+  })
+  setTimeout( function() { location.reload(); }, 2300);
+}
+     
     },
     getTenants: () => {
       axios
@@ -198,14 +213,14 @@ export default class App extends Component {
           const httpLink = createHttpLink({
             uri: process.env.REACT_APP_CONFIGURATION_API_URL
           })
-         
-          const errorLink = onError(({ graphQLErrors, networkError,operation }) => {
+
+          const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
             if (graphQLErrors)
-              graphQLErrors.forEach(({ message}) =>
+              graphQLErrors.forEach(({ message }) =>
                 operation.variables.state.getNetworkError(message)
               );
             if (networkError) {
-              operation.variables.state.getNetworkError("Network error: "+networkError.message)
+              operation.variables.state.getNetworkError("Network error: " + networkError.message)
             }
           });
 
@@ -241,10 +256,12 @@ export default class App extends Component {
               `,
               variables: {
                 tenantNames: tenantFilteredNames,
-                state:this.state
+                state: this.state
               }
             })
             .then((result) => {
+              if (this.state.connectionIssue){this.state.getNetworkError("")
+             }
               client
                 .query({
                   query: gql`
@@ -257,7 +274,7 @@ export default class App extends Component {
                   `,
                   variables: {
                     usrName: this.props.idTokenPayload.sub,
-                    state:this.state
+                    state: this.state
                   }
                 })
                 .then((result) => {
@@ -273,6 +290,10 @@ export default class App extends Component {
               })
               this.state.seTenant(this.state.thisTenant)
             })
+        })
+        .catch((e) => {
+          if(e.message === "Network Error"){
+          this.state.getNetworkError(e.message)}
         })
     },
     afterLogin: (authenticated) => {
@@ -389,7 +410,7 @@ export default class App extends Component {
                 <Divider />
               </Drawer>
               {this.state.connectionIssue}
-                {this.props.isAuthenticated && !this.state.connectionIssue
+              {this.props.isAuthenticated && !this.state.connectionIssue
                 ? (
                   <Main open={this.state.open}>
                     <Grid container id="filterContainer"></Grid>

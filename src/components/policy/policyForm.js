@@ -180,6 +180,7 @@ const [error, setError] = React.useState(null)
             />, variant: 'success'})
           })
           .catch((e) => {
+            getServices()
             setError(e);
             e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
           })
@@ -214,6 +215,7 @@ const [error, setError] = React.useState(null)
             />, variant: 'success'})
           })
           .catch((e) => {
+            getServices()
             setError(e);
             e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
           })

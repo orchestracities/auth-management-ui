@@ -60,7 +60,7 @@ export default function ServicePage ({ getTenants, tenantValues, thisTenant }) {
         getTenants()
       })
       .catch((e) => {
-        console.error(e)
+        getTenants()
         if (e.response) {
           e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
         } else {

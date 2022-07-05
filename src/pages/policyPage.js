@@ -44,7 +44,7 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
         getTenants()
       })
       .catch((e) => {
-        console.error(e)
+        getTenants()
         if (e.response) {
           e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
         } else {
@@ -71,7 +71,6 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
           setPolicies(datAccumulator)
         })
         .catch((e) => {
-          console.error(e)
           if (e.response) {
             e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
           } else {
@@ -127,7 +126,6 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
           }
         })
         .catch((e) => {
-          console.error(e)
           if (e.response) {
             e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
           } else {
