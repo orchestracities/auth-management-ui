@@ -1,120 +1,109 @@
-import * as React from 'react'
-import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
-import { styled } from '@mui/material/styles'
-import DialogContent from '@mui/material/DialogContent'
-import AppBar from '@mui/material/AppBar'
-import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
-import CloseIcon from '@mui/icons-material/Close'
-import Grid from '@mui/material/Grid'
-import TextField from '@mui/material/TextField'
-import axios from 'axios'
-import InputAdornment from '@mui/material/InputAdornment'
-import useNotification from '../shared/messages/alerts'
-import { Trans } from 'react-i18next'
-import { getEnv } from "../../env";
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import { styled } from '@mui/material/styles';
+import DialogContent from '@mui/material/DialogContent';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import CloseIcon from '@mui/icons-material/Close';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import axios from 'axios';
+import InputAdornment from '@mui/material/InputAdornment';
+import useNotification from '../shared/messages/alerts';
+import { Trans } from 'react-i18next';
+import { getEnv } from '../../env';
 
-const env = getEnv()
+const env = getEnv();
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
   background: 'white',
   boxShadow: 'none'
-})
+});
 
-export default function ServiceForm ({
-  title,
-  close,
-  action,
-  service,
-  tenantName_id,
-  getServices
-}) {
+export default function ServiceForm({ title, close, action, service, tenantName_id, getServices }) {
   const [msg, sendNotification] = useNotification();
-  console.log(msg)
+  console.log(msg);
 
   const handleClose = () => {
-    close(false)
-  }
+    close(false);
+  };
 
-  const [path, setPath] = React.useState('/')
+  const [path, setPath] = React.useState('/');
 
   const handleSave = () => {
     switch (action) {
       case 'create':
         axios
-          .post(
-            env.ANUBIS_API_URL +
-              'v1/tenants/' +
-              tenantName_id[0].id +
-              '/service_paths',
-            {
-              path
-            }
-          )
+          .post(env.ANUBIS_API_URL + 'v1/tenants/' + tenantName_id[0].id + '/service_paths', {
+            path
+          })
           .then(() => {
-            getServices()
-            close(false)
-            sendNotification({msg:<Trans
-              i18nKey="common.messages.sucessCreate"
-              values={{
-                data:
-              "Service"
-              }}
-            />, variant: 'success'})
+            getServices();
+            close(false);
+            sendNotification({
+              msg: (
+                <Trans
+                  i18nKey="common.messages.sucessCreate"
+                  values={{
+                    data: 'Service'
+                  }}
+                />
+              ),
+              variant: 'success'
+            });
           })
           .catch((e) => {
-            getServices()
-           sendNotification({msg: e.response.data.detail, variant: 'error'})
-          })
-        break
-      case "Sub-service-creation":
+            getServices();
+            sendNotification({ msg: e.response.data.detail, variant: 'error' });
+          });
+        break;
+      case 'Sub-service-creation':
         axios
-          .post(
-            env.ANUBIS_API_URL +
-              'v1/tenants/' +
-              tenantName_id.id +
-              '/service_paths',
-            {
-              path: service.path + path
-            }
-          )
+          .post(env.ANUBIS_API_URL + 'v1/tenants/' + tenantName_id.id + '/service_paths', {
+            path: service.path + path
+          })
           .then(() => {
-            getServices()
-            close(false)
-            sendNotification({msg:<Trans
-              i18nKey="common.messages.sucessCreate"
-              values={{
-                data:
-              "Sub-service"
-              }}
-            />, variant: 'success'})
+            getServices();
+            close(false);
+            sendNotification({
+              msg: (
+                <Trans
+                  i18nKey="common.messages.sucessCreate"
+                  values={{
+                    data: 'Sub-service'
+                  }}
+                />
+              ),
+              variant: 'success'
+            });
           })
           .catch((e) => {
-            getServices()
-            sendNotification({msg: e.response.data.detail, variant: 'error'})
-                    })
-        break
+            getServices();
+            sendNotification({ msg: e.response.data.detail, variant: 'error' });
+          });
+        break;
       default:
-        break
+        break;
     }
-  }
+  };
 
   const cases = () => {
     switch (true) {
       case path[0] !== '/':
-        return '/ should be the first char'
+        return '/ should be the first char';
       case path.indexOf(' ') >= 0:
-        return 'The string should be without spaces'
+        return 'The string should be without spaces';
       case path[0] === '/' && typeof path[1] === 'undefined':
-        return 'A value after / is mandatory'
+        return 'A value after / is mandatory';
       case path[0] === '/' && typeof path[1] !== 'undefined':
-        return ''
+        return '';
       default:
-        break
+        break;
     }
-  }
+  };
   return (
     <div>
       <CustomDialogTitle>
@@ -122,11 +111,7 @@ export default function ServiceForm ({
           <IconButton edge="start" onClick={handleClose} aria-label="close">
             <CloseIcon />
           </IconButton>
-          <Typography
-            sx={{ ml: 2, flex: 1, color: 'black' }}
-            variant="h6"
-            component="div"
-          >
+          <Typography sx={{ ml: 2, flex: 1, color: 'black' }} variant="h6" component="div">
             {title}
           </Typography>
           <Button autoFocus color="secondary" onClick={handleSave}>
@@ -158,29 +143,21 @@ export default function ServiceForm ({
                 width: '100%'
               }}
               onChange={(event) => {
-                setPath(event.target.value)
+                setPath(event.target.value);
               }}
               InputProps={
                 action === 'Sub-service-creation'
                   ? {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          {service.path}
-                        </InputAdornment>
-                      )
+                      startAdornment: <InputAdornment position="start">{service.path}</InputAdornment>
                     }
                   : ' '
               }
               helperText={cases()}
-              error={
-                path === '' ||
-                (path[0] === '/' && typeof path[1] === 'undefined') ||
-                path.indexOf(' ') >= 0
-              }
+              error={path === '' || (path[0] === '/' && typeof path[1] === 'undefined') || path.indexOf(' ') >= 0}
             />
           </Grid>
         </Grid>
       </DialogContent>
     </div>
-  )
+  );
 }

@@ -1,9 +1,9 @@
-import * as React from 'react'
-import { styled, alpha } from '@mui/material/styles'
-import Button from '@mui/material/Button'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import * as React from 'react';
+import { styled, alpha } from '@mui/material/styles';
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -37,29 +37,26 @@ const StyledMenu = styled((props) => (
         marginRight: theme.spacing(1.5)
       },
       '&:active': {
-        backgroundColor: alpha(
-          theme.palette.primary.main,
-          theme.palette.action.selectedOpacity
-        )
+        backgroundColor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity)
       }
     }
   }
-}))
+}));
 
-export default function SortButton ({ data, id, sortData }) {
-  const [anchorEl, setAnchorEl] = React.useState(null)
-  const open = Boolean(anchorEl)
+export default function SortButton({ data, id, sortData }) {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget)
-  }
+    setAnchorEl(event.currentTarget);
+  };
 
-  const [mode, setMode] = React.useState('Title (ASC)')
+  const [mode, setMode] = React.useState('Title (ASC)');
   const handleClose = (event) => {
     if (event.target.innerText) {
-      setMode(event.target.innerText)
+      setMode(event.target.innerText);
     }
-    setAnchorEl(null)
-  }
+    setAnchorEl(null);
+  };
 
   React.useEffect(() => {
     sortData(
@@ -67,13 +64,11 @@ export default function SortButton ({ data, id, sortData }) {
         ? data.reverse((a, b) => parseFloat(a[id]) - parseFloat(b[id]))
         : [
             {
-              children: data.reverse(
-                (a, b) => parseFloat(a[id]) - parseFloat(b[id])
-              )
+              children: data.reverse((a, b) => parseFloat(a[id]) - parseFloat(b[id]))
             }
           ]
-    )
-  }, [mode, data])
+    );
+  }, [mode, data]);
 
   return (
     <div>
@@ -99,21 +94,13 @@ export default function SortButton ({ data, id, sortData }) {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem
-          onClick={handleClose}
-          disabled={mode === 'Title (ASC)'}
-          disableRipple
-        >
+        <MenuItem onClick={handleClose} disabled={mode === 'Title (ASC)'} disableRipple>
           Title (ASC)
         </MenuItem>
-        <MenuItem
-          onClick={handleClose}
-          disabled={mode === 'Title (DES)'}
-          disableRipple
-        >
+        <MenuItem onClick={handleClose} disabled={mode === 'Title (DES)'} disableRipple>
           Title (DES)
         </MenuItem>
       </StyledMenu>
     </div>
-  )
+  );
 }

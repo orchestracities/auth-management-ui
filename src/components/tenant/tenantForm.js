@@ -1,68 +1,48 @@
-import * as React from 'react'
-import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
-import { styled } from '@mui/material/styles'
-import DialogContent from '@mui/material/DialogContent'
-import AppBar from '@mui/material/AppBar'
-import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
-import CloseIcon from '@mui/icons-material/Close'
-import Grid from '@mui/material/Grid'
-import TextField from '@mui/material/TextField'
-import ColorPicker from './colorPicker'
-import IconPicker from './iconPicker'
-import axios from 'axios'
-import {
-  ApolloClient,
-  InMemoryCache,
-  gql,
-  createHttpLink
-} from '@apollo/client'
-import { setContext } from '@apollo/client/link/context'
-import { Trans } from 'react-i18next'
-import useNotification from '../shared/messages/alerts'
-import { getEnv } from "../../env";
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import { styled } from '@mui/material/styles';
+import DialogContent from '@mui/material/DialogContent';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import CloseIcon from '@mui/icons-material/Close';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import ColorPicker from './colorPicker';
+import IconPicker from './iconPicker';
+import axios from 'axios';
+import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
+import { Trans } from 'react-i18next';
+import useNotification from '../shared/messages/alerts';
+import { getEnv } from '../../env';
 
-const env = getEnv()
+const env = getEnv();
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
   background: 'white',
   boxShadow: 'none'
-})
+});
 
-const FormHeight = styled('div')({})
+const FormHeight = styled('div')({});
 
-export default function TenantForm ({
-  title,
-  close,
-  action,
-  tenant,
-  getTenants,
-  token
-}) {
+export default function TenantForm({ title, close, action, tenant, getTenants, token }) {
   const [msg, sendNotification] = useNotification();
-  console.log(msg)
+  console.log(msg);
 
-  const [name, setName] = React.useState(
-    action === 'modify' ? tenant.name : ' '
-  )
-  const [primaryColor, setPrimaryColor] = React.useState(
-    action === 'modify' ? tenant.props.primaryColor : null
-  )
-  const [secondaryColor, setSecondaryColor] = React.useState(
-    action === 'modify' ? tenant.props.secondaryColor : null
-  )
-  const [iconName, setIconName] = React.useState(
-    action === 'modify' ? tenant.props.icon : null
-  )
+  const [name, setName] = React.useState(action === 'modify' ? tenant.name : ' ');
+  const [primaryColor, setPrimaryColor] = React.useState(action === 'modify' ? tenant.props.primaryColor : null);
+  const [secondaryColor, setSecondaryColor] = React.useState(action === 'modify' ? tenant.props.secondaryColor : null);
+  const [iconName, setIconName] = React.useState(action === 'modify' ? tenant.props.icon : null);
 
   const handleClose = () => {
-    close(false)
-  }
+    close(false);
+  };
   const httpLink = createHttpLink({
-    uri:  env.CONFIGURATION_API_URL
-  })
+    uri: env.CONFIGURATION_API_URL
+  });
 
   const authLink = setContext((_, { headers }) => {
     return {
@@ -70,13 +50,13 @@ export default function TenantForm ({
         ...headers,
         Authorization: `Bearer ${token}`
       }
-    }
-  })
+    };
+  });
 
   const client = new ApolloClient({
     link: authLink.concat(httpLink),
     cache: new InMemoryCache()
-  })
+  });
   const handleSave = () => {
     switch (action) {
       case 'create':
@@ -85,39 +65,32 @@ export default function TenantForm ({
             name
           })
           .then(() => {
-            close(false)
-            sendNotification({msg:<Trans
-              i18nKey="common.messages.sucessCreate"
-              values={{
-                data:
-              "Tenant"
-              }}
-            />, variant: 'success'})
-            getTenants()
+            close(false);
+            sendNotification({
+              msg: (
+                <Trans
+                  i18nKey="common.messages.sucessCreate"
+                  values={{
+                    data: 'Tenant'
+                  }}
+                />
+              ),
+              variant: 'success'
+            });
+            getTenants();
           })
           .catch((e) => {
-            getTenants()
-            e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
-          })
+            getTenants();
+            e.response.data.detail.map((thisError) => sendNotification({ msg: thisError.msg, variant: 'error' }));
+          });
 
-        break
+        break;
       case 'modify':
-      
         client
           .mutate({
             mutation: gql`
-              mutation modifyTenants(
-                $name: String!
-                $icon: String!
-                $primaryColor: String!
-                $secondaryColor: String!
-              ) {
-                modifyTenants(
-                  name: $name
-                  icon: $icon
-                  primaryColor: $primaryColor
-                  secondaryColor: $secondaryColor
-                ) {
+              mutation modifyTenants($name: String!, $icon: String!, $primaryColor: String!, $secondaryColor: String!) {
+                modifyTenants(name: $name, icon: $icon, primaryColor: $primaryColor, secondaryColor: $secondaryColor) {
                   name
                   icon
                   primaryColor
@@ -133,27 +106,31 @@ export default function TenantForm ({
             }
           })
           .then(() => {
-            close(false)
-            getTenants()
-            sendNotification({msg:<Trans
-              i18nKey="common.messages.sucessUpdate"
-              values={{
-                data:
-                name
-              }}
-            />, variant: 'success'})
+            close(false);
+            getTenants();
+            sendNotification({
+              msg: (
+                <Trans
+                  i18nKey="common.messages.sucessUpdate"
+                  values={{
+                    data: name
+                  }}
+                />
+              ),
+              variant: 'success'
+            });
           })
           .catch((e) => {
-            getTenants()
-            e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
-          })
-        break
+            getTenants();
+            e.response.data.detail.map((thisError) => sendNotification({ msg: thisError.msg, variant: 'error' }));
+          });
+        break;
       default:
-        break
+        break;
     }
-  }
+  };
 
-  console.log(tenant)
+  console.log(tenant);
   return (
     <FormHeight>
       <CustomDialogTitle>
@@ -161,11 +138,7 @@ export default function TenantForm ({
           <IconButton edge="start" onClick={handleClose} aria-label="close">
             <CloseIcon />
           </IconButton>
-          <Typography
-            sx={{ ml: 2, flex: 1, color: 'black' }}
-            variant="h6"
-            component="div"
-          >
+          <Typography sx={{ ml: 2, flex: 1, color: 'black' }} variant="h6" component="div">
             {title}
           </Typography>
           <Button autoFocus color="secondary" onClick={handleSave}>
@@ -175,11 +148,9 @@ export default function TenantForm ({
       </CustomDialogTitle>
       <DialogContent sx={{ minHeight: '400px' }}>
         <Grid container spacing={3}>
-          {action === 'modify'
-            ? (
-                ''
-              )
-            : (
+          {action === 'modify' ? (
+            ''
+          ) : (
             <Grid item xs={12}>
               <TextField
                 id="Name"
@@ -190,13 +161,13 @@ export default function TenantForm ({
                   width: '100%'
                 }}
                 onChange={(event) => {
-                  setName(event.target.value)
+                  setName(event.target.value);
                 }}
                 helperText={name === '' ? 'the name is mandatory' : ''}
                 error={name === ''}
               />
             </Grid>
-              )}
+          )}
 
           <Grid item xs={12}>
             <TextField
@@ -208,32 +179,10 @@ export default function TenantForm ({
               }}
             />
           </Grid>
-          <Grid
-            item
-            lg={12}
-            md={12}
-            xs={12}
-            container
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <IconPicker
-              previusValue={iconName}
-              setValue={setIconName}
-              mode={action}
-            ></IconPicker>
+          <Grid item lg={12} md={12} xs={12} container direction="column" justifyContent="center" alignItems="center">
+            <IconPicker previusValue={iconName} setValue={setIconName} mode={action}></IconPicker>
           </Grid>
-          <Grid
-            item
-            lg={6}
-            md={6}
-            xs={12}
-            container
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
-          >
+          <Grid item lg={6} md={6} xs={12} container direction="column" justifyContent="center" alignItems="center">
             <ColorPicker
               defaultValue={primaryColor}
               setColor={setPrimaryColor}
@@ -241,16 +190,7 @@ export default function TenantForm ({
               text={<Trans>tenant.form.primaryColor</Trans>}
             ></ColorPicker>
           </Grid>
-          <Grid
-            item
-            lg={6}
-            md={6}
-            xs={12}
-            container
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
-          >
+          <Grid item lg={6} md={6} xs={12} container direction="column" justifyContent="center" alignItems="center">
             <ColorPicker
               defaultValue={secondaryColor}
               setColor={setSecondaryColor}
@@ -261,5 +201,5 @@ export default function TenantForm ({
         </Grid>
       </DialogContent>
     </FormHeight>
-  )
+  );
 }

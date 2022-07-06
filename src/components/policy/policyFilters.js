@@ -1,47 +1,42 @@
-import * as React from 'react'
-import Grid from '@mui/material/Grid'
-import ActorFilter from './filters/actorFilter'
-import ActorTypeFilter from './filters/actorTypeFilter'
-import PathFilter from './filters/pathFilter'
-import ResourceTypeFilter from './filters/typeFilter'
-import ModeFilter from './filters/modeFilter'
-import AcessToFilter from './filters/resourceFilter'
-export default function PolicyFilters ({
-  data,
-  access_modes,
-  agentsTypes,
-  mapper
-}) {
-  const [status, setstatus] = React.useState(null)
+import * as React from 'react';
+import Grid from '@mui/material/Grid';
+import ActorFilter from './filters/actorFilter';
+import ActorTypeFilter from './filters/actorTypeFilter';
+import PathFilter from './filters/pathFilter';
+import ResourceTypeFilter from './filters/typeFilter';
+import ModeFilter from './filters/modeFilter';
+import AcessToFilter from './filters/resourceFilter';
+export default function PolicyFilters({ data, access_modes, agentsTypes, mapper }) {
+  const [status, setstatus] = React.useState(null);
   const getUniqueListBy = (arr, key) => {
-    return [...new Map(arr.map((item) => [item[key], item])).values()]
-  }
+    return [...new Map(arr.map((item) => [item[key], item])).values()];
+  };
 
   const getAllAgentsNames = () => {
-    const agents = []
+    const agents = [];
     for (const thisPolicy of data) {
       for (const thisAgent of thisPolicy.agent) {
-        const thisAgentSplit = thisAgent.split(':').slice('2').join(':')
+        const thisAgentSplit = thisAgent.split(':').slice('2').join(':');
         if (thisAgentSplit !== '') {
-          agents.push({ iri: thisAgent, name: thisAgentSplit })
+          agents.push({ iri: thisAgent, name: thisAgentSplit });
         }
       }
     }
-    return getUniqueListBy(agents, 'iri')
-  }
+    return getUniqueListBy(agents, 'iri');
+  };
   const getSpecificAgentsNames = (selectedAgentType) => {
-    const agents = []
+    const agents = [];
     for (const thisPolicy of data) {
       for (const thisAgent of thisPolicy.agent) {
-        const thisAgentSplit = thisAgent.split(':').slice('2').join(':')
-        const agentType = thisAgent.split(':', 2).join(':')
+        const thisAgentSplit = thisAgent.split(':').slice('2').join(':');
+        const agentType = thisAgent.split(':', 2).join(':');
         if (thisAgentSplit !== '' && agentType === selectedAgentType) {
-          agents.push({ iri: thisAgent, name: thisAgentSplit })
+          agents.push({ iri: thisAgent, name: thisAgentSplit });
         }
       }
     }
-    return getUniqueListBy(agents, 'iri')
-  }
+    return getUniqueListBy(agents, 'iri');
+  };
 
   const agentsNames = [
     ...agentsTypes,
@@ -50,24 +45,18 @@ export default function PolicyFilters ({
       { iri: 'foaf:Agent', name: 'anyone' },
       { iri: 'oc-acl:ResourceTenantAgent', name: 'resource tenant agent' }
     ]
-  ]
-  const fiware_service_path = getUniqueListBy(data, 'fiware_service_path')
-  const resource_type = getUniqueListBy(data, 'resource_type')
-  const access_to = getUniqueListBy(data, 'access_to')
+  ];
+  const fiware_service_path = getUniqueListBy(data, 'fiware_service_path');
+  const resource_type = getUniqueListBy(data, 'resource_type');
+  const access_to = getUniqueListBy(data, 'access_to');
   React.useEffect(() => {
     if (status === '') {
-      setstatus(null)
+      setstatus(null);
     }
-  }, [status])
+  }, [status]);
 
   return (
-    <Grid
-      container
-      direction="row"
-      spacing={0.5}
-      justifyContent="flex-start"
-      alignItems="center"
-    >
+    <Grid container direction="row" spacing={0.5} justifyContent="flex-start" alignItems="center">
       <Grid
         item
         xs={status === 'PathFilter' ? 12 : 'auto'}
@@ -76,12 +65,7 @@ export default function PolicyFilters ({
         }}
         zeroMinWidth
       >
-        <PathFilter
-          filterValue={mapper.policy}
-          data={fiware_service_path}
-          status={status}
-          setstatus={setstatus}
-        />
+        <PathFilter filterValue={mapper.policy} data={fiware_service_path} status={status} setstatus={setstatus} />
       </Grid>
       <Grid
         item
@@ -91,39 +75,23 @@ export default function PolicyFilters ({
         }}
         zeroMinWidth
       >
-        <ModeFilter
-          filterValue={mapper.mode}
-          data={access_modes}
-          status={status}
-          setstatus={setstatus}
-        />
+        <ModeFilter filterValue={mapper.mode} data={access_modes} status={status} setstatus={setstatus} />
       </Grid>
       <Grid
         item
         xs={status === 'AcessToFilter' ? 12 : 'auto'}
         sx={{
-          display:
-            status === null || status === 'AcessToFilter'
-              ? 'flex'
-              : 'none'
+          display: status === null || status === 'AcessToFilter' ? 'flex' : 'none'
         }}
         zeroMinWidth
       >
-        <AcessToFilter
-          filterValue={mapper.resource}
-          data={access_to}
-          status={status}
-          setstatus={setstatus}
-        />
+        <AcessToFilter filterValue={mapper.resource} data={access_to} status={status} setstatus={setstatus} />
       </Grid>
       <Grid
         item
         xs={status === 'ResourceTypeFilter' ? 12 : 'auto'}
         sx={{
-          display:
-            status === null || status === 'ResourceTypeFilter'
-              ? 'flex'
-              : 'none'
+          display: status === null || status === 'ResourceTypeFilter' ? 'flex' : 'none'
         }}
         zeroMinWidth
       >
@@ -138,17 +106,14 @@ export default function PolicyFilters ({
         item
         xs={status === 'ActorFilter' ? 12 : 'auto'}
         sx={{
-          display:
-            status === null || status === 'ActorFilter' ? 'flex' : 'none'
+          display: status === null || status === 'ActorFilter' ? 'flex' : 'none'
         }}
         zeroMinWidth
       >
         <ActorFilter
           filterValue={mapper.agent}
           data={
-            mapper.agentType.value === null
-              ? getAllAgentsNames()
-              : getSpecificAgentsNames(mapper.agentType.value.iri)
+            mapper.agentType.value === null ? getAllAgentsNames() : getSpecificAgentsNames(mapper.agentType.value.iri)
           }
           status={status}
           setstatus={setstatus}
@@ -158,26 +123,19 @@ export default function PolicyFilters ({
         item
         xs={status === 'ActorTypeFilter' ? 12 : 'auto'}
         sx={{
-          display:
-            status === null || status === 'ActorTypeFilter' ? 'flex' : 'none'
+          display: status === null || status === 'ActorTypeFilter' ? 'flex' : 'none'
         }}
         zeroMinWidth
       >
-        <ActorTypeFilter
-          filterValue={mapper.agentType}
-          data={agentsNames}
-          status={status}
-          setstatus={setstatus}
-        />
+        <ActorTypeFilter filterValue={mapper.agentType} data={agentsNames} status={status} setstatus={setstatus} />
       </Grid>
       <Grid
         item
         xs={status === 'ActorTypeFilter' ? 12 : 'auto'}
         sx={{
-          display:
-            status === null || status === 'ActorTypeFilter' ? 'flex' : 'none'
+          display: status === null || status === 'ActorTypeFilter' ? 'flex' : 'none'
         }}
       ></Grid>
     </Grid>
-  )
+  );
 }

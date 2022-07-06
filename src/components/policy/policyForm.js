@@ -1,37 +1,37 @@
-import * as React from 'react'
-import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
-import { styled } from '@mui/material/styles'
-import DialogContent from '@mui/material/DialogContent'
-import AppBar from '@mui/material/AppBar'
-import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
-import CloseIcon from '@mui/icons-material/Close'
-import Grid from '@mui/material/Grid'
-import TextField from '@mui/material/TextField'
-import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
-import Select from '@mui/material/Select'
-import { InputLabel } from '@mui/material'
-import OutlinedInput from '@mui/material/OutlinedInput'
-import axios from 'axios'
-import AddIcon from '@mui/icons-material/Add'
-import { Trans } from 'react-i18next'
-import DeleteIcon from '@mui/icons-material/Delete'
-import Tooltip from '@mui/material/Tooltip'
-import Grow from '@mui/material/Grow'
-import Zoom from '@mui/material/Zoom'
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import { styled } from '@mui/material/styles';
+import DialogContent from '@mui/material/DialogContent';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import CloseIcon from '@mui/icons-material/Close';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import { InputLabel } from '@mui/material';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import axios from 'axios';
+import AddIcon from '@mui/icons-material/Add';
+import { Trans } from 'react-i18next';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Tooltip from '@mui/material/Tooltip';
+import Grow from '@mui/material/Grow';
+import Zoom from '@mui/material/Zoom';
 import FormHelperText from '@mui/material/FormHelperText';
-import useNotification from '../shared/messages/alerts'
-import { getEnv } from "../../env";
+import useNotification from '../shared/messages/alerts';
+import { getEnv } from '../../env';
 
-const env = getEnv()
+const env = getEnv();
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
   background: 'white',
   boxShadow: 'none'
-})
+});
 
 export default function PolicyForm({
   title,
@@ -45,113 +45,109 @@ export default function PolicyForm({
   data
 }) {
   const [msg, sendNotification] = useNotification();
-  console.log(msg)
+  console.log(msg);
   const handleClose = () => {
-    close(false)
+    close(false);
+  };
 
-  }
-  
-
-//errorLog
-const [error, setError] = React.useState(null)
+  //errorLog
+  const [error, setError] = React.useState(null);
 
   // SERVICE PATH
-  const [path, setPath] = React.useState(action === "create" ? "" : data.fiware_service_path)
+  const [path, setPath] = React.useState(action === 'create' ? '' : data.fiware_service_path);
 
   const handlePath = (event) => {
-    setPath(event.target.value)
-  }
+    setPath(event.target.value);
+  };
 
   // ACCESS
-  const [access, setAccess] = React.useState(action === "create" ? "" : data.access_to)
+  const [access, setAccess] = React.useState(action === 'create' ? '' : data.access_to);
 
   const handleAccess = (event) => {
-    setAccess(event.target.value)
-  }
+    setAccess(event.target.value);
+  };
 
   // RESOURCE
-  const [resource, setResource] = React.useState(action === "create" ? "" : data.resource_type)
+  const [resource, setResource] = React.useState(action === 'create' ? '' : data.resource_type);
 
   const handleResource = (event) => {
-    setResource(event.target.value)
-  }
+    setResource(event.target.value);
+  };
 
   // MODE
-  const [mode, setMode] = React.useState(action === "create" ? [] : data.mode)
+  const [mode, setMode] = React.useState(action === 'create' ? [] : data.mode);
 
   const handleMode = (event) => {
-    setMode(event.target.value)
-  }
+    setMode(event.target.value);
+  };
   const checkAgenTypes = (arr, values) => {
-    return values.every(value => {
+    return values.every((value) => {
       return arr.includes(value);
     });
-  }
-
+  };
 
   const specificAgenTypes = ['acl:AuthenticatedAgent', 'foaf:Agent', 'oc-acl:ResourceTenantAgent'];
-  const [formType, setFormType] = React.useState((action === "create") ? "" : (checkAgenTypes(specificAgenTypes, data.agent)) ? "others" : "specific")
+  const [formType, setFormType] = React.useState(
+    action === 'create' ? '' : checkAgenTypes(specificAgenTypes, data.agent) ? 'others' : 'specific'
+  );
 
   const handleFormType = (event) => {
-    setFormType(event.target.value)
-  }
+    setFormType(event.target.value);
+  };
 
   // AGENT
-  const [agentOthers, setAgentOthers] = React.useState(action === "create" ? [] : data.agent)
+  const [agentOthers, setAgentOthers] = React.useState(action === 'create' ? [] : data.agent);
 
   const handleAgentOthers = (event) => {
-    setAgentOthers(event.target.value)
-  }
+    setAgentOthers(event.target.value);
+  };
   const createAgentMap = (agents) => {
     let newMap = [];
     for (let agent of agents) {
-      const agentName = agent.split(':').slice('2').join(':')
-      const agenType = agent.replace(":" + agentName, "");
+      const agentName = agent.split(':').slice('2').join(':');
+      const agenType = agent.replace(':' + agentName, '');
       newMap.push({ type: agenType, name: agentName });
     }
     return newMap;
-  }
-  const [agentsMap, setAgentsMap] = React.useState(action === "create" ? [] : createAgentMap(data.agent))
+  };
+  const [agentsMap, setAgentsMap] = React.useState(action === 'create' ? [] : createAgentMap(data.agent));
 
   // AGENT
 
   React.useEffect(() => {
-    setAgentsMap(agentsMap)
-  }, [agentsMap])
-
+    setAgentsMap(agentsMap);
+  }, [agentsMap]);
 
   const handleAgentsName = (event) => {
-    const newArray = agentsMap
-    agentsMap[Number(event.target.id)].name = event.target.value
-    setAgentsMap([...[], ...newArray])
-
-  }
+    const newArray = agentsMap;
+    agentsMap[Number(event.target.id)].name = event.target.value;
+    setAgentsMap([...[], ...newArray]);
+  };
   const handleAgentsType = (event) => {
-    const newArray = agentsMap
-    newArray[Number(event.target.name)].type = event.target.value
-    setAgentsMap([...[], ...newArray])
-
-  }
+    const newArray = agentsMap;
+    newArray[Number(event.target.name)].type = event.target.value;
+    setAgentsMap([...[], ...newArray]);
+  };
   const addAgents = () => {
-    setAgentsMap([...agentsMap, { type: null, name: '' }])
-  }
+    setAgentsMap([...agentsMap, { type: null, name: '' }]);
+  };
   const removeAgents = (index) => {
-    const newArray = agentsMap
-    newArray.splice(index, 1)
-    setAgentsMap([...[], ...newArray])
-  }
+    const newArray = agentsMap;
+    newArray.splice(index, 1);
+    setAgentsMap([...[], ...newArray]);
+  };
 
   const agentMapper = () => {
-    const agentMapped = []
+    const agentMapped = [];
     if (formType === 'specific') {
       for (const thisAgent of agentsMap) {
-        agentMapped.push(thisAgent.type + ':' + thisAgent.name)
+        agentMapped.push(thisAgent.type + ':' + thisAgent.name);
       }
-      return agentMapped
+      return agentMapped;
     } else {
-      return agentOthers
+      return agentOthers;
     }
-  }
+  };
 
   const handleSave = () => {
     switch (action) {
@@ -173,22 +169,26 @@ const [error, setError] = React.useState(null)
             }
           )
           .then(() => {
-            getServices()
-            close(false)
-            sendNotification({msg:<Trans
-              i18nKey="common.messages.sucessCreate"
-              values={{
-                data:
-              "Policy"
-              }}
-            />, variant: 'success'})
+            getServices();
+            close(false);
+            sendNotification({
+              msg: (
+                <Trans
+                  i18nKey="common.messages.sucessCreate"
+                  values={{
+                    data: 'Policy'
+                  }}
+                />
+              ),
+              variant: 'success'
+            });
           })
           .catch((e) => {
-            getServices()
+            getServices();
             setError(e);
-            e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
-          })
-        break
+            e.response.data.detail.map((thisError) => sendNotification({ msg: thisError.msg, variant: 'error' }));
+          });
+        break;
       case 'modify':
         axios
           .put(
@@ -201,76 +201,82 @@ const [error, setError] = React.useState(null)
             },
             {
               headers: {
-                "policy_id": data.id,
+                policy_id: data.id,
                 'fiware-service': tenantName(),
                 'fiware-servicepath': path
               }
             }
           )
           .then(() => {
-            getServices()
-            close(false)
-            sendNotification({msg:<Trans
-              i18nKey="common.messages.sucessUpdate"
-              values={{
-                data:
-                data.id
-              }}
-            />, variant: 'success'})
+            getServices();
+            close(false);
+            sendNotification({
+              msg: (
+                <Trans
+                  i18nKey="common.messages.sucessUpdate"
+                  values={{
+                    data: data.id
+                  }}
+                />
+              ),
+              variant: 'success'
+            });
           })
           .catch((e) => {
-            getServices()
+            getServices();
             setError(e);
-            e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
-          })
-        break
+            e.response.data.detail.map((thisError) => sendNotification({ msg: thisError.msg, variant: 'error' }));
+          });
+        break;
       default:
-        break
+        break;
     }
-  }
+  };
   const getLabelName = (name) => {
     switch (name) {
       case 'acl:agent':
-        return <Trans>policies.form.agent</Trans>
+        return <Trans>policies.form.agent</Trans>;
       case 'acl:agentGroup':
-        return <Trans>policies.form.agentGroup</Trans>
+        return <Trans>policies.form.agentGroup</Trans>;
       case 'acl:agentClass':
-        return <Trans>policies.form.agentClass</Trans>
+        return <Trans>policies.form.agentClass</Trans>;
       default:
-        break
+        break;
     }
-  }
+  };
 
   const errorCases = (value) => {
-   if (error!==null){
-    switch (true) {
-      case value === '' || typeof value === 'undefined' || value===null:
-        return true
-      case value.length === 0:
-        return true
-      case value === "specific" && ((agentsMap.length === 0) || (agentsMap[0].type === null || agentsMap[0].name === "")):
-        return true
-      default:
-        return false
-    }}else{
-      return false
+    if (error !== null) {
+      switch (true) {
+        case value === '' || typeof value === 'undefined' || value === null:
+          return true;
+        case value.length === 0:
+          return true;
+        case value === 'specific' && (agentsMap.length === 0 || agentsMap[0].type === null || agentsMap[0].name === ''):
+          return true;
+        default:
+          return false;
+      }
+    } else {
+      return false;
     }
-  }
+  };
   const errorText = (value) => {
-    if (error!==null){
-    switch (true) {
-      case value === '' || typeof value === 'undefined' || value===null:
-        return <Trans>common.errors.mandatory</Trans>
-      case value.length === 0:
-        return <Trans>common.errors.mandatory</Trans>
-      case value === "specific" && ((agentsMap.length === 0) || (agentsMap[0].type === null || agentsMap[0].name === "")):
-        return <Trans>common.errors.userMap</Trans>
-      default:
-        return false
-    }}else{
-      return false
+    if (error !== null) {
+      switch (true) {
+        case value === '' || typeof value === 'undefined' || value === null:
+          return <Trans>common.errors.mandatory</Trans>;
+        case value.length === 0:
+          return <Trans>common.errors.mandatory</Trans>;
+        case value === 'specific' && (agentsMap.length === 0 || agentsMap[0].type === null || agentsMap[0].name === ''):
+          return <Trans>common.errors.userMap</Trans>;
+        default:
+          return false;
+      }
+    } else {
+      return false;
     }
-  }
+  };
 
   return (
     <div>
@@ -279,11 +285,7 @@ const [error, setError] = React.useState(null)
           <IconButton edge="start" onClick={handleClose} aria-label="close">
             <CloseIcon />
           </IconButton>
-          <Typography
-            sx={{ ml: 2, flex: 1, color: 'black' }}
-            variant="h6"
-            component="div"
-          >
+          <Typography sx={{ ml: 2, flex: 1, color: 'black' }} variant="h6" component="div">
             {title}
           </Typography>
           <Button autoFocus color="secondary" onClick={handleSave}>
@@ -306,20 +308,13 @@ const [error, setError] = React.useState(null)
             />
           </Grid>
           <Grid item xs={12}>
-            <Typography
-              variant="subtitle1"
-              gutterBottom
-              component="div"
-              color="primary"
-            >
+            <Typography variant="subtitle1" gutterBottom component="div" color="primary">
               <Trans>policies.form.mainTitle</Trans>
             </Typography>
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>
-              <InputLabel id="path" error={
-                errorCases(path)
-              }>
+              <InputLabel id="path" error={errorCases(path)}>
                 {' '}
                 <Trans>policies.form.servicePath</Trans>
               </InputLabel>
@@ -330,17 +325,15 @@ const [error, setError] = React.useState(null)
                 value={path}
                 label={<Trans>policies.form.servicePath</Trans>}
                 onChange={handlePath}
-                error={
-                  errorCases(path)
-                }
+                error={errorCases(path)}
               >
                 {services.map((service, index) => (
-                  <MenuItem key={index} value={service.path}>{service.path}</MenuItem>
+                  <MenuItem key={index} value={service.path}>
+                    {service.path}
+                  </MenuItem>
                 ))}
               </Select>
-              <FormHelperText error={
-                errorCases(path)
-              }>{errorText(path)}</FormHelperText>
+              <FormHelperText error={errorCases(path)}>{errorText(path)}</FormHelperText>
             </FormControl>
           </Grid>
           <Grid item xs={12}>
@@ -369,9 +362,7 @@ const [error, setError] = React.useState(null)
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>
-              <InputLabel id="mode" error={
-                errorCases(mode)
-              }>
+              <InputLabel id="mode" error={errorCases(mode)}>
                 <Trans>policies.form.mode</Trans>
               </InputLabel>
 
@@ -384,36 +375,26 @@ const [error, setError] = React.useState(null)
                 multiple
                 input={<OutlinedInput label="Mode" />}
                 onChange={handleMode}
-                error={
-                  errorCases(mode)
-                }
+                error={errorCases(mode)}
               >
                 {access_modes.map((service) => (
-                  <MenuItem key={service.iri} value={service.iri}>{service.name}</MenuItem>
+                  <MenuItem key={service.iri} value={service.iri}>
+                    {service.name}
+                  </MenuItem>
                 ))}
-
               </Select>
-              <FormHelperText error={
-                errorCases(mode)
-              }>{errorText(mode)}</FormHelperText>
+              <FormHelperText error={errorCases(mode)}>{errorText(mode)}</FormHelperText>
             </FormControl>
           </Grid>
 
           <Grid item xs={12}>
-            <Typography
-              variant="subtitle1"
-              gutterBottom
-              component="div"
-              color="primary"
-            >
+            <Typography variant="subtitle1" gutterBottom component="div" color="primary">
               <Trans>policies.form.actorTitle</Trans>
             </Typography>
           </Grid>
           <Grid item xs={12} sx={{ marginBottom: '2%' }}>
             <FormControl fullWidth>
-              <InputLabel id="FormType" error={
-                errorCases(formType)
-              }>
+              <InputLabel id="FormType" error={errorCases(formType)}>
                 <Trans>policies.form.userType</Trans>
               </InputLabel>
               <Select
@@ -424,31 +405,24 @@ const [error, setError] = React.useState(null)
                 value={formType}
                 label={<Trans>policies.form.userType</Trans>}
                 onChange={handleFormType}
-                error={
-                  errorCases(formType)
-                }
+                error={errorCases(formType)}
               >
                 <MenuItem value={'specific'}>Specific</MenuItem>
                 <MenuItem value={'others'}>Others</MenuItem>
               </Select>
-              <FormHelperText error={
-                errorCases(formType)
-              }>{errorText(formType)}</FormHelperText>
+              <FormHelperText error={errorCases(formType)}>{errorText(formType)}</FormHelperText>
             </FormControl>
           </Grid>
           <Zoom
             in={formType !== '' && formType === 'specific'}
             style={{ transformOrigin: '0 0 0' }}
-            {...(formType !== '' && formType !== 'specific'
-              ? { timeout: 500 }
-              : {})}
+            {...(formType !== '' && formType !== 'specific' ? { timeout: 500 } : {})}
           >
             <Grid
               item
               xs={12}
               sx={{
-                display:
-                  formType !== '' && formType === 'specific' ? 'block' : 'none'
+                display: formType !== '' && formType === 'specific' ? 'block' : 'none'
               }}
             >
               <Grid container spacing={6}>
@@ -456,20 +430,12 @@ const [error, setError] = React.useState(null)
                   <React.Fragment key={i}>
                     <Grid item xs={2}></Grid>
                     <Grid item xs={10}>
-                      <Grid
-                        container
-                        spacing={12}
-                        direction="row"
-                        justifyContent="center"
-                        alignItems="center"
-                      >
+                      <Grid container spacing={12} direction="row" justifyContent="center" alignItems="center">
                         <Grid item xs={10}>
                           <Grid container spacing={4}>
                             <Grid item xs={12}>
                               <FormControl fullWidth>
-                                <InputLabel id={'User' + i} error={
-                                  errorCases(agent.type)
-                                }>
+                                <InputLabel id={'User' + i} error={errorCases(agent.type)}>
                                   <Trans>policies.form.user</Trans>
                                 </InputLabel>
                                 <Select
@@ -483,9 +449,7 @@ const [error, setError] = React.useState(null)
                                   onChange={handleAgentsType}
                                   label={<Trans>policies.form.user</Trans>}
                                   input={<OutlinedInput label="Mode" />}
-                                  error={
-                                    errorCases(agent.type)
-                                  }
+                                  error={errorCases(agent.type)}
                                 >
                                   {agentsTypes.map((agents) => (
                                     <MenuItem key={agents.iri} value={agents.iri}>
@@ -493,9 +457,7 @@ const [error, setError] = React.useState(null)
                                     </MenuItem>
                                   ))}
                                 </Select>
-                                <FormHelperText error={
-                                  errorCases(agent.type)
-                                }>{errorText(agent.type)}</FormHelperText>
+                                <FormHelperText error={errorCases(agent.type)}>{errorText(agent.type)}</FormHelperText>
                               </FormControl>
                             </Grid>
                             <Grow
@@ -507,8 +469,7 @@ const [error, setError] = React.useState(null)
                                 item
                                 xs={12}
                                 sx={{
-                                  display:
-                                    agent.type !== null ? 'block' : 'none'
+                                  display: agent.type !== null ? 'block' : 'none'
                                 }}
                               >
                                 <TextField
@@ -522,9 +483,7 @@ const [error, setError] = React.useState(null)
                                   sx={{
                                     width: '100%'
                                   }}
-                                  error={
-                                    errorCases(agent.name)
-                                  }
+                                  error={errorCases(agent.name)}
                                   helperText={errorText(agent.name)}
                                 />
                               </Grid>
@@ -532,22 +491,14 @@ const [error, setError] = React.useState(null)
                           </Grid>
                         </Grid>
                         <Grid item xs={2}>
-                          <Grid
-                            container
-                            direction="column"
-                            justifyContent="center"
-                            alignItems="center"
-                            spacing={4}
-                          >
+                          <Grid container direction="column" justifyContent="center" alignItems="center" spacing={4}>
                             <Grid item xs={12}>
-                              <Tooltip
-                                title={<Trans>common.deleteTooltip</Trans>}
-                              >
+                              <Tooltip title={<Trans>common.deleteTooltip</Trans>}>
                                 <IconButton
                                   aria-label="delete"
                                   size="large"
                                   onClick={() => {
-                                    removeAgents(i)
+                                    removeAgents(i);
                                   }}
                                 >
                                   <DeleteIcon fontSize="inherit" />
@@ -562,18 +513,12 @@ const [error, setError] = React.useState(null)
                 ))}
                 <Grid item xs={12}>
                   {' '}
-                  <Grid
-                    container
-                    direction="row"
-                    justifyContent="center"
-                    alignItems="center"
-                    spacing={0}
-                  >
+                  <Grid container direction="row" justifyContent="center" alignItems="center" spacing={0}>
                     <Button
                       variant="outlined"
                       startIcon={<AddIcon />}
                       onClick={() => {
-                        addAgents()
+                        addAgents();
                       }}
                     >
                       New Actor
@@ -586,25 +531,19 @@ const [error, setError] = React.useState(null)
           <Zoom
             in={formType !== '' && formType === 'others'}
             style={{ transformOrigin: '0 0 0' }}
-            {...(formType !== '' && formType !== 'others'
-              ? { timeout: 500 }
-              : {})}
+            {...(formType !== '' && formType !== 'others' ? { timeout: 500 } : {})}
           >
             <Grid
               item
               xs={12}
               sx={{
-                display:
-                  formType !== '' && formType === 'others' ? 'block' : 'none'
+                display: formType !== '' && formType === 'others' ? 'block' : 'none'
               }}
             >
               <Grid item xs={12}>
                 <Grid item xs={12}>
                   <FormControl fullWidth>
-                    <InputLabel id="ActorOthers"
-                       error={
-                        errorCases(agentOthers)
-                      }>
+                    <InputLabel id="ActorOthers" error={errorCases(agentOthers)}>
                       <Trans>policies.form.defaultActor</Trans>
                     </InputLabel>
                     <Select
@@ -617,21 +556,13 @@ const [error, setError] = React.useState(null)
                       multiple
                       input={<OutlinedInput label="ActorOthers" />}
                       onChange={handleAgentOthers}
-                      error={
-                        errorCases(agentOthers)
-                      }
+                      error={errorCases(agentOthers)}
                     >
-                      <MenuItem value={'acl:AuthenticatedAgent'}>
-                        Authenticated Actor
-                      </MenuItem>
+                      <MenuItem value={'acl:AuthenticatedAgent'}>Authenticated Actor</MenuItem>
                       <MenuItem value={'foaf:Agent'}>Anyone</MenuItem>
-                      <MenuItem value={'oc-acl:ResourceTenantAgent'}>
-                        Resource Tenant Agent
-                      </MenuItem>
+                      <MenuItem value={'oc-acl:ResourceTenantAgent'}>Resource Tenant Agent</MenuItem>
                     </Select>
-                    <FormHelperText error={
-                                  errorCases(agentOthers)
-                                }>{errorText(agentOthers)}</FormHelperText>
+                    <FormHelperText error={errorCases(agentOthers)}>{errorText(agentOthers)}</FormHelperText>
                   </FormControl>
                 </Grid>
               </Grid>
@@ -640,5 +571,5 @@ const [error, setError] = React.useState(null)
         </Grid>
       </DialogContent>
     </div>
-  )
+  );
 }

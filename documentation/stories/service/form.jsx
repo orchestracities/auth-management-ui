@@ -1,38 +1,29 @@
-
 import PropTypes from 'prop-types';
 import Grid from '@mui/material/Grid';
-import ServiceForm from '../../../src/components/service/serviceForm'
-import { BrowserRouter} from "react-router-dom";
-import { createTheme, ThemeProvider} from '@mui/material/styles';
+import ServiceForm from '../../../src/components/service/serviceForm';
+import { BrowserRouter } from 'react-router-dom';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { orange } from '@mui/material/colors';
-import "../../../src/i18n";
+import '../../../src/i18n';
 import React from 'react';
-import { SnackbarProvider } from "notistack";
+import { SnackbarProvider } from 'notistack';
 
 /**
  * Primary UI component for user interaction
  */
 const theme = createTheme({
-    status: {
-        danger: orange[500],
-    },
+  status: {
+    danger: orange[500]
+  }
 });
 
-export const ServiceMainForm = ({
-    title,
-    close,
-    action,
-    service,
-    getServices,
-    tenantName_id,
-}) => {
-    return (
-        <SnackbarProvider maxSnack={5}>
-        <ThemeProvider theme={theme}>
-            <BrowserRouter>
-                <Grid
-                >
-                    <ServiceForm
+export const ServiceMainForm = ({ title, close, action, service, getServices, tenantName_id }) => {
+  return (
+    <SnackbarProvider maxSnack={5}>
+      <ThemeProvider theme={theme}>
+        <BrowserRouter>
+          <Grid>
+            <ServiceForm
               title={title}
               close={close}
               service={service}
@@ -40,47 +31,46 @@ export const ServiceMainForm = ({
               getServices={getServices}
               tenantName_id={tenantName_id}
             />
-                </Grid>
-            </BrowserRouter>
-        </ThemeProvider>
-        </SnackbarProvider>
-    );
+          </Grid>
+        </BrowserRouter>
+      </ThemeProvider>
+    </SnackbarProvider>
+  );
 };
 
 ServiceMainForm.propTypes = {
-    /**
- * The Titile that is going to be displayed inside the form
- */
-    title: PropTypes.string,
-    /**
-    * The callBack function after the modal data is saved (should be a react hook )
-    */
-    close: PropTypes.func,
+  /**
+   * The Titile that is going to be displayed inside the form
+   */
+  title: PropTypes.string,
+  /**
+   * The callBack function after the modal data is saved (should be a react hook )
+   */
+  close: PropTypes.func,
 
-    /**
-  * The form action
-  */
-    action: PropTypes.oneOf(['create', 'Sub-service-creation']),
-    /**
-* The function to get the services data after a save
-*/
-getServices: PropTypes.func,
-    /**
-* The corrent Tenant data (you can pass it all otherwise only the name and the id)
-*/
-tenantName_id: PropTypes.arrayOf(PropTypes.object),
-    /**
-* The corrent Service data
-*/
-service: PropTypes.object,
-
+  /**
+   * The form action
+   */
+  action: PropTypes.oneOf(['create', 'Sub-service-creation']),
+  /**
+   * The function to get the services data after a save
+   */
+  getServices: PropTypes.func,
+  /**
+   * The corrent Tenant data (you can pass it all otherwise only the name and the id)
+   */
+  tenantName_id: PropTypes.arrayOf(PropTypes.object),
+  /**
+   * The corrent Service data
+   */
+  service: PropTypes.object
 };
 
 ServiceMainForm.defaultProps = {
-    title: "",
-    close: () => { },
-    action: "",
-    service:{},
-    getServices: () => { },
-    tenantName_id: [{}]
+  title: '',
+  close: () => {},
+  action: '',
+  service: {},
+  getServices: () => {},
+  tenantName_id: [{}]
 };

@@ -1,12 +1,12 @@
-import * as React from 'react'
-import Box from '@mui/material/Box'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
-import Select from '@mui/material/Select'
-import {styled } from '@mui/material/styles'
-import IconList from '../tenant/iconList'
-import ListItemIcon from '@mui/material/ListItemIcon'
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import { styled } from '@mui/material/styles';
+import IconList from '../tenant/iconList';
+import ListItemIcon from '@mui/material/ListItemIcon';
 
 const TenantSelect = styled(Select)(({ theme }) => ({
   '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
@@ -59,24 +59,20 @@ const TenantSelect = styled(Select)(({ theme }) => ({
   '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
     borderColor: theme.palette.primary.contrastText
   }
-}))
+}));
 
 const TenantLabel = styled(InputLabel)(({ theme }) => ({
   color: theme.palette.primary.contrastText + ' !important'
-}))
-export default function TenantSelection ({
-  tenantValues,
-  seTenant,
-  correntValue
-}) {
-  const listOfIcons = IconList()
+}));
+export default function TenantSelection({ tenantValues, seTenant, correntValue }) {
+  const listOfIcons = IconList();
   const iconMapper = (iconName) => {
-    const thisIcon = listOfIcons.filter((e) => e.name === iconName)
-    return thisIcon[0].icon
-  }
+    const thisIcon = listOfIcons.filter((e) => e.name === iconName);
+    return thisIcon[0].icon;
+  };
   const handleChange = (event) => {
-    seTenant(event.target.value)
-  }
+    seTenant(event.target.value);
+  };
 
   return (
     <Box sx={{ minWidth: 300 }}>
@@ -99,5 +95,5 @@ export default function TenantSelection ({
         </TenantSelect>
       </FormControl>
     </Box>
-  )
+  );
 }

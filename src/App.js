@@ -1,70 +1,58 @@
-import React, { Component } from 'react'
-import {
-  styled,
-  createTheme,
-  ThemeProvider
-} from '@mui/material/styles'
-import Box from '@mui/material/Box'
-import Drawer from '@mui/material/Drawer'
-import CssBaseline from '@mui/material/CssBaseline'
-import MuiAppBar from '@mui/material/AppBar'
-import Toolbar from '@mui/material/Toolbar'
-import List from '@mui/material/List'
-import Typography from '@mui/material/Typography'
-import Divider from '@mui/material/Divider'
-import IconButton from '@mui/material/IconButton'
-import MenuIcon from '@mui/icons-material/Menu'
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-import ListItem from '@mui/material/ListItem'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import ListItemText from '@mui/material/ListItemText'
-import InboxIcon from '@mui/icons-material/MoveToInbox'
-import Grid from '@mui/material/Grid'
-import TenantSelection from './components/shared/tenantSelection'
-import axios from 'axios'
-import {
-  ApolloClient,
-  InMemoryCache,
-  from,
-  gql,
-  createHttpLink
-} from '@apollo/client'
-import { onError } from "@apollo/client/link/error";
+import React, { Component } from 'react';
+import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+import CssBaseline from '@mui/material/CssBaseline';
+import MuiAppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import List from '@mui/material/List';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import Grid from '@mui/material/Grid';
+import TenantSelection from './components/shared/tenantSelection';
+import axios from 'axios';
+import { ApolloClient, InMemoryCache, from, gql, createHttpLink } from '@apollo/client';
+import { onError } from '@apollo/client/link/error';
 import { setContext } from '@apollo/client/link/context';
 import { SnackbarProvider } from 'notistack';
-import TenantPage from './pages/tenantPage'
-import ServicePage from './pages/servicePage'
-import PolicyPage from './pages/policyPage'
-import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
-import jwt_decode from 'jwt-decode'
-import UserMenu from './components/shared/userMenu'
+import TenantPage from './pages/tenantPage';
+import ServicePage from './pages/servicePage';
+import PolicyPage from './pages/policyPage';
+import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
+import jwt_decode from 'jwt-decode';
+import UserMenu from './components/shared/userMenu';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import { getEnv } from './env'
+import { getEnv } from './env';
 
-const env = getEnv()
+const env = getEnv();
 
-const drawerWidth = 240
+const drawerWidth = 240;
 
-const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    flexGrow: 1,
-    padding: theme.spacing(12),
+const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
+  flexGrow: 1,
+  padding: theme.spacing(12),
+  transition: theme.transitions.create('margin', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen
+  }),
+  marginLeft: `-${drawerWidth}px`,
+  ...(open && {
     transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen
     }),
-    marginLeft: `-${drawerWidth}px`,
-    ...(open && {
-      transition: theme.transitions.create('margin', {
-        easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen
-      }),
-      marginLeft: 0
-    })
+    marginLeft: 0
   })
-)
+}));
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open'
@@ -83,12 +71,12 @@ const AppBar = styled(MuiAppBar, {
       duration: theme.transitions.duration.enteringScreen
     })
   })
-}))
+}));
 
 const CustomToolbar = styled(Toolbar)({
   height: '100px',
   borderRadius: 4
-})
+});
 
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -97,23 +85,23 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
   justifyContent: 'flex-end'
-}))
+}));
 
 export default class App extends Component {
   state = {
     open: false,
     setOpen: (newValue) => {
-      this.setState({ open: newValue, direction: newValue ? 'ltr' : '' })
+      this.setState({ open: newValue, direction: newValue ? 'ltr' : '' });
     },
     direction: 'ltr',
     tokenData: [],
     groups: [],
     language: '',
     setAppLanguage: (newLanguagePreference) => {
-      this.setState({ language: newLanguagePreference })
+      this.setState({ language: newLanguagePreference });
     },
     catchColor: (newID) => {
-      const data = this.state.tenants.filter((e) => e.id === newID)
+      const data = this.state.tenants.filter((e) => e.id === newID);
       if (data.length > 0) {
         this.setState(
           {
@@ -132,8 +120,8 @@ export default class App extends Component {
               }
             })
           },
-          () => { }
-        )
+          () => {}
+        );
       }
     },
     tenantColor: createTheme({
@@ -151,78 +139,81 @@ export default class App extends Component {
     tenants: [],
     thisTenant: '',
     seTenant: (newValue) => {
-      this.setState({ thisTenant: newValue })
-      this.state.catchColor(newValue)
+      this.setState({ thisTenant: newValue });
+      this.state.catchColor(newValue);
     },
     preferencesMapper: (data, userTenants) => {
       data.map((thisData, i) => {
         const index = userTenants
           .map(function (e) {
-            return e.name
+            return e.name;
           })
-          .indexOf(thisData.name)
-        userTenants[index].props = thisData
-        return i
-      })
-      return userTenants
+          .indexOf(thisData.name);
+        userTenants[index].props = thisData;
+        return i;
+      });
+      return userTenants;
     },
     connectionIssue: false,
-    recall:null,
+    recall: null,
     getNetworkError: (thisError) => {
-if(thisError !==""){
-  this.setState({
-    connectionIssue:
-      <Snackbar open={true} sx={{ width: "100%", left: "0px !important", right: "0px !important", bottom: "0px !important" }}>
-        <Alert variant="filled" severity="error" sx={{ width: "100%", left: "0px", right: "0px", bottom: "0px" }}>
-          {thisError}
-        </Alert>
-      </Snackbar>
-  })
-  this.setState({recall:  setInterval(() => this.state.getTenants(), 10000)})
-}else{
-  this.setState({
-    connectionIssue:
-      <Snackbar open={true} sx={{ width: "100%", left: "0px !important", right: "0px !important", bottom: "0px !important" }}>
-        <Alert variant="filled" severity="info" sx={{ width: "100%", left: "0px", right: "0px", bottom: "0px" }}>
-          Online
-        </Alert>
-      </Snackbar>
-  })
-  setTimeout( function() { location.reload(); }, 2300);
-}
-     
+      if (thisError !== '') {
+        this.setState({
+          connectionIssue: (
+            <Snackbar
+              open={true}
+              sx={{ width: '100%', left: '0px !important', right: '0px !important', bottom: '0px !important' }}
+            >
+              <Alert variant="filled" severity="error" sx={{ width: '100%', left: '0px', right: '0px', bottom: '0px' }}>
+                {thisError}
+              </Alert>
+            </Snackbar>
+          )
+        });
+        this.setState({ recall: setInterval(() => this.state.getTenants(), 10000) });
+      } else {
+        this.setState({
+          connectionIssue: (
+            <Snackbar
+              open={true}
+              sx={{ width: '100%', left: '0px !important', right: '0px !important', bottom: '0px !important' }}
+            >
+              <Alert variant="filled" severity="info" sx={{ width: '100%', left: '0px', right: '0px', bottom: '0px' }}>
+                Online
+              </Alert>
+            </Snackbar>
+          )
+        });
+        setTimeout(function () {
+          location.reload();
+        }, 2300);
+      }
     },
     getTenants: () => {
       axios
         .get(env.ANUBIS_API_URL + 'v1/tenants')
         .then((response) => {
-          const userTenants = []
-          let tenantFiltered = []
-          const tenantFilteredNames = []
+          const userTenants = [];
+          let tenantFiltered = [];
+          const tenantFilteredNames = [];
           this.state.tokenData.tenants.map((thisTenant, index) => {
-            tenantFiltered = response.data.filter(
-              (e) => e.name === thisTenant.name
-            )
-            tenantFiltered.length > 0
-              ? userTenants.push(tenantFiltered[0])
-              : (tenantFiltered = [])
-            return index
-          })
+            tenantFiltered = response.data.filter((e) => e.name === thisTenant.name);
+            tenantFiltered.length > 0 ? userTenants.push(tenantFiltered[0]) : (tenantFiltered = []);
+            return index;
+          });
           userTenants.map((thisTenant, index) => {
-            tenantFilteredNames.push(thisTenant.name.toString())
-            return index
-          })
+            tenantFilteredNames.push(thisTenant.name.toString());
+            return index;
+          });
           const httpLink = createHttpLink({
             uri: env.CONFIGURATION_API_URL
-          })
+          });
 
           const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
             if (graphQLErrors)
-              graphQLErrors.forEach(({ message }) =>
-                operation.variables.state.getNetworkError(message)
-              );
+              graphQLErrors.forEach(({ message }) => operation.variables.state.getNetworkError(message));
             if (networkError) {
-              operation.variables.state.getNetworkError("Network error: " + networkError.message)
+              operation.variables.state.getNetworkError('Network error: ' + networkError.message);
             }
           });
 
@@ -234,15 +225,13 @@ if(thisError !==""){
                 ...headers,
                 authorization: `Bearer ${this.props.accessToken}`
               }
-            }
+            };
           });
 
           const client = new ApolloClient({
-            link: from([
-              errorLink, authLink.concat(httpLink)
-            ]),
-            cache: new InMemoryCache(),
-          })
+            link: from([errorLink, authLink.concat(httpLink)]),
+            cache: new InMemoryCache()
+          });
 
           client
             .query({
@@ -262,8 +251,9 @@ if(thisError !==""){
               }
             })
             .then((result) => {
-              if (this.state.connectionIssue){this.state.getNetworkError("")
-             }
+              if (this.state.connectionIssue) {
+                this.state.getNetworkError('');
+              }
               client
                 .query({
                   query: gql`
@@ -280,33 +270,28 @@ if(thisError !==""){
                   }
                 })
                 .then((result) => {
-                  this.state.setAppLanguage(
-                    result.data.getUserPreferences[0].language
-                  )
-                })
+                  this.state.setAppLanguage(result.data.getUserPreferences[0].language);
+                });
               this.setState({
-                tenants: this.state.preferencesMapper(
-                  result.data.listTenants,
-                  userTenants
-                )
-              })
-              this.state.seTenant(this.state.thisTenant)
-            })
+                tenants: this.state.preferencesMapper(result.data.listTenants, userTenants)
+              });
+              this.state.seTenant(this.state.thisTenant);
+            });
         })
         .catch((e) => {
-          if(e.message === "Network Error"){
-          this.state.getNetworkError(e.message)}
-        })
+          if (e.message === 'Network Error') {
+            this.state.getNetworkError(e.message);
+          }
+        });
     },
     afterLogin: (authenticated) => {
       if (authenticated) {
-        const decoded = jwt_decode(this.props.accessToken)
-        this.setState({ tokenData: decoded })
-        this.state.getTenants()
+        const decoded = jwt_decode(this.props.accessToken);
+        this.setState({ tokenData: decoded });
+        this.state.getTenants();
       }
-
     }
-  }
+  };
   constructor(props) {
     super(props);
   }
@@ -314,23 +299,23 @@ if(thisError !==""){
     { name: 'Tenant', route: '/Tenant', icon: <InboxIcon></InboxIcon> },
     { name: 'Service', route: '/Service', icon: <InboxIcon></InboxIcon> },
     { name: 'Policy', route: '/Policy', icon: <InboxIcon></InboxIcon> }
-  ]
+  ];
 
   componentDidMount() {
     if (!this.props.isAuthenticated) {
       this.props.login();
     } else {
-      this.state.afterLogin(this.props.isAuthenticated)
+      this.state.afterLogin(this.props.isAuthenticated);
     }
   }
 
   handleDrawerOpen = () => {
-    this.state.setOpen(true)
-  }
+    this.state.setOpen(true);
+  };
 
   handleDrawerClose = () => {
-    this.state.setOpen(false)
-  }
+    this.state.setOpen(false);
+  };
 
   render() {
     return (
@@ -350,11 +335,7 @@ if(thisError !==""){
                   >
                     <MenuIcon />
                   </IconButton>
-                  <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{ flexGrow: 1 }}
-                  ></Typography>
+                  <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}></Typography>
                   <div>
                     <TenantSelection
                       seTenant={this.state.seTenant}
@@ -389,13 +370,7 @@ if(thisError !==""){
               >
                 <DrawerHeader>
                   <IconButton onClick={this.handleDrawerClose}>
-                    {this.state.direction === 'ltr'
-                      ? (
-                        <ChevronLeftIcon />
-                      )
-                      : (
-                        <ChevronRightIcon />
-                      )}
+                    {this.state.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                   </IconButton>
                 </DrawerHeader>
                 <Divider />
@@ -412,53 +387,51 @@ if(thisError !==""){
                 <Divider />
               </Drawer>
               {this.state.connectionIssue}
-              {this.props.isAuthenticated && !this.state.connectionIssue
-                ? (
-                  <Main open={this.state.open}>
-                    <Grid container id="filterContainer"></Grid>
-                    <Routes>
-                      <Route
-                        path="Tenant"
-                        element={
-                          <TenantPage
-                            token={this.props.accessToken}
-                            getTenants={this.state.getTenants}
-                            tenantValues={this.state.tenants}
-                            seTenant={this.state.seTenant}
-                          />
-                        }
-                      />
-                      <Route
-                        path="Service"
-                        element={
-                          <ServicePage
-                            getTenants={this.state.getTenants}
-                            tenantValues={this.state.tenants}
-                            thisTenant={this.state.thisTenant}
-                          />
-                        }
-                      />
-                      <Route
-                        path="Policy"
-                        element={
-                          <PolicyPage
-                            getTenants={this.state.getTenants}
-                            tenantValues={this.state.tenants}
-                            thisTenant={this.state.thisTenant}
-                          />
-                        }
-                      />
-                    </Routes>
-                  </Main>
-                )
-                : (
-                  <Main open={this.state.open} />
-                )}
+              {this.props.isAuthenticated && !this.state.connectionIssue ? (
+                <Main open={this.state.open}>
+                  <Grid container id="filterContainer"></Grid>
+                  <Routes>
+                    <Route
+                      path="Tenant"
+                      element={
+                        <TenantPage
+                          token={this.props.accessToken}
+                          getTenants={this.state.getTenants}
+                          tenantValues={this.state.tenants}
+                          seTenant={this.state.seTenant}
+                        />
+                      }
+                    />
+                    <Route
+                      path="Service"
+                      element={
+                        <ServicePage
+                          getTenants={this.state.getTenants}
+                          tenantValues={this.state.tenants}
+                          thisTenant={this.state.thisTenant}
+                        />
+                      }
+                    />
+                    <Route
+                      path="Policy"
+                      element={
+                        <PolicyPage
+                          getTenants={this.state.getTenants}
+                          tenantValues={this.state.tenants}
+                          thisTenant={this.state.thisTenant}
+                        />
+                      }
+                    />
+                  </Routes>
+                </Main>
+              ) : (
+                <Main open={this.state.open} />
+              )}
               <DrawerHeader />
             </BrowserRouter>
           </Box>
         </ThemeProvider>
       </SnackbarProvider>
-    )
+    );
   }
 }

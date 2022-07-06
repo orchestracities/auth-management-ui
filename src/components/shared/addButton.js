@@ -1,17 +1,16 @@
-import * as React from 'react'
-import Stack from '@mui/material/Stack'
-import IconButton from '@mui/material/IconButton'
-import { styled } from '@mui/material/styles'
-import AddIcon from '@mui/icons-material/Add'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-
+import * as React from 'react';
+import Stack from '@mui/material/Stack';
+import IconButton from '@mui/material/IconButton';
+import { styled } from '@mui/material/styles';
+import AddIcon from '@mui/icons-material/Add';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
 
 const bottomStyle = {
   position: 'fixed',
   bottom: '25px',
   right: '25px'
-}
+};
 
 const NewElement = styled(IconButton)(({ theme }) => ({
   borderRadius: 15,
@@ -20,22 +19,22 @@ const NewElement = styled(IconButton)(({ theme }) => ({
   '&:hover': {
     background: theme.palette.secondary.main
   }
-}))
+}));
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
     borderRadius: 15
   }
-}))
+}));
 
-export default function AddButton ({ pageType, setOpen, status }) {
+export default function AddButton({ pageType, setOpen, status }) {
   const handleClickOpen = () => {
-    setOpen(true)
-  }
+    setOpen(true);
+  };
 
   const handleClose = () => {
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
   return (
     <div>
@@ -56,5 +55,5 @@ export default function AddButton ({ pageType, setOpen, status }) {
         <DialogActions></DialogActions>
       </DialogRounded>
     </div>
-  )
+  );
 }

@@ -1,90 +1,75 @@
-import * as React from 'react'
-import { MainTitle } from '../components/shared/mainTitle'
-import AddButton from '../components/shared/addButton'
-import { Grid } from '@mui/material'
-import SortButton from '../components/shared/sortButton'
-import DashboardCard from '../components/shared/cards'
-import ServiceForm from '../components/service/serviceForm'
-import axios from 'axios'
-import Grow from '@mui/material/Grow'
-import { Trans } from 'react-i18next'
-import useNotification from '../components/shared/messages/alerts'
-import { getEnv } from "../env"
+import * as React from 'react';
+import { MainTitle } from '../components/shared/mainTitle';
+import AddButton from '../components/shared/addButton';
+import { Grid } from '@mui/material';
+import SortButton from '../components/shared/sortButton';
+import DashboardCard from '../components/shared/cards';
+import ServiceForm from '../components/service/serviceForm';
+import axios from 'axios';
+import Grow from '@mui/material/Grow';
+import { Trans } from 'react-i18next';
+import useNotification from '../components/shared/messages/alerts';
+import { getEnv } from '../env';
 
-const env = getEnv()
+const env = getEnv();
 
-export default function ServicePage ({ getTenants, tenantValues, thisTenant }) {
-  const [createOpen, setCreateOpen] = React.useState(false)
-  const [services, setServices] = React.useState([{ children: [] }])
-  const [msg, sendNotification] = useNotification()
-  console.log(msg)
+export default function ServicePage({ getTenants, tenantValues, thisTenant }) {
+  const [createOpen, setCreateOpen] = React.useState(false);
+  const [services, setServices] = React.useState([{ children: [] }]);
+  const [msg, sendNotification] = useNotification();
+  console.log(msg);
 
-  const tenantFiltered= tenantValues.filter(
-    (e) => e.id === thisTenant
-  )
-  const tenantData=tenantFiltered[0]
+  const tenantFiltered = tenantValues.filter((e) => e.id === thisTenant);
+  const tenantData = tenantFiltered[0];
   const incrementColor = (color, step) => {
-    let colorToInt = parseInt(color.substr(1), 16)
-    const nstep = parseInt(step)
+    let colorToInt = parseInt(color.substr(1), 16);
+    const nstep = parseInt(step);
     if (!isNaN(colorToInt) && !isNaN(nstep)) {
-      colorToInt += nstep
-      let ncolor = colorToInt.toString(16)
-      ncolor = '#' + new Array(7 - ncolor.length).join(0) + ncolor
+      colorToInt += nstep;
+      let ncolor = colorToInt.toString(16);
+      ncolor = '#' + new Array(7 - ncolor.length).join(0) + ncolor;
       if (/^#[0-9a-f]{6}$/i.test(ncolor)) {
-        return ncolor
+        return ncolor;
       }
     }
-    return color
-  }
+    return color;
+  };
 
   const getServices = () => {
     axios
-      .get(
-        env.ANUBIS_API_URL +
-          'v1/tenants/' +
-          thisTenant +
-          '/service_paths'
-      )
+      .get(env.ANUBIS_API_URL + 'v1/tenants/' + thisTenant + '/service_paths')
       .then((response) => {
-        response.data[0].children.map((service, index) => (
-          service.primaryColor=incrementColor(
-            tenantData.props.primaryColor,
-            index*30
-          )
-        ))
-        response.data[0].children.map((service, index) => (
-          service.secondaryColor=incrementColor(
-            tenantData.props.secondaryColor,
-            index*50
-          )
-        )) 
-       
-        setServices(response.data)
-        getTenants()
+        response.data[0].children.map(
+          (service, index) => (service.primaryColor = incrementColor(tenantData.props.primaryColor, index * 30))
+        );
+        response.data[0].children.map(
+          (service, index) => (service.secondaryColor = incrementColor(tenantData.props.secondaryColor, index * 50))
+        );
+
+        setServices(response.data);
+        getTenants();
       })
       .catch((e) => {
-        getTenants()
+        getTenants();
         if (e.response) {
-          e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
+          e.response.data.detail.map((thisError) => sendNotification({ msg: thisError.msg, variant: 'error' }));
         } else {
-          sendNotification({msg:e.message + ": cannot reach policy managenent api", variant: 'error'})
+          sendNotification({ msg: e.message + ': cannot reach policy managenent api', variant: 'error' });
         }
-      })
-  }
+      });
+  };
 
   React.useEffect(() => {
-    getServices()
-  }, [thisTenant])
-  const mainTitle = <Trans>service.titles.page</Trans>
+    getServices();
+  }, [thisTenant]);
+  const mainTitle = <Trans>service.titles.page</Trans>;
 
   return (
     <div>
       <MainTitle mainTitle={mainTitle}></MainTitle>
-      {typeof thisTenant === "undefined" || thisTenant === ''
-        ? (
-            ''
-          )
-        : (
+      {typeof thisTenant === 'undefined' || thisTenant === '' ? (
+        ''
+      ) : (
         <AddButton
           pageType={
             <ServiceForm
@@ -98,32 +83,26 @@ export default function ServicePage ({ getTenants, tenantValues, thisTenant }) {
           setOpen={setCreateOpen}
           status={createOpen}
         ></AddButton>
-          )}
+      )}
       <Grid container spacing={2} sx={{ marginLeft: '15px ' }}>
         <Grid item xs={12}>
-          {services[0].children.length > 0
-            ? (
-            <SortButton
-              data={services[0].children}
-              id={'path'}
-              sortData={setServices}
-            ></SortButton>
-              )
-            : (
-                ''
-              )}
+          {services[0].children.length > 0 ? (
+            <SortButton data={services[0].children} id={'path'} sortData={setServices}></SortButton>
+          ) : (
+            ''
+          )}
         </Grid>
         {services[0].children.map((service, index) => (
           <Grow
             key={index}
             in={true}
             style={{ transformOrigin: '0 0 0' }}
-            {...(service.id===service.id ? { timeout: index * 600 } : {})}
+            {...(service.id === service.id ? { timeout: index * 600 } : {})}
           >
             <Grid item xs={4}>
               <DashboardCard
                 key={service.id}
-                colors={{secondaryColor:service.secondaryColor,primaryColor:service.primaryColor}}
+                colors={{ secondaryColor: service.secondaryColor, primaryColor: service.primaryColor }}
                 pageType={
                   <ServiceForm
                     title={<Trans>service.titles.edit</Trans>}
@@ -141,5 +120,5 @@ export default function ServicePage ({ getTenants, tenantValues, thisTenant }) {
         ))}
       </Grid>
     </div>
-  )
+  );
 }

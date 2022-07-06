@@ -7,17 +7,9 @@ import React from 'react';
  * Primary UI component for user interaction
  */
 
-
 export const SimpleTitle = ({ mainTitle }) => {
-
-
   return (
-    <Grid
-      container
-      direction="column"
-      justifyContent="center"
-      alignItems="center"
-    >
+    <Grid container direction="column" justifyContent="center" alignItems="center">
       <MainTitle mainTitle={mainTitle}></MainTitle>
     </Grid>
   );
@@ -25,12 +17,11 @@ export const SimpleTitle = ({ mainTitle }) => {
 
 SimpleTitle.propTypes = {
   /**
-    * is a string that can be passed as a value or as a translatedComponent with i18next
-    */
-  mainTitle: PropTypes.string.isRequired,
-
+   * is a string that can be passed as a value or as a translatedComponent with i18next
+   */
+  mainTitle: PropTypes.string.isRequired
 };
 
 SimpleTitle.defaultProps = {
-  mainTitle: "",
+  mainTitle: ''
 };

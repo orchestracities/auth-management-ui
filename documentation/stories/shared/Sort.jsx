@@ -7,42 +7,31 @@ import React from 'react';
  * Primary UI component for user interaction
  */
 
-
-export const Sort = ({ data,
-    id,
-    sortData }) => {
- 
-
+export const Sort = ({ data, id, sortData }) => {
   return (
-    <Grid
-  >
-    <SortButton
-    data={data}
-    id={id}
-    sortData={sortData}
-  ></SortButton>
-  </Grid>
+    <Grid>
+      <SortButton data={data} id={id} sortData={sortData}></SortButton>
+    </Grid>
   );
 };
 
 Sort.propTypes = {
- /**
+  /**
    * The array of Objects that needs to be sorted
    */
-    data: PropTypes.arrayOf(PropTypes.object),
- /**
+  data: PropTypes.arrayOf(PropTypes.object),
+  /**
    * The main property of the objects that will define the order
    */
-    id: PropTypes.oneOf(['path', 'name']),
- /**
+  id: PropTypes.oneOf(['path', 'name']),
+  /**
    * The callBack function after the sort (should be a react hook )
    */
-    sortData:PropTypes.func,
-
+  sortData: PropTypes.func
 };
 
 Sort.defaultProps = {
-    data:[],
-    id:undefined,
-    sortData:undefined
+  data: [],
+  id: undefined,
+  sortData: undefined
 };
