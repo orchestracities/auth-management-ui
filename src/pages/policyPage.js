@@ -8,6 +8,7 @@ import PolicyForm from '../components/policy/policyForm'
 import axios from 'axios'
 import Typography from '@mui/material/Typography'
 import { Trans } from 'react-i18next'
+import useNotification from '../components/shared/messages/alerts'
 
 export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
   const [mode, setMode] = React.useState(null)
@@ -18,6 +19,9 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
   const [policyFilter, setPolicyFilter] = React.useState(null)
 
   const [open, setOpen] = React.useState(false)
+  const [msg, sendNotification] = useNotification()
+  console.log(msg)
+
   const tenantName_id = () => {
     const tenantArray = tenantValues.filter((e) => e.id === thisTenant)
     return tenantArray[0].name
@@ -40,7 +44,12 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
         getTenants()
       })
       .catch((e) => {
-        console.error(e)
+        getTenants()
+        if (e.response) {
+          e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
+        } else {
+          sendNotification({msg:e.message + ": cannot reach policy managenent api", variant: 'error'})
+        }
       })
   }
   // policies
@@ -62,7 +71,11 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
           setPolicies(datAccumulator)
         })
         .catch((e) => {
-          console.error(e)
+          if (e.response) {
+            e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
+          } else {
+            sendNotification({msg:e.message + ": cannot reach policy managenent api", variant: 'error'})
+          }
         })
     }
     console.log(policies)
@@ -113,7 +126,11 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
           }
         })
         .catch((e) => {
-          console.error(e)
+          if (e.response) {
+            e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
+          } else {
+            sendNotification({msg:e.message + ": cannot reach policy managenent api", variant: 'error'})
+          }
         })
     }
     console.log(policies)
@@ -126,7 +143,7 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
     axios
       .get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies/access-modes')
       .then((response) => setAccess_modes(response.data))
-      .catch((err) => console.log(err))
+      .catch((err) => sendNotification({msg:err.message + ": cannot reach policy managenent api", variant: 'error'}))
   }, [thisTenant])
 
   const [agentsTypes, setagentsTypes] = React.useState([])
@@ -136,7 +153,7 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
     axios
       .get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies/agent-types')
       .then((response) => setagentsTypes(response.data))
-      .catch((err) => console.log(err))
+      .catch((err) => sendNotification({msg:err.message + ": cannot reach policy managenent api", variant: 'error'}))
   }, [thisTenant])
 
   const mainTitle = <Trans>policies.titles.page</Trans>

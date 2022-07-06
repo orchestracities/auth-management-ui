@@ -8,11 +8,15 @@ import ServiceForm from '../components/service/serviceForm'
 import axios from 'axios'
 import Grow from '@mui/material/Grow'
 import { Trans } from 'react-i18next'
+import useNotification from '../components/shared/messages/alerts'
 
 export default function ServicePage ({ getTenants, tenantValues, thisTenant }) {
   const [createOpen, setCreateOpen] = React.useState(false)
   const [services, setServices] = React.useState([{ children: [] }])
- const tenantFiltered= tenantValues.filter(
+  const [msg, sendNotification] = useNotification()
+  console.log(msg)
+
+  const tenantFiltered= tenantValues.filter(
     (e) => e.id === thisTenant
   )
   const tenantData=tenantFiltered[0]
@@ -56,7 +60,12 @@ export default function ServicePage ({ getTenants, tenantValues, thisTenant }) {
         getTenants()
       })
       .catch((e) => {
-        console.error(e)
+        getTenants()
+        if (e.response) {
+          e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
+        } else {
+          sendNotification({msg:e.message + ": cannot reach policy managenent api", variant: 'error'})
+        }
       })
   }
 

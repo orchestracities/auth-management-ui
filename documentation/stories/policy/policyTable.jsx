@@ -7,6 +7,7 @@ import { createTheme, ThemeProvider} from '@mui/material/styles';
 import { orange } from '@mui/material/colors';
 import "../../../src/i18n";
 import React from 'react';
+import { SnackbarProvider } from "notistack";
 
 /**
  * Primary UI component for user interaction
@@ -24,6 +25,7 @@ export const  PolicyDataInTable= ({
     agentsTypes,
 }) => {
     return (
+        <SnackbarProvider maxSnack={5}>
         <ThemeProvider theme={theme}>
             <BrowserRouter>
                 <Grid
@@ -37,6 +39,7 @@ export const  PolicyDataInTable= ({
                 </Grid>
             </BrowserRouter>
         </ThemeProvider>
+        </SnackbarProvider>
     );
 };
 

@@ -69,6 +69,11 @@
     }
   },
   "common": {
+    "messages":{
+      "sucessUpdate": "{{data}}  Updated",
+      "sucessCreate": " A {{data}} has been created",
+      "sucessDelete": "{{data}} has been destroyed"
+    },
     "deleteTooltip": "Delete",
     "deleteText": "Are you really sure about deleting:",
     "deleteTextTitle": "Are you sure?",

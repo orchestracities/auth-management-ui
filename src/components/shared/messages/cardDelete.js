@@ -8,7 +8,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import { styled } from '@mui/material/styles'
 import axios from 'axios'
 import { Trans } from 'react-i18next'
-
+import useNotification from './alerts'
 const DialogDiv = styled('div')(() => ({
   background: '#ff000040'
 }))
@@ -19,6 +19,8 @@ const DialogRounded = styled(Dialog)(() => ({
 }))
 
 export default function DeleteDialog (props) {
+  const [msg, sendNotification] = useNotification();
+  console.log(msg)
   const { open, onClose, getData, data } = props
 
   const deleteMapper = (thisData) => {
@@ -79,9 +81,16 @@ export default function DeleteDialog (props) {
           )
           .then(() => {
             getData()
+            sendNotification({msg:<Trans
+              i18nKey="common.messages.sucessDelete"
+              values={{
+                data:
+                thisData.id
+              }}
+            />, variant: 'info'})
           })
           .catch((e) => {
-            console.error(e)
+            e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
           })
       }
       data.setSelected([])
@@ -92,9 +101,16 @@ export default function DeleteDialog (props) {
         .then(() => {
           onClose(false)
           getData()
+          sendNotification({msg:<Trans
+            i18nKey="common.messages.sucessDelete"
+            values={{
+              data:
+              data.id
+            }}
+          />, variant: 'info'})
         })
         .catch((e) => {
-          console.error(e)
+          e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
         })
     }
   }

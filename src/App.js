@@ -26,16 +26,22 @@ import axios from 'axios'
 import {
   ApolloClient,
   InMemoryCache,
-  ApolloLink,
+  from,
   gql,
   createHttpLink
 } from '@apollo/client'
+import { onError } from "@apollo/client/link/error";
+import { setContext } from '@apollo/client/link/context';
+import { SnackbarProvider } from 'notistack';
 import TenantPage from './pages/tenantPage'
 import ServicePage from './pages/servicePage'
 import PolicyPage from './pages/policyPage'
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
 import jwt_decode from 'jwt-decode'
 import UserMenu from './components/shared/userMenu'
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+
 
 const drawerWidth = 240
 
@@ -124,7 +130,7 @@ export default class App extends Component {
               }
             })
           },
-          () => {}
+          () => { }
         )
       }
     },
@@ -158,6 +164,32 @@ export default class App extends Component {
       })
       return userTenants
     },
+    connectionIssue: false,
+    recall:null,
+    getNetworkError: (thisError) => {
+if(thisError !==""){
+  this.setState({
+    connectionIssue:
+      <Snackbar open={true} sx={{ width: "100%", left: "0px !important", right: "0px !important", bottom: "0px !important" }}>
+        <Alert variant="filled" severity="error" sx={{ width: "100%", left: "0px", right: "0px", bottom: "0px" }}>
+          {thisError}
+        </Alert>
+      </Snackbar>
+  })
+  this.setState({recall:  setInterval(() => this.state.getTenants(), 10000)})
+}else{
+  this.setState({
+    connectionIssue:
+      <Snackbar open={true} sx={{ width: "100%", left: "0px !important", right: "0px !important", bottom: "0px !important" }}>
+        <Alert variant="filled" severity="info" sx={{ width: "100%", left: "0px", right: "0px", bottom: "0px" }}>
+          Online
+        </Alert>
+      </Snackbar>
+  })
+  setTimeout( function() { location.reload(); }, 2300);
+}
+     
+    },
     getTenants: () => {
       axios
         .get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/tenants')
@@ -182,21 +214,32 @@ export default class App extends Component {
             uri: process.env.REACT_APP_CONFIGURATION_API_URL
           })
 
-          const authLink = new ApolloLink((operation, forward) => {
-            // add the authorization to the headers
-            operation.setContext(({ headers = {} }) => ({
+          const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
+            if (graphQLErrors)
+              graphQLErrors.forEach(({ message }) =>
+                operation.variables.state.getNetworkError(message)
+              );
+            if (networkError) {
+              operation.variables.state.getNetworkError("Network error: " + networkError.message)
+            }
+          });
+
+          const authLink = setContext((_, { headers }) => {
+            // get the authentication token from local storage if it exists
+            // return the headers to the context so httpLink can read them
+            return {
               headers: {
                 ...headers,
                 authorization: `Bearer ${this.props.accessToken}`
               }
-            }))
-
-            return forward(operation)
-          })
+            }
+          });
 
           const client = new ApolloClient({
-            link: authLink.concat(httpLink),
-            cache: new InMemoryCache()
+            link: from([
+              errorLink, authLink.concat(httpLink)
+            ]),
+            cache: new InMemoryCache(),
           })
 
           client
@@ -212,10 +255,13 @@ export default class App extends Component {
                 }
               `,
               variables: {
-                tenantNames: tenantFilteredNames
+                tenantNames: tenantFilteredNames,
+                state: this.state
               }
             })
             .then((result) => {
+              if (this.state.connectionIssue){this.state.getNetworkError("")
+             }
               client
                 .query({
                   query: gql`
@@ -227,7 +273,8 @@ export default class App extends Component {
                     }
                   `,
                   variables: {
-                    usrName: this.props.idTokenPayload.sub
+                    usrName: this.props.idTokenPayload.sub,
+                    state: this.state
                   }
                 })
                 .then((result) => {
@@ -245,33 +292,34 @@ export default class App extends Component {
             })
         })
         .catch((e) => {
-          console.error(e)
+          if(e.message === "Network Error"){
+          this.state.getNetworkError(e.message)}
         })
     },
     afterLogin: (authenticated) => {
-      if(authenticated){
- 
-          const decoded = jwt_decode(this.props.accessToken)
-          this.setState({ tokenData: decoded })
-          this.state.getTenants()}
-   
+      if (authenticated) {
+        const decoded = jwt_decode(this.props.accessToken)
+        this.setState({ tokenData: decoded })
+        this.state.getTenants()
+      }
+
     }
   }
   constructor(props) {
     super(props);
-   }
+  }
   links = [
     { name: 'Tenant', route: '/Tenant', icon: <InboxIcon></InboxIcon> },
     { name: 'Service', route: '/Service', icon: <InboxIcon></InboxIcon> },
     { name: 'Policy', route: '/Policy', icon: <InboxIcon></InboxIcon> }
   ]
 
-  componentDidMount () {
-   if(!this.props.isAuthenticated){
-    this.props.login();
-   }else{
-     this.state.afterLogin(this.props.isAuthenticated)
-   }
+  componentDidMount() {
+    if (!this.props.isAuthenticated) {
+      this.props.login();
+    } else {
+      this.state.afterLogin(this.props.isAuthenticated)
+    }
   }
 
   handleDrawerOpen = () => {
@@ -282,130 +330,133 @@ export default class App extends Component {
     this.state.setOpen(false)
   }
 
-  render () {
+  render() {
     return (
-      <ThemeProvider theme={this.state.tenantColor}>
-        <Box sx={{ display: 'flex' }}>
-          <BrowserRouter>
-            <CssBaseline />
-            <AppBar position="fixed" open={this.state.open}>
-              <CustomToolbar color="primary">
-                <IconButton
-                  color="inherit"
-                  aria-label="open drawer"
-                  onClick={this.handleDrawerOpen}
-                  edge="start"
-                  sx={{ mr: 2, ...(this.state.open && { display: 'none' }) }}
-                >
-                  <MenuIcon />
-                </IconButton>
-                <Typography
-                  variant="h6"
-                  component="div"
-                  sx={{ flexGrow: 1 }}
-                ></Typography>
-                <div>
-                  <TenantSelection
-                    seTenant={this.state.seTenant}
-                    tenantValues={this.state.tenants}
-                    correntValue={this.state.thisTenant}
-                  ></TenantSelection>
-                </div>
-                <div>
-                  <UserMenu
-                    token={this.props.accessToken}
-                    language={{
-                      language: this.state.language,
-                      setLanguage: this.state.setAppLanguage
-                    }}
-                    userData={ this.props.idTokenPayload}
-                  ></UserMenu>
-                </div>
-              </CustomToolbar>
-            </AppBar>
-            <Drawer
-              sx={{
-                width: drawerWidth,
-                flexShrink: 0,
-                '& .MuiDrawer-paper': {
+      <SnackbarProvider maxSnack={5}>
+        <ThemeProvider theme={this.state.tenantColor}>
+          <Box sx={{ display: 'flex' }}>
+            <BrowserRouter>
+              <CssBaseline />
+              <AppBar position="fixed" open={this.state.open}>
+                <CustomToolbar color="primary">
+                  <IconButton
+                    color="inherit"
+                    aria-label="open drawer"
+                    onClick={this.handleDrawerOpen}
+                    edge="start"
+                    sx={{ mr: 2, ...(this.state.open && { display: 'none' }) }}
+                  >
+                    <MenuIcon />
+                  </IconButton>
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ flexGrow: 1 }}
+                  ></Typography>
+                  <div>
+                    <TenantSelection
+                      seTenant={this.state.seTenant}
+                      tenantValues={this.state.tenants}
+                      correntValue={this.state.thisTenant}
+                    ></TenantSelection>
+                  </div>
+                  <div>
+                    <UserMenu
+                      token={this.props.accessToken}
+                      language={{
+                        language: this.state.language,
+                        setLanguage: this.state.setAppLanguage
+                      }}
+                      userData={this.props.idTokenPayload}
+                    ></UserMenu>
+                  </div>
+                </CustomToolbar>
+              </AppBar>
+              <Drawer
+                sx={{
                   width: drawerWidth,
-                  boxSizing: 'border-box'
-                }
-              }}
-              variant="persistent"
-              anchor="left"
-              open={this.state.open}
-            >
-              <DrawerHeader>
-                <IconButton onClick={this.handleDrawerClose}>
-                  {this.state.direction === 'ltr'
-                    ? (
-                    <ChevronLeftIcon />
+                  flexShrink: 0,
+                  '& .MuiDrawer-paper': {
+                    width: drawerWidth,
+                    boxSizing: 'border-box'
+                  }
+                }}
+                variant="persistent"
+                anchor="left"
+                open={this.state.open}
+              >
+                <DrawerHeader>
+                  <IconButton onClick={this.handleDrawerClose}>
+                    {this.state.direction === 'ltr'
+                      ? (
+                        <ChevronLeftIcon />
                       )
-                    : (
-                    <ChevronRightIcon />
+                      : (
+                        <ChevronRightIcon />
                       )}
-                </IconButton>
-              </DrawerHeader>
-              <Divider />
-              <List>
-                {this.links.map((thisItem, index) => (
-                  <NavLink to={thisItem.route} key={index}>
-                    <ListItem button key={thisItem.name}>
-                      <ListItemIcon>{thisItem.icon}</ListItemIcon>
-                      <ListItemText primary={thisItem.name} />
-                    </ListItem>
-                  </NavLink>
-                ))}
-              </List>
-              <Divider />
-            </Drawer>
-            {this.props.isAuthenticated
-              ? (
-              <Main open={this.state.open}>
-                <Grid container id="filterContainer"></Grid>
-                <Routes>
-                  <Route
-                    path="Tenant"
-                    element={
-                      <TenantPage
-                        token={this.props.accessToken}
-                        getTenants={this.state.getTenants}
-                        tenantValues={this.state.tenants}
-                        seTenant={this.state.seTenant}
+                  </IconButton>
+                </DrawerHeader>
+                <Divider />
+                <List>
+                  {this.links.map((thisItem, index) => (
+                    <NavLink to={thisItem.route} key={index}>
+                      <ListItem button key={thisItem.name}>
+                        <ListItemIcon>{thisItem.icon}</ListItemIcon>
+                        <ListItemText primary={thisItem.name} />
+                      </ListItem>
+                    </NavLink>
+                  ))}
+                </List>
+                <Divider />
+              </Drawer>
+              {this.state.connectionIssue}
+              {this.props.isAuthenticated && !this.state.connectionIssue
+                ? (
+                  <Main open={this.state.open}>
+                    <Grid container id="filterContainer"></Grid>
+                    <Routes>
+                      <Route
+                        path="Tenant"
+                        element={
+                          <TenantPage
+                            token={this.props.accessToken}
+                            getTenants={this.state.getTenants}
+                            tenantValues={this.state.tenants}
+                            seTenant={this.state.seTenant}
+                          />
+                        }
                       />
-                    }
-                  />
-                  <Route
-                    path="Service"
-                    element={
-                      <ServicePage
-                        getTenants={this.state.getTenants}
-                        tenantValues={this.state.tenants}
-                        thisTenant={this.state.thisTenant}
+                      <Route
+                        path="Service"
+                        element={
+                          <ServicePage
+                            getTenants={this.state.getTenants}
+                            tenantValues={this.state.tenants}
+                            thisTenant={this.state.thisTenant}
+                          />
+                        }
                       />
-                    }
-                  />
-                  <Route
-                    path="Policy"
-                    element={
-                      <PolicyPage
-                        getTenants={this.state.getTenants}
-                        tenantValues={this.state.tenants}
-                        thisTenant={this.state.thisTenant}
+                      <Route
+                        path="Policy"
+                        element={
+                          <PolicyPage
+                            getTenants={this.state.getTenants}
+                            tenantValues={this.state.tenants}
+                            thisTenant={this.state.thisTenant}
+                          />
+                        }
                       />
-                    }
-                  />
-                </Routes>
-              </Main>
+                    </Routes>
+                  </Main>
                 )
-              : (
-              <Main open={this.state.open} />
+                : (
+                  <Main open={this.state.open} />
                 )}
-            <DrawerHeader />
-          </BrowserRouter>
-        </Box>
-      </ThemeProvider>
+              <DrawerHeader />
+            </BrowserRouter>
+          </Box>
+        </ThemeProvider>
+      </SnackbarProvider>
     )
   }
 }

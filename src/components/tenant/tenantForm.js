@@ -20,6 +20,7 @@ import {
 } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
 import { Trans } from 'react-i18next'
+import useNotification from '../shared/messages/alerts'
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -37,6 +38,9 @@ export default function TenantForm ({
   getTenants,
   token
 }) {
+  const [msg, sendNotification] = useNotification();
+  console.log(msg)
+
   const [name, setName] = React.useState(
     action === 'modify' ? tenant.name : ' '
   )
@@ -79,10 +83,18 @@ export default function TenantForm ({
           })
           .then(() => {
             close(false)
+            sendNotification({msg:<Trans
+              i18nKey="common.messages.sucessCreate"
+              values={{
+                data:
+              "Tenant"
+              }}
+            />, variant: 'success'})
             getTenants()
           })
           .catch((e) => {
-            console.error(e)
+            getTenants()
+            e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
           })
 
         break
@@ -120,6 +132,17 @@ export default function TenantForm ({
           .then(() => {
             close(false)
             getTenants()
+            sendNotification({msg:<Trans
+              i18nKey="common.messages.sucessUpdate"
+              values={{
+                data:
+                name
+              }}
+            />, variant: 'success'})
+          })
+          .catch((e) => {
+            getTenants()
+            e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
           })
         break
       default:

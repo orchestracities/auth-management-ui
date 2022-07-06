@@ -7,6 +7,8 @@ import { BrowserRouter} from "react-router-dom";
 import { createTheme, ThemeProvider} from '@mui/material/styles';
 import { orange } from '@mui/material/colors';
 import "../../../src/i18n";
+import { SnackbarProvider } from "notistack";
+
 /**
  * Primary UI component for user interaction
  */
@@ -23,6 +25,7 @@ export const ChildrenOfTheService = ({
 }) => {
     const [open, sethisOpen] = useState(true);
     return (
+        <SnackbarProvider maxSnack={5}>
         <ThemeProvider theme={theme}>
             <BrowserRouter>
                 <Grid
@@ -39,6 +42,7 @@ export const ChildrenOfTheService = ({
                 </Grid>
             </BrowserRouter>
         </ThemeProvider>
+        </SnackbarProvider>
     );
 };
 

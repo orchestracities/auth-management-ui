@@ -11,6 +11,8 @@ import Grid from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
 import axios from 'axios'
 import InputAdornment from '@mui/material/InputAdornment'
+import useNotification from '../shared/messages/alerts'
+import { Trans } from 'react-i18next'
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -26,6 +28,9 @@ export default function ServiceForm ({
   tenantName_id,
   getServices
 }) {
+  const [msg, sendNotification] = useNotification();
+  console.log(msg)
+
   const handleClose = () => {
     close(false)
   }
@@ -48,9 +53,17 @@ export default function ServiceForm ({
           .then(() => {
             getServices()
             close(false)
+            sendNotification({msg:<Trans
+              i18nKey="common.messages.sucessCreate"
+              values={{
+                data:
+              "Service"
+              }}
+            />, variant: 'success'})
           })
           .catch((e) => {
-            console.error(e)
+            getServices()
+           sendNotification({msg: e.response.data.detail, variant: 'error'})
           })
         break
       case "Sub-service-creation":
@@ -58,7 +71,7 @@ export default function ServiceForm ({
           .post(
             process.env.REACT_APP_ANUBIS_API_URL +
               'v1/tenants/' +
-              tenantName_id[0].id +
+              tenantName_id.id +
               '/service_paths',
             {
               path: service.path + path
@@ -67,10 +80,18 @@ export default function ServiceForm ({
           .then(() => {
             getServices()
             close(false)
+            sendNotification({msg:<Trans
+              i18nKey="common.messages.sucessCreate"
+              values={{
+                data:
+              "Sub-service"
+              }}
+            />, variant: 'success'})
           })
           .catch((e) => {
-            console.error(e)
-          })
+            getServices()
+            sendNotification({msg: e.response.data.detail, variant: 'error'})
+                    })
         break
       default:
         break
@@ -117,7 +138,7 @@ export default function ServiceForm ({
               id="Tenant"
               label="Tenant"
               variant="outlined"
-              defaultValue={tenantName_id[0].name}
+              defaultValue={tenantName_id.name}
               disabled
               sx={{
                 width: '100%'

@@ -27,7 +27,8 @@ if [[ $1 == "dev" ]]; then
     docker-compose -f docker-compose-dev.yml up -d
 else
     docker-compose up -d
-    docker run --env MONGO_DB="mongodb://mongo:27017/graphql" --network=auth-management-ui_envoymesh orchestracities/configuration-api node main/mongo/populateDB.js
+    docker run --name populatedb --env MONGO_DB="mongodb://mongo:27017/graphql" --network=auth-management-ui_envoymesh orchestracities/configuration-api node main/mongo/populateDB.js
+    docker rm -f populatedb
 fi
 
 wait=0

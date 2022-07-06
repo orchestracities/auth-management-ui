@@ -22,7 +22,7 @@ import Tooltip from '@mui/material/Tooltip'
 import Grow from '@mui/material/Grow'
 import Zoom from '@mui/material/Zoom'
 import FormHelperText from '@mui/material/FormHelperText';
-
+import useNotification from '../shared/messages/alerts'
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
   background: 'white',
@@ -40,9 +40,13 @@ export default function PolicyForm({
   getServices,
   data
 }) {
+  const [msg, sendNotification] = useNotification();
+  console.log(msg)
   const handleClose = () => {
     close(false)
+
   }
+  
 
 //errorLog
 const [error, setError] = React.useState(null)
@@ -167,10 +171,18 @@ const [error, setError] = React.useState(null)
           .then(() => {
             getServices()
             close(false)
+            sendNotification({msg:<Trans
+              i18nKey="common.messages.sucessCreate"
+              values={{
+                data:
+              "Policy"
+              }}
+            />, variant: 'success'})
           })
           .catch((e) => {
+            getServices()
             setError(e);
-            console.error(e)
+            e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
           })
         break
       case 'modify':
@@ -194,10 +206,18 @@ const [error, setError] = React.useState(null)
           .then(() => {
             getServices()
             close(false)
+            sendNotification({msg:<Trans
+              i18nKey="common.messages.sucessUpdate"
+              values={{
+                data:
+                data.id
+              }}
+            />, variant: 'success'})
           })
           .catch((e) => {
+            getServices()
             setError(e);
-            console.error(e)
+            e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
           })
         break
       default:

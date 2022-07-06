@@ -23,11 +23,14 @@ import Select from '@mui/material/Select'
 import { useTranslation, Trans } from 'react-i18next'
 import {
   ApolloClient,
+  ApolloLink,
   InMemoryCache,
   gql,
   createHttpLink
 } from '@apollo/client'
+import { onError } from '@apollo/client/link/error'
 import { setContext } from '@apollo/client/link/context'
+import useNotification from './messages/alerts'
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -41,10 +44,14 @@ const CustomDialogTitle = styled(AppBar)({
   boxShadow: 'none'
 })
 
+
 export default function UserMenu ({ language, userData, token }) {
   const { i18n } = useTranslation()
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [settings, setOpenSettings] = React.useState(false)
+  const [msg, sendNotification] = useNotification()
+  console.log(msg)
+  
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -69,9 +76,20 @@ export default function UserMenu ({ language, userData, token }) {
     newValue === 'defaultBrowser'
       ? i18n.changeLanguage(Intl.NumberFormat().resolvedOptions().locale)
       : i18n.changeLanguage(newValue)
-    const httpLink = createHttpLink({
-      uri:  process.env.REACT_APP_CONFIGURATION_API_URL
-    })
+    const httpLink = ApolloLink.from([
+        onError(({ graphQLErrors, networkError }) => {
+          if (graphQLErrors)
+            graphQLErrors.map(({ message, locations, path }) => {
+                sendNotification({msg:`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`, variant: 'error'})
+              }
+            );
+          if (networkError) {
+            sendNotification({msg:`NetworkError: cannot reach configuration api"`, variant: 'error'})
+          }
+        }),
+        createHttpLink({ uri:  process.env.REACT_APP_CONFIGURATION_API_URL }),
+      ]);
+
 
     const authLink = setContext((_, { headers }) => {
       return {
@@ -106,6 +124,13 @@ export default function UserMenu ({ language, userData, token }) {
       })
       .then((result) => {
         console.log(result)
+        sendNotification({msg:<Trans
+          i18nKey="common.messages.sucessUpdate"
+          values={{
+            data:
+          "User Preference"
+          }}
+        />, variant: 'success'})
       })
   }
 
