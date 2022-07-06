@@ -1,7 +1,10 @@
 {
-  "semi": false,
-  "tabWidth": 2,
-  "printWidth": 120,
+  "arrowParens": "always",
+  "semi": true,
+  "bracketSpacing": true,
   "singleQuote": true,
-  "trailingComma": "none"
+  "parser": "flow",
+  "printWidth": 120,
+  "trailingComma": "none",
+  "tabWidth": 2
 }
