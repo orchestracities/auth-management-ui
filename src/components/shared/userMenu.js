@@ -84,7 +84,7 @@ export default function UserMenu ({ language, userData, token }) {
               }
             );
           if (networkError) {
-            sendNotification({msg:`[Network error]: ${networkError}`, variant: 'error'})
+            sendNotification({msg:`NetworkError: cannot reach configuration api"`, variant: 'error'})
           }
         }),
         createHttpLink({ uri:  process.env.REACT_APP_CONFIGURATION_API_URL }),
@@ -124,7 +124,13 @@ export default function UserMenu ({ language, userData, token }) {
       })
       .then((result) => {
         console.log(result)
-        sendNotification({msg:`User Preference Stored`, variant: 'success'})
+        sendNotification({msg:<Trans
+          i18nKey="common.messages.sucessUpdate"
+          values={{
+            data:
+          "User Preference"
+          }}
+        />, variant: 'success'})
       })
   }
 

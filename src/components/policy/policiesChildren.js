@@ -27,7 +27,7 @@ export default function PoliciesChildren ({ tenantId, tenantName, seTenant }) {
         if (e.response) {
           e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
         } else {
-          sendNotification({msg:e.message, variant: 'error'})
+          sendNotification({msg:e.message + ": cannot reach policy managenent api", variant: 'error'})
         }
       })
   }
@@ -53,7 +53,7 @@ export default function PoliciesChildren ({ tenantId, tenantName, seTenant }) {
           if (e.response) {
             e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
           } else {
-            sendNotification({msg:e.message, variant: 'error'})
+            sendNotification({msg:e.message + ": cannot reach policy managenent api", variant: 'error'})
           }
         })
     }

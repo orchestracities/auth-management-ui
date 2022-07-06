@@ -48,7 +48,7 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
         if (e.response) {
           e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
         } else {
-          sendNotification({msg:e.message, variant: 'error'})
+          sendNotification({msg:e.message + ": cannot reach policy managenent api", variant: 'error'})
         }
       })
   }
@@ -74,7 +74,7 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
           if (e.response) {
             e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
           } else {
-            sendNotification({msg:e.message, variant: 'error'})
+            sendNotification({msg:e.message + ": cannot reach policy managenent api", variant: 'error'})
           }
         })
     }
@@ -129,7 +129,7 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
           if (e.response) {
             e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
           } else {
-            sendNotification({msg:e.message, variant: 'error'})
+            sendNotification({msg:e.message + ": cannot reach policy managenent api", variant: 'error'})
           }
         })
     }
@@ -143,7 +143,7 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
     axios
       .get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies/access-modes')
       .then((response) => setAccess_modes(response.data))
-      .catch((err) => console.log(err))
+      .catch((err) => sendNotification({msg:err.message + ": cannot reach policy managenent api", variant: 'error'}))
   }, [thisTenant])
 
   const [agentsTypes, setagentsTypes] = React.useState([])
@@ -153,7 +153,7 @@ export default function PolicyPage ({ getTenants, tenantValues, thisTenant }) {
     axios
       .get(process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies/agent-types')
       .then((response) => setagentsTypes(response.data))
-      .catch((err) => console.log(err))
+      .catch((err) => sendNotification({msg:err.message + ": cannot reach policy managenent api", variant: 'error'}))
   }, [thisTenant])
 
   const mainTitle = <Trans>policies.titles.page</Trans>
