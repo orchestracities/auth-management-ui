@@ -31,6 +31,9 @@ import {
 import { onError } from '@apollo/client/link/error'
 import { setContext } from '@apollo/client/link/context'
 import useNotification from './messages/alerts'
+import { getEnv } from "../../env";
+
+const env = getEnv()
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -80,16 +83,15 @@ export default function UserMenu ({ language, userData, token }) {
         onError(({ graphQLErrors, networkError }) => {
           if (graphQLErrors)
             graphQLErrors.map(({ message, locations, path }) => {
-                sendNotification({msg:`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`, variant: 'error'})
+                sendNotification({msg:`GraphQLError: ${message}, Location: ${locations}, Path: ${path}`, variant: 'error'})
               }
             );
           if (networkError) {
             sendNotification({msg:`NetworkError: cannot reach configuration api"`, variant: 'error'})
           }
         }),
-        createHttpLink({ uri:  process.env.REACT_APP_CONFIGURATION_API_URL }),
+        createHttpLink({ uri:  env.CONFIGURATION_API_URL }),
       ]);
-
 
     const authLink = setContext((_, { headers }) => {
       return {

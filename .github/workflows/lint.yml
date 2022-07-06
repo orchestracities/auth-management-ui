@@ -17,13 +17,10 @@ jobs:
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v2
-
       - name: Set up Node.js
         uses: actions/setup-node@v1
         with:
           node-version: 12
-
-      # ESLint and Prettier must be in `package.json`
       - name: Install Node.js dependencies Management UI
         run: npm ci
       - name: ESLint Management UI

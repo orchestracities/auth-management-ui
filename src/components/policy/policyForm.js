@@ -23,6 +23,10 @@ import Grow from '@mui/material/Grow'
 import Zoom from '@mui/material/Zoom'
 import FormHelperText from '@mui/material/FormHelperText';
 import useNotification from '../shared/messages/alerts'
+import { getEnv } from "../../env";
+
+const env = getEnv()
+
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
   background: 'white',
@@ -154,7 +158,7 @@ const [error, setError] = React.useState(null)
       case 'create':
         axios
           .post(
-            process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies/',
+            env.ANUBIS_API_URL + 'v1/policies/',
             {
               access_to: access,
               resource_type: resource,
@@ -188,7 +192,7 @@ const [error, setError] = React.useState(null)
       case 'modify':
         axios
           .put(
-            process.env.REACT_APP_ANUBIS_API_URL + 'v1/policies/' + data.id,
+            env.ANUBIS_API_URL + 'v1/policies/' + data.id,
             {
               access_to: access,
               resource_type: resource,

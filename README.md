@@ -45,7 +45,7 @@ to manage authorization policies, a Configuration API based on
                        └─────────────┘
 ```
 
-(The schema is editable at [asciiflow](https://asciiflow.com/#/share/eJyrVspLzE1VslIK9VTSUcpJrEwtAnKqY5QqYpSsLM2NdWKUKoEsI3MLIKsktaIEyIlRUsAOHk3ZQzyKicnDbQyI8vd0cYbxCSpG5hNSHFCUX5aZklpEWDE1fAMzbdomAmqM8DsHxX8kuY0sD5EbCljiA0gaQpmOpSUZ%2BUWZVYklmflQpcYIVVh8CWQ7FeWXF4NiC7dbpu0CK%2FVNzEtMT81NzSshqBSHXejuRmGGeuKUcgzwHBKxgzdpEZH%2BTIhLo9Non62wJCYC%2BR41dRAuUVDjlCq%2BUapVqgUAFRBKtw%3D%3D)))))
+(The schema is editable at [asciiflow](https://asciiflow.com/#/share/eJyrVspLzE1VslIK9VTSUcpJrEwtAnKqY5QqYpSsLM2NdWKUKoEsI3MLIKsktaIEyIlRUsAOHk3ZQzyKicnDbQyI8vd0cYbxCSpG5hNSHFCUX5aZklpEWDE1fAMzbdomAmqM8DsHxX8kuY0sD5EbCljiA0gaQpmOpSUZ%2BUWZVYklmflQpcYIVVh8CWQ7FeWXF4NiC7dbpu0CK%2FVNzEtMT81NzSshqBSHXejuRmGGeuKUcgzwHBKxgzdpEZH%2BTIhLo9Non62wJCYC%2BR41dRAuUVDjlCq%2BUapVqgUAFRBKtw%3D%3D))
 
 ## Demo
 
@@ -109,6 +109,8 @@ and the Configuration API:
 - `REACT_APP_OIDC_SCOPE`: the OIDC scope used by the Management UI
   to authenticate users
   (e.g. `openid profile email`)
+- `REACT_APP_TITLE`: the HTML title use for the application
+- `REACT_APP_DESCRIPTION`: the meta description for the application
 - `MONGO_DB`: the MongoDB endpoint of the Configuration API and by
   [populateDB.js](configuration-api/main/mongo/populateDB.js)
   to populate the Configuration API backend with example data
@@ -133,7 +135,14 @@ you need to create a `.env` (an example file is provided [.env.development](.env
 To start the dependencies:
 
 ```bash
-sh start.sh dev
+$ sh start.sh dev
+```
+
+In case you add new environment variables, don't forget to re-generate
+the `src/env.js` file:
+
+```bash
+$ npx generate-env-getter js
 ```
 
 ### Management UI

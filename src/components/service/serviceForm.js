@@ -13,6 +13,9 @@ import axios from 'axios'
 import InputAdornment from '@mui/material/InputAdornment'
 import useNotification from '../shared/messages/alerts'
 import { Trans } from 'react-i18next'
+import { getEnv } from "../../env";
+
+const env = getEnv()
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -42,7 +45,7 @@ export default function ServiceForm ({
       case 'create':
         axios
           .post(
-            process.env.REACT_APP_ANUBIS_API_URL +
+            env.ANUBIS_API_URL +
               'v1/tenants/' +
               tenantName_id[0].id +
               '/service_paths',
@@ -69,7 +72,7 @@ export default function ServiceForm ({
       case "Sub-service-creation":
         axios
           .post(
-            process.env.REACT_APP_ANUBIS_API_URL +
+            env.ANUBIS_API_URL +
               'v1/tenants/' +
               tenantName_id.id +
               '/service_paths',

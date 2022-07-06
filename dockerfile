@@ -1,15 +1,23 @@
-FROM node:14-alpine AS builder
+FROM node:14-alpine AS build
 LABEL version="0.1"
 LABEL description="Management UI for Anubis: https://anubis-pep.readthedocs.io/en/latest/."
 LABEL maintainer = ["valerio.cantore@martel-innovate.com"]
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm install --force
-COPY . ./
+COPY .env.docker .env
+RUN npm install --frozen-lockfile
+COPY . .
 RUN npm run build
-FROM node:14-alpine
-WORKDIR /app
-RUN npm install -g serve
-COPY --from=builder /app/build ./build
-EXPOSE 3000
-CMD ["serve", "-s", "build", "-l", "3000"]
+
+FROM nginx:1.23-alpine as release
+RUN apk add --update nodejs npm
+
+COPY --from=build /app/nginx.conf /etc/nginx/conf.d/default.conf    
+COPY --from=build /app/node_modules/cra-envs/package.json ./cra-envs-package.json
+RUN npm i -g cra-envs@`node -e 'console.log(require("./cra-envs-package.json")["version"])'`
+WORKDIR /usr/share/nginx
+COPY --from=build /app/build ./html
+COPY --from=build /app/.env .
+COPY --from=build /app/package.json .
+COPY --from=build /app/public/index.html ./public/
+ENTRYPOINT sh -c "npx embed-environnement-variables && nginx -g 'daemon off;'"

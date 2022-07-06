@@ -9,6 +9,9 @@ import axios from 'axios'
 import Grow from '@mui/material/Grow'
 import { Trans } from 'react-i18next'
 import useNotification from '../components/shared/messages/alerts'
+import { getEnv } from "../env"
+
+const env = getEnv()
 
 export default function ServicePage ({ getTenants, tenantValues, thisTenant }) {
   const [createOpen, setCreateOpen] = React.useState(false)
@@ -37,7 +40,7 @@ export default function ServicePage ({ getTenants, tenantValues, thisTenant }) {
   const getServices = () => {
     axios
       .get(
-        process.env.REACT_APP_ANUBIS_API_URL +
+        env.ANUBIS_API_URL +
           'v1/tenants/' +
           thisTenant +
           '/service_paths'

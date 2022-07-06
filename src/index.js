@@ -6,13 +6,16 @@ import reportWebVitals from './reportWebVitals'
 import './i18n'
 import { OidcProvider } from '@axa-fr/react-oidc';
 import { useOidc, useOidcIdToken,useOidcAccessToken} from '@axa-fr/react-oidc';
+import { getEnv } from './env'
+
+const env = getEnv()
 
 const configuration = {
-  client_id: process.env.REACT_APP_OIDC_CLIENT,
-  redirect_uri: process.env.REACT_APP_URI+'authentication/callback',
-  silent_redirect_uri: process.env.REACT_APP_URI+'authentication/silent-callback',
-  scope: process.env.REACT_APP_OIDC_SCOPE,
-  authority: process.env.REACT_APP_OIDC_ISSUER,
+  client_id: env.OIDC_CLIENT,
+  redirect_uri: env.URI+'authentication/callback',
+  silent_redirect_uri: env.URI+'authentication/silent-callback',
+  scope: env.OIDC_SCOPE,
+  authority: env.OIDC_ISSUER,
 };
 
 
