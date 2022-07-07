@@ -1,13 +1,13 @@
-import * as React from 'react'
-import { styled } from '@mui/system'
-import Grid from '@mui/material/Grid'
-import { RgbaColorPicker } from 'react-colorful'
-import { colord, extend, getFormat } from 'colord'
-import namesPlugin from 'colord/plugins/names'
-import TextField from '@mui/material/TextField'
-import Box from '@mui/material/Box'
+import * as React from 'react';
+import { styled } from '@mui/system';
+import Grid from '@mui/material/Grid';
+import { RgbaColorPicker } from 'react-colorful';
+import { colord, extend, getFormat } from 'colord';
+import namesPlugin from 'colord/plugins/names';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
 
-extend([namesPlugin])
+extend([namesPlugin]);
 
 const grey = {
   100: '#E7EBF0',
@@ -19,7 +19,7 @@ const grey = {
   700: '#3E5060',
   800: '#2D3843',
   900: '#1A2027'
-}
+};
 
 const Root = styled('div')`
   font-family: IBM Plex Sans, sans-serif;
@@ -28,12 +28,12 @@ const Root = styled('div')`
   display: inline-block;
   vertical-align: baseline;
   color: #000;
-`
+`;
 
 const ColorString = styled(TextField)({
   marginTop: 15,
   width: '80%'
-})
+});
 
 const Toggle = styled('div')(
   ({ theme }) => `
@@ -42,15 +42,9 @@ const Toggle = styled('div')(
   box-sizing: border-box;
   min-height: calc(1.5em + 30px);
   min-width: 300px;
-  background: var(--color, ${
-    theme.palette.mode === 'dark' ? grey[900] : '#fff'
-  });
+  background: var(--color, ${theme.palette.mode === 'dark' ? grey[900] : '#fff'});
   border: 1px solid ${theme.palette.mode === 'dark' ? grey[800] : grey[300]};
-  box-shadow: ${
-    theme.palette.mode === 'dark'
-      ? '0 5px 13px -3px rgba(0,0,0,0.4)'
-      : `0 5px 13px -3px ${grey[200]}`
-  };
+  box-shadow: ${theme.palette.mode === 'dark' ? '0 5px 13px -3px rgba(0,0,0,0.4)' : `0 5px 13px -3px ${grey[200]}`};
   border-radius: 0.75em;
   margin: 0.5em;
   padding: 10px;
@@ -68,7 +62,7 @@ const Toggle = styled('div')(
     color:${theme.palette.primary.contrastText}
   }
   `
-)
+);
 
 const Listbox = styled('ul')(
   ({ theme }) => `
@@ -83,11 +77,7 @@ const Listbox = styled('ul')(
   height: auto;
   transition: opacity 0.1s ease;
   width: 100%;
-  box-shadow: ${
-    theme.palette.mode === 'dark'
-      ? '0 5px 13px -3px rgba(0,0,0,0.4)'
-      : `0 5px 13px -3px ${grey[200]}`
-  };
+  box-shadow: ${theme.palette.mode === 'dark' ? '0 5px 13px -3px rgba(0,0,0,0.4)' : `0 5px 13px -3px ${grey[200]}`};
   background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
   border: 1px solid ${theme.palette.mode === 'dark' ? grey[800] : grey[300]};
   border-radius: 0.75em;
@@ -115,33 +105,31 @@ const Listbox = styled('ul')(
     }
   }
   `
-)
+);
 
-function CustomSelect ({ placeholder, defaultValue, mode, setColor }) {
-  const listboxRef = React.useRef(null)
-  const [listboxVisible, setListboxVisible] = React.useState(false)
-  const [color, setTheColor] = React.useState(
-    mode === 'modify' ? defaultValue : '#8086ba'
-  )
-  const [notValid, setValidity] = React.useState(false)
+function CustomSelect({ placeholder, defaultValue, mode, setColor }) {
+  const listboxRef = React.useRef(null);
+  const [listboxVisible, setListboxVisible] = React.useState(false);
+  const [color, setTheColor] = React.useState(mode === 'modify' ? defaultValue : '#8086ba');
+  const [notValid, setValidity] = React.useState(false);
 
   const colorValidityCheck = (newColor) => {
-    const type = getFormat(newColor)
+    const type = getFormat(newColor);
     if (typeof type === 'undefined') {
-      setValidity(true)
+      setValidity(true);
     } else {
-      setValidity(false)
-      setTheColor(colord(newColor).toHex())
+      setValidity(false);
+      setTheColor(colord(newColor).toHex());
     }
-  }
+  };
 
   React.useEffect(() => {
     if (listboxVisible) {
-      listboxRef.current?.focus()
-      setColor(color)
-      setValidity(false)
+      listboxRef.current?.focus();
+      setColor(color);
+      setValidity(false);
     }
-  }, [listboxVisible])
+  }, [listboxVisible]);
 
   return (
     <Root
@@ -152,28 +140,16 @@ function CustomSelect ({ placeholder, defaultValue, mode, setColor }) {
     >
       <Toggle style={{ '--color': color }}>
         <span className="placeholder">{placeholder ?? ' '}</span>
-        <span className="placeholder">
-          {colord(color).toName({ closest: true }) ?? ' '}
-        </span>
+        <span className="placeholder">{colord(color).toName({ closest: true }) ?? ' '}</span>
       </Toggle>
       <Listbox className={listboxVisible ? '' : 'hidden'}>
-        <Grid
-          item
-          xs={12}
-          container
-          direction="column"
-          justifyContent="space-between"
-          alignItems="center"
-        >
+        <Grid item xs={12} container direction="column" justifyContent="space-between" alignItems="center">
           <Box
             sx={{
               marginTop: 2
             }}
           >
-            <RgbaColorPicker
-              color={colord(color).toRgb()}
-              onChange={(color) => setTheColor(colord(color).toHex())}
-            />
+            <RgbaColorPicker color={colord(color).toRgb()} onChange={(color) => setTheColor(colord(color).toHex())} />
           </Box>
           <ColorString
             id="outlined-basic"
@@ -181,7 +157,7 @@ function CustomSelect ({ placeholder, defaultValue, mode, setColor }) {
             defaultValue={colord(color).toRgbString()}
             value={colord(color).toRgbString()}
             onChange={(event) => {
-              colorValidityCheck(event.target.value)
+              colorValidityCheck(event.target.value);
             }}
             helperText={notValid ? 'the entry is not valid' : ''}
             error={notValid}
@@ -189,16 +165,9 @@ function CustomSelect ({ placeholder, defaultValue, mode, setColor }) {
         </Grid>
       </Listbox>
     </Root>
-  )
+  );
 }
 
-export default function ColorPicker ({ defaultValue, mode, setColor, text }) {
-  return (
-    <CustomSelect
-      placeholder={text}
-      defaultValue={defaultValue}
-      setColor={setColor}
-      mode={mode}
-    />
-  )
+export default function ColorPicker({ defaultValue, mode, setColor, text }) {
+  return <CustomSelect placeholder={text} defaultValue={defaultValue} setColor={setColor} mode={mode} />;
 }

@@ -1,18 +1,18 @@
-import * as React from 'react'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import MenuItem from '@mui/material/MenuItem'
-import Box from '@mui/material/Box'
-import InputLabel from '@mui/material/InputLabel'
-import FormControl from '@mui/material/FormControl'
-import Select from '@mui/material/Select'
-import IconList from './iconList'
-import { Trans } from 'react-i18next'
+import * as React from 'react';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import MenuItem from '@mui/material/MenuItem';
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import IconList from './iconList';
+import { Trans } from 'react-i18next';
 
-export default function IconPicker ({ previusValue, setValue, mode }) {
+export default function IconPicker({ previusValue, setValue, mode }) {
   const handleChange = (event) => {
-    setValue(event.target.value)
-  }
-  console.log(IconList())
+    setValue(event.target.value);
+  };
+  console.log(IconList());
   return (
     <Box
       sx={{
@@ -39,5 +39,5 @@ export default function IconPicker ({ previusValue, setValue, mode }) {
         </Select>
       </FormControl>
     </Box>
-  )
+  );
 }

@@ -1,97 +1,92 @@
-import * as React from 'react'
-import Box from '@mui/material/Box'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import IconButton from '@mui/material/IconButton'
-import Typography from '@mui/material/Typography'
-import Tooltip from '@mui/material/Tooltip'
-import Settings from '@mui/icons-material/Settings'
-import Logout from '@mui/icons-material/Logout'
-import AccountCircle from '@mui/icons-material/AccountCircle'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import { styled } from '@mui/material/styles'
-import AppBar from '@mui/material/AppBar'
-import DialogContent from '@mui/material/DialogContent'
-import Toolbar from '@mui/material/Toolbar'
-import CloseIcon from '@mui/icons-material/Close'
-import Grid from '@mui/material/Grid'
-import InputLabel from '@mui/material/InputLabel'
-import FormControl from '@mui/material/FormControl'
-import Select from '@mui/material/Select'
-import { useTranslation, Trans } from 'react-i18next'
-import {
-  ApolloClient,
-  ApolloLink,
-  InMemoryCache,
-  gql,
-  createHttpLink
-} from '@apollo/client'
-import { onError } from '@apollo/client/link/error'
-import { setContext } from '@apollo/client/link/context'
-import useNotification from './messages/alerts'
-import { getEnv } from "../../env";
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Tooltip from '@mui/material/Tooltip';
+import Settings from '@mui/icons-material/Settings';
+import Logout from '@mui/icons-material/Logout';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import { styled } from '@mui/material/styles';
+import AppBar from '@mui/material/AppBar';
+import DialogContent from '@mui/material/DialogContent';
+import Toolbar from '@mui/material/Toolbar';
+import CloseIcon from '@mui/icons-material/Close';
+import Grid from '@mui/material/Grid';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import { useTranslation, Trans } from 'react-i18next';
+import { ApolloClient, ApolloLink, InMemoryCache, gql, createHttpLink } from '@apollo/client';
+import { onError } from '@apollo/client/link/error';
+import { setContext } from '@apollo/client/link/context';
+import useNotification from './messages/alerts';
+import { getEnv } from '../../env';
 
-const env = getEnv()
+const env = getEnv();
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
     borderRadius: 15
   }
-}))
+}));
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
   background: 'white',
   boxShadow: 'none'
-})
+});
 
+export default function UserMenu({ language, userData, token }) {
+  const { i18n } = useTranslation();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [settings, setOpenSettings] = React.useState(false);
+  const [msg, sendNotification] = useNotification();
+  console.log(msg);
 
-export default function UserMenu ({ language, userData, token }) {
-  const { i18n } = useTranslation()
-  const [anchorEl, setAnchorEl] = React.useState(null)
-  const [settings, setOpenSettings] = React.useState(false)
-  const [msg, sendNotification] = useNotification()
-  console.log(msg)
-  
-  const open = Boolean(anchorEl)
+  const open = Boolean(anchorEl);
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget)
-  }
+    setAnchorEl(event.currentTarget);
+  };
   const handleClose = () => {
-    setAnchorEl(null)
-  }
+    setAnchorEl(null);
+  };
   const settingsOpen = () => {
-    setOpenSettings(true)
-  }
+    setOpenSettings(true);
+  };
 
   const settingsClose = () => {
-    setOpenSettings(false)
-  }
+    setOpenSettings(false);
+  };
 
   React.useEffect(() => {
-    i18n.changeLanguage(language.language)
-  }, [language])
+    i18n.changeLanguage(language.language);
+  }, [language]);
 
   const handleLanguagePreference = (newValue) => {
-    language.setLanguage(newValue)
+    language.setLanguage(newValue);
     newValue === 'defaultBrowser'
       ? i18n.changeLanguage(Intl.NumberFormat().resolvedOptions().locale)
-      : i18n.changeLanguage(newValue)
+      : i18n.changeLanguage(newValue);
     const httpLink = ApolloLink.from([
-        onError(({ graphQLErrors, networkError }) => {
-          if (graphQLErrors)
-            graphQLErrors.map(({ message, locations, path }) => {
-                sendNotification({msg:`GraphQLError: ${message}, Location: ${locations}, Path: ${path}`, variant: 'error'})
-              }
-            );
-          if (networkError) {
-            sendNotification({msg:`NetworkError: cannot reach configuration api"`, variant: 'error'})
-          }
-        }),
-        createHttpLink({ uri:  env.CONFIGURATION_API_URL }),
-      ]);
+      onError(({ graphQLErrors, networkError }) => {
+        if (graphQLErrors)
+          graphQLErrors.map(({ message, locations, path }) => {
+            sendNotification({
+              msg: `GraphQLError: ${message}, Location: ${locations}, Path: ${path}`,
+              variant: 'error'
+            });
+          });
+        if (networkError) {
+          sendNotification({ msg: `NetworkError: cannot reach configuration api"`, variant: 'error' });
+        }
+      }),
+      createHttpLink({ uri: env.CONFIGURATION_API_URL })
+    ]);
 
     const authLink = setContext((_, { headers }) => {
       return {
@@ -99,20 +94,17 @@ export default function UserMenu ({ language, userData, token }) {
           ...headers,
           Authorization: `Bearer ${token}`
         }
-      }
-    })
+      };
+    });
 
     const client = new ApolloClient({
       link: authLink.concat(httpLink),
       cache: new InMemoryCache()
-    })
+    });
     client
       .mutate({
         mutation: gql`
-          mutation modifyUserPreferences(
-            $usrName: String!
-            $language: String!
-          ) {
+          mutation modifyUserPreferences($usrName: String!, $language: String!) {
             modifyUserPreferences(usrName: $usrName, language: $language) {
               usrName
               language
@@ -125,16 +117,20 @@ export default function UserMenu ({ language, userData, token }) {
         }
       })
       .then((result) => {
-        console.log(result)
-        sendNotification({msg:<Trans
-          i18nKey="common.messages.sucessUpdate"
-          values={{
-            data:
-          "User Preference"
-          }}
-        />, variant: 'success'})
-      })
-  }
+        console.log(result);
+        sendNotification({
+          msg: (
+            <Trans
+              i18nKey="common.messages.sucessUpdate"
+              values={{
+                data: 'User Preference'
+              }}
+            />
+          ),
+          variant: 'success'
+        });
+      });
+  };
 
   return (
     <React.Fragment>
@@ -214,11 +210,7 @@ export default function UserMenu ({ language, userData, token }) {
             <IconButton edge="start" onClick={settingsClose} aria-label="close">
               <CloseIcon />
             </IconButton>
-            <Typography
-              sx={{ ml: 2, flex: 1, color: 'black' }}
-              variant="h6"
-              component="div"
-            >
+            <Typography sx={{ ml: 2, flex: 1, color: 'black' }} variant="h6" component="div">
               <Trans>common.userSettings.title</Trans>
             </Typography>
           </Toolbar>
@@ -236,7 +228,7 @@ export default function UserMenu ({ language, userData, token }) {
                   id="language-select"
                   variant="outlined"
                   onChange={(event) => {
-                    handleLanguagePreference(event.target.value)
+                    handleLanguagePreference(event.target.value);
                   }}
                   value={language.language}
                   label={<Trans>common.userSettings.language</Trans>}
@@ -252,5 +244,5 @@ export default function UserMenu ({ language, userData, token }) {
         <DialogActions></DialogActions>
       </DialogRounded>
     </React.Fragment>
-  )
+  );
 }

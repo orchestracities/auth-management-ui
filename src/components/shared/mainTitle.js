@@ -1,28 +1,23 @@
-import React from 'react'
-import Typography from '@mui/material/Typography'
-import { styled } from '@mui/material/styles'
+import React from 'react';
+import Typography from '@mui/material/Typography';
+import { styled } from '@mui/material/styles';
 
 const CustomMainTitle = styled(Typography)({
   marginTop: '40px',
   marginBottom: '30px'
-})
+});
 
 export class MainTitle extends React.Component {
-  constructor (props) {
-    super(props)
-    console.log(props)
+  constructor(props) {
+    super(props);
+    console.log(props);
   }
 
-  render () {
+  render() {
     return (
-      <CustomMainTitle
-        variant="h2"
-        component="div"
-        sx={{ fontWeight: 'bold' }}
-        gutterBottom={true}
-      >
+      <CustomMainTitle variant="h2" component="div" sx={{ fontWeight: 'bold' }} gutterBottom={true}>
         {this.props.mainTitle}
       </CustomMainTitle>
-    )
+    );
   }
 }

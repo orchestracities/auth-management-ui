@@ -20,6 +20,7 @@
 - Policy delete fix
 - Fix misspelled Resource Tenant Agent urn
 - Fix docker image for ui to load env variables dynamically
+- Fix prettier to uniform code style
 
 ### Documentation
 

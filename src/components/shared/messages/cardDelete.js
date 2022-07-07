@@ -1,69 +1,59 @@
-import * as React from 'react'
-import Button from '@mui/material/Button'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import DialogContentText from '@mui/material/DialogContentText'
-import DialogTitle from '@mui/material/DialogTitle'
-import { styled } from '@mui/material/styles'
-import axios from 'axios'
-import { Trans } from 'react-i18next'
-import useNotification from './alerts'
-import { getEnv } from "../../../env";
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import { styled } from '@mui/material/styles';
+import axios from 'axios';
+import { Trans } from 'react-i18next';
+import useNotification from './alerts';
+import { getEnv } from '../../../env';
 
-const env = getEnv()
+const env = getEnv();
 
 const DialogDiv = styled('div')(() => ({
   background: '#ff000040'
-}))
+}));
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
     borderRadius: 15
   }
-}))
+}));
 
-export default function DeleteDialog (props) {
+export default function DeleteDialog(props) {
   const [msg, sendNotification] = useNotification();
-  console.log(msg)
-  const { open, onClose, getData, data } = props
+  console.log(msg);
+  const { open, onClose, getData, data } = props;
 
   const deleteMapper = (thisData) => {
     switch (true) {
       case typeof thisData.name !== 'undefined':
-        return (
-          env.ANUBIS_API_URL + 'v1/tenants/' + thisData.id
-        )
+        return env.ANUBIS_API_URL + 'v1/tenants/' + thisData.id;
       case typeof thisData.path !== 'undefined':
-        return (
-          env.ANUBIS_API_URL +
-          'v1/tenants/' +
-          thisData.tenant_id +
-          '/service_paths/' +
-          thisData.id
-        )
+        return env.ANUBIS_API_URL + 'v1/tenants/' + thisData.tenant_id + '/service_paths/' + thisData.id;
       case typeof thisData.access_to !== 'undefined':
-        return (
-          env.ANUBIS_API_URL + 'v1/policies/' + thisData.id
-        )
+        return env.ANUBIS_API_URL + 'v1/policies/' + thisData.id;
       default:
-        break
+        break;
     }
-  }
+  };
 
   const uiMapper = () => {
     switch (true) {
       case typeof data.name !== 'undefined':
-        return data.name
+        return data.name;
       case typeof data.path !== 'undefined':
-        return data.path
+        return data.path;
       case typeof data.multiple !== 'undefined':
-        return data.selectedText
+        return data.selectedText;
       case typeof data.access_to !== 'undefined':
-        return ''
+        return '';
       default:
-        break
+        break;
     }
-  }
+  };
 
   const deletElement = () => {
     if (typeof data.multiple !== 'undefined') {
@@ -74,9 +64,9 @@ export default function DeleteDialog (props) {
             typeof thisData.access_to !== 'undefined'
               ? {
                   headers: {
-                    "policy_id": thisData.id,
-                   "fiware-service": thisData.fiware_service,
-                    "fiware-servicepath": thisData.fiware_service_path
+                    policy_id: thisData.id,
+                    'fiware-service': thisData.fiware_service,
+                    'fiware-servicepath': thisData.fiware_service_path
                   }
                 }
               : {
@@ -84,43 +74,51 @@ export default function DeleteDialog (props) {
                 }
           )
           .then(() => {
-            getData()
-            sendNotification({msg:<Trans
-              i18nKey="common.messages.sucessDelete"
-              values={{
-                data:
-                thisData.id
-              }}
-            />, variant: 'info'})
+            getData();
+            sendNotification({
+              msg: (
+                <Trans
+                  i18nKey="common.messages.sucessDelete"
+                  values={{
+                    data: thisData.id
+                  }}
+                />
+              ),
+              variant: 'info'
+            });
           })
           .catch((e) => {
-            e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
-          })
+            e.response.data.detail.map((thisError) => sendNotification({ msg: thisError.msg, variant: 'error' }));
+          });
       }
-      data.setSelected([])
-      onClose(false)
+      data.setSelected([]);
+      onClose(false);
     } else {
       axios
         .delete(deleteMapper(data))
         .then(() => {
-          onClose(false)
-          getData()
-          sendNotification({msg:<Trans
-            i18nKey="common.messages.sucessDelete"
-            values={{
-              data:
-              data.id
-            }}
-          />, variant: 'info'})
+          onClose(false);
+          getData();
+          sendNotification({
+            msg: (
+              <Trans
+                i18nKey="common.messages.sucessDelete"
+                values={{
+                  data: data.id
+                }}
+              />
+            ),
+            variant: 'info'
+          });
         })
         .catch((e) => {
-          e.response.data.detail.map((thisError)=> sendNotification({msg:thisError.msg, variant: 'error'}))
-        })
+          e.response.data.detail.map((thisError) => sendNotification({ msg: thisError.msg, variant: 'error' }));
+        });
     }
-  }
+  };
   const handleClose = () => {
-    onClose(false)
-  }
+    onClose(false);
+  };
 
   return (
     <DialogRounded
@@ -138,9 +136,7 @@ export default function DeleteDialog (props) {
           <DialogContentText id="alert-dialog-description">
             <Trans>common.deleteText</Trans>
           </DialogContentText>
-          <DialogContentText id="alert-dialog-description">
-            {uiMapper() + ' ?'}
-          </DialogContentText>
+          <DialogContentText id="alert-dialog-description">{uiMapper() + ' ?'}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={deletElement} autoFocus color="secondary">
@@ -149,5 +145,5 @@ export default function DeleteDialog (props) {
         </DialogActions>
       </DialogDiv>
     </DialogRounded>
-  )
+  );
 }
