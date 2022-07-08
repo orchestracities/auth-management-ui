@@ -72,7 +72,8 @@
     "messages":{
       "sucessUpdate": "{{data}}  Aggiornato",
       "sucessCreate": "Un nuovo elemento {{data}} è stato creato",
-      "sucessDelete": "{{data}} è stato eliminato"
+      "sucessDelete": "{{data}} è stato eliminato",
+      "graphqlOff":"Le preferenze non sono salvabili dato che il server è offline"
     },
     "deleteTooltip": "Elimina",
     "deleteText": "Sei davvero sicuro di voler eliminare:",

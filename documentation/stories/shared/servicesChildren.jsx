@@ -16,7 +16,7 @@ const theme = createTheme({
   }
 });
 
-export const ShowServicesChildren = ({ data, status, setOpen, getData }) => {
+export const ShowServicesChildren = ({ data, status, setOpen, getData, color }) => {
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
@@ -27,6 +27,7 @@ export const ShowServicesChildren = ({ data, status, setOpen, getData }) => {
             data={data.service_paths.slice(1)}
             masterTitle={data.name}
             getData={getData}
+            color={color}
           />
         </Grid>
       </BrowserRouter>
@@ -54,7 +55,11 @@ ShowServicesChildren.propTypes = {
   /**
    * The callBack function after a delete to update the data inside the table
    */
-  getData: PropTypes.func
+  getData: PropTypes.func,
+  /**
+   * The color passed to the icon
+   */
+  color: PropTypes.string
 };
 
 ShowServicesChildren.defaultProps = {
@@ -62,5 +67,6 @@ ShowServicesChildren.defaultProps = {
   masterTitle: '',
   status: false,
   setOpen: undefined,
-  getData: undefined
+  getData: undefined,
+  color: '#8086bab8'
 };

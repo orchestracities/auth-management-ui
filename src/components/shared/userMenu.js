@@ -230,7 +230,7 @@ export default function UserMenu({ language, userData, token }) {
                   onChange={(event) => {
                     handleLanguagePreference(event.target.value);
                   }}
-                  value={language.language}
+                  value={language.language === '' ? 'defaultBrowser' : language.language}
                   label={<Trans>common.userSettings.language</Trans>}
                 >
                   <MenuItem value={'defaultBrowser'}>Default</MenuItem>

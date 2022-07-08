@@ -29,9 +29,9 @@ import PolicyPage from './pages/policyPage';
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import UserMenu from './components/shared/userMenu';
-import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { getEnv } from './env';
+import { Trans } from 'react-i18next';
 
 const env = getEnv();
 
@@ -99,6 +99,9 @@ export default class App extends Component {
     language: '',
     setAppLanguage: (newLanguagePreference) => {
       this.setState({ language: newLanguagePreference });
+      if (this.state.connectionIssue !== false) {
+        this.state.getTenants();
+      }
     },
     catchColor: (newID) => {
       const data = this.state.tenants.filter((e) => e.id === newID);
@@ -143,45 +146,58 @@ export default class App extends Component {
       this.state.catchColor(newValue);
     },
     preferencesMapper: (data, userTenants) => {
-      data.map((thisData, i) => {
-        const index = userTenants
-          .map(function (e) {
-            return e.name;
-          })
-          .indexOf(thisData.name);
-        userTenants[index].props = thisData;
-        return i;
-      });
-      return userTenants;
+      if (data.length > 0) {
+        data.map((thisData, i) => {
+          const index = userTenants
+            .map(function (e) {
+              return e.name;
+            })
+            .indexOf(thisData.name);
+          userTenants[index].props = thisData;
+          return i;
+        });
+        return userTenants;
+      } else {
+        userTenants.map(
+          (tenant) =>
+            (tenant.props = {
+              name: tenant.name,
+              icon: 'none',
+              primaryColor: '#8086ba',
+              secondaryColor: '#8086ba'
+            })
+        );
+        this.setState({
+          tenants: userTenants
+        });
+      }
     },
     connectionIssue: false,
     recall: null,
-    getNetworkError: (thisError) => {
+    getNetworkError: (thisError, type) => {
+      const style = {
+        position: 'fixed',
+        bottom: '0px',
+        width: '100%',
+        padding: '3px 3px',
+        fontSize: '0.63rem',
+        zIndex: 1201
+      };
       if (thisError !== '') {
+        type === 'error' ? this.setState({ recall: setInterval(() => this.state.getTenants(), 10000) }) : '';
         this.setState({
           connectionIssue: (
-            <Snackbar
-              open={true}
-              sx={{ width: '100%', left: '0px !important', right: '0px !important', bottom: '0px !important' }}
-            >
-              <Alert variant="filled" severity="error" sx={{ width: '100%', left: '0px', right: '0px', bottom: '0px' }}>
-                {thisError}
-              </Alert>
-            </Snackbar>
+            <Alert variant="filled" severity={type} sx={style} icon={false}>
+              {thisError}
+            </Alert>
           )
         });
-        this.setState({ recall: setInterval(() => this.state.getTenants(), 10000) });
       } else {
         this.setState({
           connectionIssue: (
-            <Snackbar
-              open={true}
-              sx={{ width: '100%', left: '0px !important', right: '0px !important', bottom: '0px !important' }}
-            >
-              <Alert variant="filled" severity="info" sx={{ width: '100%', left: '0px', right: '0px', bottom: '0px' }}>
-                Online
-              </Alert>
-            </Snackbar>
+            <Alert variant="filled" severity="info" sx={style} icon={false}>
+              Online
+            </Alert>
           )
         });
         setTimeout(function () {
@@ -213,7 +229,9 @@ export default class App extends Component {
             if (graphQLErrors)
               graphQLErrors.forEach(({ message }) => operation.variables.state.getNetworkError(message));
             if (networkError) {
-              operation.variables.state.getNetworkError('Network error: ' + networkError.message);
+              operation.variables.state.getNetworkError(<Trans>common.messages.graphqlOff</Trans>, 'warning');
+              operation.variables.state.preferencesMapper([], userTenants);
+              operation.variables.state.seTenant(operation.variables.state.thisTenant);
             }
           });
 
@@ -280,7 +298,7 @@ export default class App extends Component {
         })
         .catch((e) => {
           if (e.message === 'Network Error') {
-            this.state.getNetworkError(e.message);
+            this.state.getNetworkError(e.message, 'error');
           }
         });
     },
@@ -319,7 +337,7 @@ export default class App extends Component {
 
   render() {
     return (
-      <SnackbarProvider maxSnack={5}>
+      <SnackbarProvider maxSnack={5} sx={{ zIndex: 90000 }}>
         <ThemeProvider theme={this.state.tenantColor}>
           <Box sx={{ display: 'flex' }}>
             <BrowserRouter>
@@ -386,8 +404,7 @@ export default class App extends Component {
                 </List>
                 <Divider />
               </Drawer>
-              {this.state.connectionIssue}
-              {this.props.isAuthenticated && !this.state.connectionIssue ? (
+              {this.props.isAuthenticated ? (
                 <Main open={this.state.open}>
                   <Grid container id="filterContainer"></Grid>
                   <Routes>
@@ -429,6 +446,7 @@ export default class App extends Component {
               )}
               <DrawerHeader />
             </BrowserRouter>
+            {this.state.connectionIssue}
           </Box>
         </ThemeProvider>
       </SnackbarProvider>

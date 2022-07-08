@@ -40,7 +40,7 @@ const CustomDialogTitle = styled(AppBar)({
   background: 'white',
   boxShadow: 'none'
 });
-export default function ServiceChildren({ masterTitle, setOpen, status, data, getData }) {
+export default function ServiceChildren({ masterTitle, setOpen, status, data, getData, color }) {
   // DELETE
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
 
@@ -285,7 +285,12 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
     <div>
       <IconButton aria-label="path" onClick={handleClickOpen}>
         <Badge badgeContent={data.length} color="success">
-          <FolderIcon color="primary" fontSize="large" />
+          <FolderIcon
+            sx={{
+              color: color
+            }}
+            fontSize="large"
+          />
         </Badge>
       </IconButton>
       <DialogRounded
