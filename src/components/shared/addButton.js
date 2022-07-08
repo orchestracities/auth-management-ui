@@ -8,7 +8,7 @@ import DialogActions from '@mui/material/DialogActions';
 
 const bottomStyle = {
   position: 'fixed',
-  bottom: '25px',
+  bottom: '47px',
   right: '25px'
 };
 

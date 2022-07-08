@@ -72,7 +72,8 @@
     "messages":{
       "sucessUpdate": "{{data}}  Updated",
       "sucessCreate": " A {{data}} has been created",
-      "sucessDelete": "{{data}} has been destroyed"
+      "sucessDelete": "{{data}} has been destroyed",
+      "graphqlOff":"Preferences cannot be stored since configuration api is not reacheable"
     },
     "deleteTooltip": "Delete",
     "deleteText": "Are you really sure about deleting:",
