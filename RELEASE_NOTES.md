@@ -1,5 +1,21 @@
 # Auth Management UI Release Notes
 
+## 0.3-dev
+
+### New features
+
+### Bug fixes
+
+- Using prestart we re-generate the env.js file,
+  but the generator does not comply with our
+  prettier rules, so we have to enforce prettier during prestart.
+
+### Documentation
+
+### Continuous Integration
+
+### Technical debt
+
 ## 0.2
 
 ### New features
