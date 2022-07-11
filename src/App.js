@@ -32,6 +32,7 @@ import UserMenu from './components/shared/userMenu';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { getEnv } from './env';
+import Container from '@mui/material/Container';
 
 const env = getEnv();
 
@@ -39,7 +40,7 @@ const drawerWidth = 240;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
   flexGrow: 1,
-  padding: theme.spacing(12),
+  marginTop: theme.spacing(12),
   transition: theme.transitions.create('margin', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen
@@ -390,39 +391,41 @@ export default class App extends Component {
               {this.props.isAuthenticated && !this.state.connectionIssue ? (
                 <Main open={this.state.open}>
                   <Grid container id="filterContainer"></Grid>
-                  <Routes>
-                    <Route
-                      path="Tenant"
-                      element={
-                        <TenantPage
-                          token={this.props.accessToken}
-                          getTenants={this.state.getTenants}
-                          tenantValues={this.state.tenants}
-                          seTenant={this.state.seTenant}
-                        />
-                      }
-                    />
-                    <Route
-                      path="Service"
-                      element={
-                        <ServicePage
-                          getTenants={this.state.getTenants}
-                          tenantValues={this.state.tenants}
-                          thisTenant={this.state.thisTenant}
-                        />
-                      }
-                    />
-                    <Route
-                      path="Policy"
-                      element={
-                        <PolicyPage
-                          getTenants={this.state.getTenants}
-                          tenantValues={this.state.tenants}
-                          thisTenant={this.state.thisTenant}
-                        />
-                      }
-                    />
-                  </Routes>
+                  <Container maxWidth="lg">
+                    <Routes>
+                      <Route
+                        path="Tenant"
+                        element={
+                          <TenantPage
+                            token={this.props.accessToken}
+                            getTenants={this.state.getTenants}
+                            tenantValues={this.state.tenants}
+                            seTenant={this.state.seTenant}
+                          />
+                        }
+                      />
+                      <Route
+                        path="Service"
+                        element={
+                          <ServicePage
+                            getTenants={this.state.getTenants}
+                            tenantValues={this.state.tenants}
+                            thisTenant={this.state.thisTenant}
+                          />
+                        }
+                      />
+                      <Route
+                        path="Policy"
+                        element={
+                          <PolicyPage
+                            getTenants={this.state.getTenants}
+                            tenantValues={this.state.tenants}
+                            thisTenant={this.state.thisTenant}
+                          />
+                        }
+                      />
+                    </Routes>
+                  </Container>
                 </Main>
               ) : (
                 <Main open={this.state.open} />

@@ -15,7 +15,7 @@ export class MainTitle extends React.Component {
 
   render() {
     return (
-      <CustomMainTitle variant="h2" component="div" sx={{ fontWeight: 'bold' }} gutterBottom={true}>
+      <CustomMainTitle variant="h3" component="div" sx={{ fontWeight: 'bold' }} gutterBottom={true}>
         {this.props.mainTitle}
       </CustomMainTitle>
     );

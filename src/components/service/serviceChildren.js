@@ -28,6 +28,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { visuallyHidden } from '@mui/utils';
 import DeleteDialog from '../shared/messages/cardDelete';
 import { Trans } from 'react-i18next';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import Grow from '@mui/material/Grow';
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -40,6 +43,11 @@ const CustomDialogTitle = styled(AppBar)({
   background: 'white',
   boxShadow: 'none'
 });
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Grow direction="up" ref={ref} {...props} />;
+});
+
 export default function ServiceChildren({ masterTitle, setOpen, status, data, getData }) {
   // DELETE
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
@@ -281,6 +289,8 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <div>
       <IconButton aria-label="path" onClick={handleClickOpen}>
@@ -290,8 +300,10 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
       </IconButton>
       <DialogRounded
         open={status}
-        fullWidth={true}
+        TransitionComponent={Transition}
+        fullScreen={fullScreen}
         maxWidth={'xl'}
+        fullWidth={true}
         onClose={handleClose}
         aria-labelledby="alert-dialog-titlel"
         aria-describedby="alert-dialog-descriptionl"
