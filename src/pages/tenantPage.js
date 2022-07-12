@@ -7,6 +7,7 @@ import DashboardCard from '../components/shared/cards';
 import TenantForm from '../components/tenant/tenantForm';
 import Grow from '@mui/material/Grow';
 import { Trans } from 'react-i18next';
+import Box from '@mui/material/Box';
 
 export default function TenantPage({ tenantValues, getTenants, seTenant, client, token }) {
   const [createOpen, setCreateOpen] = React.useState(false);
@@ -22,7 +23,7 @@ export default function TenantPage({ tenantValues, getTenants, seTenant, client,
   };
 
   return (
-    <div>
+    <Box sx={{ marginBottom: 15 }}>
       <MainTitle mainTitle={mainTitle}></MainTitle>
       <AddButton
         pageType={
@@ -70,6 +71,6 @@ export default function TenantPage({ tenantValues, getTenants, seTenant, client,
           </Grow>
         ))}
       </Grid>
-    </div>
+    </Box>
   );
 }

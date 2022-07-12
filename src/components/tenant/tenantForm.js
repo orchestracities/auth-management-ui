@@ -27,7 +27,6 @@ const CustomDialogTitle = styled(AppBar)({
   boxShadow: 'none'
 });
 
-
 export default function TenantForm({ title, close, action, tenant, getTenants, token }) {
   const [msg, sendNotification] = useNotification();
   console.log(msg);

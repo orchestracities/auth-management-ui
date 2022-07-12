@@ -13,7 +13,8 @@ import Grow from '@mui/material/Grow';
 const bottomStyle = {
   position: 'fixed',
   bottom: '25px',
-  right: '25px'
+  right: '25px',
+  zIndex: 15
 };
 
 const NewElement = styled(IconButton)(({ theme }) => ({
@@ -35,7 +36,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Grow direction="up" ref={ref} {...props} />;
 });
 
-
 export default function AddButton({ pageType, setOpen, status }) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -48,14 +48,14 @@ export default function AddButton({ pageType, setOpen, status }) {
   };
 
   return (
-    <Box  boxShadow={5}>
+    <Box boxShadow={5}>
       <Stack direction="row" sx={bottomStyle}>
         <NewElement aria-label="delete" size="large" onClick={handleClickOpen}>
           <AddIcon fontSize="medium" />
         </NewElement>
       </Stack>
       <DialogRounded
-       TransitionComponent={Transition}
+        TransitionComponent={Transition}
         open={status}
         fullScreen={fullScreen}
         maxWidth={'xl'}

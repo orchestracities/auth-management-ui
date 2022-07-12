@@ -36,9 +36,8 @@ export default function DashboardCard({ pageType, data, getData, seTenant, color
   const avatarColor = layout.props.action === 'Sub-service-creation' ? colors.secondaryColor : data.props.primaryColor;
 
   return (
-
     <RadiusDiv
-    boxShadow={5}
+      boxShadow={5}
       sx={{
         background: layout.props.action === 'Sub-service-creation' ? cardColor : '#8086bab8'
       }}
@@ -64,7 +63,13 @@ export default function DashboardCard({ pageType, data, getData, seTenant, color
           ></MultifunctionButton>
         }
         title={layout.props.action === 'Sub-service-creation' ? data.path : data.name}
-        subheader={    <Tooltip title={data.id} arrow><Typography variant="body2" noWrap gutterBottom sx={{maxWidth:"70%", color:'white'}}>{data.id}</Typography></Tooltip>}
+        subheader={
+          <Tooltip title={data.id} arrow>
+            <Typography variant="body2" noWrap gutterBottom sx={{ maxWidth: '70%', color: 'white' }}>
+              {data.id}
+            </Typography>
+          </Tooltip>
+        }
       />
       <CardContent>
         <Typography variant="body2">

@@ -4,11 +4,15 @@
 
 ### New features
 
+- Proper responsive on the elemens
+- Fullscreen forms on mobile
+
 ### Bug fixes
 
 - Using prestart we re-generate the env.js file,
   but the generator does not comply with our
   prettier rules, so we have to enforce prettier during prestart.
+- Minor issues (animation/colors)
 
 ### Documentation
 
