@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -33,6 +32,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { getEnv } from './env';
 import Container from '@mui/material/Container';
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 
 const env = getEnv();
 
@@ -45,13 +45,12 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen
   }),
-  marginLeft: `-${drawerWidth}px`,
   ...(open && {
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
     }),
-    marginLeft: 0
+    marginLeft: 0,
   })
 }));
 
@@ -65,8 +64,6 @@ const AppBar = styled(MuiAppBar, {
   }),
   ...(open && {
     minHeight: '100px',
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: `${drawerWidth}px`,
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
@@ -318,6 +315,14 @@ export default class App extends Component {
     this.state.setOpen(false);
   };
 
+  toggleDrawer = (open) => (event) => {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+
+   this.setState({open:open})
+  };
+
   render() {
     return (
       <SnackbarProvider maxSnack={5}>
@@ -356,7 +361,7 @@ export default class App extends Component {
                   </div>
                 </CustomToolbar>
               </AppBar>
-              <Drawer
+              <SwipeableDrawer
                 sx={{
                   width: drawerWidth,
                   flexShrink: 0,
@@ -365,8 +370,8 @@ export default class App extends Component {
                     boxSizing: 'border-box'
                   }
                 }}
-                variant="persistent"
-                anchor="left"
+                onClose={this.toggleDrawer(false)}
+                anchor={"left"}
                 open={this.state.open}
               >
                 <DrawerHeader>
@@ -386,7 +391,7 @@ export default class App extends Component {
                   ))}
                 </List>
                 <Divider />
-              </Drawer>
+              </SwipeableDrawer>
               {this.state.connectionIssue}
               {this.props.isAuthenticated && !this.state.connectionIssue ? (
                 <Main open={this.state.open}>
