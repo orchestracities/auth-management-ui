@@ -322,10 +322,10 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
           <Grid container>
             <Grid item xs={12}>
               <Box sx={{ width: '100%' }}>
-                <Paper sx={{ width: '100%', mb: 2 }}>
+                <Paper sx={{ width: '100%', mb: 2 }} elevation={1} square={false}>
                   <EnhancedTableToolbar numSelected={selected.length} />
                   <TableContainer>
-                    <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={'medium'}>
+                    <Table sx={{ minWidth: 450 }} aria-labelledby="tableTitle" size={'small'}>
                       <EnhancedTableHead
                         numSelected={selected.length}
                         order={order}
@@ -360,7 +360,7 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
                                     }}
                                   />
                                 </TableCell>
-                                <TableCell component="th" id={labelId} scope="row" padding="none">
+                                <TableCell component="th" id={labelId} scope="row">
                                   {row.id}
                                 </TableCell>
                                 <TableCell align="right">{row.path}</TableCell>

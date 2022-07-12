@@ -15,7 +15,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
-import Grid from '@mui/material/Grid';
 import TenantSelection from './components/shared/tenantSelection';
 import axios from 'axios';
 import { ApolloClient, InMemoryCache, from, gql, createHttpLink } from '@apollo/client';
@@ -33,6 +32,7 @@ import Alert from '@mui/material/Alert';
 import { getEnv } from './env';
 import Container from '@mui/material/Container';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import { Grid } from '@mui/material';
 
 const env = getEnv();
 
@@ -50,7 +50,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
     }),
-    marginLeft: 0,
+    marginLeft: 0
   })
 }));
 
@@ -320,7 +320,7 @@ export default class App extends Component {
       return;
     }
 
-   this.setState({open:open})
+    this.setState({ open: open });
   };
 
   render() {
@@ -371,7 +371,7 @@ export default class App extends Component {
                   }
                 }}
                 onClose={this.toggleDrawer(false)}
-                anchor={"left"}
+                anchor={'left'}
                 open={this.state.open}
               >
                 <DrawerHeader>
@@ -395,8 +395,10 @@ export default class App extends Component {
               {this.state.connectionIssue}
               {this.props.isAuthenticated && !this.state.connectionIssue ? (
                 <Main open={this.state.open}>
-                  <Grid container id="filterContainer"></Grid>
-                  <Container maxWidth="lg">
+                  <Container maxWidth="xl">
+                    <Grid item xs={12} sm={12} md={12} lg={12} xl={12} id="filterContainer"></Grid>
+                  </Container>
+                  <Container maxWidth="xl">
                     <Routes>
                       <Route
                         path="Tenant"
