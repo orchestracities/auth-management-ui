@@ -8,7 +8,6 @@ import ModeFilter from './filters/modeFilter';
 import AcessToFilter from './filters/resourceFilter';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { width } from '@mui/system';
 
 export default function PolicyFilters({ data, access_modes, agentsTypes, mapper }) {
   const [status, setstatus] = React.useState(null);
@@ -59,19 +58,25 @@ export default function PolicyFilters({ data, access_modes, agentsTypes, mapper 
     }
   }, [status]);
 
-
   const theme = useTheme();
   const isResponsive = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <Grid container direction="row" spacing={0.5} justifyContent="flex-start" alignItems="center" sx={(isResponsive)?{minWidth:800}:""}>   
+    <Grid
+      container
+      direction="row"
+      spacing={0.5}
+      justifyContent="flex-start"
+      alignItems="center"
+      sx={isResponsive ? { minWidth: 800 } : ''}
+    >
       <Grid
         item
         xs={status === 'PathFilter' ? 12 : 'auto'}
-          sm={status === 'PathFilter' ? 12 : 'auto'}
-          md={status === 'PathFilter' ? 12 : 'auto'}
-       lg={status === 'PathFilter' ? 12 : 'auto'}
-       xl={status === 'PathFilter' ? 12 : 'auto'}
+        sm={status === 'PathFilter' ? 12 : 'auto'}
+        md={status === 'PathFilter' ? 12 : 'auto'}
+        lg={status === 'PathFilter' ? 12 : 'auto'}
+        xl={status === 'PathFilter' ? 12 : 'auto'}
         sx={{
           display: status === null || status === 'PathFilter' ? 'flex' : 'none'
         }}
@@ -82,10 +87,10 @@ export default function PolicyFilters({ data, access_modes, agentsTypes, mapper 
       <Grid
         item
         xs={status === 'ModeFilter' ? 12 : 'auto'}
-          sm={status === 'ModeFilter' ? 12 : 'auto'}
-          md={status === 'ModeFilter' ? 12 : 'auto'}
-       lg={status === 'ModeFilter' ? 12 : 'auto'}
-       xl={status === 'ModeFilter' ? 12 : 'auto'}
+        sm={status === 'ModeFilter' ? 12 : 'auto'}
+        md={status === 'ModeFilter' ? 12 : 'auto'}
+        lg={status === 'ModeFilter' ? 12 : 'auto'}
+        xl={status === 'ModeFilter' ? 12 : 'auto'}
         sx={{
           display: status === null || status === 'ModeFilter' ? 'flex' : 'none'
         }}
@@ -96,10 +101,10 @@ export default function PolicyFilters({ data, access_modes, agentsTypes, mapper 
       <Grid
         item
         xs={status === 'AcessToFilter' ? 12 : 'auto'}
-          sm={status === 'AcessToFilter' ? 12 : 'auto'}
-          md={status === 'AcessToFilter' ? 12 : 'auto'}
-       lg={status === 'AcessToFilter' ? 12 : 'auto'}
-       xl={status === 'AcessToFilter' ? 12 : 'auto'}
+        sm={status === 'AcessToFilter' ? 12 : 'auto'}
+        md={status === 'AcessToFilter' ? 12 : 'auto'}
+        lg={status === 'AcessToFilter' ? 12 : 'auto'}
+        xl={status === 'AcessToFilter' ? 12 : 'auto'}
         sx={{
           display: status === null || status === 'AcessToFilter' ? 'flex' : 'none'
         }}
@@ -110,10 +115,10 @@ export default function PolicyFilters({ data, access_modes, agentsTypes, mapper 
       <Grid
         item
         xs={status === 'ResourceTypeFilter' ? 12 : 'auto'}
-          sm={status === 'ResourceTypeFilter' ? 12 : 'auto'}
-          md={status === 'ResourceTypeFilter' ? 12 : 'auto'}
-       lg={status === 'ResourceTypeFilter' ? 12 : 'auto'}
-       xl={status === 'ResourceTypeFilter' ? 12 : 'auto'}
+        sm={status === 'ResourceTypeFilter' ? 12 : 'auto'}
+        md={status === 'ResourceTypeFilter' ? 12 : 'auto'}
+        lg={status === 'ResourceTypeFilter' ? 12 : 'auto'}
+        xl={status === 'ResourceTypeFilter' ? 12 : 'auto'}
         sx={{
           display: status === null || status === 'ResourceTypeFilter' ? 'flex' : 'none'
         }}
@@ -129,10 +134,10 @@ export default function PolicyFilters({ data, access_modes, agentsTypes, mapper 
       <Grid
         item
         xs={status === 'ActorFilter' ? 12 : 'auto'}
-          sm={status === 'ActorFilter' ? 12 : 'auto'}
-          md={status === 'ActorFilter' ? 12 : 'auto'}
-       lg={status === 'ActorFilter' ? 12 : 'auto'}
-       xl={status === 'ActorFilter' ? 12 : 'auto'}
+        sm={status === 'ActorFilter' ? 12 : 'auto'}
+        md={status === 'ActorFilter' ? 12 : 'auto'}
+        lg={status === 'ActorFilter' ? 12 : 'auto'}
+        xl={status === 'ActorFilter' ? 12 : 'auto'}
         sx={{
           display: status === null || status === 'ActorFilter' ? 'flex' : 'none'
         }}
@@ -150,10 +155,10 @@ export default function PolicyFilters({ data, access_modes, agentsTypes, mapper 
       <Grid
         item
         xs={status === 'ActorTypeFilter' ? 12 : 'auto'}
-          sm={status === 'ActorTypeFilter' ? 12 : 'auto'}
-          md={status === 'ActorTypeFilter' ? 12 : 'auto'}
-       lg={status === 'ActorTypeFilter' ? 12 : 'auto'}
-       xl={status === 'ActorTypeFilter' ? 12 : 'auto'}
+        sm={status === 'ActorTypeFilter' ? 12 : 'auto'}
+        md={status === 'ActorTypeFilter' ? 12 : 'auto'}
+        lg={status === 'ActorTypeFilter' ? 12 : 'auto'}
+        xl={status === 'ActorTypeFilter' ? 12 : 'auto'}
         sx={{
           display: status === null || status === 'ActorTypeFilter' ? 'flex' : 'none'
         }}

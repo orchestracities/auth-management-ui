@@ -4,8 +4,9 @@
 
 ### New features
 
-- Proper responsive on the elemens
+- Proper responsive on the elements
 - Fullscreen forms on mobile
+- Fullscrean table and filters
 
 ### Bug fixes
 

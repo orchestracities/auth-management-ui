@@ -209,7 +209,19 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
       )}
       {policies.length > 0 ? (
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={12} md={12} lg={12} xl={12} sx={(smallDevice)?{width:document.getElementById('filterContainer').clientWidth,"overflow-x": "scroll"}:""}>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={12}
+            lg={12}
+            xl={12}
+            sx={
+              smallDevice
+                ? { width: document.getElementById('filterContainer').clientWidth, 'overflow-x': 'scroll' }
+                : ''
+            }
+          >
             <PolicyFilters
               data={policies}
               access_modes={access_modes}

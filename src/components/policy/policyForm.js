@@ -279,7 +279,6 @@ export default function PolicyForm({
     }
   };
 
-
   const theme = useTheme();
   const isResponsive = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -290,7 +289,13 @@ export default function PolicyForm({
           <IconButton edge="start" onClick={handleClose} aria-label="close">
             <CloseIcon />
           </IconButton>
-          <Typography sx={{ maxWidth: '70%', ml: 2, flex: 1, color: 'black' }} noWrap gutterBottom variant="h6" component="div">
+          <Typography
+            sx={{ maxWidth: '70%', ml: 2, flex: 1, color: 'black' }}
+            noWrap
+            gutterBottom
+            variant="h6"
+            component="div"
+          >
             {title}
           </Typography>
           <Button autoFocus color="secondary" onClick={handleSave}>
@@ -437,7 +442,7 @@ export default function PolicyForm({
                     <Grid item xs={12} sm={12} md={11} lg={10} xl={10}>
                       <Grid container spacing={12} direction="row" justifyContent="center" alignItems="center">
                         <Grid item xs={9} sm={9} md={10} lg={10} xl={10}>
-                          <Grid container spacing={(isResponsive)?2:4}>
+                          <Grid container spacing={isResponsive ? 2 : 4}>
                             <Grid item xs={12}>
                               <FormControl fullWidth>
                                 <InputLabel id={'User' + i} error={errorCases(agent.type)}>
@@ -496,20 +501,24 @@ export default function PolicyForm({
                           </Grid>
                         </Grid>
                         <Grid item xs={3} sm={3} md={2} lg={2} xl={2}>
-                          <Grid container direction="row" justifyContent="center" alignItems="center" spacing={(isResponsive)?1:2}>
-                           
-                              <Tooltip title={<Trans>common.deleteTooltip</Trans>}>
-                                <IconButton
-                                  aria-label="delete"
-                                  size="large"
-                                  onClick={() => {
-                                    removeAgents(i);
-                                  }}
-                                >
-                                  <DeleteIcon fontSize="inherit" />
-                                </IconButton>
-                              </Tooltip>
-                           
+                          <Grid
+                            container
+                            direction="row"
+                            justifyContent="center"
+                            alignItems="center"
+                            spacing={isResponsive ? 1 : 2}
+                          >
+                            <Tooltip title={<Trans>common.deleteTooltip</Trans>}>
+                              <IconButton
+                                aria-label="delete"
+                                size="large"
+                                onClick={() => {
+                                  removeAgents(i);
+                                }}
+                              >
+                                <DeleteIcon fontSize="inherit" />
+                              </IconButton>
+                            </Tooltip>
                           </Grid>
                         </Grid>
                       </Grid>
