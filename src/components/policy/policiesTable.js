@@ -24,12 +24,21 @@ import DeleteDialog from '../shared/messages/cardDelete';
 import PolicyForm from './policyForm';
 import { Trans } from 'react-i18next';
 import EditIcon from '@mui/icons-material/Edit';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import Grow from '@mui/material/Grow';
+
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
     borderRadius: 15
   }
 }));
+
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Grow direction="up" ref={ref} {...props} />;
+});
 
 const DinamicPaper = styled(Paper)(({ theme }) => ({
   [theme.breakpoints.up('xs')]: {
@@ -372,6 +381,8 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <>
       <Box sx={{ width: '100%' }}>
@@ -466,6 +477,8 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
         open={open}
         fullWidth={true}
         maxWidth={'xl'}
+        TransitionComponent={Transition}
+        fullScreen={fullScreen}
         onClose={handleClose}
         aria-labelledby="edit"
         aria-describedby="edit"
