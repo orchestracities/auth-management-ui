@@ -5,11 +5,16 @@ import { styled } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
+import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import Grow from '@mui/material/Grow';
 
 const bottomStyle = {
   position: 'fixed',
   bottom: '25px',
-  right: '25px'
+  right: '25px',
+  zIndex: 15
 };
 
 const NewElement = styled(IconButton)(({ theme }) => ({
@@ -27,7 +32,13 @@ const DialogRounded = styled(Dialog)(() => ({
   }
 }));
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Grow direction="up" ref={ref} {...props} />;
+});
+
 export default function AddButton({ pageType, setOpen, status }) {
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -37,16 +48,18 @@ export default function AddButton({ pageType, setOpen, status }) {
   };
 
   return (
-    <div>
+    <Box boxShadow={5}>
       <Stack direction="row" sx={bottomStyle}>
         <NewElement aria-label="delete" size="large" onClick={handleClickOpen}>
           <AddIcon fontSize="medium" />
         </NewElement>
       </Stack>
       <DialogRounded
+        TransitionComponent={Transition}
         open={status}
-        fullWidth={true}
+        fullScreen={fullScreen}
         maxWidth={'xl'}
+        fullWidth={true}
         onClose={handleClose}
         aria-labelledby="alert-dialog-titlel"
         aria-describedby="alert-dialog-descriptionl"
@@ -54,6 +67,6 @@ export default function AddButton({ pageType, setOpen, status }) {
         {pageType}
         <DialogActions></DialogActions>
       </DialogRounded>
-    </div>
+    </Box>
   );
 }

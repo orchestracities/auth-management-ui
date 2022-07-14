@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -16,7 +15,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
-import Grid from '@mui/material/Grid';
 import TenantSelection from './components/shared/tenantSelection';
 import axios from 'axios';
 import { ApolloClient, InMemoryCache, from, gql, createHttpLink } from '@apollo/client';
@@ -32,6 +30,9 @@ import UserMenu from './components/shared/userMenu';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { getEnv } from './env';
+import Container from '@mui/material/Container';
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import { Grid } from '@mui/material';
 
 const env = getEnv();
 
@@ -39,12 +40,11 @@ const drawerWidth = 240;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
   flexGrow: 1,
-  padding: theme.spacing(12),
+  marginTop: theme.spacing(12),
   transition: theme.transitions.create('margin', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen
   }),
-  marginLeft: `-${drawerWidth}px`,
   ...(open && {
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.easeOut,
@@ -64,8 +64,6 @@ const AppBar = styled(MuiAppBar, {
   }),
   ...(open && {
     minHeight: '100px',
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: `${drawerWidth}px`,
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
@@ -317,6 +315,14 @@ export default class App extends Component {
     this.state.setOpen(false);
   };
 
+  toggleDrawer = (open) => (event) => {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+
+    this.setState({ open: open });
+  };
+
   render() {
     return (
       <SnackbarProvider maxSnack={5}>
@@ -355,7 +361,7 @@ export default class App extends Component {
                   </div>
                 </CustomToolbar>
               </AppBar>
-              <Drawer
+              <SwipeableDrawer
                 sx={{
                   width: drawerWidth,
                   flexShrink: 0,
@@ -364,8 +370,8 @@ export default class App extends Component {
                     boxSizing: 'border-box'
                   }
                 }}
-                variant="persistent"
-                anchor="left"
+                onClose={this.toggleDrawer(false)}
+                anchor={'left'}
                 open={this.state.open}
               >
                 <DrawerHeader>
@@ -385,44 +391,48 @@ export default class App extends Component {
                   ))}
                 </List>
                 <Divider />
-              </Drawer>
+              </SwipeableDrawer>
               {this.state.connectionIssue}
               {this.props.isAuthenticated && !this.state.connectionIssue ? (
                 <Main open={this.state.open}>
-                  <Grid container id="filterContainer"></Grid>
-                  <Routes>
-                    <Route
-                      path="Tenant"
-                      element={
-                        <TenantPage
-                          token={this.props.accessToken}
-                          getTenants={this.state.getTenants}
-                          tenantValues={this.state.tenants}
-                          seTenant={this.state.seTenant}
-                        />
-                      }
-                    />
-                    <Route
-                      path="Service"
-                      element={
-                        <ServicePage
-                          getTenants={this.state.getTenants}
-                          tenantValues={this.state.tenants}
-                          thisTenant={this.state.thisTenant}
-                        />
-                      }
-                    />
-                    <Route
-                      path="Policy"
-                      element={
-                        <PolicyPage
-                          getTenants={this.state.getTenants}
-                          tenantValues={this.state.tenants}
-                          thisTenant={this.state.thisTenant}
-                        />
-                      }
-                    />
-                  </Routes>
+                  <Container maxWidth="xl">
+                    <Grid item xs={12} sm={12} md={12} lg={12} xl={12} id="filterContainer"></Grid>
+                  </Container>
+                  <Container maxWidth="xl">
+                    <Routes>
+                      <Route
+                        path="Tenant"
+                        element={
+                          <TenantPage
+                            token={this.props.accessToken}
+                            getTenants={this.state.getTenants}
+                            tenantValues={this.state.tenants}
+                            seTenant={this.state.seTenant}
+                          />
+                        }
+                      />
+                      <Route
+                        path="Service"
+                        element={
+                          <ServicePage
+                            getTenants={this.state.getTenants}
+                            tenantValues={this.state.tenants}
+                            thisTenant={this.state.thisTenant}
+                          />
+                        }
+                      />
+                      <Route
+                        path="Policy"
+                        element={
+                          <PolicyPage
+                            getTenants={this.state.getTenants}
+                            tenantValues={this.state.tenants}
+                            thisTenant={this.state.thisTenant}
+                          />
+                        }
+                      />
+                    </Routes>
+                  </Container>
                 </Main>
               ) : (
                 <Main open={this.state.open} />

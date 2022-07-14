@@ -57,7 +57,9 @@ export default function ServiceForm({ title, close, action, service, tenantName_
           })
           .catch((e) => {
             getServices();
-            sendNotification({ msg: e.response.data.detail, variant: 'error' });
+            typeof e.response.data.detail === 'string'
+              ? sendNotification({ msg: e.response.data.detail, variant: 'error' })
+              : e.response.data.detail.map((msgObj) => sendNotification({ msg: msgObj.msg, variant: 'error' }));
           });
         break;
       case 'Sub-service-creation':
@@ -82,7 +84,9 @@ export default function ServiceForm({ title, close, action, service, tenantName_
           })
           .catch((e) => {
             getServices();
-            sendNotification({ msg: e.response.data.detail, variant: 'error' });
+            typeof e.response.data.detail === 'string'
+              ? sendNotification({ msg: e.response.data.detail, variant: 'error' })
+              : e.response.data.detail.map((msgObj) => sendNotification({ msg: msgObj.msg, variant: 'error' }));
           });
         break;
       default:
@@ -96,8 +100,6 @@ export default function ServiceForm({ title, close, action, service, tenantName_
         return '/ should be the first char';
       case path.indexOf(' ') >= 0:
         return 'The string should be without spaces';
-      case path[0] === '/' && typeof path[1] === 'undefined':
-        return 'A value after / is mandatory';
       case path[0] === '/' && typeof path[1] !== 'undefined':
         return '';
       default:
@@ -153,7 +155,7 @@ export default function ServiceForm({ title, close, action, service, tenantName_
                   : ' '
               }
               helperText={cases()}
-              error={path === '' || (path[0] === '/' && typeof path[1] === 'undefined') || path.indexOf(' ') >= 0}
+              error={path === '' || path.indexOf(' ') >= 0}
             />
           </Grid>
         </Grid>

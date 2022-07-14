@@ -10,6 +10,9 @@ import Typography from '@mui/material/Typography';
 import { Trans } from 'react-i18next';
 import useNotification from '../components/shared/messages/alerts';
 import { getEnv } from '../env';
+import Box from '@mui/material/Box';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 
 const env = getEnv();
 
@@ -178,9 +181,11 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
       getPoliciesFiltered(services);
     }
   }, [mode, agent, resource, resourceType, agentType, policyFilter]);
+  const theme = useTheme();
+  const smallDevice = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <div>
+    <Box sx={{ marginBottom: 15 }}>
       <MainTitle mainTitle={mainTitle}></MainTitle>
       {typeof thisTenant === 'undefined' || thisTenant === '' ? (
         ''
@@ -203,8 +208,20 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
         ></AddButton>
       )}
       {policies.length > 0 ? (
-        <Grid container spacing={2} sx={{ marginLeft: '15px ' }}>
-          <Grid item xs={12}>
+        <Grid container spacing={2}>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={12}
+            lg={12}
+            xl={12}
+            sx={
+              smallDevice
+                ? { width: document.getElementById('filterContainer').clientWidth, 'overflow-x': 'scroll' }
+                : ''
+            }
+          >
             <PolicyFilters
               data={policies}
               access_modes={access_modes}
@@ -212,7 +229,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
               mapper={filterMapper}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
             <PolicyTable
               tenantName={tenantName_id}
               services={services}
@@ -228,6 +245,6 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
           <Trans>policies.titles.noData</Trans>
         </Typography>
       )}
-    </div>
+    </Box>
   );
 }
