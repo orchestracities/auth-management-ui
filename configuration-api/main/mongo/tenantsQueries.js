@@ -3,14 +3,14 @@ const config = require('../config');
 const connection = mongoose.createConnection(config.getConfig().mongo_db);
 const logContext = { op: 'configuration-api.advancedAuth' };
 
-const usrPreference = new mongoose.Schema({
+const userPreferences = new mongoose.Schema({
   name: String,
   icon: String,
   primaryColor: String,
   secondaryColor: String
 });
 
-const Preferences = connection.model('UsrPreferences', usrPreference);
+const Preferences = connection.model('UsrPreferences', userPreferences);
 
 async function get(data) {
   const thisUser = await Preferences.find({ name: { $in: data } });

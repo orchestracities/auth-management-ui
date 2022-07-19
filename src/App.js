@@ -89,9 +89,9 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 export default class App extends Component {
   state = {
-    open: false,
-    setOpen: (newValue) => {
-      this.setState({ open: newValue, direction: newValue ? 'ltr' : '' });
+    openLateralMenu: false,
+    setOpenLateralMenu: (newValue) => {
+      this.setState({ openLateralMenu: newValue, direction: newValue ? 'ltr' : '' });
     },
     direction: 'ltr',
     tokenData: [],
@@ -257,15 +257,15 @@ export default class App extends Component {
               client
                 .query({
                   query: gql`
-                    query getUserPreferences($usrName: String!) {
-                      getUserPreferences(usrName: $usrName) {
-                        usrName
+                    query getUserPreferences($userName: String!) {
+                      getUserPreferences(userName: $userName) {
+                        userName
                         language
                       }
                     }
                   `,
                   variables: {
-                    usrName: this.props.idTokenPayload.sub,
+                    userName: this.props.idTokenPayload.sub,
                     state: this.state
                   }
                 })
@@ -310,11 +310,11 @@ export default class App extends Component {
   }
 
   handleDrawerOpen = () => {
-    this.state.setOpen(true);
+    this.state.setOpenLateralMenu(true);
   };
 
   handleDrawerClose = () => {
-    this.state.setOpen(false);
+    this.state.setOpenLateralMenu(false);
   };
 
   render() {
@@ -324,14 +324,14 @@ export default class App extends Component {
           <Box sx={{ display: 'flex' }}>
             <BrowserRouter>
               <CssBaseline />
-              <AppBar position="fixed" open={this.state.open}>
+              <AppBar position="fixed" open={this.state.openLateralMenu}>
                 <CustomToolbar color="primary">
                   <IconButton
                     color="inherit"
                     aria-label="open drawer"
                     onClick={this.handleDrawerOpen}
                     edge="start"
-                    sx={{ mr: 2, ...(this.state.open && { display: 'none' }) }}
+                    sx={{ mr: 2, ...(this.state.openLateralMenu && { display: 'none' }) }}
                   >
                     <MenuIcon />
                   </IconButton>
@@ -366,7 +366,7 @@ export default class App extends Component {
                 }}
                 variant="persistent"
                 anchor="left"
-                open={this.state.open}
+                open={this.state.openLateralMenu}
               >
                 <DrawerHeader>
                   <IconButton onClick={this.handleDrawerClose}>
@@ -388,7 +388,7 @@ export default class App extends Component {
               </Drawer>
               {this.state.connectionIssue}
               {this.props.isAuthenticated && !this.state.connectionIssue ? (
-                <Main open={this.state.open}>
+                <Main open={this.state.openLateralMenu}>
                   <Grid container id="filterContainer"></Grid>
                   <Routes>
                     <Route
@@ -425,7 +425,7 @@ export default class App extends Component {
                   </Routes>
                 </Main>
               ) : (
-                <Main open={this.state.open} />
+                <Main open={this.state.openLateralMenu} />
               )}
               <DrawerHeader />
             </BrowserRouter>

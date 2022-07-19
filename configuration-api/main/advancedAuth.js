@@ -13,7 +13,7 @@ const logContext = { op: 'configuration-api.advancedAuth' };
 config.loadConfig();
 
 const { get, update, add, deleteTenant } = require('./mongo/tenantsQueries');
-const { getUserPref, updateUserPref } = require('./mongo/usrSettings');
+const { getUserPref, updateUserPref } = require('./mongo/userSettings');
 const typeDefs = gql`
   type TenantConfiguration {
     name: String!
@@ -22,15 +22,15 @@ const typeDefs = gql`
     secondaryColor: String!
   }
   type UserPreferencies {
-    usrName: String!
+    userName: String!
     language: String!
   }
   type Query {
     listTenants(tenantNames: [String]!): [TenantConfiguration]
-    getUserPreferences(usrName: String!): [UserPreferencies]
+    getUserPreferences(userName: String!): [UserPreferencies]
   }
   type Mutation {
-    modifyUserPreferences(usrName: String!, language: String!): [UserPreferencies]
+    modifyUserPreferences(userName: String!, language: String!): [UserPreferencies]
     publishTenants(name: String!, icon: String!, primaryColor: String!, secondaryColor: String!): [TenantConfiguration]
     removeTenants(tenantNames: [String]!): Boolean!
     modifyTenants(name: String!, icon: String!, primaryColor: String!, secondaryColor: String!): [TenantConfiguration]
@@ -50,8 +50,8 @@ const resolvers = {
     },
     getUserPreferences: async (object, args, context, info) => {
       try {
-        config.getLogger().info(logContext, 'getUserPreferences: %s', args.usrName);
-        return await getUserPref(args.usrName);
+        config.getLogger().info(logContext, 'getUserPreferences: %s', args.userName);
+        return await getUserPref(args.userName);
       } catch (err) {
         config.getLogger().error(logContext, err);
         throw new ApolloError({ data: { reason: err.message } });

@@ -4,14 +4,14 @@ const mongoose = require('mongoose');
 
 const connection = mongoose.createConnection(process.env.MONGO_DB || 'mongodb://localhost:27017/graphql');
 
-const usrPreference = new mongoose.Schema({
+const userPreferences = new mongoose.Schema({
   name: String,
   icon: String,
   primaryColor: String,
   secondaryColor: String
 });
 
-const Preferences = connection.model('UsrPreferences', usrPreference);
+const Preferences = connection.model('UsrPreferences', userPreferences);
 
 Preferences.deleteMany({}, function (err) {
   console.log('PopulateDB: clear old data...');
