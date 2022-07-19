@@ -104,15 +104,15 @@ export default function UserMenu({ language, userData, token }) {
     client
       .mutate({
         mutation: gql`
-          mutation modifyUserPreferences($usrName: String!, $language: String!) {
-            modifyUserPreferences(usrName: $usrName, language: $language) {
-              usrName
+          mutation modifyUserPreferences($userName: String!, $language: String!) {
+            modifyUserPreferences(userName: $userName, language: $language) {
+              userName
               language
             }
           }
         `,
         variables: {
-          usrName: userData.sub,
+          userName: userData.sub,
           language: newValue
         }
       })

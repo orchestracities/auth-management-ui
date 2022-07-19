@@ -3,15 +3,15 @@ const mongoose = require('mongoose');
 const config = require('../config');
 const connection = mongoose.createConnection(config.getConfig().mongo_db);
 const logContext = { op: 'configuration-api.advancedAuth' };
-const usrSettings = new mongoose.Schema({
-  usrName: String,
+const userSettings = new mongoose.Schema({
+  userName: String,
   language: String
 });
 
-const Settings = connection.model('UsrSettings', usrSettings);
+const Settings = connection.model('userSettings', userSettings);
 
 async function getUserPref(data) {
-  const thisUser = await Settings.find({ usrName: data });
+  const thisUser = await Settings.find({ userName: data });
   if (thisUser.length > 0) {
     return await thisUser;
   } else {
@@ -20,9 +20,9 @@ async function getUserPref(data) {
 }
 
 async function updateUserPref(data) {
-  const filter = { usrName: data.usrName };
+  const filter = { userName: data.userName };
   const update = {
-    usrName: data.usrName,
+    userName: data.userName,
     language: data.language
   };
 
@@ -32,7 +32,7 @@ async function updateUserPref(data) {
 
 async function addUserPref(data) {
   const arrayOfData = {
-    usrName: data,
+    userName: data,
     language: 'defaultBrowser'
   };
 

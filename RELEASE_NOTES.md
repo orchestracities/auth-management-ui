@@ -9,6 +9,7 @@
 - Using prestart we re-generate the env.js file,
   but the generator does not comply with our
   prettier rules, so we have to enforce prettier during prestart.
+- Changed some names on varibles in order to be more clear
 
 ### Documentation
 

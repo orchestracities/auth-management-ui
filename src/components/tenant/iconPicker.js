@@ -12,7 +12,7 @@ export default function IconPicker({ previusValue, setValue, mode }) {
   const handleChange = (event) => {
     setValue(event.target.value);
   };
-  console.log(IconList());
+
   return (
     <Box
       sx={{
