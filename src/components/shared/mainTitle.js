@@ -29,12 +29,11 @@ const CustomMainTitle = styled(Typography)({
 });
 
 export default function MainTitle({ mainTitle }) {
-
   return (
     <ThemeProvider theme={theme}>
-    <CustomMainTitle variant="h3" component="div" sx={{ fontWeight: 'bold' }} gutterBottom={true}>
-      {mainTitle}
-    </CustomMainTitle>
+      <CustomMainTitle variant="h3" component="div" sx={{ fontWeight: 'bold' }} gutterBottom={true}>
+        {mainTitle}
+      </CustomMainTitle>
     </ThemeProvider>
   );
 }

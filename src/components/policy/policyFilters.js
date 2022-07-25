@@ -68,7 +68,7 @@ export default function PolicyFilters({ data, access_modes, agentsTypes, mapper 
       spacing={0.5}
       justifyContent="flex-start"
       alignItems="center"
-      sx={isResponsive ? { minWidth: 800 } : ''}
+      sx={isResponsive ? { minWidth: 1100 } : ''}
     >
       <Grid
         item
