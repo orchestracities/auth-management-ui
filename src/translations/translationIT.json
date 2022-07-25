@@ -24,6 +24,9 @@
     },
     "tooltip": {
       "editIcon": "Nuovo path del servizio"
+    },
+    "form":{
+     "mainPath":"Path di riferimento" 
     }
   },
   "policies": {

@@ -10,6 +10,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import { styled } from '@mui/material/styles';
 import { Trans } from 'react-i18next';
+import AddIcon from '@mui/icons-material/Add';
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -48,7 +49,11 @@ export default function MultifunctionButton({ pageType, setOpen, status, data, g
   };
   const actions = [
     {
-      icon: <EditIcon />,
+      icon:   pageType.props.action === 'modify' ? (
+        <EditIcon/>
+      ) : (
+        <AddIcon/>
+      ),
       name:
         pageType.props.action === 'modify' ? (
           <Trans>tenant.tooltip.editIcon</Trans>

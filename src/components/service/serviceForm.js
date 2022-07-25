@@ -14,6 +14,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import useNotification from '../shared/messages/alerts';
 import { Trans } from 'react-i18next';
 import { getEnv } from '../../env';
+import Autocomplete from '@mui/material/Autocomplete';
 
 const env = getEnv();
 
@@ -32,7 +33,24 @@ export default function ServiceForm({ title, close, action, service, tenantName_
   };
 
   const [path, setPath] = React.useState('/');
-
+  const [allPaths, setAllPaths] = React.useState([]);
+  const [pathSelected, setPathSelected] = React.useState('');
+  const getPaths = () => {
+    axios
+      .get(env.ANUBIS_API_URL + 'v1/tenants/' + tenantName_id.id + '/service_paths?name=' + service.path)
+      .then((results) => {
+        let mapper = [];
+        results.data.map((thisPath) => mapper.push(thisPath.path));
+        setAllPaths(mapper);
+        setPathSelected(results.data[0].path);
+      })
+      .catch((e) => {
+        sendNotification({ msg: e.response.data.detail, variant: 'error' });
+      });
+  };
+  React.useEffect(() => {
+    action === 'Sub-service-creation' ? getPaths() : '';
+  }, []);
   const handleSave = () => {
     switch (action) {
       case 'create':
@@ -63,7 +81,7 @@ export default function ServiceForm({ title, close, action, service, tenantName_
       case 'Sub-service-creation':
         axios
           .post(env.ANUBIS_API_URL + 'v1/tenants/' + tenantName_id.id + '/service_paths', {
-            path: service.path + path
+            path: pathSelected + path
           })
           .then(() => {
             getServices();
@@ -133,6 +151,32 @@ export default function ServiceForm({ title, close, action, service, tenantName_
               }}
             />
           </Grid>
+          {action === 'Sub-service-creation' ? (
+            <Grid item xs={12}>
+              <Autocomplete
+                id="sub-creation-path"
+                sx={{ width: '100%' }}
+                defaultValue={service.path}
+                options={allPaths}
+                autoHighlight
+                getOptionLabel={(option) => option}
+                onChange={(event, value) => setPathSelected(value)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label={<Trans>service.form.mainPath</Trans>}
+                    variant="outlined"
+                    inputProps={{
+                      ...params.inputProps,
+                      autoComplete: 'new-password'
+                    }}
+                  />
+                )}
+              />
+            </Grid>
+          ) : (
+            ''
+          )}
           <Grid item xs={12}>
             <TextField
               id="Path"
@@ -148,7 +192,7 @@ export default function ServiceForm({ title, close, action, service, tenantName_
               InputProps={
                 action === 'Sub-service-creation'
                   ? {
-                      startAdornment: <InputAdornment position="start">{service.path}</InputAdornment>
+                      startAdornment: <InputAdornment position="start">{pathSelected}</InputAdornment>
                     }
                   : ' '
               }
