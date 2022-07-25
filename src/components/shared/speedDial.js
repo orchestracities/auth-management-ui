@@ -49,11 +49,7 @@ export default function MultifunctionButton({ pageType, setOpen, status, data, g
   };
   const actions = [
     {
-      icon:   pageType.props.action === 'modify' ? (
-        <EditIcon/>
-      ) : (
-        <AddIcon/>
-      ),
+      icon: pageType.props.action === 'modify' ? <EditIcon /> : <AddIcon />,
       name:
         pageType.props.action === 'modify' ? (
           <Trans>tenant.tooltip.editIcon</Trans>

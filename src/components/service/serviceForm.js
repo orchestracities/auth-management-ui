@@ -144,7 +144,7 @@ export default function ServiceForm({ title, close, action, service, tenantName_
               id="Tenant"
               label="Tenant"
               variant="outlined"
-              defaultValue={(action==="create")?tenantName_id[0].name:tenantName_id.name}
+              defaultValue={action === 'create' ? tenantName_id[0].name : tenantName_id.name}
               disabled
               sx={{
                 width: '100%'
@@ -154,7 +154,7 @@ export default function ServiceForm({ title, close, action, service, tenantName_
           {action === 'Sub-service-creation' ? (
             <Grid item xs={12}>
               <Autocomplete
-                id="sub-creation-path"
+                id="sub-path-creation"
                 sx={{ width: '100%' }}
                 defaultValue={service.path}
                 options={allPaths}

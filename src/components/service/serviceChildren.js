@@ -28,6 +28,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { visuallyHidden } from '@mui/utils';
 import DeleteDialog from '../shared/messages/cardDelete';
 import { Trans } from 'react-i18next';
+import { getEnv } from '../../env';
+import Autocomplete from '@mui/material/Autocomplete';
+import axios from 'axios';
+import TextField from '@mui/material/TextField';
+
+const env = getEnv();
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -52,7 +58,8 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
     setOpenDeleteDialog(false);
   };
 
-  const rows = data;
+  const [rows, setRows] = React.useState(data);
+
   const descendingComparator = (a, b, orderBy) => {
     if (b[orderBy] < a[orderBy]) {
       return -1;
@@ -172,10 +179,10 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
           </Typography>
         ) : (
           <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
-            {data.length > 1 ? (
-              <Trans i18nKey="common.table.counterPlural" values={{ data: data.length }} />
+            {rows.length > 1 ? (
+              <Trans i18nKey="common.table.counterPlural" values={{ data: rows.length }} />
             ) : (
-              <Trans i18nKey="common.table.counterSingle" values={{ data: data.length }} />
+              <Trans i18nKey="common.table.counterSingle" values={{ data: rows.length }} />
             )}
           </Typography>
         )}
@@ -281,10 +288,26 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+  const [pathSelected, setPathSelected] = React.useState('');
+  const getPaths = (thisPath) => {
+    thisPath === null
+      ? setRows(data)
+      : axios
+          .get(env.ANUBIS_API_URL + 'v1/tenants/' + data[0].tenant_id + '/service_paths?name=' + thisPath.path)
+          .then((results) => {
+            setRows(results.data);
+          });
+  };
+  React.useEffect(() => {
+    data.length > 0 ? getPaths(pathSelected) : '';
+  }, [pathSelected]);
+  React.useEffect(() => {
+    setRows(data);
+  }, [data]);
   return (
     <div>
       <IconButton aria-label="path" onClick={handleClickOpen}>
-        <Badge badgeContent={data.length} color="success">
+        <Badge badgeContent={rows.length} color="success">
           <FolderIcon
             sx={{
               color: color
@@ -313,6 +336,27 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
         </CustomDialogTitle>
         <DialogContent sx={{ minHeight: '400px' }}>
           <Grid container>
+            <Grid item xs={12} sx={{ marginBottom: '25px' }}>
+              <Autocomplete
+                id="sub-path-display"
+                sx={{ width: '100%' }}
+                options={data}
+                autoHighlight
+                getOptionLabel={(option) => option.path}
+                onChange={(event, value) => setPathSelected(value)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label={<Trans>service.form.mainPath</Trans>}
+                    variant="outlined"
+                    inputProps={{
+                      ...params.inputProps,
+                      autoComplete: 'new-password'
+                    }}
+                  />
+                )}
+              />
+            </Grid>
             <Grid item xs={12}>
               <Box sx={{ width: '100%' }}>
                 <Paper sx={{ width: '100%', mb: 2 }}>
