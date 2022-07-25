@@ -28,6 +28,7 @@ const Root = styled('div')`
   display: inline-block;
   vertical-align: baseline;
   color: #000;
+  margin-top: 50px;
 `;
 
 const ColorString = styled(TextField)({

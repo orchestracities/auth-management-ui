@@ -24,10 +24,37 @@ import DeleteDialog from '../shared/messages/cardDelete';
 import PolicyForm from './policyForm';
 import { Trans } from 'react-i18next';
 import EditIcon from '@mui/icons-material/Edit';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import Grow from '@mui/material/Grow';
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
     borderRadius: 15
+  }
+}));
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Grow direction="up" ref={ref} {...props} />;
+});
+
+const DinamicPaper = styled(Paper)(({ theme }) => ({
+  [theme.breakpoints.up('xs')]: {
+    width:
+      document.getElementById('filterContainer') === null ? 300 : document.getElementById('filterContainer').clientWidth
+  },
+  [theme.breakpoints.up('sm')]: {
+    width:
+      document.getElementById('filterContainer') === null ? 500 : document.getElementById('filterContainer').clientWidth
+  },
+  [theme.breakpoints.up('md')]: {
+    width: '100%'
+  },
+  [theme.breakpoints.up('lg')]: {
+    width: '100%'
+  },
+  [theme.breakpoints.up('xl')]: {
+    width: '100%'
   }
 }));
 
@@ -132,7 +159,7 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
     {
       id: 'id',
       numeric: false,
-      disablePadding: false,
+      disablePadding: true,
       label: 'ID'
     },
     {
@@ -173,7 +200,7 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
     }
   ];
 
-  function PoliciesTableHead(props) {
+  const PoliciesTableHead = (props) => {
     const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
     const createSortHandler = (property) => (event) => {
       onRequestSort(event, property);
@@ -217,7 +244,7 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
         </TableRow>
       </TableHead>
     );
-  }
+  };
 
   PoliciesTableHead.propTypes = {
     numSelected: PropTypes.number.isRequired,
@@ -352,88 +379,104 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   return (
-    <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
-        <PoliciesTableToolbar numSelected={selected.length} />
-        <TableContainer>
-          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={'medium'}>
-            <PoliciesTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {/* if you don't need to support IE11, you can replace the `stableSort` call with:
+    <>
+      <Box sx={{ width: '100%' }}>
+        <DinamicPaper sx={{ width: '100%', mb: 2, overflow: 'hidden' }} elevation={1} square={false}>
+          <PoliciesTableToolbar numSelected={selected.length} />
+          <TableContainer>
+            <Table aria-labelledby="tableTitle" sx={{ minWidth: 750 }} stickyHeader size={'small'}>
+              <PoliciesTableHead
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={handleSelectAllClick}
+                onRequestSort={handleRequestSort}
+                rowCount={rows.length}
+              />
+              <TableBody>
+                {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                  rows.slice().sort(getComparator(order, orderBy)) */}
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+                {stableSort(rows, getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => {
+                    const isItemSelected = isSelected(row.id);
+                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.id)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.id}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            'aria-labelledby': labelId
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell component="th" id={labelId} scope="row" align="left" padding="none">
-                        {row.id}
-                      </TableCell>
-                      <TableCell align="left">{row.access_to}</TableCell>
-                      <TableCell align="left">{row.fiware_service_path}</TableCell>
-                      <TableCell align="left">{row.resource_type}</TableCell>
-                      <TableCell align="left">{agentToString(row.agent)}</TableCell>
-                      <TableCell align="left">{modeToString(row.mode)}</TableCell>
-                      <TableCell align="left" onClick={handlePropagation}>
-                        {row.action}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: 53 * emptyRows
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper>
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(event) => handleClick(event, row.id)}
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={row.id}
+                        selected={isItemSelected}
+                      >
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            color="primary"
+                            checked={isItemSelected}
+                            inputProps={{
+                              'aria-labelledby': labelId
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell padding="normal" id={labelId} align="left">
+                          {row.id}
+                        </TableCell>
+                        <TableCell padding="normal" align="left">
+                          {row.access_to}
+                        </TableCell>
+                        <TableCell padding="normal" align="left">
+                          {row.fiware_service_path}
+                        </TableCell>
+                        <TableCell padding="normal" align="left">
+                          {row.resource_type}
+                        </TableCell>
+                        <TableCell padding="normal" align="left">
+                          {agentToString(row.agent)}
+                        </TableCell>
+                        <TableCell padding="normal" align="left">
+                          {modeToString(row.mode)}
+                        </TableCell>
+                        <TableCell padding="normal" align="left" onClick={handlePropagation}>
+                          {row.action}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                {emptyRows > 0 && (
+                  <TableRow
+                    style={{
+                      height: 53 * emptyRows
+                    }}
+                  >
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </DinamicPaper>
+      </Box>
       <DialogRounded
         open={open}
         fullWidth={true}
         maxWidth={'xl'}
+        TransitionComponent={Transition}
+        fullScreen={fullScreen}
         onClose={handleClose}
         aria-labelledby="edit"
         aria-describedby="edit"
@@ -462,6 +505,6 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
           setSelected
         }}
       />
-    </Box>
+    </>
   );
 }

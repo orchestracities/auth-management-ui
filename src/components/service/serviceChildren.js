@@ -28,6 +28,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { visuallyHidden } from '@mui/utils';
 import DeleteDialog from '../shared/messages/cardDelete';
 import { Trans } from 'react-i18next';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import Grow from '@mui/material/Grow';
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -40,6 +43,11 @@ const CustomDialogTitle = styled(AppBar)({
   background: 'white',
   boxShadow: 'none'
 });
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Grow direction="up" ref={ref} {...props} />;
+});
+
 export default function ServiceChildren({ masterTitle, setOpen, status, data, getData, color }) {
   // DELETE
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
@@ -281,6 +289,8 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <div>
       <IconButton aria-label="path" onClick={handleClickOpen}>
@@ -295,8 +305,10 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
       </IconButton>
       <DialogRounded
         open={status}
-        fullWidth={true}
+        TransitionComponent={Transition}
+        fullScreen={fullScreen}
         maxWidth={'xl'}
+        fullWidth={true}
         onClose={handleClose}
         aria-labelledby="alert-dialog-titlel"
         aria-describedby="alert-dialog-descriptionl"
@@ -315,10 +327,10 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
           <Grid container>
             <Grid item xs={12}>
               <Box sx={{ width: '100%' }}>
-                <Paper sx={{ width: '100%', mb: 2 }}>
+                <Paper sx={{ width: '100%', mb: 2 }} elevation={1} square={false}>
                   <EnhancedTableToolbar numSelected={selected.length} />
                   <TableContainer>
-                    <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={'medium'}>
+                    <Table sx={{ minWidth: 450 }} aria-labelledby="tableTitle" size={'small'}>
                       <EnhancedTableHead
                         numSelected={selected.length}
                         order={order}
@@ -353,7 +365,7 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
                                     }}
                                   />
                                 </TableCell>
-                                <TableCell component="th" id={labelId} scope="row" padding="none">
+                                <TableCell component="th" id={labelId} scope="row">
                                   {row.id}
                                 </TableCell>
                                 <TableCell align="right">{row.path}</TableCell>

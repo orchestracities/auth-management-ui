@@ -75,11 +75,16 @@ AddButton.propTypes = {
   /**
    * is the hook function that is changing the hook value
    */
-  setOpen: PropTypes.func
+  setOpen: PropTypes.func,
+  /**
+   * check if graphql is offline and change the height of the element inside the page
+   */
+  graphqlErrors: PropTypes.any
 };
 
 AddButton.defaultProps = {
   status: false,
   pageType: undefined,
-  setOpen: undefined
+  setOpen: undefined,
+  graphqlErrors: false
 };

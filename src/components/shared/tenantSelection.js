@@ -75,7 +75,7 @@ export default function TenantSelection({ tenantValues, seTenant, correntValue }
   };
 
   return (
-    <Box sx={{ minWidth: 300 }}>
+    <Box sx={{ minWidth: 230 }}>
       <FormControl fullWidth>
         <TenantLabel id="tenant">Tenant</TenantLabel>
         <TenantSelect
