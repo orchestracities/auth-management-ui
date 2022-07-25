@@ -144,7 +144,7 @@ export default function ServiceForm({ title, close, action, service, tenantName_
               id="Tenant"
               label="Tenant"
               variant="outlined"
-              defaultValue={tenantName_id.name}
+              defaultValue={(action==="create")?tenantName_id[0].name:tenantName_id.name}
               disabled
               sx={{
                 width: '100%'
