@@ -9,7 +9,7 @@ import Grow from '@mui/material/Grow';
 import { Trans } from 'react-i18next';
 import Box from '@mui/material/Box';
 
-export default function TenantPage({ tenantValues, getTenants, seTenant, client, token }) {
+export default function TenantPage({ tenantValues, getTenants, seTenant, client, token, graphqlErrors }) {
   const [createOpen, setCreateOpen] = React.useState(false);
   const [sortedTenants, sortTenants] = React.useState([]);
   const [count, counter] = React.useState(1);
@@ -37,6 +37,7 @@ export default function TenantPage({ tenantValues, getTenants, seTenant, client,
         }
         setOpen={setCreateOpen}
         status={createOpen}
+        graphqlErrors={graphqlErrors}
       ></AddButton>
       <Grid container spacing={2}>
         <Grid item xs={12}>

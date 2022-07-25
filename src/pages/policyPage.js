@@ -16,7 +16,7 @@ import { useTheme } from '@mui/material/styles';
 
 const env = getEnv();
 
-export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
+export default function PolicyPage({ getTenants, tenantValues, thisTenant, graphqlErrors }) {
   const [mode, setMode] = React.useState(null);
   const [agent, setAgent] = React.useState(null);
   const [resource, setResource] = React.useState(null);
@@ -205,6 +205,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant }) {
           }
           setOpen={setOpen}
           status={open}
+          graphqlErrors={graphqlErrors}
         ></AddButton>
       )}
       {policies.length > 0 ? (

@@ -10,13 +10,6 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Grow from '@mui/material/Grow';
 
-const bottomStyle = {
-  position: 'fixed',
-  bottom: '25px',
-  right: '25px',
-  zIndex: 15
-};
-
 const NewElement = styled(IconButton)(({ theme }) => ({
   borderRadius: 15,
   background: theme.palette.secondary.main,
@@ -36,7 +29,13 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Grow direction="up" ref={ref} {...props} />;
 });
 
-export default function AddButton({ pageType, setOpen, status }) {
+export default function AddButton({ pageType, setOpen, status, graphqlErrors }) {
+  const bottomStyle = {
+    position: 'fixed',
+    right: '25px',
+    bottom: !graphqlErrors ? '25px' : '40px',
+    zIndex: 15
+  };
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const handleClickOpen = () => {

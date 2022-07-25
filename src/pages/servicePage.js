@@ -14,7 +14,7 @@ import Box from '@mui/material/Box';
 
 const env = getEnv();
 
-export default function ServicePage({ getTenants, tenantValues, thisTenant }) {
+export default function ServicePage({ getTenants, tenantValues, thisTenant, graphqlErrors }) {
   const [createOpen, setCreateOpen] = React.useState(false);
   const [services, setServices] = React.useState([{ children: [] }]);
   const [msg, sendNotification] = useNotification();
@@ -83,6 +83,7 @@ export default function ServicePage({ getTenants, tenantValues, thisTenant }) {
           }
           setOpen={setCreateOpen}
           status={createOpen}
+          graphqlErrors={graphqlErrors}
         ></AddButton>
       )}
       <Grid container spacing={2}>

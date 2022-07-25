@@ -410,8 +410,7 @@ export default class App extends Component {
                 </List>
                 <Divider />
               </SwipeableDrawer>
-              {this.state.connectionIssue}
-              {this.props.isAuthenticated && !this.state.connectionIssue ? (
+              {this.props.isAuthenticated ? (
                 <Main open={this.state.open}>
                   <Container maxWidth="xl">
                     <Grid item xs={12} sm={12} md={12} lg={12} xl={12} id="filterContainer"></Grid>
@@ -426,6 +425,7 @@ export default class App extends Component {
                             getTenants={this.state.getTenants}
                             tenantValues={this.state.tenants}
                             seTenant={this.state.seTenant}
+                            graphqlErrors={this.state.connectionIssue}
                           />
                         }
                       />
@@ -436,6 +436,7 @@ export default class App extends Component {
                             getTenants={this.state.getTenants}
                             tenantValues={this.state.tenants}
                             thisTenant={this.state.thisTenant}
+                            graphqlErrors={this.state.connectionIssue}
                           />
                         }
                       />
@@ -446,6 +447,7 @@ export default class App extends Component {
                             getTenants={this.state.getTenants}
                             tenantValues={this.state.tenants}
                             thisTenant={this.state.thisTenant}
+                            graphqlErrors={this.state.connectionIssue}
                           />
                         }
                       />
