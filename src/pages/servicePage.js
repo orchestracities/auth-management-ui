@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { MainTitle } from '../components/shared/mainTitle';
+import MainTitle from '../components/shared/mainTitle';
 import AddButton from '../components/shared/addButton';
 import { Grid } from '@mui/material';
 import SortButton from '../components/shared/sortButton';

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { MainTitle } from '../../../src/components/shared/mainTitle';
+import MainTitle from '../../../src/components/shared/mainTitle';
 import Grid from '@mui/material/Grid';
 import React from 'react';
 
