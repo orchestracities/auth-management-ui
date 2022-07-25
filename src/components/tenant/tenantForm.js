@@ -121,7 +121,8 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
           })
           .catch((e) => {
             getTenants();
-            e.response.data.detail.map((thisError) => sendNotification({ msg: thisError.msg, variant: 'error' }));
+            close(false);
+            sendNotification({ msg: e.message + ' the config', variant: 'error' });
           });
         break;
       default:
