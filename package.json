@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.5.10",
-    "@axa-fr/react-oidc": "^5.10.7",
+    "@axa-fr/react-oidc": "^5.13.5",
     "@emotion/react": "latest",
     "@emotion/styled": "v11.6.0",
     "@mui/icons-material": "^5.6.2",

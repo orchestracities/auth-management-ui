@@ -71,8 +71,9 @@ export default function DashboardCard({ pageType, data, getData, seTenant, color
         <ServiceChildren
           setOpen={setSubpathOpen}
           status={subpathOpen}
-          data={layout.props.action === 'modify' ? data.service_paths.slice(1) : data.children}
-          masterTitle={layout.props.action === 'modify' ? data.name : data.path}
+          data={layout.props.action !== 'Sub-service-creation' ? data.service_paths.slice(1) : data.children}
+          masterTitle={layout.props.action !== 'Sub-service-creation' ? data.name : data.path}
+          color={avatarColor}
           getData={getData}
         />
         {layout.props.action === 'Sub-service-creation' ? (

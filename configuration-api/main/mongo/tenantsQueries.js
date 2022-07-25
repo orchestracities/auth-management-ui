@@ -14,8 +14,11 @@ const Preferences = connection.model('UsrPreferences', usrPreference);
 
 async function get(data) {
   const thisUser = await Preferences.find({ name: { $in: data } });
-
-  return await thisUser;
+  if (thisUser.length === data.length) {
+    return await thisUser;
+  } else {
+    fromScratch(data);
+  }
 }
 
 async function update(data) {
@@ -43,6 +46,24 @@ async function add(data) {
     if (err) return config.getLogger().error(logContext, err);
   });
   return await thisTenant;
+}
+
+async function fromScratch(data) {
+  for (let thisTenant of data) {
+    const thisUser = await Preferences.find({ name: thisTenant });
+    if (thisUser.length === 0) {
+      const arrayOfData = {
+        name: thisTenant,
+        icon: 'none',
+        primaryColor: '#8086ba',
+        secondaryColor: '#8086ba'
+      };
+      await arrayOfData.save(function (err) {
+        if (err) return config.getLogger().error(logContext, err);
+      });
+    }
+  }
+  get(data);
 }
 
 async function deleteTenant(data) {
