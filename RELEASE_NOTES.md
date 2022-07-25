@@ -4,12 +4,15 @@
 
 ### New features
 
+- Possibility to add N subpaths
+
 ### Bug fixes
 
 - Using prestart we re-generate the env.js file,
   but the generator does not comply with our
   prettier rules, so we have to enforce prettier during prestart.
 - No Graphql dependencies for the app to work
+- Tenant name on path creation
 
 ### Documentation
 
