@@ -32,8 +32,12 @@ import { getEnv } from '../../env';
 import Autocomplete from '@mui/material/Autocomplete';
 import axios from 'axios';
 import TextField from '@mui/material/TextField';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import Grow from '@mui/material/Grow';
 
 const env = getEnv();
+
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -46,6 +50,11 @@ const CustomDialogTitle = styled(AppBar)({
   background: 'white',
   boxShadow: 'none'
 });
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Grow direction="up" ref={ref} {...props} />;
+});
+
 export default function ServiceChildren({ masterTitle, setOpen, status, data, getData, color }) {
   // DELETE
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
@@ -304,6 +313,8 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
   React.useEffect(() => {
     setRows(data);
   }, [data]);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <div>
       <IconButton aria-label="path" onClick={handleClickOpen}>
@@ -318,8 +329,10 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
       </IconButton>
       <DialogRounded
         open={status}
-        fullWidth={true}
+        TransitionComponent={Transition}
+        fullScreen={fullScreen}
         maxWidth={'xl'}
+        fullWidth={true}
         onClose={handleClose}
         aria-labelledby="alert-dialog-titlel"
         aria-describedby="alert-dialog-descriptionl"
@@ -359,10 +372,10 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
             </Grid>
             <Grid item xs={12}>
               <Box sx={{ width: '100%' }}>
-                <Paper sx={{ width: '100%', mb: 2 }}>
+                <Paper sx={{ width: '100%', mb: 2 }} elevation={1} square={false}>
                   <EnhancedTableToolbar numSelected={selected.length} />
                   <TableContainer>
-                    <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={'medium'}>
+                    <Table sx={{ minWidth: 450 }} aria-labelledby="tableTitle" size={'small'}>
                       <EnhancedTableHead
                         numSelected={selected.length}
                         order={order}
@@ -397,7 +410,7 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
                                     }}
                                   />
                                 </TableCell>
-                                <TableCell component="th" id={labelId} scope="row" padding="none">
+                                <TableCell component="th" id={labelId} scope="row">
                                   {row.id}
                                 </TableCell>
                                 <TableCell align="right">{row.path}</TableCell>

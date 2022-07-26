@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { MainTitle } from '../components/shared/mainTitle';
+import MainTitle from '../components/shared/mainTitle';
 import AddButton from '../components/shared/addButton';
 import { Grid } from '@mui/material';
 import SortButton from '../components/shared/sortButton';
@@ -10,10 +10,11 @@ import Grow from '@mui/material/Grow';
 import { Trans } from 'react-i18next';
 import useNotification from '../components/shared/messages/alerts';
 import { getEnv } from '../env';
+import Box from '@mui/material/Box';
 
 const env = getEnv();
 
-export default function ServicePage({ getTenants, tenantValues, thisTenant }) {
+export default function ServicePage({ getTenants, tenantValues, thisTenant, graphqlErrors }) {
   const [createOpen, setCreateOpen] = React.useState(false);
   const [services, setServices] = React.useState([{ children: [] }]);
   const [msg, sendNotification] = useNotification();
@@ -65,7 +66,7 @@ export default function ServicePage({ getTenants, tenantValues, thisTenant }) {
   const mainTitle = <Trans>service.titles.page</Trans>;
 
   return (
-    <div>
+    <Box sx={{ marginBottom: 15 }}>
       <MainTitle mainTitle={mainTitle}></MainTitle>
       {typeof thisTenant === 'undefined' || thisTenant === '' ? (
         ''
@@ -82,9 +83,10 @@ export default function ServicePage({ getTenants, tenantValues, thisTenant }) {
           }
           setOpen={setCreateOpen}
           status={createOpen}
+          graphqlErrors={graphqlErrors}
         ></AddButton>
       )}
-      <Grid container spacing={2} sx={{ marginLeft: '15px ' }}>
+      <Grid container spacing={2}>
         <Grid item xs={12}>
           {services[0].children.length > 0 ? (
             <SortButton data={services[0].children} id={'path'} sortData={setServices}></SortButton>
@@ -99,7 +101,7 @@ export default function ServicePage({ getTenants, tenantValues, thisTenant }) {
             style={{ transformOrigin: '0 0 0' }}
             {...(service.id === service.id ? { timeout: index * 600 } : {})}
           >
-            <Grid item xs={4}>
+            <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
               <DashboardCard
                 key={service.id}
                 colors={{ secondaryColor: service.secondaryColor, primaryColor: service.primaryColor }}
@@ -119,6 +121,6 @@ export default function ServicePage({ getTenants, tenantValues, thisTenant }) {
           </Grow>
         ))}
       </Grid>
-    </div>
+    </Box>
   );
 }

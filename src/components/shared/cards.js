@@ -11,9 +11,11 @@ import PoliciesChildren from '../policy/policiesChildren';
 import IconList from '../tenant/iconList';
 import axios from 'axios';
 import { getEnv } from '../../env';
+import Box from '@mui/material/Box';
+import Tooltip from '@mui/material/Tooltip';
 const env = getEnv();
 
-const RadiusDiv = styled('div')(({ theme }) => ({
+const RadiusDiv = styled(Box)(({ theme }) => ({
   borderRadius: '15px',
   background: theme.palette.primary.light.replace(')', ' / 70% )').replace(/,/g, ''),
   color: theme.palette.primary.contrastText,
@@ -51,6 +53,7 @@ export default function DashboardCard({ pageType, data, getData, seTenant, color
 
   return (
     <RadiusDiv
+      boxShadow={5}
       sx={{
         background: layout.props.action === 'Sub-service-creation' ? cardColor : '#8086bab8'
       }}
@@ -76,11 +79,17 @@ export default function DashboardCard({ pageType, data, getData, seTenant, color
           ></MultifunctionButton>
         }
         title={layout.props.action === 'Sub-service-creation' ? data.path : data.name}
-        subheader={<Typography variant="body2">{data.id}</Typography>}
+        subheader={
+          <Tooltip title={data.id} arrow>
+            <Typography variant="body2" noWrap gutterBottom sx={{ maxWidth: '70%', color: 'white' }}>
+              {data.id}
+            </Typography>
+          </Tooltip>
+        }
       />
       <CardContent>
         <Typography variant="body2">
-          {layout.props.action === 'Sub-service-creation' ? layout.props.tenantName_id.name : 'description'}
+          {layout.props.action === 'Sub-service-creation' ? layout.props.tenantName_id.name : ''}
         </Typography>
       </CardContent>
       <CardActions>

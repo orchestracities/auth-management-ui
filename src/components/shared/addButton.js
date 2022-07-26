@@ -5,12 +5,10 @@ import { styled } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
-
-const bottomStyle = {
-  position: 'fixed',
-  bottom: '47px',
-  right: '25px'
-};
+import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import Grow from '@mui/material/Grow';
 
 const NewElement = styled(IconButton)(({ theme }) => ({
   borderRadius: 15,
@@ -27,7 +25,19 @@ const DialogRounded = styled(Dialog)(() => ({
   }
 }));
 
-export default function AddButton({ pageType, setOpen, status }) {
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Grow direction="up" ref={ref} {...props} />;
+});
+
+export default function AddButton({ pageType, setOpen, status, graphqlErrors }) {
+  const bottomStyle = {
+    position: 'fixed',
+    right: '25px',
+    bottom: !graphqlErrors ? '25px' : '40px',
+    zIndex: 15
+  };
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -37,16 +47,18 @@ export default function AddButton({ pageType, setOpen, status }) {
   };
 
   return (
-    <div>
+    <Box boxShadow={5}>
       <Stack direction="row" sx={bottomStyle}>
         <NewElement aria-label="delete" size="large" onClick={handleClickOpen}>
           <AddIcon fontSize="medium" />
         </NewElement>
       </Stack>
       <DialogRounded
+        TransitionComponent={Transition}
         open={status}
-        fullWidth={true}
+        fullScreen={fullScreen}
         maxWidth={'xl'}
+        fullWidth={true}
         onClose={handleClose}
         aria-labelledby="alert-dialog-titlel"
         aria-describedby="alert-dialog-descriptionl"
@@ -54,6 +66,6 @@ export default function AddButton({ pageType, setOpen, status }) {
         {pageType}
         <DialogActions></DialogActions>
       </DialogRounded>
-    </div>
+    </Box>
   );
 }

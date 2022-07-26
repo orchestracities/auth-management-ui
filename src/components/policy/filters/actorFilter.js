@@ -80,6 +80,7 @@ export default function ActorFilter({ data, status, setstatus, filterValue }) {
           aria-expanded={open ? 'true' : undefined}
           variant="outlined"
           onClick={handleClick}
+          sx={data.length <= 0 ? { display: 'none' } : ''}
         >
           {
             <Trans

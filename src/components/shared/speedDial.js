@@ -11,6 +11,9 @@ import DialogActions from '@mui/material/DialogActions';
 import { styled } from '@mui/material/styles';
 import { Trans } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import Grow from '@mui/material/Grow';
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -28,7 +31,15 @@ const fabProps = {
     }
   }
 };
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Grow direction="up" ref={ref} {...props} />;
+});
+
 export default function MultifunctionButton({ pageType, setOpen, status, data, getData }) {
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
   // DELETE
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
 
@@ -88,6 +99,8 @@ export default function MultifunctionButton({ pageType, setOpen, status, data, g
       <DialogRounded
         open={status}
         fullWidth={true}
+        fullScreen={fullScreen}
+        TransitionComponent={Transition}
         maxWidth={'xl'}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
