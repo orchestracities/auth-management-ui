@@ -64,7 +64,6 @@ export default function ServicePage({ getTenants, tenantValues, thisTenant, grap
     getServices();
   }, [thisTenant]);
   const mainTitle = <Trans>service.titles.page</Trans>;
-
   return (
     <Box sx={{ marginBottom: 15 }}>
       <MainTitle mainTitle={mainTitle}></MainTitle>
@@ -78,7 +77,7 @@ export default function ServicePage({ getTenants, tenantValues, thisTenant, grap
               close={setCreateOpen}
               action={'create'}
               getServices={getServices}
-              tenantName_id={tenantValues.filter((e) => e.id === thisTenant)}
+              tenantName_id={tenantData}
             />
           }
           setOpen={setCreateOpen}
@@ -114,6 +113,7 @@ export default function ServicePage({ getTenants, tenantValues, thisTenant, grap
                     tenantName_id={tenantData}
                   />
                 }
+                tenantName_id={tenantData}
                 data={service}
                 getData={getServices}
               ></DashboardCard>

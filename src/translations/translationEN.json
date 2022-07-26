@@ -26,7 +26,7 @@
       "editIcon": "New Sub-path"
     },
     "form":{
-     "mainPath":"Path of reference" 
+     "parentPath":"Parent Path" 
     }
   },
   "policies": {

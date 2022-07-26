@@ -67,6 +67,7 @@ export default function TenantPage({ tenantValues, getTenants, seTenant, client,
                 data={tenant}
                 getData={getTenants}
                 seTenant={seTenant}
+                tenantName_id={tenant}
               ></DashboardCard>
             </Grid>
           </Grow>

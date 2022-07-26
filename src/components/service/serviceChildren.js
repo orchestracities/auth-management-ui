@@ -23,7 +23,6 @@ import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
-import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { visuallyHidden } from '@mui/utils';
 import DeleteDialog from '../shared/messages/cardDelete';
@@ -35,9 +34,11 @@ import TextField from '@mui/material/TextField';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Grow from '@mui/material/Grow';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import ServiceForm from './serviceForm';
+import Tooltip from '@mui/material/Tooltip';
 
 const env = getEnv();
-
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -55,9 +56,13 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Grow direction="up" ref={ref} {...props} />;
 });
 
-export default function ServiceChildren({ masterTitle, setOpen, status, data, getData, color }) {
+export default function ServiceChildren({ masterTitle, setOpen, status, data, getData, color, tenantName_id }) {
   // DELETE
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+
+  // EDIT Paths
+  const [editLevel, setEditLevel] = React.useState(false);
+  const [editData, setEditData] = React.useState({});
 
   const handleClickOpenDeleteDialog = () => {
     setOpenDeleteDialog(true);
@@ -67,7 +72,38 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
     setOpenDeleteDialog(false);
   };
 
-  const [rows, setRows] = React.useState(data);
+  const handlePropagation = (e) => {
+    e.stopPropagation();
+  };
+
+  const handleData = (data) => {
+    setEditLevel(true);
+    setEditData(data);
+  };
+  const closeHandleData = () => {
+    setEditLevel(false);
+  };
+
+  const addEdit = (data) => {
+    data.map(
+      (thisElement) =>
+        (thisElement.action = (
+          <Tooltip title={<Trans>service.tooltip.editIcon</Trans>}>
+            <IconButton
+              aria-label="subpath"
+              color="secondary"
+              key={thisElement.id}
+              onClick={() => handleData(thisElement)}
+            >
+              <AddCircleIcon />
+            </IconButton>
+          </Tooltip>
+        ))
+    );
+    return data;
+  };
+
+  const [rows, setRows] = React.useState(addEdit(data));
 
   const descendingComparator = (a, b, orderBy) => {
     if (b[orderBy] < a[orderBy]) {
@@ -103,7 +139,7 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
     {
       id: 'id',
       numeric: false,
-      disablePadding: true,
+      disablePadding: false,
       label: 'ID'
     },
     {
@@ -111,6 +147,12 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
       numeric: true,
       disablePadding: false,
       label: 'Path'
+    },
+    {
+      id: 'action',
+      numeric: false,
+      disablePadding: false,
+      label: ''
     }
   ];
 
@@ -137,7 +179,7 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
           {headCells.map((headCell, index) => (
             <TableCell
               key={index}
-              align={headCell.numeric ? 'right' : 'left'}
+              align={'left'}
               padding={headCell.disablePadding ? 'none' : 'normal'}
               sortDirection={orderBy === headCell.id ? order : false}
             >
@@ -297,28 +339,28 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-  const [pathSelected, setPathSelected] = React.useState('');
+  const [pathSelected, setPathSelected] = React.useState(null);
   const getPaths = (thisPath) => {
     thisPath === null
-      ? setRows(data)
+      ? setRows(addEdit(data))
       : axios
           .get(env.ANUBIS_API_URL + 'v1/tenants/' + data[0].tenant_id + '/service_paths?name=' + thisPath.path)
           .then((results) => {
-            setRows(results.data);
+            setRows(addEdit(results.data));
           });
   };
   React.useEffect(() => {
     data.length > 0 ? getPaths(pathSelected) : '';
-  }, [pathSelected]);
+  }, [pathSelected, data]);
   React.useEffect(() => {
-    setRows(data);
+    setRows(addEdit(data));
   }, [data]);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <div>
       <IconButton aria-label="path" onClick={handleClickOpen}>
-        <Badge badgeContent={rows.length} color="success">
+        <Badge badgeContent={data.length} color="success">
           <FolderIcon
             sx={{
               color: color
@@ -354,13 +396,14 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
                 id="sub-path-display"
                 sx={{ width: '100%' }}
                 options={data}
+                value={pathSelected}
                 autoHighlight
                 getOptionLabel={(option) => option.path}
                 onChange={(event, value) => setPathSelected(value)}
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label={<Trans>service.form.mainPath</Trans>}
+                    label={<Trans>service.form.parentPath</Trans>}
                     variant="outlined"
                     inputProps={{
                       ...params.inputProps,
@@ -410,10 +453,15 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
                                     }}
                                   />
                                 </TableCell>
-                                <TableCell component="th" id={labelId} scope="row">
+                                <TableCell component="th" padding="normal" align="left" id={labelId} scope="row">
                                   {row.id}
                                 </TableCell>
-                                <TableCell align="right">{row.path}</TableCell>
+                                <TableCell padding="normal" align="left" scope="row">
+                                  {row.path}
+                                </TableCell>
+                                <TableCell padding="normal" align="left" scope="row" onClick={handlePropagation}>
+                                  {row.action}
+                                </TableCell>
                               </TableRow>
                             );
                           })}
@@ -439,6 +487,26 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
                     onRowsPerPageChange={handleChangeRowsPerPage}
                   />
                 </Paper>
+                <DialogRounded
+                  open={editLevel}
+                  fullWidth={true}
+                  maxWidth={'xl'}
+                  TransitionComponent={Transition}
+                  fullScreen={fullScreen}
+                  onClose={closeHandleData}
+                  aria-labelledby="edit"
+                  aria-describedby="edit"
+                >
+                  <ServiceForm
+                    title={<Trans>service.titles.edit</Trans>}
+                    action={'Sub-service-creation'}
+                    service={editData}
+                    getServices={getData}
+                    tenantName_id={tenantName_id}
+                    close={closeHandleData}
+                  />
+                  <DialogActions></DialogActions>
+                </DialogRounded>
                 <DeleteDialog
                   open={openDeleteDialog}
                   onClose={handleCloseDeleteDialog}

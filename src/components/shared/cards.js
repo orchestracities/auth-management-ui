@@ -22,7 +22,7 @@ const RadiusDiv = styled(Box)(({ theme }) => ({
   maxWidth: 550
 }));
 
-export default function DashboardCard({ pageType, data, getData, seTenant, colors }) {
+export default function DashboardCard({ pageType, data, getData, seTenant, colors, tenantName_id }) {
   const [subpathOpen, setSubpathOpen] = React.useState(false);
 
   const [status, setOpen] = React.useState(false);
@@ -95,8 +95,9 @@ export default function DashboardCard({ pageType, data, getData, seTenant, color
       <CardActions>
         <ServiceChildren
           setOpen={setSubpathOpen}
+          tenantName_id={tenantName_id}
           status={subpathOpen}
-          data={layout.props.action !== 'Sub-service-creation' ? data.service_paths.slice(1) : allPaths}
+          data={layout.props.action !== 'Sub-service-creation' ? data.service_paths : allPaths}
           masterTitle={layout.props.action !== 'Sub-service-creation' ? data.name : data.path}
           color={avatarColor}
           getData={getData}

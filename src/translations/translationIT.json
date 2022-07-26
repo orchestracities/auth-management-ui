@@ -26,7 +26,7 @@
       "editIcon": "Nuovo path del servizio"
     },
     "form":{
-     "mainPath":"Path di riferimento" 
+     "parentPath":"Percorso Genitore" 
     }
   },
   "policies": {

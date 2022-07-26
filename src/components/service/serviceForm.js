@@ -55,7 +55,7 @@ export default function ServiceForm({ title, close, action, service, tenantName_
     switch (action) {
       case 'create':
         axios
-          .post(env.ANUBIS_API_URL + 'v1/tenants/' + tenantName_id[0].id + '/service_paths', {
+          .post(env.ANUBIS_API_URL + 'v1/tenants/' + tenantName_id.id + '/service_paths', {
             path
           })
           .then(() => {
@@ -146,7 +146,7 @@ export default function ServiceForm({ title, close, action, service, tenantName_
               id="Tenant"
               label="Tenant"
               variant="outlined"
-              defaultValue={action === 'create' ? tenantName_id[0].name : tenantName_id.name}
+              defaultValue={tenantName_id.name}
               disabled
               sx={{
                 width: '100%'
@@ -166,7 +166,7 @@ export default function ServiceForm({ title, close, action, service, tenantName_
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label={<Trans>service.form.mainPath</Trans>}
+                    label={<Trans>service.form.parentPath</Trans>}
                     variant="outlined"
                     inputProps={{
                       ...params.inputProps,
