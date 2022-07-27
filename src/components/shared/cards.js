@@ -105,7 +105,12 @@ export default function DashboardCard({ pageType, data, getData, seTenant, color
         {layout.props.action === 'Sub-service-creation' ? (
           ''
         ) : (
-          <PoliciesChildren tenantId={data.id} tenantName={data.name} seTenant={seTenant}></PoliciesChildren>
+          <PoliciesChildren
+            color={avatarColor}
+            tenantId={data.id}
+            tenantName={data.name}
+            seTenant={seTenant}
+          ></PoliciesChildren>
         )}
       </CardActions>
     </RadiusDiv>

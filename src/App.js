@@ -391,6 +391,7 @@ export default class App extends Component {
                 onClose={this.toggleDrawer(false)}
                 anchor={'left'}
                 open={this.state.open}
+                onOpen={this.toggleDrawer(true)}
               >
                 <DrawerHeader>
                   <IconButton onClick={this.handleDrawerClose}>
