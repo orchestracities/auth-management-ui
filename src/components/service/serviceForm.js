@@ -83,7 +83,7 @@ export default function ServiceForm({ title, close, action, service, tenantName_
       case 'Sub-service-creation':
         axios
           .post(env.ANUBIS_API_URL + 'v1/tenants/' + tenantName_id.id + '/service_paths', {
-            path: pathSelected + path
+            path: pathSelected !== '/' ? pathSelected + path : path
           })
           .then(() => {
             getServices();
@@ -194,7 +194,8 @@ export default function ServiceForm({ title, close, action, service, tenantName_
               InputProps={
                 action === 'Sub-service-creation'
                   ? {
-                      startAdornment: <InputAdornment position="start">{pathSelected}</InputAdornment>
+                      startAdornment:
+                        pathSelected !== '/' ? <InputAdornment position="start">{pathSelected}</InputAdornment> : ''
                     }
                   : ' '
               }

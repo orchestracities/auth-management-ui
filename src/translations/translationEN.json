@@ -23,7 +23,7 @@
       "edit": "New Sub-service"
     },
     "tooltip": {
-      "editIcon": "New Sub-path"
+      "editIcon": "New Sub-service"
     },
     "form":{
      "parentPath":"Parent Path" 
@@ -94,7 +94,7 @@
       "title": "Settings",
       "language": "Language"
     },
-    "subPath": "Subpaths of: <0>{{name}}</0>",
+    "subPath": "Sub-services of: <0>{{name}}</0>",
     "table": {
       "counterPlural": "{{data}}  Elements",
       "counterSingle": "{{data}}  Element",

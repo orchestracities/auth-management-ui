@@ -65,15 +65,7 @@ export default function SortButton({ data, id, sortData }) {
         : data
             .sort((a, b) => (a[id] > b[id] ? 1 : b[id] > a[id] ? -1 : 0))
             .reverse((a, b) => parseFloat(a[id]) - parseFloat(b[id]));
-    sortData(
-      id === 'name'
-        ? sortedData
-        : [
-            {
-              children: sortedData
-            }
-          ]
-    );
+    sortData(sortedData);
   }, [mode, data]);
 
   return (

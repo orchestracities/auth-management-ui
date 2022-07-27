@@ -16,9 +16,14 @@ const env = getEnv();
 
 export default function ServicePage({ getTenants, tenantValues, thisTenant, graphqlErrors }) {
   const [createOpen, setCreateOpen] = React.useState(false);
-  const [services, setServices] = React.useState([{ children: [] }]);
+  const [services, setServices] = React.useState([]);
   const [msg, sendNotification] = useNotification();
   console.log(msg);
+  const [count, counter] = React.useState(1);
+  const rerOder = (newData) => {
+    setServices(newData);
+    counter(count + 1);
+  };
 
   const tenantFiltered = tenantValues.filter((e) => e.id === thisTenant);
   const tenantData = tenantFiltered[0];
@@ -41,13 +46,12 @@ export default function ServicePage({ getTenants, tenantValues, thisTenant, grap
       .get(env.ANUBIS_API_URL + 'v1/tenants/' + thisTenant + '/service_paths')
       .then((response) => {
         response.data[0].children.map(
-          (service, index) => (service.primaryColor = incrementColor(tenantData.props.primaryColor, index * 30))
+          (service, index) => (service.primaryColor = incrementColor(tenantData.props.primaryColor, index * 5))
         );
         response.data[0].children.map(
-          (service, index) => (service.secondaryColor = incrementColor(tenantData.props.secondaryColor, index * 50))
+          (service, index) => (service.secondaryColor = incrementColor(tenantData.props.secondaryColor, index * 10))
         );
-
-        setServices(response.data);
+        setServices(response.data[0].children);
         getTenants();
       })
       .catch((e) => {
@@ -63,6 +67,7 @@ export default function ServicePage({ getTenants, tenantValues, thisTenant, grap
   React.useEffect(() => {
     getServices();
   }, [thisTenant]);
+
   const mainTitle = <Trans>service.titles.page</Trans>;
   return (
     <Box sx={{ marginBottom: 15 }}>
@@ -87,13 +92,9 @@ export default function ServicePage({ getTenants, tenantValues, thisTenant, grap
       )}
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          {services[0].children.length > 0 ? (
-            <SortButton data={services[0].children} id={'path'} sortData={setServices}></SortButton>
-          ) : (
-            ''
-          )}
+          {services.length > 0 ? <SortButton data={services} id={'path'} sortData={rerOder}></SortButton> : ''}
         </Grid>
-        {services[0].children.map((service, index) => (
+        {services.map((service, index) => (
           <Grow
             key={index}
             in={true}

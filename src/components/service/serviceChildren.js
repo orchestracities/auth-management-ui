@@ -82,6 +82,7 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
   };
   const closeHandleData = () => {
     setEditLevel(false);
+    getData();
   };
 
   const addEdit = (data) => {
@@ -103,7 +104,7 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
     return data;
   };
 
-  const [rows, setRows] = React.useState(addEdit(data));
+  const [rows, setRows] = React.useState(data);
 
   const descendingComparator = (a, b, orderBy) => {
     if (b[orderBy] < a[orderBy]) {
@@ -349,14 +350,18 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
             setRows(addEdit(results.data));
           });
   };
+
   React.useEffect(() => {
     data.length > 0 ? getPaths(pathSelected) : '';
   }, [pathSelected, data]);
+
   React.useEffect(() => {
     setRows(addEdit(data));
   }, [data]);
+
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <div>
       <IconButton aria-label="path" onClick={handleClickOpen}>
@@ -491,6 +496,7 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
                   open={editLevel}
                   fullWidth={true}
                   maxWidth={'xl'}
+                  key={editData.id}
                   TransitionComponent={Transition}
                   fullScreen={fullScreen}
                   onClose={closeHandleData}
@@ -501,6 +507,7 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
                     title={<Trans>service.titles.edit</Trans>}
                     action={'Sub-service-creation'}
                     service={editData}
+                    key={editData.id}
                     getServices={getData}
                     tenantName_id={tenantName_id}
                     close={closeHandleData}

@@ -66,7 +66,7 @@ export default function DashboardCard({ pageType, data, getData, seTenant, color
             }}
             aria-label="recipe"
           >
-            {layout.props.action === 'Sub-service-creation' ? data.path[1] : iconMapper(data.props.icon)}
+            {layout.props.action === 'Sub-service-creation' ? data.path[0] : iconMapper(data.props.icon)}
           </Avatar>
         }
         action={
@@ -100,7 +100,7 @@ export default function DashboardCard({ pageType, data, getData, seTenant, color
           data={layout.props.action !== 'Sub-service-creation' ? data.service_paths : allPaths}
           masterTitle={layout.props.action !== 'Sub-service-creation' ? data.name : data.path}
           color={avatarColor}
-          getData={getData}
+          getData={layout.props.action !== 'Sub-service-creation' ? getData : getPaths}
         />
         {layout.props.action === 'Sub-service-creation' ? (
           ''
