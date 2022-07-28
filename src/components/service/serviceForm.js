@@ -14,6 +14,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import useNotification from '../shared/messages/alerts';
 import { Trans } from 'react-i18next';
 import { getEnv } from '../../env';
+import Autocomplete from '@mui/material/Autocomplete';
 
 const env = getEnv();
 
@@ -32,12 +33,29 @@ export default function ServiceForm({ title, close, action, service, tenantName_
   };
 
   const [path, setPath] = React.useState('/');
-
+  const [allPaths, setAllPaths] = React.useState([]);
+  const [pathSelected, setPathSelected] = React.useState('');
+  const getPaths = () => {
+    axios
+      .get(env.ANUBIS_API_URL + 'v1/tenants/' + tenantName_id.id + '/service_paths?name=' + service.path)
+      .then((results) => {
+        let mapper = [];
+        results.data.map((thisPath) => mapper.push(thisPath.path));
+        setAllPaths(mapper);
+        setPathSelected(results.data[0].path);
+      })
+      .catch((e) => {
+        sendNotification({ msg: e.response.data.detail, variant: 'error' });
+      });
+  };
+  React.useEffect(() => {
+    action === 'Sub-service-creation' ? getPaths() : '';
+  }, []);
   const handleSave = () => {
     switch (action) {
       case 'create':
         axios
-          .post(env.ANUBIS_API_URL + 'v1/tenants/' + tenantName_id[0].id + '/service_paths', {
+          .post(env.ANUBIS_API_URL + 'v1/tenants/' + tenantName_id.id + '/service_paths', {
             path
           })
           .then(() => {
@@ -57,13 +75,15 @@ export default function ServiceForm({ title, close, action, service, tenantName_
           })
           .catch((e) => {
             getServices();
-            sendNotification({ msg: e.response.data.detail, variant: 'error' });
+            typeof e.response.data.detail === 'string'
+              ? sendNotification({ msg: e.response.data.detail, variant: 'error' })
+              : e.response.data.detail.map((msgObj) => sendNotification({ msg: msgObj.msg, variant: 'error' }));
           });
         break;
       case 'Sub-service-creation':
         axios
           .post(env.ANUBIS_API_URL + 'v1/tenants/' + tenantName_id.id + '/service_paths', {
-            path: service.path + path
+            path: pathSelected !== '/' ? pathSelected + path : path
           })
           .then(() => {
             getServices();
@@ -82,7 +102,9 @@ export default function ServiceForm({ title, close, action, service, tenantName_
           })
           .catch((e) => {
             getServices();
-            sendNotification({ msg: e.response.data.detail, variant: 'error' });
+            typeof e.response.data.detail === 'string'
+              ? sendNotification({ msg: e.response.data.detail, variant: 'error' })
+              : e.response.data.detail.map((msgObj) => sendNotification({ msg: msgObj.msg, variant: 'error' }));
           });
         break;
       default:
@@ -96,8 +118,6 @@ export default function ServiceForm({ title, close, action, service, tenantName_
         return '/ should be the first char';
       case path.indexOf(' ') >= 0:
         return 'The string should be without spaces';
-      case path[0] === '/' && typeof path[1] === 'undefined':
-        return 'A value after / is mandatory';
       case path[0] === '/' && typeof path[1] !== 'undefined':
         return '';
       default:
@@ -133,6 +153,32 @@ export default function ServiceForm({ title, close, action, service, tenantName_
               }}
             />
           </Grid>
+          {action === 'Sub-service-creation' ? (
+            <Grid item xs={12}>
+              <Autocomplete
+                id="sub-path-creation"
+                sx={{ width: '100%' }}
+                defaultValue={service.path}
+                options={allPaths}
+                autoHighlight
+                getOptionLabel={(option) => option}
+                onChange={(event, value) => setPathSelected(value)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label={<Trans>service.form.parentPath</Trans>}
+                    variant="outlined"
+                    inputProps={{
+                      ...params.inputProps,
+                      autoComplete: 'new-password'
+                    }}
+                  />
+                )}
+              />
+            </Grid>
+          ) : (
+            ''
+          )}
           <Grid item xs={12}>
             <TextField
               id="Path"
@@ -148,12 +194,13 @@ export default function ServiceForm({ title, close, action, service, tenantName_
               InputProps={
                 action === 'Sub-service-creation'
                   ? {
-                      startAdornment: <InputAdornment position="start">{service.path}</InputAdornment>
+                      startAdornment:
+                        pathSelected !== '/' ? <InputAdornment position="start">{pathSelected}</InputAdornment> : ''
                     }
                   : ' '
               }
               helperText={cases()}
-              error={path === '' || (path[0] === '/' && typeof path[1] === 'undefined') || path.indexOf(' ') >= 0}
+              error={path === '' || path.indexOf(' ') >= 0}
             />
           </Grid>
         </Grid>

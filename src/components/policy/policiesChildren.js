@@ -9,7 +9,7 @@ import { getEnv } from '../../env';
 
 const env = getEnv();
 
-export default function PoliciesChildren({ tenantId, tenantName, seTenant }) {
+export default function PoliciesChildren({ tenantId, tenantName, seTenant, color }) {
   // services
   const [msg, sendNotification] = useNotification();
   console.log(msg);
@@ -66,8 +66,13 @@ export default function PoliciesChildren({ tenantId, tenantName, seTenant }) {
   return (
     <NavLink to={'/Policy'}>
       <IconButton aria-label="service" onClick={reiderect}>
-        <Badge badgeContent={policies.length} color="secondary">
-          <PolicyIcon color="primary" fontSize="large" />
+        <Badge badgeContent={policies.length} color="primary">
+          <PolicyIcon
+            sx={{
+              color: color
+            }}
+            fontSize="large"
+          />
         </Badge>
       </IconButton>
     </NavLink>

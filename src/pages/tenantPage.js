@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { MainTitle } from '../components/shared/mainTitle';
+import MainTitle from '../components/shared/mainTitle';
 import AddButton from '../components/shared/addButton';
 import { Grid } from '@mui/material';
 import SortButton from '../components/shared/sortButton';
@@ -7,8 +7,9 @@ import DashboardCard from '../components/shared/cards';
 import TenantForm from '../components/tenant/tenantForm';
 import Grow from '@mui/material/Grow';
 import { Trans } from 'react-i18next';
+import Box from '@mui/material/Box';
 
-export default function TenantPage({ tenantValues, getTenants, seTenant, client, token }) {
+export default function TenantPage({ tenantValues, getTenants, seTenant, client, token, graphqlErrors }) {
   const [createOpen, setCreateOpen] = React.useState(false);
   const [sortedTenants, sortTenants] = React.useState([]);
   const [count, counter] = React.useState(1);
@@ -22,7 +23,7 @@ export default function TenantPage({ tenantValues, getTenants, seTenant, client,
   };
 
   return (
-    <div>
+    <Box sx={{ marginBottom: 15 }}>
       <MainTitle mainTitle={mainTitle}></MainTitle>
       <AddButton
         pageType={
@@ -36,8 +37,9 @@ export default function TenantPage({ tenantValues, getTenants, seTenant, client,
         }
         setOpen={setCreateOpen}
         status={createOpen}
+        graphqlErrors={graphqlErrors}
       ></AddButton>
-      <Grid container spacing={2} sx={{ marginLeft: '15px ' }}>
+      <Grid container spacing={2}>
         <Grid item xs={12}>
           <SortButton data={sortedTenants} id={'name'} sortData={rerOder}></SortButton>
         </Grid>
@@ -48,7 +50,7 @@ export default function TenantPage({ tenantValues, getTenants, seTenant, client,
             style={{ transformOrigin: '0 0 0' }}
             {...(index === index ? { timeout: index * 600 } : {})}
           >
-            <Grid item xs={4}>
+            <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
               <DashboardCard
                 index={index}
                 key={index}
@@ -65,11 +67,12 @@ export default function TenantPage({ tenantValues, getTenants, seTenant, client,
                 data={tenant}
                 getData={getTenants}
                 seTenant={seTenant}
+                tenantName_id={tenant}
               ></DashboardCard>
             </Grid>
           </Grow>
         ))}
       </Grid>
-    </div>
+    </Box>
   );
 }

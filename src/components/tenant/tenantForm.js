@@ -17,6 +17,7 @@ import { setContext } from '@apollo/client/link/context';
 import { Trans } from 'react-i18next';
 import useNotification from '../shared/messages/alerts';
 import { getEnv } from '../../env';
+import Box from '@mui/material/Box';
 
 const env = getEnv();
 
@@ -25,8 +26,6 @@ const CustomDialogTitle = styled(AppBar)({
   background: 'white',
   boxShadow: 'none'
 });
-
-const FormHeight = styled('div')({});
 
 export default function TenantForm({ title, close, action, tenant, getTenants, token }) {
   const [msg, sendNotification] = useNotification();
@@ -122,7 +121,8 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
           })
           .catch((e) => {
             getTenants();
-            e.response.data.detail.map((thisError) => sendNotification({ msg: thisError.msg, variant: 'error' }));
+            close(false);
+            sendNotification({ msg: e.message + ' the config', variant: 'error' });
           });
         break;
       default:
@@ -130,9 +130,8 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
     }
   };
 
-  console.log(tenant);
   return (
-    <FormHeight>
+    <Box>
       <CustomDialogTitle>
         <Toolbar>
           <IconButton edge="start" onClick={handleClose} aria-label="close">
@@ -146,7 +145,7 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
           </Button>
         </Toolbar>
       </CustomDialogTitle>
-      <DialogContent sx={{ minHeight: '400px' }}>
+      <DialogContent sx={{ minHeight: '740px' }}>
         <Grid container spacing={3}>
           {action === 'modify' ? (
             ''
@@ -200,6 +199,6 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
           </Grid>
         </Grid>
       </DialogContent>
-    </FormHeight>
+    </Box>
   );
 }

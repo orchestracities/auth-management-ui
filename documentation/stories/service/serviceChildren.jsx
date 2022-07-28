@@ -59,7 +59,11 @@ ChildrenOfTheService.propTypes = {
   /**
    * The function to get the services data
    */
-  getData: PropTypes.func.isRequired
+  getData: PropTypes.func.isRequired,
+  /**
+   * The corrent tenant data
+   */
+  tenantName_id: PropTypes.object
 };
 
 ChildrenOfTheService.defaultProps = {
@@ -67,5 +71,6 @@ ChildrenOfTheService.defaultProps = {
   status: undefined,
   data: [],
   masterTitle: 'Title',
-  getData: () => {}
+  getData: () => {},
+  tenantName_id: {}
 };

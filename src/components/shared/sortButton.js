@@ -59,15 +59,13 @@ export default function SortButton({ data, id, sortData }) {
   };
 
   React.useEffect(() => {
-    sortData(
-      id === 'name'
-        ? data.reverse((a, b) => parseFloat(a[id]) - parseFloat(b[id]))
-        : [
-            {
-              children: data.reverse((a, b) => parseFloat(a[id]) - parseFloat(b[id]))
-            }
-          ]
-    );
+    const sortedData =
+      mode === 'Title (ASC)'
+        ? data.sort((a, b) => (a[id] > b[id] ? 1 : b[id] > a[id] ? -1 : 0))
+        : data
+            .sort((a, b) => (a[id] > b[id] ? 1 : b[id] > a[id] ? -1 : 0))
+            .reverse((a, b) => parseFloat(a[id]) - parseFloat(b[id]));
+    sortData(sortedData);
   }, [mode, data]);
 
   return (

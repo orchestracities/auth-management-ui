@@ -59,7 +59,11 @@ Card.propTypes = {
   /**
    * The callBack function after the modal data is saved (ONLY for the Tenants Page)
    */
-  seTenant: PropTypes.func
+  seTenant: PropTypes.func,
+  /**
+   * The corrent tenant data
+   */
+  tenantName_id: PropTypes.object
 };
 
 Card.defaultProps = {
@@ -67,5 +71,6 @@ Card.defaultProps = {
   data: {},
   colors: { secondaryColor: '', primaryColor: '' },
   getData: undefined,
-  seTenant: undefined
+  seTenant: undefined,
+  tenantName_id: {}
 };
