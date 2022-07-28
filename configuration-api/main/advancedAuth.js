@@ -31,9 +31,14 @@ const typeDefs = gql`
   }
   type Mutation {
     modifyUserPreferences(userName: String!, language: String!): [UserPreferencies]
-    publishTenants(name: String!, icon: String!, primaryColor: String!, secondaryColor: String!): [TenantConfiguration]
-    removeTenants(tenantNames: [String]!): Boolean!
-    modifyTenants(name: String!, icon: String!, primaryColor: String!, secondaryColor: String!): [TenantConfiguration]
+    getTenantConfig(name: String!, icon: String!, primaryColor: String!, secondaryColor: String!): [TenantConfiguration]
+    removeTenantsConfig(tenantNames: [String]!): Boolean!
+    modifyTenantsConfig(
+      name: String!
+      icon: String!
+      primaryColor: String!
+      secondaryColor: String!
+    ): [TenantConfiguration]
   }
 `;
 
@@ -68,27 +73,27 @@ const resolvers = {
         throw new ApolloError({ data: { reason: err.message } });
       }
     },
-    publishTenants: async (object, args, context, info) => {
+    getTenantConfig: async (object, args, context, info) => {
       try {
-        config.getLogger().info(logContext, 'publishTenants: %s', JSON.stringify(args));
+        config.getLogger().info(logContext, 'getTenantConfig: %s', JSON.stringify(args));
         return await [add(args)];
       } catch (err) {
         config.getLogger().error(logContext, err);
         throw new ApolloError({ data: { reason: err.message } });
       }
     },
-    modifyTenants: async (object, args, context, info) => {
+    modifyTenantsConfig: async (object, args, context, info) => {
       try {
-        config.getLogger().info(logContext, 'modifyTenants: %s', JSON.stringify(args));
+        config.getLogger().info(logContext, 'modifyTenantsConfig: %s', JSON.stringify(args));
         return await [update(args)];
       } catch (err) {
         config.getLogger().error(logContext, err);
         throw new ApolloError({ data: { reason: err.message } });
       }
     },
-    removeTenants: async (object, args, context, info) => {
+    removeTenantsConfig: async (object, args, context, info) => {
       try {
-        config.getLogger().info(logContext, 'removeTenants: %s', JSON.stringify(args));
+        config.getLogger().info(logContext, 'removeTenantsConfig: %s', JSON.stringify(args));
         return await deleteTenant(args);
       } catch (err) {
         config.getLogger().error(logContext, err);
