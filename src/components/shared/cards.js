@@ -9,8 +9,11 @@ import MultifunctionButton from './speedDial';
 import ServiceChildren from '../service/serviceChildren';
 import PoliciesChildren from '../policy/policiesChildren';
 import IconList from '../tenant/iconList';
+import axios from 'axios';
+import { getEnv } from '../../env';
 import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
+const env = getEnv();
 
 const RadiusDiv = styled(Box)(({ theme }) => ({
   borderRadius: '15px',
@@ -19,7 +22,7 @@ const RadiusDiv = styled(Box)(({ theme }) => ({
   maxWidth: 550
 }));
 
-export default function DashboardCard({ pageType, data, getData, seTenant, colors }) {
+export default function DashboardCard({ pageType, data, getData, seTenant, colors, tenantName_id }) {
   const [subpathOpen, setSubpathOpen] = React.useState(false);
 
   const [status, setOpen] = React.useState(false);
@@ -34,6 +37,19 @@ export default function DashboardCard({ pageType, data, getData, seTenant, color
   const cardColor = typeof colors !== 'undefined' ? colors.primaryColor : data.props.primaryColor;
 
   const avatarColor = layout.props.action === 'Sub-service-creation' ? colors.secondaryColor : data.props.primaryColor;
+
+  const [allPaths, setAllPaths] = React.useState([]);
+  const getPaths = () => {
+    axios
+      .get(env.ANUBIS_API_URL + 'v1/tenants/' + layout.props.tenantName_id.name + '/service_paths?name=' + data.path)
+      .then((results) => {
+        setAllPaths(results.data);
+      });
+  };
+
+  React.useEffect(() => {
+    layout.props.action === 'Sub-service-creation' ? getPaths() : '';
+  }, [data]);
 
   return (
     <RadiusDiv
@@ -50,7 +66,7 @@ export default function DashboardCard({ pageType, data, getData, seTenant, color
             }}
             aria-label="recipe"
           >
-            {layout.props.action === 'Sub-service-creation' ? data.path[1] : iconMapper(data.props.icon)}
+            {layout.props.action === 'Sub-service-creation' ? data.path[0] : iconMapper(data.props.icon)}
           </Avatar>
         }
         action={
@@ -79,16 +95,22 @@ export default function DashboardCard({ pageType, data, getData, seTenant, color
       <CardActions>
         <ServiceChildren
           setOpen={setSubpathOpen}
+          tenantName_id={tenantName_id}
           status={subpathOpen}
-          data={layout.props.action !== 'Sub-service-creation' ? data.service_paths.slice(1) : data.children}
+          data={layout.props.action !== 'Sub-service-creation' ? data.service_paths : allPaths}
           masterTitle={layout.props.action !== 'Sub-service-creation' ? data.name : data.path}
           color={avatarColor}
-          getData={getData}
+          getData={layout.props.action !== 'Sub-service-creation' ? getData : getPaths}
         />
         {layout.props.action === 'Sub-service-creation' ? (
           ''
         ) : (
-          <PoliciesChildren tenantId={data.id} tenantName={data.name} seTenant={seTenant}></PoliciesChildren>
+          <PoliciesChildren
+            color={avatarColor}
+            tenantId={data.id}
+            tenantName={data.name}
+            seTenant={seTenant}
+          ></PoliciesChildren>
         )}
       </CardActions>
     </RadiusDiv>

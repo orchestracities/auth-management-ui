@@ -20,10 +20,13 @@
     "titles": {
       "page": "Paths dei Servizi",
       "new": "Nuovo Servizio",
-      "edit": "Nuovo path del servizio"
+      "edit": "Nuovo sotto-servizio"
     },
     "tooltip": {
-      "editIcon": "Nuovo path del servizio"
+      "editIcon": "Nuovo sotto-servizio"
+    },
+    "form":{
+     "parentPath":"Percorso Genitore" 
     }
   },
   "policies": {
@@ -91,7 +94,7 @@
       "title": "Impostazioni",
       "language": "Lingua"
     },
-    "subPath": "Subpaths di: <0>{{name}}</0>",
+    "subPath": "sotto-servizi di: <0>{{name}}</0>",
     "table": {
       "counterPlural": "{{data}}  Elementi",
       "counterSingle": "{{data}}  Elemento",

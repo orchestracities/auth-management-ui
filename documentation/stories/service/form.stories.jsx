@@ -77,7 +77,7 @@ SubServiceCreation.args = {
   action: 'Sub-service-creation',
   getServices: () => {},
   service: {
-    path: 'serviceName',
+    path: '/',
     id: 'f6a91fee-e167-45c3-8b48-458039fa5a8b',
     tenant_id: 'b2e35303-2747-4d1f-9767-519f9310b83e',
     parent_id: null,

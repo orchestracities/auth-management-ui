@@ -4,6 +4,7 @@
 
 ### New features
 
+- Possibility to add N subpaths on the main form or on the table of services
 - Proper responsive on the elements
 - Fullscreen forms on mobile
 - Fullscrean table and filters
@@ -15,6 +16,7 @@
   prettier rules, so we have to enforce prettier during prestart.
 - Minor issues (animation/colors)
 - No Graphql dependencies for the app to work
+- Tenant name on path creation
 
 ### Documentation
 

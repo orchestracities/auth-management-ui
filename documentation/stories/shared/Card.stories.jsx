@@ -16,6 +16,9 @@ export default {
     },
     data: {
       control: false
+    },
+    tenantName_id: {
+      control: false
     }
   },
   parameters: {
@@ -147,5 +150,6 @@ ServiceExample.args = {
   },
   colors: { secondaryColor: '#0018ef', primaryColor: '#0018ef' },
   getData: emptyFunction,
-  seTenant: undefined
+  seTenant: undefined,
+  tenantName_id: { name: 'Tenant1', id: 'b2e35303-2747-4d1f-9767-519f9310b83e' }
 };
