@@ -13,9 +13,9 @@ const TenantConfig = new mongoose.Schema({
 const Config = connection.model('TenantConfig', TenantConfig);
 
 async function get(data) {
-  const thisUser = await Config.find({ name: { $in: data } });
-  if (thisUser.length === data.length) {
-    return await thisUser;
+  const tenants = await Config.find({ name: { $in: data } });
+  if (tenants.length === data.length) {
+    return await tenants;
   } else {
     fromScratch(data);
   }
@@ -50,8 +50,8 @@ async function add(data) {
 
 async function fromScratch(data) {
   for (let thisTenant of data) {
-    const thisUser = await Config.find({ name: thisTenant });
-    if (thisUser.length === 0) {
+    const tenants = await Config.find({ name: thisTenant });
+    if (tenants.length === 0) {
       const arrayOfData = {
         name: thisTenant,
         icon: 'none',
@@ -65,12 +65,12 @@ async function fromScratch(data) {
 }
 
 async function deleteTenant(data) {
-  const thisUser = await Config.find({ name: { $in: data } });
-  let deletedOwner = {};
-  for (const e of thisUser) {
-    deletedOwner = await Config.findByIdAndRemove(e._id);
+  const tenants = await Config.find({ name: { $in: data } });
+  let deletedTenants = {};
+  for (const e of tenants) {
+    deletedTenants = await Config.findByIdAndRemove(e._id);
   }
-  return !!(await (typeof deletedOwner === 'object'));
+  return !!(await (typeof deletedTenants === 'object'));
 }
 
 module.exports = {
