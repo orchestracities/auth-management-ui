@@ -7,16 +7,16 @@
 - Possibility to add N subpaths on the main form or on the table of services
 - Proper responsive on the elements
 - Fullscreen forms on mobile
-- Fullscrean table and filters
+- Fullscreen table and filters
 
 ### Bug fixes
 
 - Using prestart we re-generate the env.js file,
   but the generator does not comply with our
-  prettier rules, so we have to enforce prettier during prestart.
-- Changed some names on varibles in order to be more clear
+  prettier rules, so we have to enforce prettier during pre-start.
+- Changed some names on variables in order to be more clear
 - Minor issues (animation/colors)
-- No Graphql dependencies for the app to work
+- Remove GraphQL requirement for the app to work
 - Tenant name on path creation
 
 ### Documentation
@@ -33,9 +33,9 @@
 - New colors for the policies Cards
 - Filter by resource in the policies table
 - Modify a policy
-- Managing errors in policyform
+- Manage errors in the policy forms
 - Policy ID on edit
-- Notification system for deleting,creating,updating elements
+- Notification system for deleting, creating, updating elements
 
 ### Bug fixes
 
