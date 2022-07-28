@@ -4,21 +4,21 @@ const mongoose = require('mongoose');
 
 const connection = mongoose.createConnection(process.env.MONGO_DB || 'mongodb://localhost:27017/graphql');
 
-const usrPreference = new mongoose.Schema({
+const TenantConfig = new mongoose.Schema({
   name: String,
   icon: String,
   primaryColor: String,
   secondaryColor: String
 });
 
-const Preferences = connection.model('UsrPreferences', usrPreference);
+const Config = connection.model('TenantConfig', TenantConfig);
 
-Preferences.deleteMany({}, function (err) {
+Config.deleteMany({}, function (err) {
   console.log('PopulateDB: clear old data...');
   if (err) {
     console.log(err);
   } else {
-    Preferences.create(
+    Config.create(
       {
         name: 'Tenant1',
         icon: 'none',
@@ -30,7 +30,7 @@ Preferences.deleteMany({}, function (err) {
           console.log(err);
         } else {
           console.log('Tenant1 created!');
-          Preferences.create(
+          Config.create(
             {
               name: 'Tenant2',
               icon: 'none',

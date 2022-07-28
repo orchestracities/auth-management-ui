@@ -88,8 +88,18 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
         client
           .mutate({
             mutation: gql`
-              mutation modifyTenants($name: String!, $icon: String!, $primaryColor: String!, $secondaryColor: String!) {
-                modifyTenants(name: $name, icon: $icon, primaryColor: $primaryColor, secondaryColor: $secondaryColor) {
+              mutation modifyTenantConfig(
+                $name: String!
+                $icon: String!
+                $primaryColor: String!
+                $secondaryColor: String!
+              ) {
+                modifyTenantConfig(
+                  name: $name
+                  icon: $icon
+                  primaryColor: $primaryColor
+                  secondaryColor: $secondaryColor
+                ) {
                   name
                   icon
                   primaryColor
