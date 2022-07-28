@@ -32,7 +32,7 @@ const typeDefs = gql`
   type Mutation {
     modifyUserPreferences(userName: String!, language: String!): [UserPreferencies]
     getTenantConfig(name: String!, icon: String!, primaryColor: String!, secondaryColor: String!): [TenantConfiguration]
-    removeTenantsConfig(tenantNames: [String]!): Boolean!
+    removeTenantConfig(tenantNames: [String]!): Boolean!
     modifyTenantConfig(
       name: String!
       icon: String!
@@ -91,9 +91,9 @@ const resolvers = {
         throw new ApolloError({ data: { reason: err.message } });
       }
     },
-    removeTenantsConfig: async (object, args, context, info) => {
+    removeTenantConfig: async (object, args, context, info) => {
       try {
-        config.getLogger().info(logContext, 'removeTenantsConfig: %s', JSON.stringify(args));
+        config.getLogger().info(logContext, 'removeTenantConfig: %s', JSON.stringify(args));
         return await deleteTenant(args);
       } catch (err) {
         config.getLogger().error(logContext, err);
