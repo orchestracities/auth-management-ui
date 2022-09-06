@@ -3,9 +3,11 @@
 ## 0.4
 
 ### New features
+
 - possibility do add custom icons (with some image size limitaion) as a custom icon for your tenant
 
 ### Bug fixes
+
 - small scaling of the lateral menu
 
 ### Documentation
