@@ -4,11 +4,11 @@
 
 ### New features
 
-- possibility do add custom icons (with some image size limitaion) as a custom icon for your tenant
+- Possibility do add custom icons (with some size limitaion) to your tenant
 
 ### Bug fixes
 
-- small scaling of the lateral menu
+- Small scaling of the lateral menu
 
 ### Documentation
 
