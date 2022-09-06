@@ -20,6 +20,7 @@ const typeDefs = gql`
     icon: String!
     primaryColor: String!
     secondaryColor: String!
+    customImage: String
   }
   type UserPreferencies {
     userName: String!
@@ -38,6 +39,7 @@ const typeDefs = gql`
       icon: String!
       primaryColor: String!
       secondaryColor: String!
+      file: String
     ): [TenantConfiguration]
   }
 `;
@@ -76,7 +78,7 @@ const resolvers = {
     getTenantConfig: async (object, args, context, info) => {
       try {
         config.getLogger().info(logContext, 'getTenantConfig: %s', JSON.stringify(args));
-        return await [add(args)];
+        await [add(args)];
       } catch (err) {
         config.getLogger().error(logContext, err);
         throw new ApolloError({ data: { reason: err.message } });
@@ -85,7 +87,7 @@ const resolvers = {
     modifyTenantConfig: async (object, args, context, info) => {
       try {
         config.getLogger().info(logContext, 'modifyTenantConfig: %s', JSON.stringify(args));
-        return await [update(args)];
+        return [await update(args)];
       } catch (err) {
         config.getLogger().error(logContext, err);
         throw new ApolloError({ data: { reason: err.message } });
