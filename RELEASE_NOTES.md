@@ -1,5 +1,19 @@
 # Auth Management UI Release Notes
 
+## 0.4
+
+### New features
+
+- The last tenant selected would be displayed
+
+### Bug fixes
+
+### Documentation
+
+### Continuous Integration
+
+### Technical debt
+
 ## 0.3
 
 ### New features
