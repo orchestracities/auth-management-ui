@@ -17,7 +17,17 @@ const theme = createTheme({
   }
 });
 
-export const PolicyMainForm = ({ action, agentsTypes, services, getServices, access_modes, title, close, data }) => {
+export const PolicyMainForm = ({
+  action,
+  agentsTypes,
+  services,
+  getServices,
+  access_modes,
+  title,
+  close,
+  data,
+  token
+}) => {
   const getTenantName = () => {
     return 'Tenant1';
   };
@@ -37,6 +47,7 @@ export const PolicyMainForm = ({ action, agentsTypes, services, getServices, acc
               title={title}
               close={close}
               data={data}
+              token={token}
             ></PolicyForm>
           </Grid>
         </BrowserRouter>
@@ -83,7 +94,12 @@ PolicyMainForm.propTypes = {
   /**
    * The possibile values of the agents types displayed on the table
    */
-  agentsTypes: PropTypes.arrayOf(PropTypes.object)
+  agentsTypes: PropTypes.arrayOf(PropTypes.object),
+
+  /**
+   * The token generated for the user
+   */
+  token: PropTypes.string
 };
 
 PolicyMainForm.defaultProps = {
@@ -95,5 +111,6 @@ PolicyMainForm.defaultProps = {
   access_modes: [],
   title: '',
   close: () => {},
-  data: {}
+  data: {},
+  token:''
 };

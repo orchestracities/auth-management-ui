@@ -11,7 +11,9 @@ export default {
     action: {
       control: false
     },
-
+    token: {
+      control: false
+    },
     services: {
       control: false
     },
@@ -91,6 +93,7 @@ PolicyCreation.args = {
     }
   ],
   getServices: () => {},
+  token: '',
   title: 'Simple Title',
   action: 'create',
   close: () => {}
@@ -143,6 +146,7 @@ ModifyAPolicy.args = {
   getServices: () => {},
   title: 'Simple Title',
   action: 'modify',
+  token: '',
   data: {
     access_to: '*',
     agent: ['acl:AuthenticatedAgent'],

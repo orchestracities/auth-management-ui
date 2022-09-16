@@ -43,7 +43,8 @@ export default function PolicyForm({
   access_modes,
   agentsTypes,
   getServices,
-  data
+  data,
+  token
 }) {
   const [msg, sendNotification] = useNotification();
   console.log(msg);
@@ -165,7 +166,8 @@ export default function PolicyForm({
             {
               headers: {
                 'fiware-service': tenantName(),
-                'fiware-servicepath': path
+                'fiware-servicepath': path,
+                token: token
               }
             }
           )
@@ -204,7 +206,8 @@ export default function PolicyForm({
               headers: {
                 policy_id: data.id,
                 'fiware-service': tenantName(),
-                'fiware-servicepath': path
+                'fiware-servicepath': path,
+                token: token
               }
             }
           )
