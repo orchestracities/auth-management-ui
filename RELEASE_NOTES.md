@@ -1,5 +1,19 @@
 # Auth Management UI Release Notes
 
+## 0.4
+
+### New features
+
+- CI for the graphql part
+
+### Bug fixes
+
+### Documentation
+
+### Continuous Integration
+
+### Technical debt
+
 ## 0.3
 
 ### New features

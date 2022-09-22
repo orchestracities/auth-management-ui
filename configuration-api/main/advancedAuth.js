@@ -32,7 +32,7 @@ const typeDefs = gql`
   type Mutation {
     modifyUserPreferences(userName: String!, language: String!): [UserPreferencies]
     getTenantConfig(name: String!, icon: String!, primaryColor: String!, secondaryColor: String!): [TenantConfiguration]
-    removeTenantConfig(tenantNames: [String]!): Boolean!
+    removeTenantConfig(tenantNames: [String]!): [TenantConfiguration]
     modifyTenantConfig(
       name: String!
       icon: String!
@@ -137,8 +137,7 @@ function verify(payload, verified) {
   }
   verified(null, user, null);
 }
-
-async function startServer() {
+ async function startServer() {
   passport.use(
     new JwtStrategy(
       {

@@ -12,7 +12,7 @@
   "scripts": {
     "clean": "rm -rf package-lock.json && rm -rf node_modules && rm -rf coverage",
     "lint": "eslint main/ --cache --fix",
-    "test": "nyc ava -v",
+    "test": "mocha test/*.test.js",
     "prettier": "prettier --config .prettierrc.json --write '**/**/**/*.js' '**/**/*.js' '**/*.js'",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
@@ -28,7 +28,6 @@
     "dotenv": "^16.0.0",
     "express": "4.17.1",
     "express-session": "1.17.1",
-    "graphql": "15.4.0",
     "graphql-subscriptions": "1.1.0",
     "jwks-rsa": "^2.1.4",
     "logops": "^2.1.2",
@@ -39,9 +38,13 @@
     "subscriptions-transport-ws": "0.9.18"
   },
   "devDependencies": {
+    "chai": "^4.3.6",
     "eslint": "^8.14.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "prettier": "^2.6.2"
+    "graphql": "^16.6.0",
+    "mocha": "^10.0.0",
+    "prettier": "^2.6.2",
+    "supertest": "^6.2.4"
   }
 }
