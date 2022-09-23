@@ -148,7 +148,7 @@ describe('GraphQL-Mutations', () => {
       });
   });
 
-  it('Returns user-preferencies', (done) => {
+  it('Modify user-preferencies', (done) => {
     request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
       .post('/')
       .set('Content-type', 'application/x-www-form-urlencoded')
