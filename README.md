@@ -188,4 +188,5 @@ $ cd configuration-api
 $ npm install
 $ npm test
 ```
+
 The results of the tests will be visible on the console
