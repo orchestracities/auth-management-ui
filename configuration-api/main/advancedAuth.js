@@ -137,7 +137,7 @@ function verify(payload, verified) {
   }
   verified(null, user, null);
 }
- async function startServer() {
+async function startServer() {
   passport.use(
     new JwtStrategy(
       {

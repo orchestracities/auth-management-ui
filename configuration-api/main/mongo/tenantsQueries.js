@@ -42,7 +42,7 @@ async function add(data) {
     secondaryColor: data.secondaryColor
   };
 
-  const thisTenant = await  Config.create(arrayOfData);
+  const thisTenant = await Config.create(arrayOfData);
   return await thisTenant;
 }
 
