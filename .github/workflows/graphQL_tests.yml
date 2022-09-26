@@ -28,9 +28,9 @@ jobs:
           key: ${{ runner.os }}-node-v${{ matrix.node }}-${{ hashFiles('**/package.json') }}
           restore-keys: |
             ${{ runner.os }}-node-v${{ matrix.node }}-
-      - name: move into the folder
-        run: cd configuration-api
       - name: Install Dependencies
         run: npm install
+        workingDir: configuration-api
       - name: Run All Node.js Tests
         run: npm run test
+        workingDir: configuration-api
