@@ -30,7 +30,7 @@ jobs:
             ${{ runner.os }}-node-v${{ matrix.node }}-
       - name: Install Dependencies
         run: npm install
-        workingDir: configuration-api
+        working-directory: configuration-api
       - name: Run All Node.js Tests
         run: npm run test
-        workingDir: configuration-api
+        working-directory: configuration-api
