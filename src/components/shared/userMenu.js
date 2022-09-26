@@ -41,7 +41,7 @@ const CustomDialogTitle = styled(AppBar)({
   boxShadow: 'none'
 });
 
-export default function UserMenu({ language, userData, token }) {
+export default function UserMenu({ language, userData, token, lastTenantSelected }) {
   const { i18n } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [settings, setOpenSettings] = React.useState(false);
@@ -104,16 +104,18 @@ export default function UserMenu({ language, userData, token }) {
     client
       .mutate({
         mutation: gql`
-          mutation modifyUserPreferences($userName: String!, $language: String!) {
-            modifyUserPreferences(userName: $userName, language: $language) {
+          mutation modifyUserPreferences($userName: String!, $language: String!, $lastTenantSelected: String) {
+            modifyUserPreferences(userName: $userName, language: $language, lastTenantSelected: $lastTenantSelected) {
               userName
               language
+              lastTenantSelected
             }
           }
         `,
         variables: {
           userName: userData.sub,
-          language: newValue
+          language: newValue,
+          lastTenantSelected: lastTenantSelected
         }
       })
       .then((result) => {

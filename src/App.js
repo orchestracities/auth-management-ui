@@ -138,9 +138,44 @@ export default class App extends Component {
       }
     }),
     tenants: [],
-    thisTenant: '',
+    thisTenant: null,
     seTenant: (newValue) => {
-      this.setState({ thisTenant: newValue });
+      let tenantFiltered = [];
+      tenantFiltered = this.state.tenants.filter((e) => e.id === newValue);
+
+      const httpLink = createHttpLink({
+        uri: env.CONFIGURATION_API_URL
+      });
+      const authLink = setContext((_, { headers }) => {
+        return {
+          headers: {
+            ...headers,
+            Authorization: `Bearer ${this.props.accessToken}`
+          }
+        };
+      });
+      const client = new ApolloClient({
+        link: authLink.concat(httpLink),
+        cache: new InMemoryCache()
+      });
+      client.mutate({
+        mutation: gql`
+          mutation modifyUserPreferences($userName: String!, $language: String!, $lastTenantSelected: String) {
+            modifyUserPreferences(userName: $userName, language: $language, lastTenantSelected: $lastTenantSelected) {
+              userName
+              language
+              lastTenantSelected
+            }
+          }
+        `,
+        variables: {
+          userName: this.props.idTokenPayload.sub,
+          language: this.state.language,
+          lastTenantSelected: newValue
+        }
+      });
+
+      this.setState({ thisTenant: tenantFiltered.length === 0 ? (newValue = this.state.tenants[0].id) : newValue });
       this.state.catchColor(newValue);
     },
     preferencesMapper: (data, userTenants) => {
@@ -278,6 +313,7 @@ export default class App extends Component {
                       getUserPreferences(userName: $userName) {
                         userName
                         language
+                        lastTenantSelected
                       }
                     }
                   `,
@@ -288,6 +324,7 @@ export default class App extends Component {
                 })
                 .then((result) => {
                   this.state.setAppLanguage(result.data.getUserPreferences[0].language);
+                  this.state.seTenant(result.data.getUserPreferences[0].lastTenantSelected);
                 });
               this.setState({
                 tenants: this.state.preferencesMapper(result.data.listTenants, userTenants)
@@ -376,6 +413,7 @@ export default class App extends Component {
                         setLanguage: this.state.setAppLanguage
                       }}
                       userData={this.props.idTokenPayload}
+                      lastTenantSelected={this.state.thisTenant}
                     ></UserMenu>
                   </div>
                 </CustomToolbar>

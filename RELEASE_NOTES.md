@@ -4,6 +4,7 @@
 
 ### New features
 
+- The last tenant selected would be displayed
 - Possibility do add custom icons (with some size limitaion) to your tenant
 
 ### Bug fixes
