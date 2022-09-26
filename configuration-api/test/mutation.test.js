@@ -11,7 +11,8 @@ const loginSettings = {
   client_id: config.getConfig().oidc_client
 };
 
-describe('GraphQL-Mutations', () => {
+describe('GraphQL-Mutations', function () {
+  this.retries(4);
   const newTenantConfig = {
     query: `
         mutation getTenantConfig(
@@ -151,7 +152,6 @@ describe('GraphQL-Mutations', () => {
   });
 
   it('Modify user-preferencies', (done) => {
-    this.retries(4);
     request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
       .post('/')
       .set('Content-type', 'application/x-www-form-urlencoded')
