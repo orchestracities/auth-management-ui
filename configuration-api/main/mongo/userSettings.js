@@ -16,7 +16,7 @@ async function getUserPref(data) {
   if (thisUser.length > 0) {
     return await thisUser;
   } else {
-    return await addUserPref(data);
+    addUserPref(data);
   }
 }
 
@@ -39,7 +39,13 @@ async function addUserPref(data) {
     lastTenantSelected: null
   };
 
- return await Settings.create(arrayOfData);
+  Settings.create(arrayOfData, function (err) {
+    if (err) {
+      return config.getLogger().error(logContext, err);
+    } else {
+      getUserPref(data);
+    }
+  });
 }
 
 module.exports = {
