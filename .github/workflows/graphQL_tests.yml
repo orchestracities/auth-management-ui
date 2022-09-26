@@ -29,7 +29,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-v${{ matrix.node }}-
       - name: Setup Docker
-        run: bash start.sh
+        run: bash start.sh dev
+      - name: Setup Docker
+        run: docker compose up -d
       - name: Install Dependencies
         run: npm install
         working-directory: configuration-api
