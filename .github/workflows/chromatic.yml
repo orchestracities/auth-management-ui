@@ -22,8 +22,7 @@ jobs:
     # Job steps
     steps:
       - uses: actions/checkout@v1
-      -
-        name: Generate env file
+      - name: Generate env file
         run: cp .env.docker .env
       - name: Set up Node.js
         uses: actions/setup-node@v1

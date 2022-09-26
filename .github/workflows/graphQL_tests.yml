@@ -19,6 +19,8 @@ jobs:
         with:
           node-version: '${{ matrix.node }}'
       - uses: actions/checkout@v2
+      - name: Generate env file
+        run: cp .env.docker .env
       - name: 'Cache node_modules'
         uses: actions/cache@v2
         with:
