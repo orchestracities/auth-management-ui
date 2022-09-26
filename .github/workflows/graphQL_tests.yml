@@ -20,7 +20,7 @@ jobs:
           node-version: '${{ matrix.node }}'
       - uses: actions/checkout@v2
       - name: Generate env file
-        run: cp .env.docker .env
+        run: cp .env.development .env
       - name: 'Cache node_modules'
         uses: actions/cache@v2
         with:
@@ -29,7 +29,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-v${{ matrix.node }}-
       - name: Setup Docker
-        run: npx generate-env-getter js && sh start.sh dev
+        run: sh start.sh dev
       - name: Install Dependencies
         run: npm install
         working-directory: configuration-api
