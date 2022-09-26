@@ -250,7 +250,7 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
               dialogTitle={''}
               submitButtonText={<Trans>tenant.form.fileSubmit</Trans>}
               dropzoneText={<Trans>tenant.form.fileIstructions</Trans>}
-              maxFileSize={30000}
+              maxFileSize={env.REACT_APP_IMAGE_SIZE}
               filesLimit={1}
               open={openImageUpload}
               onClose={() => setOpenImageUpload(false)}
