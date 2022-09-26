@@ -31,6 +31,7 @@ describe('GraphQL-Query', () => {
             getUserPreferences(userName: $userName) {
               userName
               language
+              lastTenantSelected
             }
           }`,
     variables: { userName: '5c67b251-6f63-46f3-b3b0-085e1f7040b2' }
@@ -75,6 +76,7 @@ describe('GraphQL-Query', () => {
             if (err) return done(err);
             expect(res.body.data.getUserPreferences[0]).to.have.own.property('userName');
             expect(res.body.data.getUserPreferences[0]).to.have.own.property('language');
+            expect(res.body.data.getUserPreferences[0]).to.have.own.property('lastTenantSelected');
             done();
           });
       });

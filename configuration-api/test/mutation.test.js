@@ -73,13 +73,15 @@ describe('GraphQL-Mutations', () => {
 
   const modifyUserPreferences = {
     query: `
-        mutation modifyUserPreferences($userName: String!, $language: String!) {
-            modifyUserPreferences(userName: $userName, language: $language) {
-              userName
-              language
-            }
-          }`,
-    variables: { userName: '5c67b251-6f63-46f3-b3b0-085e1f7040b2', language: 'default' }
+    mutation modifyUserPreferences($userName: String!, $language: String!, $lastTenantSelected: String) {
+      modifyUserPreferences(userName: $userName, language: $language, lastTenantSelected: $lastTenantSelected) {
+        userName
+        language
+        lastTenantSelected
+      }
+    }
+  `,
+    variables: { userName: '5c67b251-6f63-46f3-b3b0-085e1f7040b2', language: 'default', lastTenantSelected:"Tenant1"}
   };
 
   it('create new tenant configuration', (done) => {
@@ -164,6 +166,7 @@ describe('GraphQL-Mutations', () => {
             if (err) return done(err);
             expect(res.body.data.modifyUserPreferences[0]).to.have.own.property('userName');
             expect(res.body.data.modifyUserPreferences[0]).to.have.own.property('language');
+            expect(res.body.data.modifyUserPreferences[0]).to.have.own.property('lastTenantSelected');
             done();
           });
       });
