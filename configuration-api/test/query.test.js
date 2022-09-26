@@ -3,7 +3,6 @@ const config = require('../main/config');
 config.loadConfig();
 const url = 'http://localhost:' + config.getConfig().port + '/configuration';
 const request = require('supertest');
-
 const loginSettings = {
   username: config.getConfig().credential,
   password: config.getConfig().credential,
@@ -61,6 +60,7 @@ describe('GraphQL-Query', () => {
   });
 
   it('Returns user-preferencies', (done) => {
+    this.retries(4);
     request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
       .post('/')
       .set('Content-type', 'application/x-www-form-urlencoded')

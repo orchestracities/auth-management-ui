@@ -28,16 +28,15 @@ jobs:
           key: ${{ runner.os }}-node-v${{ matrix.node }}-${{ hashFiles('**/package.json') }}
           restore-keys: |
             ${{ runner.os }}-node-v${{ matrix.node }}-
+      - name: Cleanup
+        run: bash clean.sh
       - name: Setup Docker
-        run: bash start.sh dev
+        run: bash start.sh
       - name: Install Dependencies
         run: npm install
         working-directory: configuration-api
-      - name: populate DB
-        run: node main/mongo/populateDB.js
-        working-directory: configuration-api
       - name: Run All Node.js Tests
-        run: node  main/advancedAuth.js & npm test 
+        run: npm test 
         working-directory: configuration-api
       - name: stop Docker
         run: bash stop.sh
