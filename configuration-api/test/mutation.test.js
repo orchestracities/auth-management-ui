@@ -12,7 +12,7 @@ const loginSettings = {
 };
 
 describe('GraphQL-Mutations', function () {
-  this.retries(4);
+  this.retries(10);
   const newTenantConfig = {
     query: `
         mutation getTenantConfig(

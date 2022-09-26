@@ -11,7 +11,7 @@ const loginSettings = {
 };
 
 describe('GraphQL-Query', function () {
-  this.retries(4);
+  this.retries(10);
   const listTenants = {
     query: `
             query listTenants($tenantNames: [String]!) {
