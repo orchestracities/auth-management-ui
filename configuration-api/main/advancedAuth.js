@@ -24,13 +24,14 @@ const typeDefs = gql`
   type UserPreferencies {
     userName: String!
     language: String!
+    lastTenantSelected: String
   }
   type Query {
     listTenants(tenantNames: [String]!): [TenantConfiguration]
     getUserPreferences(userName: String!): [UserPreferencies]
   }
   type Mutation {
-    modifyUserPreferences(userName: String!, language: String!): [UserPreferencies]
+    modifyUserPreferences(userName: String!, language: String!, lastTenantSelected: String): [UserPreferencies]
     getTenantConfig(name: String!, icon: String!, primaryColor: String!, secondaryColor: String!): [TenantConfiguration]
     removeTenantConfig(tenantNames: [String]!): Boolean!
     modifyTenantConfig(
