@@ -82,7 +82,7 @@ describe('GraphQL-Mutations', function () {
       }
     }
   `,
-    variables: { userName: '5c67b251-6f63-46f3-b3b0-085e1f7040b2', language: 'default', lastTenantSelected:"Tenant1"}
+    variables: { userName: '5c67b251-6f63-46f3-b3b0-085e1f7040b2', language: 'default', lastTenantSelected: 'test'}
   };
 
   it('create new tenant configuration', (done) => {

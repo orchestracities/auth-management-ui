@@ -16,20 +16,26 @@ async function getUserPref(data) {
   if (thisUser.length > 0) {
     return await thisUser;
   } else {
-    addUserPref(data);
+    const newUser =await addUserPref(data);
+    return await newUser;
   }
 }
 
 async function updateUserPref(data) {
   const filter = { userName: data.userName };
-  const update = {
-    userName: data.userName,
-    language: data.language,
-    lastTenantSelected: data.lastTenantSelected
-  };
-
-  const thisTenant = await Settings.findOneAndUpdate(filter, update);
-  return await thisTenant;
+  const thisUser = await Settings.find(filter);
+  if (thisUser.length > 0) {
+    const update = {
+      userName: data.userName,
+      language: data.language,
+      lastTenantSelected: data.lastTenantSelected
+    };
+    const thisTenant = await Settings.findOneAndUpdate(filter, update);
+    return await thisTenant;
+  } else {
+    await addUserPref(data.userName );
+    updateUserPref(data);
+  }
 }
 
 async function addUserPref(data) {
@@ -39,13 +45,8 @@ async function addUserPref(data) {
     lastTenantSelected: null
   };
 
-  Settings.create(arrayOfData, function (err) {
-    if (err) {
-      return config.getLogger().error(logContext, err);
-    } else {
-      getUserPref(data);
-    }
-  });
+  const thisUser = await Settings.create(arrayOfData);
+ return await thisUser;
 }
 
 module.exports = {
