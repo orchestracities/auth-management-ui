@@ -1,25 +1,37 @@
-name: Graphql-tests
+# .github/workflows/chromatic.yml
+
+# Workflow name
+name: 'Chromatic Publish'
+
+# Event for the workflow
 on:
+  # Trigger the workflow on push or pull request,
+  # but only for the main branch
   push:
     branches:
       - master
+  # Replace pull_request with pull_request_target if you
+  # plan to use this action with forks, see the Limitations section
   pull_request:
+
+# List of jobs
 jobs:
-  test:
-    name: 'Node.js v${{ matrix.node }}'
+  publish-storybook:
+    # Operating System
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node:
-          - 14
+    # Job steps
     steps:
-       - name: Generate env file
+      - uses: actions/checkout@v1
+      -
+        name: Generate env file
         run: cp .env.docker .env
       - name: Set up Node.js
-      - uses: actions/setup-node@v1
+        uses: actions/setup-node@v1
         with:
-          node-version: '${{ matrix.node }}'
+          node-version: 12
       - name: Install Node.js dependencies Management UI
+        run: npm ci
+      - name: Install Node.js dependencies configuration-api
         run: npm ci
         working-directory: configuration-api
       - name: Run All Node.js Tests
