@@ -29,12 +29,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-v${{ matrix.node }}-
       - name: Setup Docker
-        run: bash start.sh
+        run: bash start.sh dev
       - name: Install Dependencies
         run: npm install
         working-directory: configuration-api
       - name: populate DB
-        run: node main/mongo/populateDB.js
+        run: nohup node main/mongo/populateDB.js
         working-directory: configuration-api
       - name: start server
         run: node main/advancedAuth.js
