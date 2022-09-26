@@ -28,8 +28,6 @@ jobs:
           key: ${{ runner.os }}-node-v${{ matrix.node }}-${{ hashFiles('**/package.json') }}
           restore-keys: |
             ${{ runner.os }}-node-v${{ matrix.node }}-
-      - name: Cleanup
-        run: bash clean.sh
       - name: Setup Docker
         run: bash start.sh
       - name: Install Dependencies
