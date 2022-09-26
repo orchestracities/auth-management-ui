@@ -5,6 +5,7 @@
 ### New features
 
 - The token is also passed to the policies
+- The last tenant selected would be displayed
 
 ### Bug fixes
 

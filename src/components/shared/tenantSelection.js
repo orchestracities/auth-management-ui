@@ -66,14 +66,19 @@ const TenantLabel = styled(InputLabel)(({ theme }) => ({
 }));
 export default function TenantSelection({ tenantValues, seTenant, correntValue }) {
   const listOfIcons = IconList();
+  const [tenantSelected, setTenantSelected] = React.useState('');
   const iconMapper = (iconName) => {
     const thisIcon = listOfIcons.filter((e) => e.name === iconName);
     return thisIcon[0].icon;
   };
   const handleChange = (event) => {
+    setTenantSelected(event.target.value);
     seTenant(event.target.value);
   };
 
+  React.useEffect(() => {
+    setTenantSelected(correntValue);
+  }, [correntValue]);
   return (
     <Box sx={{ minWidth: 230 }}>
       <FormControl fullWidth>
@@ -81,9 +86,9 @@ export default function TenantSelection({ tenantValues, seTenant, correntValue }
         <TenantSelect
           labelId="tenant"
           id="tenant"
+          label={'Tenant'}
           variant="outlined"
-          value={correntValue}
-          label="Tenant"
+          value={tenantSelected}
           onChange={handleChange}
         >
           {tenantValues.map((tenant) => (
