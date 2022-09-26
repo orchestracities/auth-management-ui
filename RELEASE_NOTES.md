@@ -5,6 +5,7 @@
 ### New features
 
 - CI for the graphql part
+- The last tenant selected would be displayed
 
 ### Bug fixes
 
