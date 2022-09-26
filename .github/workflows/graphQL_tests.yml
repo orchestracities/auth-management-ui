@@ -14,8 +14,6 @@ jobs:
       matrix:
         node:
           - 14
-          - 16
-          - 18
     steps:
       - uses: actions/setup-node@v1
         with:
@@ -28,8 +26,6 @@ jobs:
           key: ${{ runner.os }}-node-v${{ matrix.node }}-${{ hashFiles('**/package.json') }}
           restore-keys: |
             ${{ runner.os }}-node-v${{ matrix.node }}-
-      - name: move into the folder
-        run: cd configuration-api
       - name: Install Dependencies
         run: npm install
       - name: Run All Node.js Tests
