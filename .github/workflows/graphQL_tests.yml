@@ -1,4 +1,6 @@
 name: Graphql-tests
+env_file:
+  - ../.env
 'on':
   push:
   pull_request:
