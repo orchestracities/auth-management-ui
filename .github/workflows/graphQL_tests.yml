@@ -21,8 +21,6 @@ jobs:
         with:
           node-version: '${{ matrix.node }}'
       - uses: actions/checkout@v2
-      - name: Generate env file
-        run: cp .env.docker .env
       - name: 'Cache node_modules'
         uses: actions/cache@v2
         with:
@@ -32,7 +30,5 @@ jobs:
             ${{ runner.os }}-node-v${{ matrix.node }}-
       - name: Install Dependencies
         run: npm install
-         workingDir: configuration-api
       - name: Run All Node.js Tests
         run: npm run test
-         workingDir: configuration-api
