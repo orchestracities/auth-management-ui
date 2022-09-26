@@ -34,13 +34,10 @@ jobs:
         run: npm install
         working-directory: configuration-api
       - name: populate DB
-        run: nohup node main/mongo/populateDB.js
-        working-directory: configuration-api
-      - name: start server
-        run: docker compose up -d
+        run: node main/mongo/populateDB.js
         working-directory: configuration-api
       - name: Run All Node.js Tests
-        run: npm run test
+        run: node  main/advancedAuth.js & npm test 
         working-directory: configuration-api
       - name: stop Docker
         run: bash stop.sh
