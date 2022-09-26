@@ -1,39 +1,38 @@
-# .github/workflows/chromatic.yml
-
-# Workflow name
-name: 'Chromatic Publish'
-
-# Event for the workflow
-on:
-  # Trigger the workflow on push or pull request,
-  # but only for the main branch
+name: Graphql tests
+'on':
   push:
-    branches:
+   branches:
       - master
-  # Replace pull_request with pull_request_target if you
-  # plan to use this action with forks, see the Limitations section
   pull_request:
-
-# List of jobs
+    types:
+      - opened
+      - synchronize
+      - reopened
 jobs:
-  publish-storybook:
-    # Operating System
+  test:
+    name: 'Node.js v${{ matrix.node }}'
     runs-on: ubuntu-latest
-    # Job steps
+    strategy:
+      matrix:
+        node:
+          - 14
     steps:
-      - uses: actions/checkout@v1
-      -
-        name: Generate env file
-        run: cp .env.docker .env
-      - name: Set up Node.js
-        uses: actions/setup-node@v1
+      - uses: actions/setup-node@v1
         with:
-          node-version: 12
-      - name: Install Node.js dependencies Management UI
-        run: npm ci
-      - name: Install Node.js dependencies configuration-api
-        run: npm ci
-        working-directory: configuration-api
+          node-version: '${{ matrix.node }}'
+      - uses: actions/checkout@v2
+      - name: Generate env file
+        run: cp .env.docker .env
+      - name: 'Cache node_modules'
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-v${{ matrix.node }}-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-v${{ matrix.node }}-
+      - name: Install Dependencies
+        run: npm install
+         workingDir: configuration-api
       - name: Run All Node.js Tests
         run: npm run test
-        working-directory: configuration-api
+         workingDir: configuration-api
