@@ -7,7 +7,8 @@ const TenantConfig = new mongoose.Schema({
   name: String,
   icon: String,
   primaryColor: String,
-  secondaryColor: String
+  secondaryColor: String,
+  customImage: mongoose.Schema.Types.Mixed
 });
 
 const Config = connection.model('TenantConfig', TenantConfig);
@@ -27,7 +28,8 @@ async function update(data) {
     name: data.name,
     icon: data.icon,
     primaryColor: data.primaryColor,
-    secondaryColor: data.secondaryColor
+    secondaryColor: data.secondaryColor,
+    customImage: data.file
   };
 
   const thisTenant = await Config.findOneAndUpdate(filter, update);
@@ -39,7 +41,8 @@ async function add(data) {
     name: data.name,
     icon: data.icon,
     primaryColor: data.primaryColor,
-    secondaryColor: data.secondaryColor
+    secondaryColor: data.secondaryColor,
+    customImage: data.file
   };
 
   const thisTenant = await Config.create(arrayOfData);
@@ -54,7 +57,8 @@ async function fromScratch(data) {
         name: thisTenant,
         icon: 'none',
         primaryColor: '#8086ba',
-        secondaryColor: '#8086ba'
+        secondaryColor: '#8086ba',
+        customImage: ''
       };
       Config.create(arrayOfData);
     }

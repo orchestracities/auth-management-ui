@@ -18,6 +18,8 @@ import { Trans } from 'react-i18next';
 import useNotification from '../shared/messages/alerts';
 import { getEnv } from '../../env';
 import Box from '@mui/material/Box';
+import { DropzoneDialog } from 'mui-file-dropzone';
+import Avatar from '@mui/material/Avatar';
 
 const env = getEnv();
 
@@ -30,11 +32,21 @@ const CustomDialogTitle = styled(AppBar)({
 export default function TenantForm({ title, close, action, tenant, getTenants, token }) {
   const [msg, sendNotification] = useNotification();
   console.log(msg);
-
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
   const [name, setName] = React.useState(action === 'modify' ? tenant.name : ' ');
   const [primaryColor, setPrimaryColor] = React.useState(action === 'modify' ? tenant.props.primaryColor : null);
   const [secondaryColor, setSecondaryColor] = React.useState(action === 'modify' ? tenant.props.secondaryColor : null);
   const [iconName, setIconName] = React.useState(action === 'modify' ? tenant.props.icon : null);
+
+  const [openImageUpload, setOpenImageUpload] = React.useState(false);
+  const [customImage, uploadCustomImage] = React.useState([]);
+  const [base64Image, setBase64Image] = React.useState(tenant.props.customImage);
 
   const handleClose = () => {
     close(false);
@@ -52,10 +64,21 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
     };
   });
 
+  const manageUpload = (files) => {
+    uploadCustomImage(files);
+    console.log(files);
+  };
+
   const client = new ApolloClient({
     link: authLink.concat(httpLink),
     cache: new InMemoryCache()
   });
+
+  React.useEffect(async () => {
+    const result = await toBase64(customImage[0]);
+    setBase64Image(result);
+  }, [customImage]);
+
   const handleSave = () => {
     switch (action) {
       case 'create':
@@ -93,12 +116,14 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
                 $icon: String!
                 $primaryColor: String!
                 $secondaryColor: String!
+                $file: String
               ) {
                 modifyTenantConfig(
                   name: $name
                   icon: $icon
                   primaryColor: $primaryColor
                   secondaryColor: $secondaryColor
+                  file: $file
                 ) {
                   name
                   icon
@@ -110,6 +135,7 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
             variables: {
               name,
               icon: iconName,
+              file: iconName === 'custom' && customImage.length > 0 && base64Image !== '' ? base64Image : '',
               primaryColor: primaryColor.toString(),
               secondaryColor: secondaryColor.toString()
             }
@@ -131,8 +157,9 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
           })
           .catch((e) => {
             getTenants();
-            close(false);
-            sendNotification({ msg: e.message + ' the config', variant: 'error' });
+            iconName === 'custom' && customImage.length === 0
+              ? sendNotification({ msg: 'No image uploaded', variant: 'error' })
+              : sendNotification({ msg: e.message + ' the config', variant: 'error' });
           });
         break;
       default:
@@ -190,6 +217,50 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
           </Grid>
           <Grid item lg={12} md={12} xs={12} container direction="column" justifyContent="center" alignItems="center">
             <IconPicker previusValue={iconName} setValue={setIconName} mode={action}></IconPicker>
+          </Grid>
+          <Grid
+            item
+            lg={12}
+            md={12}
+            xs={12}
+            container
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+            sx={{
+              marginTop: '3rem',
+              display: iconName === 'custom' ? 'flex' : 'none'
+            }}
+          >
+            {base64Image === '' ? (
+              <Button variant="outlined" size="large" color="secondary" onClick={() => setOpenImageUpload(true)}>
+                <Trans>tenant.form.addImage</Trans>
+              </Button>
+            ) : (
+              <Avatar
+                onClick={() => setOpenImageUpload(true)}
+                sx={{ width: 56, height: 56, cursor: 'pointer' }}
+                aria-label="recipe"
+                src={base64Image}
+              />
+            )}
+            <DropzoneDialog
+              acceptedFiles={['image/*']}
+              cancelButtonText={<Trans>tenant.form.fileCancel</Trans>}
+              dialogTitle={''}
+              submitButtonText={<Trans>tenant.form.fileSubmit</Trans>}
+              dropzoneText={<Trans>tenant.form.fileIstructions</Trans>}
+              maxFileSize={env.REACT_APP_IMAGE_SIZE}
+              filesLimit={1}
+              open={openImageUpload}
+              onClose={() => setOpenImageUpload(false)}
+              onSave={(files) => {
+                manageUpload(files);
+                setOpenImageUpload(false);
+              }}
+              showPreviews={true}
+              showFileNamesInPreview={false}
+            />
           </Grid>
           <Grid item lg={6} md={6} xs={12} container direction="column" justifyContent="center" alignItems="center">
             <ColorPicker

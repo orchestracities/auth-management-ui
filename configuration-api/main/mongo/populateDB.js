@@ -8,7 +8,8 @@ const TenantConfig = new mongoose.Schema({
   name: String,
   icon: String,
   primaryColor: String,
-  secondaryColor: String
+  secondaryColor: String,
+  customImage: mongoose.Schema.Types.Mixed
 });
 
 const Config = connection.model('TenantConfig', TenantConfig);
@@ -31,7 +32,8 @@ Settings.deleteMany({}, function (err) {
           name: 'Tenant1',
           icon: 'none',
           primaryColor: '#8086ba',
-          secondaryColor: '#8086ba'
+          secondaryColor: '#8086ba',
+          customImage: ''
         },
         function (err) {
           if (err) {
@@ -43,7 +45,8 @@ Settings.deleteMany({}, function (err) {
                 name: 'Tenant2',
                 icon: 'none',
                 primaryColor: '#8086ba',
-                secondaryColor: '#8086ba'
+                secondaryColor: '#8086ba',
+                customImage: ''
               },
               function (err) {
                 if (err) {

@@ -65,8 +65,9 @@ export default function DashboardCard({ pageType, data, getData, seTenant, color
               bgcolor: avatarColor
             }}
             aria-label="recipe"
+            src={typeof data.props !== 'undefined' && data.props.icon === 'custom' ? data.props.customImage : ''}
           >
-            {layout.props.action === 'Sub-service-creation' ? data.path[0] : iconMapper(data.props.icon)}
+            {layout.props.action === 'Sub-service-creation' ? data.path[1] : iconMapper(data.props.icon)}
           </Avatar>
         }
         action={
