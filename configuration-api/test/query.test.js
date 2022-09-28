@@ -4,10 +4,10 @@ config.loadConfig();
 const url = 'http://localhost:' + config.getConfig().port + '/configuration';
 const request = require('supertest');
 const loginSettings = {
-  username: config.getConfig().credential,
-  password: config.getConfig().credential,
+  username: 'admin',
+  password: 'admin',
   grant_type: 'password',
-  client_id: config.getConfig().oidc_client
+  client_id: 'client1'
 };
 
 describe('GraphQL-Query', function () {

@@ -16,7 +16,7 @@ async function getUserPref(data) {
   if (thisUser.length > 0) {
     return await thisUser;
   } else {
-    const newUser =await addUserPref(data);
+    const newUser = await addUserPref(data);
     return await newUser;
   }
 }
@@ -33,7 +33,7 @@ async function updateUserPref(data) {
     const thisTenant = await Settings.findOneAndUpdate(filter, update);
     return await thisTenant;
   } else {
-    await addUserPref(data.userName );
+    await addUserPref(data.userName);
     updateUserPref(data);
   }
 }
@@ -46,7 +46,7 @@ async function addUserPref(data) {
   };
 
   const thisUser = await Settings.create(arrayOfData);
- return await thisUser;
+  return await thisUser;
 }
 
 module.exports = {

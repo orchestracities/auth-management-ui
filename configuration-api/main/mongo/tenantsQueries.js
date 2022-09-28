@@ -44,7 +44,6 @@ async function add(data) {
     secondaryColor: data.secondaryColor,
     customImage: data.file
   };
-
   const thisTenant = await Config.create(arrayOfData);
   return await thisTenant;
 }

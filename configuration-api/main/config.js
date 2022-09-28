@@ -34,16 +34,6 @@ function loadConfig() {
   } else {
     newConfig.mongo_db = 'mongodb://localhost:27017/graphql';
   }
-  if (process.env.REACT_APP_OIDC_CLIENT) {
-    newConfig.oidc_client = process.env.REACT_APP_OIDC_CLIENT;
-  } else {
-    newConfig.oidc_client = 'client1';
-  }
-  if (process.env.CREDENTIAL) {
-    newConfig.credential = process.env.CREDENTIAL;
-  } else {
-    newConfig.credential = 'admin';
-  }
   if (process.env.JWKS_URL) {
     newConfig.jwks_url = process.env.JWKS_URL;
   } else {

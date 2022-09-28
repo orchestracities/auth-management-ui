@@ -5,58 +5,62 @@ const url = 'http://localhost:' + config.getConfig().port + '/configuration';
 const request = require('supertest');
 
 const loginSettings = {
-  username: config.getConfig().credential,
-  password: config.getConfig().credential,
+  username: 'admin',
+  password: 'admin',
   grant_type: 'password',
-  client_id: config.getConfig().oidc_client
+  client_id: 'client1'
 };
 
 describe('GraphQL-Mutations', function () {
   this.retries(10);
   const newTenantConfig = {
     query: `
-        mutation getTenantConfig(
-            $name: String!
-            $icon: String!
-            $primaryColor: String!
-            $secondaryColor: String!
-          ) {
-            getTenantConfig(
-              name: $name
-              icon: $icon
-              primaryColor: $primaryColor
-              secondaryColor: $secondaryColor
-            ) {
-              name
-              icon
-              primaryColor
-              secondaryColor
-            }
-          }`,
-    variables: { name: 'testTenant', icon: '', primaryColor: '#ffff', secondaryColor: '#ffff' }
+    mutation getTenantConfig(
+      $name: String!
+      $icon: String!
+      $primaryColor: String!
+      $secondaryColor: String!
+      $file: String
+    ) {
+      getTenantConfig(
+        name: $name
+        icon: $icon
+        primaryColor: $primaryColor
+        secondaryColor: $secondaryColor
+        file: $file
+      ) {
+        name
+        icon
+        primaryColor
+        secondaryColor
+      }
+    }`,
+    variables: { name: 'testTenant', icon: 'none', primaryColor: '#ffff', secondaryColor: '#ffff', file: '' }
   };
 
   const modifyTenantConfig = {
     query: `
-        mutation modifyTenantConfig(
-            $name: String!
-            $icon: String!
-            $primaryColor: String!
-            $secondaryColor: String!
-          ) {
-            modifyTenantConfig(
-              name: $name
-              icon: $icon
-              primaryColor: $primaryColor
-              secondaryColor: $secondaryColor
-            ) {
-              name
-              icon
-              primaryColor
-              secondaryColor
-            }
-          }`,
-    variables: { name: 'testTenant', icon: 'custom', primaryColor: '#ffff', secondaryColor: '#ffff' }
+    mutation modifyTenantConfig(
+      $name: String!
+      $icon: String!
+      $primaryColor: String!
+      $secondaryColor: String!
+      $file: String
+    ) {
+      modifyTenantConfig(
+        name: $name
+        icon: $icon
+        primaryColor: $primaryColor
+        secondaryColor: $secondaryColor
+        file: $file
+      ) {
+        name
+        icon
+        primaryColor
+        secondaryColor
+      }
+    }`,
+    variables: { name: 'testTenant', icon: 'custom', primaryColor: '#ffff', secondaryColor: '#ffff', file: '' }
   };
 
   const removeTenantConfig = {
@@ -82,7 +86,7 @@ describe('GraphQL-Mutations', function () {
       }
     }
   `,
-    variables: { userName: '5c67b251-6f63-46f3-b3b0-085e1f7040b2', language: 'default', lastTenantSelected: 'test'}
+    variables: { userName: '5c67b251-6f63-46f3-b3b0-085e1f7040b2', language: 'default', lastTenantSelected: 'test' }
   };
 
   it('create new tenant configuration', (done) => {
@@ -98,6 +102,7 @@ describe('GraphQL-Mutations', function () {
           .send(newTenantConfig)
           .expect(200)
           .end((err, res) => {
+            console.log(res.body);
             if (err) return done(err);
             expect(res.body.data.getTenantConfig[0]).to.have.own.property('name');
             expect(res.body.data.getTenantConfig[0]).to.have.own.property('icon');
