@@ -20,6 +20,7 @@ const typeDefs = gql`
     icon: String!
     primaryColor: String!
     secondaryColor: String!
+    customImage: String
   }
   type UserPreferencies {
     userName: String!
@@ -32,13 +33,20 @@ const typeDefs = gql`
   }
   type Mutation {
     modifyUserPreferences(userName: String!, language: String!, lastTenantSelected: String): [UserPreferencies]
-    getTenantConfig(name: String!, icon: String!, primaryColor: String!, secondaryColor: String!): [TenantConfiguration]
-    removeTenantConfig(tenantNames: [String]!): Boolean!
+    getTenantConfig(
+      name: String!
+      icon: String!
+      primaryColor: String!
+      secondaryColor: String!
+      file: String
+    ): [TenantConfiguration]
+    removeTenantConfig(tenantNames: [String]!): [TenantConfiguration]
     modifyTenantConfig(
       name: String!
       icon: String!
       primaryColor: String!
       secondaryColor: String!
+      file: String
     ): [TenantConfiguration]
   }
 `;
@@ -86,7 +94,7 @@ const resolvers = {
     modifyTenantConfig: async (object, args, context, info) => {
       try {
         config.getLogger().info(logContext, 'modifyTenantConfig: %s', JSON.stringify(args));
-        return await [update(args)];
+        return [await update(args)];
       } catch (err) {
         config.getLogger().error(logContext, err);
         throw new ApolloError({ data: { reason: err.message } });
@@ -138,7 +146,6 @@ function verify(payload, verified) {
   }
   verified(null, user, null);
 }
-
 async function startServer() {
   passport.use(
     new JwtStrategy(

@@ -111,6 +111,7 @@ and the Configuration API:
   (e.g. `openid profile email`)
 - `REACT_APP_TITLE`: the HTML title use for the application
 - `REACT_APP_DESCRIPTION`: the meta description for the application
+- `REACT_APP_IMAGE_SIZE`:the maximum allowed image size of the Tenant icon
 - `MONGO_DB`: the MongoDB endpoint of the Configuration API and by
   [populateDB.js](configuration-api/main/mongo/populateDB.js)
   to populate the Configuration API backend with example data
@@ -177,3 +178,16 @@ $ cd documentation
 $ npm install
 $ npm run storybook
 ```
+
+### How to test the Configuration API
+
+To test Graphql is **mandatory** to set up the Configuration API
+first, once completed:
+
+```bash
+$ cd configuration-api
+$ npm install
+$ npm test
+```
+
+The results of the tests will be visible on the console

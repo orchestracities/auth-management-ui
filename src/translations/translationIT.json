@@ -10,7 +10,11 @@
       "description": "Descrizione",
       "icon": "Icona",
       "primaryColor": "Colore Primario: ",
-      "secondaryColor": "Colore Secondario: "
+      "secondaryColor": "Colore Secondario: ",
+      "fileCancel":"cancella",
+      "fileSubmit":"seleziona",
+      "fileIstructions":"Trascina o seleziona qui!",
+      "addImage":"Aggiungi immagine"
     },
     "tooltip": {
       "editIcon": "Modifica"

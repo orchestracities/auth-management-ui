@@ -34,7 +34,6 @@ function loadConfig() {
   } else {
     newConfig.mongo_db = 'mongodb://localhost:27017/graphql';
   }
-
   if (process.env.JWKS_URL) {
     newConfig.jwks_url = process.env.JWKS_URL;
   } else {
