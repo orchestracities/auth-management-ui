@@ -167,7 +167,7 @@ export default function PolicyForm({
               headers: {
                 'fiware-service': tenantName(),
                 'fiware-servicepath': path,
-                authorization: `Bearer ${token}`
+                'authorization': `Bearer ${token}`
               }
             }
           )
@@ -207,7 +207,7 @@ export default function PolicyForm({
                 policy_id: data.id,
                 'fiware-service': tenantName(),
                 'fiware-servicepath': path,
-                authorization: `Bearer ${token}`
+                'authorization': `Bearer ${token}`
               }
             }
           )
