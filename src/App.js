@@ -293,6 +293,7 @@ export default class App extends Component {
                     icon
                     primaryColor
                     secondaryColor
+                    customImage
                   }
                 }
               `,
@@ -419,7 +420,6 @@ export default class App extends Component {
               </AppBar>
               <SwipeableDrawer
                 sx={{
-                  width: drawerWidth,
                   flexShrink: 0,
                   '& .MuiDrawer-paper': {
                     width: drawerWidth,

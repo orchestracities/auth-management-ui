@@ -111,6 +111,7 @@ and the Configuration API:
   (e.g. `openid profile email`)
 - `REACT_APP_TITLE`: the HTML title use for the application
 - `REACT_APP_DESCRIPTION`: the meta description for the application
+- `REACT_APP_IMAGE_SIZE`:the maximum allowed image size of the Tenant icon
 - `MONGO_DB`: the MongoDB endpoint of the Configuration API and by
   [populateDB.js](configuration-api/main/mongo/populateDB.js)
   to populate the Configuration API backend with example data

@@ -44,7 +44,28 @@ TenantCreation.args = {
   close: () => {},
   action: 'create',
   getTenants: () => {},
-  tenant: {},
+  tenant: {
+    name: 'Tenant1',
+    id: 'b2e35303-2747-4d1f-9767-519f9310b83e',
+    props: {
+      name: 'Tenant1',
+      icon: 'none',
+      primaryColor: '#0018ef',
+      secondaryColor: '#8086ba',
+      __typename: 'TenantConfiguration',
+      customImage:' '
+    },
+    service_paths: [
+      {
+        path: '/',
+        id: 'f6a91fee-e167-45c3-8b48-458039fa5a8b',
+        tenant_id: 'b2e35303-2747-4d1f-9767-519f9310b83e',
+        parent_id: null,
+        scope: null,
+        children: []
+      }
+    ]
+  },
   token: ''
 };
 
@@ -62,7 +83,8 @@ TenantModification.args = {
       icon: 'none',
       primaryColor: '#0018ef',
       secondaryColor: '#8086ba',
-      __typename: 'TenantConfiguration'
+      __typename: 'TenantConfiguration',
+      customImage:' '
     },
     service_paths: [
       {

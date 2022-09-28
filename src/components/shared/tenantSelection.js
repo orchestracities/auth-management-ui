@@ -7,6 +7,7 @@ import Select from '@mui/material/Select';
 import { styled } from '@mui/material/styles';
 import IconList from '../tenant/iconList';
 import ListItemIcon from '@mui/material/ListItemIcon';
+import Avatar from '@mui/material/Avatar';
 
 const TenantSelect = styled(Select)(({ theme }) => ({
   '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
@@ -93,7 +94,17 @@ export default function TenantSelection({ tenantValues, seTenant, correntValue }
         >
           {tenantValues.map((tenant) => (
             <MenuItem key={tenant.id} value={tenant.id}>
-              <ListItemIcon>{iconMapper(tenant.props.icon)}</ListItemIcon>
+              {tenant.props.icon === 'custom' ? (
+                <ListItemIcon>
+                  <Avatar
+                    sx={{ width: 20, height: 20, cursor: 'pointer' }}
+                    aria-label="recipe"
+                    src={tenant.props.customImage}
+                  />
+                </ListItemIcon>
+              ) : (
+                <ListItemIcon>{iconMapper(tenant.props.icon)}</ListItemIcon>
+              )}
               {tenant.name}
             </MenuItem>
           ))}
