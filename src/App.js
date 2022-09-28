@@ -484,6 +484,7 @@ export default class App extends Component {
                         path="Policy"
                         element={
                           <PolicyPage
+                            token={this.props.accessToken}
                             getTenants={this.state.getTenants}
                             tenantValues={this.state.tenants}
                             thisTenant={this.state.thisTenant}

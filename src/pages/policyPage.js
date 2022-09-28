@@ -16,7 +16,7 @@ import { useTheme } from '@mui/material/styles';
 
 const env = getEnv();
 
-export default function PolicyPage({ getTenants, tenantValues, thisTenant, graphqlErrors }) {
+export default function PolicyPage({ getTenants, tenantValues, thisTenant, graphqlErrors, token }) {
   const [mode, setMode] = React.useState(null);
   const [agent, setAgent] = React.useState(null);
   const [resource, setResource] = React.useState(null);
@@ -36,7 +36,11 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
   const [services, setServices] = React.useState([]);
   const getServices = () => {
     axios
-      .get(env.ANUBIS_API_URL + 'v1/tenants/' + thisTenant + '/service_paths')
+      .get(env.ANUBIS_API_URL + 'v1/tenants/' + thisTenant + '/service_paths', {
+        headers: {
+          authorization: `Bearer ${token}`
+        }
+      })
       .then((response) => {
         console.log(response.data);
         setServices(response.data);
@@ -62,7 +66,8 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
         .get(env.ANUBIS_API_URL + 'v1/policies', {
           headers: {
             'fiware-service': tenantName_id(),
-            'fiware-servicepath': service.path
+            'fiware-servicepath': service.path,
+            authorization: `Bearer ${token}`
           }
         })
         .then((response) => {
@@ -97,7 +102,8 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
         .get(env.ANUBIS_API_URL + 'v1/policies' + queryParameters, {
           headers: {
             'fiware-service': tenantName_id(),
-            'fiware-servicepath': policyFilter !== null ? policyFilter.fiware_service_path : service.path
+            'fiware-servicepath': policyFilter !== null ? policyFilter.fiware_service_path : service.path,
+            authorization: `Bearer ${token}`
           }
         })
         .then((response) => {
@@ -128,7 +134,11 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
   React.useEffect(() => {
     getServices();
     axios
-      .get(env.ANUBIS_API_URL + 'v1/policies/access-modes')
+      .get(env.ANUBIS_API_URL + 'v1/policies/access-modes', {
+        headers: {
+          authorization: `Bearer ${token}`
+        }
+      })
       .then((response) => setAccess_modes(response.data))
       .catch((err) =>
         sendNotification({ msg: err.message + ': cannot reach policy managenent api', variant: 'error' })
@@ -140,7 +150,11 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
   React.useEffect(() => {
     getServices();
     axios
-      .get(env.ANUBIS_API_URL + 'v1/policies/agent-types')
+      .get(env.ANUBIS_API_URL + 'v1/policies/agent-types', {
+        headers: {
+          authorization: `Bearer ${token}`
+        }
+      })
       .then((response) => setagentsTypes(response.data))
       .catch((err) =>
         sendNotification({ msg: err.message + ': cannot reach policy managenent api', variant: 'error' })
@@ -201,6 +215,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
               access_modes={access_modes}
               title={<Trans>policies.titles.new</Trans>}
               close={setOpen}
+              token={token}
             ></PolicyForm>
           }
           setOpen={setOpen}
