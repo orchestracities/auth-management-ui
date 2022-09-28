@@ -112,5 +112,5 @@ PolicyMainForm.defaultProps = {
   title: '',
   close: () => {},
   data: {},
-  token:''
+  token: ''
 };

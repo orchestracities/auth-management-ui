@@ -38,7 +38,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
     axios
       .get(env.ANUBIS_API_URL + 'v1/tenants/' + thisTenant + '/service_paths', {
         headers: {
-          'authorization': `Bearer ${token}`
+          authorization: `Bearer ${token}`
         }
       })
       .then((response) => {
@@ -67,7 +67,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
           headers: {
             'fiware-service': tenantName_id(),
             'fiware-servicepath': service.path,
-            'authorization': `Bearer ${token}`
+            authorization: `Bearer ${token}`
           }
         })
         .then((response) => {
@@ -103,7 +103,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
           headers: {
             'fiware-service': tenantName_id(),
             'fiware-servicepath': policyFilter !== null ? policyFilter.fiware_service_path : service.path,
-            'authorization': `Bearer ${token}`
+            authorization: `Bearer ${token}`
           }
         })
         .then((response) => {
@@ -136,7 +136,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
     axios
       .get(env.ANUBIS_API_URL + 'v1/policies/access-modes', {
         headers: {
-          'authorization': `Bearer ${token}`
+          authorization: `Bearer ${token}`
         }
       })
       .then((response) => setAccess_modes(response.data))
@@ -152,7 +152,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
     axios
       .get(env.ANUBIS_API_URL + 'v1/policies/agent-types', {
         headers: {
-          'authorization': `Bearer ${token}`
+          authorization: `Bearer ${token}`
         }
       })
       .then((response) => setagentsTypes(response.data))
