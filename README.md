@@ -178,3 +178,16 @@ $ cd documentation
 $ npm install
 $ npm run storybook
 ```
+
+### How to test the Configuration API
+
+To test Graphql is **mandatory** to set up the Configuration API
+first, once completed:
+
+```bash
+$ cd configuration-api
+$ npm install
+$ npm test
+```
+
+The results of the tests will be visible on the console

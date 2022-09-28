@@ -44,10 +44,7 @@ async function add(data) {
     secondaryColor: data.secondaryColor,
     customImage: data.file
   };
-
-  const thisTenant = await arrayOfData.save(function (err) {
-    if (err) return config.getLogger().error(logContext, err);
-  });
+  const thisTenant = await Config.create(arrayOfData);
   return await thisTenant;
 }
 

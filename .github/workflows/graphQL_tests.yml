@@ -1,0 +1,43 @@
+name: Graphql-tests
+'on':
+  push:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+jobs:
+  test:
+    name: 'Node.js v${{ matrix.node }}'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node:
+          - 14
+    steps:
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '${{ matrix.node }}'
+      - uses: actions/checkout@v2
+      - name: Generate env file
+        run: cp .env.development .env
+      - name: 'Cache node_modules'
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-v${{ matrix.node }}-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-v${{ matrix.node }}-
+      - name: Setup Docker
+        run: bash start.sh dev
+      - name: Install Dependencies
+        run: npm install
+        working-directory: configuration-api
+      - name: populate DB
+        run: node main/mongo/populateDB.js
+        working-directory: configuration-api
+      - name: Run All Node.js Tests
+        run: node  main/advancedAuth.js & npm test 
+        working-directory: configuration-api
+      - name: stop Docker
+        run: bash stop.sh

@@ -53,7 +53,7 @@ TenantCreation.args = {
       primaryColor: '#0018ef',
       secondaryColor: '#8086ba',
       __typename: 'TenantConfiguration',
-      customImage:' '
+      customImage: ' '
     },
     service_paths: [
       {
@@ -84,7 +84,7 @@ TenantModification.args = {
       primaryColor: '#0018ef',
       secondaryColor: '#8086ba',
       __typename: 'TenantConfiguration',
-      customImage:' '
+      customImage: ' '
     },
     service_paths: [
       {
