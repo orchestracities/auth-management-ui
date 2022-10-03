@@ -37,12 +37,12 @@ function loadConfig() {
   if (process.env.JWKS_URL) {
     newConfig.jwks_url = process.env.JWKS_URL;
   } else {
-    newConfig.jwks_url = 'http://localhost:8080/auth/realms/master/protocol/openid-connect/certs';
+    newConfig.jwks_url = 'http://localhost:8080/realms/default/protocol/openid-connect/certs';
   }
   if (process.env.REACT_APP_OIDC_ISSUER) {
     newConfig.oidc_issuer = process.env.REACT_APP_OIDC_ISSUER;
   } else {
-    newConfig.oidc_issuer = 'http://localhost:8080/auth/realms/master';
+    newConfig.oidc_issuer = 'http://localhost:8080/realms/default';
   }
   if (process.env.OIDC_AUDIENCE) {
     newConfig.oidc_audience = process.env.OIDC_AUDIENCE;

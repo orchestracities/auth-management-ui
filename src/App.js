@@ -245,8 +245,8 @@ export default class App extends Component {
           const userTenants = [];
           let tenantFiltered = [];
           const tenantFilteredNames = [];
-          this.state.tokenData.tenants.map((thisTenant, index) => {
-            tenantFiltered = response.data.filter((e) => e.name === thisTenant.name);
+          Object.keys(this.state.tokenData.tenants).map((thisTenant, index) => {
+            tenantFiltered = response.data.filter((e) => e.name === thisTenant);
             tenantFiltered.length > 0 ? userTenants.push(tenantFiltered[0]) : (tenantFiltered = []);
             return index;
           });
