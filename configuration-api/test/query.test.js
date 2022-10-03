@@ -7,7 +7,7 @@ const loginSettings = {
   username: 'admin',
   password: 'admin',
   grant_type: 'password',
-  client_id: 'client1'
+  client_id: 'configuration'
 };
 
 describe('GraphQL-Query', function () {
