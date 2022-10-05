@@ -102,7 +102,6 @@ describe('GraphQL-Mutations', function () {
           .send(newTenantConfig)
           .expect(200)
           .end((err, res) => {
-            console.log(res.body);
             if (err) return done(err);
             expect(res.body.data.getTenantConfig[0]).to.have.own.property('name');
             expect(res.body.data.getTenantConfig[0]).to.have.own.property('icon');
