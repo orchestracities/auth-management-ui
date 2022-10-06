@@ -11,7 +11,7 @@ import * as log from 'loglevel';
 const env = getEnv();
 
 export default function PoliciesChildren({ tenantId, tenantName, seTenant, color }) {
-  log.setLevel('debug');
+  log.setLevel(env.CONSOLE);
   // services
   const [msg, sendNotification] = useNotification();
   log.debug(msg);

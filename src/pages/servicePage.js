@@ -16,7 +16,7 @@ import * as log from 'loglevel';
 const env = getEnv();
 
 export default function ServicePage({ getTenants, tenantValues, thisTenant, graphqlErrors }) {
-  log.setLevel('debug');
+  log.setLevel(env.CONSOLE);
   const [createOpen, setCreateOpen] = React.useState(false);
   const [services, setServices] = React.useState([]);
   const [msg, sendNotification] = useNotification();

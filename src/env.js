@@ -14,6 +14,7 @@ export const envNames = [
   'OIDC_CLIENT',
   'OIDC_SCOPE',
   'IMAGE_SIZE',
+  'CONSOLE',
   'TITLE',
   'DESCRIPTION'
 ];

@@ -24,7 +24,7 @@ const DialogRounded = styled(Dialog)(() => ({
 }));
 
 export default function DeleteDialog(props) {
-  log.setLevel('debug');
+  log.setLevel(env.CONSOLE);
   const [msg, sendNotification] = useNotification();
   log.debug(msg);
   const { open, onClose, getData, data } = props;

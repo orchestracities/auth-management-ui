@@ -18,7 +18,7 @@ import * as log from 'loglevel';
 const env = getEnv();
 
 export default function PolicyPage({ getTenants, tenantValues, thisTenant, graphqlErrors, token }) {
-  log.setLevel('debug');
+  log.setLevel(env.CONSOLE);
   const [mode, setMode] = React.useState(null);
   const [agent, setAgent] = React.useState(null);
   const [resource, setResource] = React.useState(null);

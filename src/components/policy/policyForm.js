@@ -49,7 +49,7 @@ export default function PolicyForm({
   token
 }) {
   const [msg, sendNotification] = useNotification();
-  log.setLevel('debug');
+  log.setLevel(env.CONSOLE);
   log.debug(msg);
   const handleClose = () => {
     close(false);

@@ -31,7 +31,7 @@ const CustomDialogTitle = styled(AppBar)({
 });
 
 export default function TenantForm({ title, close, action, tenant, getTenants, token }) {
-  log.setLevel('debug');
+  log.setLevel(env.CONSOLE);
   const [msg, sendNotification] = useNotification();
   log.debug(msg);
   const toBase64 = (file) =>
@@ -252,7 +252,7 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
               dialogTitle={''}
               submitButtonText={<Trans>tenant.form.fileSubmit</Trans>}
               dropzoneText={<Trans>tenant.form.fileIstructions</Trans>}
-              maxFileSize={env.REACT_APP_IMAGE_SIZE}
+              maxFileSize={env.IMAGE_SIZE}
               filesLimit={1}
               open={openImageUpload}
               onClose={() => setOpenImageUpload(false)}
