@@ -37,6 +37,7 @@ import Grow from '@mui/material/Grow';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ServiceForm from './serviceForm';
 import Tooltip from '@mui/material/Tooltip';
+import * as log from 'loglevel';
 
 const env = getEnv();
 
@@ -304,7 +305,7 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
       const newSelecteds = rows.map((n) => n.id);
-      console.log(newSelecteds);
+      log.debug(newSelecteds);
       setSelected(newSelecteds);
       return;
     }

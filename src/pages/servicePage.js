@@ -11,6 +11,7 @@ import { Trans } from 'react-i18next';
 import useNotification from '../components/shared/messages/alerts';
 import { getEnv } from '../env';
 import Box from '@mui/material/Box';
+import * as log from 'loglevel';
 
 const env = getEnv();
 
@@ -18,7 +19,7 @@ export default function ServicePage({ getTenants, tenantValues, thisTenant, grap
   const [createOpen, setCreateOpen] = React.useState(false);
   const [services, setServices] = React.useState([]);
   const [msg, sendNotification] = useNotification();
-  console.log(msg);
+  log.debug(msg);
   const [count, counter] = React.useState(1);
   const rerOder = (newData) => {
     setServices(newData);

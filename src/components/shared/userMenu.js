@@ -26,6 +26,7 @@ import { onError } from '@apollo/client/link/error';
 import { setContext } from '@apollo/client/link/context';
 import useNotification from './messages/alerts';
 import { getEnv } from '../../env';
+import * as log from 'loglevel';
 
 const env = getEnv();
 
@@ -46,7 +47,7 @@ export default function UserMenu({ language, userData, token, lastTenantSelected
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [settings, setOpenSettings] = React.useState(false);
   const [msg, sendNotification] = useNotification();
-  console.log(msg);
+  log.debug(msg);
 
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -119,7 +120,7 @@ export default function UserMenu({ language, userData, token, lastTenantSelected
         }
       })
       .then((result) => {
-        console.log(result);
+        log.debug(result);
         sendNotification({
           msg: (
             <Trans

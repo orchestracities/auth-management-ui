@@ -13,6 +13,7 @@ import { getEnv } from '../env';
 import Box from '@mui/material/Box';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
+import * as log from 'loglevel';
 
 const env = getEnv();
 
@@ -26,7 +27,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
 
   const [open, setOpen] = React.useState(false);
   const [msg, sendNotification] = useNotification();
-  console.log(msg);
+  log.debug(msg);
 
   const tenantName_id = () => {
     const tenantArray = tenantValues.filter((e) => e.id === thisTenant);
@@ -42,7 +43,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
         }
       })
       .then((response) => {
-        console.log(response.data);
+        log.debug(response.data);
         setServices(response.data);
         getPolicies(response.data);
         getPoliciesFiltered(response.data);
@@ -84,7 +85,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
           }
         });
     }
-    console.log(policies);
+    log.debug(policies);
   };
   // policiesFiltered
   const [policiesFiltered, setPoliciesFiltered] = React.useState([]);
@@ -126,7 +127,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
           }
         });
     }
-    console.log(policies);
+    log.debug(policies);
   };
 
   const [access_modes, setAccess_modes] = React.useState([]);

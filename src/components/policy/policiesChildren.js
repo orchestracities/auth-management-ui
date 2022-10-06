@@ -6,13 +6,14 @@ import axios from 'axios';
 import { NavLink } from 'react-router-dom';
 import useNotification from '../shared/messages/alerts';
 import { getEnv } from '../../env';
+import * as log from 'loglevel';
 
 const env = getEnv();
 
 export default function PoliciesChildren({ tenantId, tenantName, seTenant, color }) {
   // services
   const [msg, sendNotification] = useNotification();
-  console.log(msg);
+  log.debug(msg);
   const getServices = () => {
     axios
       .get(env.ANUBIS_API_URL + 'v1/tenants/' + tenantId + '/service_paths')

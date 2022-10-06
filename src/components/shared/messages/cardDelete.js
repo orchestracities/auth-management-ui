@@ -10,6 +10,7 @@ import axios from 'axios';
 import { Trans } from 'react-i18next';
 import useNotification from './alerts';
 import { getEnv } from '../../../env';
+import * as log from 'loglevel';
 
 const env = getEnv();
 
@@ -24,7 +25,7 @@ const DialogRounded = styled(Dialog)(() => ({
 
 export default function DeleteDialog(props) {
   const [msg, sendNotification] = useNotification();
-  console.log(msg);
+  log.debug(msg);
   const { open, onClose, getData, data } = props;
 
   const deleteMapper = (thisData) => {
