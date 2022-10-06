@@ -26,7 +26,8 @@ const CustomDialogTitle = styled(AppBar)({
 });
 
 export default function ServiceForm({ title, close, action, service, tenantName_id, getServices }) {
-  log.setLevel(env.CONSOLE);
+  typeof env.CONSOLE === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.CONSOLE);
+
   const [msg, sendNotification] = useNotification();
   log.debug(msg);
 

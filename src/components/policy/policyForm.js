@@ -49,7 +49,8 @@ export default function PolicyForm({
   token
 }) {
   const [msg, sendNotification] = useNotification();
-  log.setLevel(env.CONSOLE);
+  typeof env.CONSOLE === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.CONSOLE);
+
   log.debug(msg);
   const handleClose = () => {
     close(false);

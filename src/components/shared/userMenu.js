@@ -43,7 +43,8 @@ const CustomDialogTitle = styled(AppBar)({
 });
 
 export default function UserMenu({ language, userData, token, lastTenantSelected }) {
-  log.setLevel(env.CONSOLE);
+  typeof env.CONSOLE === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.CONSOLE);
+
   const { i18n } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [settings, setOpenSettings] = React.useState(false);
