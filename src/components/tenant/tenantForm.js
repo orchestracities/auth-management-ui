@@ -31,6 +31,7 @@ const CustomDialogTitle = styled(AppBar)({
 });
 
 export default function TenantForm({ title, close, action, tenant, getTenants, token }) {
+  log.setLevel('debug');
   const [msg, sendNotification] = useNotification();
   log.debug(msg);
   const toBase64 = (file) =>

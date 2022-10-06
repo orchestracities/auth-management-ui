@@ -58,6 +58,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function ServiceChildren({ masterTitle, setOpen, status, data, getData, color, tenantName_id }) {
+  log.setLevel('debug');
+
   // DELETE
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
 
