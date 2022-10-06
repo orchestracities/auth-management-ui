@@ -8,7 +8,7 @@ const loginSettings = {
   username: 'admin',
   password: 'admin',
   grant_type: 'password',
-  client_id: 'client1'
+  client_id: 'configuration'
 };
 
 describe('GraphQL-Mutations', function () {
@@ -102,7 +102,6 @@ describe('GraphQL-Mutations', function () {
           .send(newTenantConfig)
           .expect(200)
           .end((err, res) => {
-            console.log(res.body);
             if (err) return done(err);
             expect(res.body.data.getTenantConfig[0]).to.have.own.property('name');
             expect(res.body.data.getTenantConfig[0]).to.have.own.property('icon');

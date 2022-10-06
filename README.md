@@ -102,10 +102,10 @@ and the Configuration API:
   (e.g. `http://localhost:3000`)
 - `REACT_APP_OIDC_ISSUER`: the endpoint of the OIDC issuer,
   used by Management UI and Configuration API to support authentication
-  (e.g. `http://localhost:8080/auth/realms/master`)
+  (e.g. `http://localhost:8080/realms/default`)
 - `REACT_APP_OIDC_CLIENT`: the OIDC public client used by the Management UI
   to authenticate users
-  (e.g. `client1`)
+  (e.g. `configuration`)
 - `REACT_APP_OIDC_SCOPE`: the OIDC scope used by the Management UI
   to authenticate users
   (e.g. `openid profile email`)
@@ -121,10 +121,10 @@ and the Configuration API:
   (e.g. `4000`)
 - `JWKS_URL`: the endpoint of the JSON Web Key Set, used by
   the Configuration API to validate tokens received
-  (e.g. `http://keycloak:8080/auth/realms/master/protocol/openid-connect/certs`)
+  (e.g. `http://keycloak:8080/realms/default/protocol/openid-connect/certs`)
 - `OIDC_AUDIENCE`: the audience required to validate a token, used by
   the Configuration API to validate tokens received
-  (e.g. `api`)
+  (e.g. `configuration`)
 - `LOGOPS_LEVEL`: the logging level for the Configuration API
   (e.g. `DEBUG`)
 

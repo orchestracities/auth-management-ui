@@ -38,7 +38,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
     axios
       .get(env.ANUBIS_API_URL + 'v1/tenants/' + thisTenant + '/service_paths', {
         headers: {
-          authorization: `Bearer ${token}`
+          // authorization: `Bearer ${token}`
         }
       })
       .then((response) => {
@@ -66,8 +66,8 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
         .get(env.ANUBIS_API_URL + 'v1/policies', {
           headers: {
             'fiware-service': tenantName_id(),
-            'fiware-servicepath': service.path,
-            authorization: `Bearer ${token}`
+            'fiware-servicepath': service.path
+            //'authorization': `Bearer ${token}`
           }
         })
         .then((response) => {
@@ -102,8 +102,8 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
         .get(env.ANUBIS_API_URL + 'v1/policies' + queryParameters, {
           headers: {
             'fiware-service': tenantName_id(),
-            'fiware-servicepath': policyFilter !== null ? policyFilter.fiware_service_path : service.path,
-            authorization: `Bearer ${token}`
+            'fiware-servicepath': policyFilter !== null ? policyFilter.fiware_service_path : service.path
+            //'authorization': `Bearer ${token}`
           }
         })
         .then((response) => {
@@ -132,33 +132,37 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
   const [access_modes, setAccess_modes] = React.useState([]);
 
   React.useEffect(() => {
-    getServices();
-    axios
-      .get(env.ANUBIS_API_URL + 'v1/policies/access-modes', {
-        headers: {
-          authorization: `Bearer ${token}`
-        }
-      })
-      .then((response) => setAccess_modes(response.data))
-      .catch((err) =>
-        sendNotification({ msg: err.message + ': cannot reach policy managenent api', variant: 'error' })
-      );
+    if (!(thisTenant === null || typeof thisTenant === 'undefined')) {
+      getServices();
+      axios
+        .get(env.ANUBIS_API_URL + 'v1/policies/access-modes', {
+          headers: {
+            //'authorization': `Bearer ${token}`
+          }
+        })
+        .then((response) => setAccess_modes(response.data))
+        .catch((err) =>
+          sendNotification({ msg: err.message + ': cannot reach policy managenent api', variant: 'error' })
+        );
+    }
   }, [thisTenant]);
 
   const [agentsTypes, setagentsTypes] = React.useState([]);
 
   React.useEffect(() => {
-    getServices();
-    axios
-      .get(env.ANUBIS_API_URL + 'v1/policies/agent-types', {
-        headers: {
-          authorization: `Bearer ${token}`
-        }
-      })
-      .then((response) => setagentsTypes(response.data))
-      .catch((err) =>
-        sendNotification({ msg: err.message + ': cannot reach policy managenent api', variant: 'error' })
-      );
+    if (!(thisTenant === null || typeof thisTenant === 'undefined')) {
+      getServices();
+      axios
+        .get(env.ANUBIS_API_URL + 'v1/policies/agent-types', {
+          headers: {
+            //'authorization': `Bearer ${token}`
+          }
+        })
+        .then((response) => setagentsTypes(response.data))
+        .catch((err) =>
+          sendNotification({ msg: err.message + ': cannot reach policy managenent api', variant: 'error' })
+        );
+    }
   }, [thisTenant]);
 
   const mainTitle = <Trans>policies.titles.page</Trans>;

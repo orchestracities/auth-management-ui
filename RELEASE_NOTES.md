@@ -5,9 +5,10 @@
 ### New features
 
 - The token is also passed to the policies
-- CI for the graphql part
+- Unit tests for the configuration api
 - The last tenant selected would be displayed
-- Possibility do add custom icons (with some size limitaion) to your tenant
+- Possibility do add custom icons (with some size limitation) to your tenant
+- Update repository to use v0.0.5 of keycloak scripts and realm export
 
 ### Bug fixes
 

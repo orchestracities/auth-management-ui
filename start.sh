@@ -11,8 +11,8 @@ fi
 echo "Downloading Keycloak scripts..."
 mkdir keycloak
 cd keycloak
-wget https://github.com/orchestracities/keycloak-scripts/releases/download/v0.0.4/oc-custom.jar -O oc-custom.jar
-wget https://raw.githubusercontent.com/orchestracities/anubis/master/keycloak/realm-export.json -O realm-export.json
+wget https://github.com/orchestracities/keycloak-scripts/releases/download/v0.0.5/oc-custom.jar -O oc-custom.jar
+wget https://raw.githubusercontent.com/orchestracities/keycloak-scripts/master/realm-export.json -O realm-export.json
 cd ..
 
 echo "Downloading opa-service config..."
@@ -41,7 +41,7 @@ do
   echo "Elapsed time: $wait"
 done
 
-if [ $wait -gt 60 ]; then
+if [ $wait -gt 120 ]; then
   echo "timeout while waiting services to be ready"
   docker-compose down -v
   exit -1
