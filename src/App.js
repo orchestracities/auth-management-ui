@@ -469,7 +469,10 @@ export default class App extends Component {
                       <Route
                         path="Tenant"
                         element={
-                          <AuthorizedElement iSuperAdmin={this.state.tokenData.is_super_admin}>
+                          <AuthorizedElement
+                            tokenDecoded={this.state.tokenData}
+                            iSuperAdmin={this.state.tokenData.is_super_admin}
+                          >
                             <TenantPage
                               token={this.props.accessToken}
                               getTenants={this.state.getTenants}
