@@ -2,7 +2,7 @@ import React from 'react';
 
 /*
 ***EXAMPLE***
-     <AuthorizedElement isSuperAdmin={props} roleNeeded={"admin"} groupNeeded={"admins"}></AuthorizedElement>
+<AuthorizedElement tokenDecoded={props} tenantNeeded={"Tenant1"} roleNeeded={"tenant-admin"} groupNeeded={"admins"} iSuperAdmin={"false"}></AuthorizedElement>
 */
 
 export class AuthorizedElement extends React.Component {
@@ -11,7 +11,7 @@ export class AuthorizedElement extends React.Component {
   }
 
   render() {
-    if (this.props.iSuperAdmin) {
+    if (typeof this.props.tenantNeeded === 'undefined' || this.props.tenantNeeded === null || this.props.iSuperAdmin) {
       return this.props.children;
     } else {
       return false;
