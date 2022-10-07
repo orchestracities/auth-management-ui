@@ -31,7 +31,7 @@ const CustomDialogTitle = styled(AppBar)({
 });
 
 export default function TenantForm({ title, close, action, tenant, getTenants, token }) {
-  typeof env.CONSOLE === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.CONSOLE);
+  typeof env.LOG_LEVEL === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
 
   const [msg, sendNotification] = useNotification();
   log.debug(msg);

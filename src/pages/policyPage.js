@@ -18,7 +18,7 @@ import * as log from 'loglevel';
 const env = getEnv();
 
 export default function PolicyPage({ getTenants, tenantValues, thisTenant, graphqlErrors, token }) {
-  typeof env.CONSOLE === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.CONSOLE);
+  typeof env.LOG_LEVEL === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
 
   const [mode, setMode] = React.useState(null);
   const [agent, setAgent] = React.useState(null);

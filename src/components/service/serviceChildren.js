@@ -58,7 +58,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function ServiceChildren({ masterTitle, setOpen, status, data, getData, color, tenantName_id }) {
-  typeof env.CONSOLE === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.CONSOLE);
+  typeof env.LOG_LEVEL === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
 
   // DELETE
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
