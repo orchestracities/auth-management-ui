@@ -26,6 +26,8 @@ import useNotification from '../shared/messages/alerts';
 import { getEnv } from '../../env';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import * as log from 'loglevel';
+
 const env = getEnv();
 
 const CustomDialogTitle = styled(AppBar)({
@@ -47,7 +49,9 @@ export default function PolicyForm({
   token
 }) {
   const [msg, sendNotification] = useNotification();
-  console.log(msg);
+  typeof env.LOG_LEVEL === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
+
+  log.debug(msg);
   const handleClose = () => {
     close(false);
   };
