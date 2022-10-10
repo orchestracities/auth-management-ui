@@ -354,7 +354,7 @@ export default class App extends Component {
       name: 'Tenant',
       route: '/Tenant',
       icon: <InboxIcon></InboxIcon>,
-      isAdmin: <AuthorizedElement iSuperAdmin={this.state.tokenData.is_super_admin} />
+      isAdmin: <AuthorizedElement tokenDecoded={this.state.tokenData} iSuperAdmin={true} />
     },
     { name: 'Service', route: '/Service', icon: <InboxIcon></InboxIcon>, isAdmin: 'not-necessary' },
     { name: 'Policy', route: '/Policy', icon: <InboxIcon></InboxIcon>, isAdmin: 'not-necessary' }
@@ -469,10 +469,7 @@ export default class App extends Component {
                       <Route
                         path="Tenant"
                         element={
-                          <AuthorizedElement
-                            tokenDecoded={this.state.tokenData}
-                            iSuperAdmin={this.state.tokenData.is_super_admin}
-                          >
+                          <AuthorizedElement tokenDecoded={this.state.tokenData} iSuperAdmin={true}>
                             <TenantPage
                               token={this.props.accessToken}
                               getTenants={this.state.getTenants}
