@@ -20,6 +20,7 @@ import { getEnv } from '../../env';
 import Box from '@mui/material/Box';
 import { DropzoneDialog } from 'mui-file-dropzone';
 import Avatar from '@mui/material/Avatar';
+import * as log from 'loglevel';
 
 const env = getEnv();
 
@@ -30,8 +31,10 @@ const CustomDialogTitle = styled(AppBar)({
 });
 
 export default function TenantForm({ title, close, action, tenant, getTenants, token }) {
+  typeof env.LOG_LEVEL === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
+
   const [msg, sendNotification] = useNotification();
-  console.log(msg);
+  log.debug(msg);
   const toBase64 = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -66,7 +69,7 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
 
   const manageUpload = (files) => {
     uploadCustomImage(files);
-    console.log(files);
+    log.debug(files);
   };
 
   const client = new ApolloClient({
@@ -250,7 +253,7 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
               dialogTitle={''}
               submitButtonText={<Trans>tenant.form.fileSubmit</Trans>}
               dropzoneText={<Trans>tenant.form.fileIstructions</Trans>}
-              maxFileSize={env.REACT_APP_IMAGE_SIZE}
+              maxFileSize={env.IMAGE_SIZE}
               filesLimit={1}
               open={openImageUpload}
               onClose={() => setOpenImageUpload(false)}

@@ -10,6 +10,7 @@
 - Possibility do add custom icons (with some size limitation) to your tenant
 - Update repository to use v0.0.5 of keycloak scripts and realm export
 - Verify of tenantPage if the user is a superAdmin
+- Add more clear logging
 
 ### Bug fixes
 

@@ -15,6 +15,7 @@ import useNotification from '../shared/messages/alerts';
 import { Trans } from 'react-i18next';
 import { getEnv } from '../../env';
 import Autocomplete from '@mui/material/Autocomplete';
+import * as log from 'loglevel';
 
 const env = getEnv();
 
@@ -25,8 +26,10 @@ const CustomDialogTitle = styled(AppBar)({
 });
 
 export default function ServiceForm({ title, close, action, service, tenantName_id, getServices }) {
+  typeof env.LOG_LEVEL === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
+
   const [msg, sendNotification] = useNotification();
-  console.log(msg);
+  log.debug(msg);
 
   const handleClose = () => {
     close(false);
