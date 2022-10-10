@@ -33,7 +33,7 @@ import Container from '@mui/material/Container';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { Grid } from '@mui/material';
 import { Trans } from 'react-i18next';
-
+import { AuthorizedElement } from './loginComponents/checkRoles';
 const env = getEnv();
 
 const drawerWidth = 240;
@@ -350,9 +350,14 @@ export default class App extends Component {
     super(props);
   }
   links = [
-    { name: 'Tenant', route: '/Tenant', icon: <InboxIcon></InboxIcon> },
-    { name: 'Service', route: '/Service', icon: <InboxIcon></InboxIcon> },
-    { name: 'Policy', route: '/Policy', icon: <InboxIcon></InboxIcon> }
+    {
+      name: 'Tenant',
+      route: '/Tenant',
+      icon: <InboxIcon></InboxIcon>,
+      isAdmin: <AuthorizedElement tokenDecoded={this.state.tokenData} iSuperAdmin={true} />
+    },
+    { name: 'Service', route: '/Service', icon: <InboxIcon></InboxIcon>, isAdmin: 'not-necessary' },
+    { name: 'Policy', route: '/Policy', icon: <InboxIcon></InboxIcon>, isAdmin: 'not-necessary' }
   ];
 
   componentDidMount() {
@@ -439,14 +444,18 @@ export default class App extends Component {
                 </DrawerHeader>
                 <Divider />
                 <List>
-                  {this.links.map((thisItem, index) => (
-                    <NavLink to={thisItem.route} key={index}>
-                      <ListItem button key={thisItem.name}>
-                        <ListItemIcon>{thisItem.icon}</ListItemIcon>
-                        <ListItemText primary={thisItem.name} />
-                      </ListItem>
-                    </NavLink>
-                  ))}
+                  {this.links.map((thisItem, index) =>
+                    thisItem.isAdmin !== false ? (
+                      <NavLink to={thisItem.route} key={index}>
+                        <ListItem button key={thisItem.name}>
+                          <ListItemIcon>{thisItem.icon}</ListItemIcon>
+                          <ListItemText primary={thisItem.name} />
+                        </ListItem>
+                      </NavLink>
+                    ) : (
+                      ''
+                    )
+                  )}
                 </List>
                 <Divider />
               </SwipeableDrawer>
@@ -460,15 +469,18 @@ export default class App extends Component {
                       <Route
                         path="Tenant"
                         element={
-                          <TenantPage
-                            token={this.props.accessToken}
-                            getTenants={this.state.getTenants}
-                            tenantValues={this.state.tenants}
-                            seTenant={this.state.seTenant}
-                            graphqlErrors={this.state.connectionIssue}
-                          />
+                          <AuthorizedElement tokenDecoded={this.state.tokenData} iSuperAdmin={true}>
+                            <TenantPage
+                              token={this.props.accessToken}
+                              getTenants={this.state.getTenants}
+                              tenantValues={this.state.tenants}
+                              seTenant={this.state.seTenant}
+                              graphqlErrors={this.state.connectionIssue}
+                            />
+                          </AuthorizedElement>
                         }
                       />
+
                       <Route
                         path="Service"
                         element={
