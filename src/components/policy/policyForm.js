@@ -27,7 +27,9 @@ import { getEnv } from '../../env';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import * as log from 'loglevel';
-import { getAllRoles} from '../../realmApi/getRealmData';
+import { getAllRoles } from '../../realmApi/getRealmData';
+import Autocomplete from '@mui/material/Autocomplete';
+
 const env = getEnv();
 
 const CustomDialogTitle = styled(AppBar)({
@@ -48,7 +50,7 @@ export default function PolicyForm({
   data,
   token
 }) {
-  getAllRoles(token);
+
   const [msg, sendNotification] = useNotification();
   typeof env.LOG_LEVEL === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
 
@@ -125,14 +127,15 @@ export default function PolicyForm({
     setAgentsMap(agentsMap);
   }, [agentsMap]);
 
-  const handleAgentsName = (event) => {
+  const handleAgentsName = (event, value) => {
     const newArray = agentsMap;
-    agentsMap[Number(event.target.id)].name = event.target.value;
+    agentsMap[Number(value.mapper)].name = value.value;
     setAgentsMap([...[], ...newArray]);
   };
   const handleAgentsType = (event) => {
     const newArray = agentsMap;
     newArray[Number(event.target.name)].type = event.target.value;
+    newArray[Number(event.target.name)].name = "";
     setAgentsMap([...[], ...newArray]);
   };
   const addAgents = () => {
@@ -253,6 +256,39 @@ export default function PolicyForm({
         break;
     }
   };
+
+  const [dataModel, setDataModel] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    setLoading(false)
+  }, [dataModel]);
+
+  React.useEffect(() => {
+    if (!open) {
+      setOptions([]);
+    }
+  }, [open]);
+  const getLabelData = async (name, mapper) => {
+    let model = []
+    setLoading(true)
+    switch (name) {
+      case 'acl:agent':
+        setDataModel(model);
+        break
+      case 'acl:agentGroup':
+        setDataModel(model);
+        break
+      case 'acl:agentClass':
+        let dataMock = await getAllRoles(token)
+        dataMock.map(((data) => model.push({ name: data, value: data, mapper: mapper })))
+        setDataModel(model);
+        break;
+      default:
+        return [];
+    }
+  };
+
 
   const errorCases = (value) => {
     if (error !== null) {
@@ -484,19 +520,21 @@ export default function PolicyForm({
                                   display: agent.type !== null ? 'block' : 'none'
                                 }}
                               >
-                                <TextField
+                                <Autocomplete
+                                  disablePortal
                                   color="secondary"
-                                  id={i}
-                                  key={'actorName' + i}
+                                  id={i.toString()}
+                                  key={'actorName' + i.toString()}
                                   variant="outlined"
-                                  label={getLabelName(agent.type)}
-                                  value={agent.name}
-                                  onChange={handleAgentsName}
-                                  sx={{
-                                    width: '100%'
-                                  }}
-                                  error={errorCases(agent.name)}
-                                  helperText={errorText(agent.name)}
+                                  options={dataModel}
+                                  loading={loading}
+                                  onOpen={() => getLabelData(agent.type, i.toString())}
+                                  fullWidth={true}
+                                  defaultValue={(typeof agent.name === "undefined") ? null : agent}
+                                  onChange={(event, value) => handleAgentsName(event, value)}
+                                  getOptionLabel={(option) => option.name}
+                                  isOptionEqualToValue={(option, value) => option.value === value.value}
+                                  renderInput={(params) => <TextField {...params} label={getLabelName(agent.type)} />}
                                 />
                               </Grid>
                             </Grow>

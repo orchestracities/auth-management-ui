@@ -105,19 +105,19 @@ export const allUsers = async (token) => {
 };
 
 
-export const getAllRoles = async (token)=>{
-const clients = await getClients(token);
-const clientsId=[];
-let roles=[];
-clients.map((client) => (
-clientsId.push(client.id)
-))
-for (let id of clientsId){
- let clientRoles= await getRolesInClient(id,token);
- clientRoles.map(((thisRole) => roles.push(thisRole.name)))
-}
+export const getAllRoles = async (token) => {
+  const clients = await getClients(token);
+  const clientsId = [];
+  let roles = [];
+  clients.map((client) => (
+    clientsId.push(client.id)
+  ))
+  for (let id of clientsId) {
+    let clientRoles = await getRolesInClient(id, token);
+    clientRoles.map(((thisRole) => roles.push(thisRole.name)))
+  }
 
-let realmRoles= await getRolesInRealm(token);
-realmRoles.map(((thisRole) => roles.push(thisRole.name)))
-  console.log(roles)
+  let realmRoles = await getRolesInRealm(token);
+  realmRoles.map(((thisRole) => roles.push(thisRole.name)))
+  return roles;
 }

@@ -260,6 +260,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
               getData={getServices}
               access_modes={access_modes}
               agentsTypes={agentsTypes}
+              token={token}
             ></PolicyTable>
           </Grid>
         </Grid>
