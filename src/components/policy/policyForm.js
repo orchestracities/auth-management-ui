@@ -27,7 +27,7 @@ import { getEnv } from '../../env';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import * as log from 'loglevel';
-
+import { getAllRoles} from '../../realmApi/getRealmData';
 const env = getEnv();
 
 const CustomDialogTitle = styled(AppBar)({
@@ -48,6 +48,7 @@ export default function PolicyForm({
   data,
   token
 }) {
+  getAllRoles(token);
   const [msg, sendNotification] = useNotification();
   typeof env.LOG_LEVEL === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
 
@@ -296,13 +297,7 @@ export default function PolicyForm({
           <IconButton edge="start" onClick={handleClose} aria-label="close">
             <CloseIcon />
           </IconButton>
-          <Typography
-            sx={{ maxWidth: '70%', ml: 2, flex: 1, color: 'black' }}
-            noWrap
-            gutterBottom
-            variant="h6"
-            component="div"
-          >
+          <Typography sx={{ ml: 2, flex: 1, color: 'black' }} noWrap gutterBottom variant="h6" component="div">
             {title}
           </Typography>
           <Button autoFocus color="secondary" onClick={handleSave}>
