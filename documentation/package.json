@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook",
     "lint": "eslint --fix --ext .js,.jsx .",
     "prettier": "prettier --write './**/*.{js,jsx}' --config .prettierrc.json",
     "chromatic": "npx chromatic --project-token=36b63a5f4dbe"
@@ -17,13 +17,14 @@
   "devDependencies": {
     "@babel/core": "^7.18.2",
     "@babel/preset-react": "^7.17.12",
-    "@storybook/addon-actions": "^7.0.0-alpha.37",
-    "@storybook/addon-essentials": "^7.0.0-alpha.37",
-    "@storybook/addon-interactions": "^7.0.0-alpha.37",
-    "@storybook/addon-links": "^7.0.0-alpha.37",
-    "@storybook/react": "^7.0.0-alpha.37",
-    "@storybook/react-webpack5": "^7.0.0-alpha.37",
-    "@storybook/testing-library": "^0.0.14-next.0",
+    "@storybook/addon-actions": "^6.5.5",
+    "@storybook/addon-essentials": "^6.5.5",
+    "@storybook/addon-interactions": "^6.5.5",
+    "@storybook/addon-links": "^6.5.5",
+    "@storybook/builder-webpack4": "^6.5.5",
+    "@storybook/manager-webpack4": "^6.5.5",
+    "@storybook/react": "^6.5.5",
+    "@storybook/testing-library": "^0.0.11",
     "babel-loader": "^8.2.5",
     "chromatic": "^6.6.4",
     "eslint": "^8.14.0",
@@ -35,11 +36,10 @@
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-react": "^7.29.4",
     "prettier": "^2.6.2",
-    "storybook": "^7.0.0-alpha.37"
+    "storybook": "^6.5.12"
   },
   "dependencies": {
-    "@storybook/addon-docs": "^7.0.0-alpha.37",
-    "cra-envs": "^1.2.8"
+    "@storybook/addon-docs": "^6.5.6"
   },
   "readme": "ERROR: No README data found!",
   "_id": "documentation@1.0.0"
