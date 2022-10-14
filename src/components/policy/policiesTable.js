@@ -437,7 +437,9 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
                           {row.resource_type}
                         </TableCell>
                         <TableCell padding="normal" align="left">
-                          {agentToString(row.agent)}
+                          <Typography noWrap gutterBottom sx={{ maxWidth: '70%' }}>
+                            {agentToString(row.agent)}
+                          </Typography>
                         </TableCell>
                         <TableCell padding="normal" align="left">
                           {modeToString(row.mode)}
