@@ -15,6 +15,7 @@ export const envNames = [
   'OIDC_SCOPE',
   'IMAGE_SIZE',
   'LOG_LEVEL',
+  'KEYCLOACK_ADMIN',
   'TITLE',
   'DESCRIPTION'
 ];

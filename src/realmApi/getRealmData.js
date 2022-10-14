@@ -6,16 +6,11 @@ export const getSubGroups = async (tenantName, token, env) => {
   const tokenDecoded = jwt_decode(token);
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
   return axios
-    .get(
-      [env.OIDC_ISSUER.slice(0, 21), '/' + tokenDecoded.preferred_username, env.OIDC_ISSUER.slice(21)].join('') +
-        '/groups/' +
-        tokenDecoded.tenants[tenantName].id,
-      {
-        headers: {
-          authorization: `Bearer ${token}`
-        }
+    .get(env.KEYCLOACK_ADMIN + '/groups/' + tokenDecoded.tenants[tenantName].id, {
+      headers: {
+        authorization: `Bearer ${token}`
       }
-    )
+    })
     .then((response) => response.data)
     .catch((e) => {
       log.error(e);
@@ -23,18 +18,13 @@ export const getSubGroups = async (tenantName, token, env) => {
 };
 
 export const getClients = async (token, env) => {
-  const tokenDecoded = jwt_decode(token);
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
   return axios
-    .get(
-      [env.OIDC_ISSUER.slice(0, 21), '/' + tokenDecoded.preferred_username, env.OIDC_ISSUER.slice(21)].join('') +
-        '/clients',
-      {
-        headers: {
-          authorization: `Bearer ${token}`
-        }
+    .get(env.KEYCLOACK_ADMIN + '/clients', {
+      headers: {
+        authorization: `Bearer ${token}`
       }
-    )
+    })
     .then((response) => response.data)
     .catch((e) => {
       log.error(e);
@@ -42,20 +32,13 @@ export const getClients = async (token, env) => {
 };
 
 export const getRolesInClient = async (clientID, token, env) => {
-  const tokenDecoded = jwt_decode(token);
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
   return axios
-    .get(
-      [env.OIDC_ISSUER.slice(0, 21), '/' + tokenDecoded.preferred_username, env.OIDC_ISSUER.slice(21)].join('') +
-        '/clients/' +
-        clientID +
-        '/roles',
-      {
-        headers: {
-          authorization: `Bearer ${token}`
-        }
+    .get(env.KEYCLOACK_ADMIN + '/clients/' + clientID + '/roles', {
+      headers: {
+        authorization: `Bearer ${token}`
       }
-    )
+    })
     .then((response) => response.data)
     .catch((e) => {
       log.error(e);
@@ -63,18 +46,13 @@ export const getRolesInClient = async (clientID, token, env) => {
 };
 
 export const getRolesInRealm = async (token, env) => {
-  const tokenDecoded = jwt_decode(token);
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
   return axios
-    .get(
-      [env.OIDC_ISSUER.slice(0, 21), '/' + tokenDecoded.preferred_username, env.OIDC_ISSUER.slice(21)].join('') +
-        '/roles/',
-      {
-        headers: {
-          authorization: `Bearer ${token}`
-        }
+    .get(env.KEYCLOACK_ADMIN + '/roles/', {
+      headers: {
+        authorization: `Bearer ${token}`
       }
-    )
+    })
     .then((response) => response.data)
     .catch((e) => {
       log.error(e);
@@ -82,18 +60,13 @@ export const getRolesInRealm = async (token, env) => {
 };
 
 export const allUsers = async (token, env) => {
-  const tokenDecoded = jwt_decode(token);
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
   return axios
-    .get(
-      [env.OIDC_ISSUER.slice(0, 21), '/' + tokenDecoded.preferred_username, env.OIDC_ISSUER.slice(21)].join('') +
-        '/users/',
-      {
-        headers: {
-          authorization: `Bearer ${token}`
-        }
+    .get(env.KEYCLOACK_ADMIN + '/users/', {
+      headers: {
+        authorization: `Bearer ${token}`
       }
-    )
+    })
     .then((response) => response.data)
     .catch((e) => {
       log.error(e);

@@ -55,7 +55,7 @@ export default function ServiceForm({ title, close, action, service, tenantName_
     switch (action) {
       case 'create':
         axios
-          .post(anubisURL  + 'v1/tenants/' + tenantName_id.id + '/service_paths', {
+          .post(anubisURL + 'v1/tenants/' + tenantName_id.id + '/service_paths', {
             path
           })
           .then(() => {
