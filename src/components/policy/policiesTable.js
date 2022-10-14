@@ -58,7 +58,7 @@ const DinamicPaper = styled(Paper)(({ theme }) => ({
   }
 }));
 
-export default function PoliciesTable({ data, getData, access_modes, tenantName, agentsTypes, services, token }) {
+export default function PoliciesTable({ data, getData, access_modes, tenantName, agentsTypes, services, token, env }) {
   // DELETE
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
 
@@ -482,6 +482,7 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
         aria-describedby="edit"
       >
         <PolicyForm
+          env={env}
           tenantName={tenantName}
           action="modify"
           agentsTypes={agentsTypes}
@@ -497,6 +498,7 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
       </DialogRounded>
       <DeleteDialog
         open={openDeleteDialog}
+        env={env}
         onClose={handleCloseDeleteDialog}
         getData={getData}
         data={{

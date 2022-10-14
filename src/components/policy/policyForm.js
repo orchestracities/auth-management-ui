@@ -23,13 +23,11 @@ import Grow from '@mui/material/Grow';
 import Zoom from '@mui/material/Zoom';
 import FormHelperText from '@mui/material/FormHelperText';
 import useNotification from '../shared/messages/alerts';
-import { getEnv } from '../../env';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import log from 'loglevel';
 import * as realmApi from '../../realmApi/getRealmData';
 import Autocomplete from '@mui/material/Autocomplete';
-const env = getEnv();
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -47,11 +45,12 @@ export default function PolicyForm({
   agentsTypes,
   getServices,
   data,
-  token
+  token,
+  env
 }) {
   const [msg, sendNotification] = useNotification();
-  typeof env.LOG_LEVEL === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
-
+  typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
+  const anubisURL = typeof env !== 'undefined' ? env.ANUBIS_API_URL : '';
   log.debug(msg);
   const handleClose = () => {
     close(false);
@@ -162,7 +161,7 @@ export default function PolicyForm({
       case 'create':
         axios
           .post(
-            env.ANUBIS_API_URL + 'v1/policies/',
+            anubisURL + 'v1/policies/',
             {
               access_to: access,
               resource_type: resource,
@@ -201,7 +200,7 @@ export default function PolicyForm({
       case 'modify':
         axios
           .put(
-            env.ANUBIS_API_URL + 'v1/policies/' + data.id,
+            anubisURL + 'v1/policies/' + data.id,
             {
               access_to: access,
               resource_type: resource,
@@ -269,7 +268,7 @@ export default function PolicyForm({
     switch (name) {
       case 'acl:agent':
         await realmApi
-          .allUsers(token)
+          .allUsers(token, env)
           .then((data) => {
             data.map((thisName) =>
               dataMatrix.push({ name: thisName.username, value: thisName.username, mapper: mapper })
@@ -280,7 +279,7 @@ export default function PolicyForm({
         break;
       case 'acl:agentGroup':
         await realmApi
-          .getSubGroups(tenantName(), token)
+          .getSubGroups(tenantName(), token, env)
           .then((data) => {
             data.subGroups.map((thisGroup) =>
               dataMatrix.push({ name: thisGroup.name, value: thisGroup.name, mapper: mapper })
@@ -291,7 +290,7 @@ export default function PolicyForm({
         break;
       case 'acl:agentClass':
         await realmApi
-          .getAllRoles(token)
+          .getAllRoles(token, env)
           .then((data) => {
             data.map((thisClass) => model.push({ name: thisClass, value: thisClass, mapper: mapper }));
             setDataModel(model);

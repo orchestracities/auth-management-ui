@@ -27,7 +27,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { visuallyHidden } from '@mui/utils';
 import DeleteDialog from '../shared/messages/cardDelete';
 import { Trans } from 'react-i18next';
-import { getEnv } from '../../env';
 import Autocomplete from '@mui/material/Autocomplete';
 import axios from 'axios';
 import TextField from '@mui/material/TextField';
@@ -38,8 +37,6 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ServiceForm from './serviceForm';
 import Tooltip from '@mui/material/Tooltip';
 import * as log from 'loglevel';
-
-const env = getEnv();
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -57,8 +54,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Grow direction="up" ref={ref} {...props} />;
 });
 
-export default function ServiceChildren({ masterTitle, setOpen, status, data, getData, color, tenantName_id }) {
-  typeof env.LOG_LEVEL === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
+export default function ServiceChildren({ masterTitle, setOpen, status, data, getData, color, tenantName_id, env }) {
+  typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
 
   // DELETE
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
@@ -345,13 +342,12 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
   const [pathSelected, setPathSelected] = React.useState(null);
   const getPaths = (thisPath) => {
+    const anubisURL = typeof env !== 'undefined' ? env.ANUBIS_API_URL : '';
     thisPath === null
       ? setRows(addEdit(data))
-      : axios
-          .get(env.ANUBIS_API_URL + 'v1/tenants/' + data[0].tenant_id + '/service_paths?name=' + thisPath.path)
-          .then((results) => {
-            setRows(addEdit(results.data));
-          });
+      : axios.get(anubisURL + '/service_paths?name=' + thisPath.path).then((results) => {
+          setRows(addEdit(results.data));
+        });
   };
 
   React.useEffect(() => {
@@ -507,6 +503,7 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
                   aria-describedby="edit"
                 >
                   <ServiceForm
+                    env={env}
                     title={<Trans>service.titles.edit</Trans>}
                     action={'Sub-service-creation'}
                     service={editData}
@@ -518,6 +515,7 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
                   <DialogActions></DialogActions>
                 </DialogRounded>
                 <DeleteDialog
+                  env={env}
                   open={openDeleteDialog}
                   onClose={handleCloseDeleteDialog}
                   getData={getData}

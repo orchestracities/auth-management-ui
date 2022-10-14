@@ -1,14 +1,10 @@
 import axios from 'axios';
-import { getEnv } from '../env';
 import * as log from 'loglevel';
 import jwt_decode from 'jwt-decode';
 
-const env = getEnv();
-typeof env.LOG_LEVEL === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
-
-export const getSubGroups = async (tenantName, token) => {
+export const getSubGroups = async (tenantName, token, env) => {
   const tokenDecoded = jwt_decode(token);
-
+  typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
   return axios
     .get(
       [env.OIDC_ISSUER.slice(0, 21), '/' + tokenDecoded.preferred_username, env.OIDC_ISSUER.slice(21)].join('') +
@@ -26,9 +22,9 @@ export const getSubGroups = async (tenantName, token) => {
     });
 };
 
-export const getClients = async (token) => {
+export const getClients = async (token, env) => {
   const tokenDecoded = jwt_decode(token);
-
+  typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
   return axios
     .get(
       [env.OIDC_ISSUER.slice(0, 21), '/' + tokenDecoded.preferred_username, env.OIDC_ISSUER.slice(21)].join('') +
@@ -45,9 +41,9 @@ export const getClients = async (token) => {
     });
 };
 
-export const getRolesInClient = async (clientID, token) => {
+export const getRolesInClient = async (clientID, token, env) => {
   const tokenDecoded = jwt_decode(token);
-
+  typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
   return axios
     .get(
       [env.OIDC_ISSUER.slice(0, 21), '/' + tokenDecoded.preferred_username, env.OIDC_ISSUER.slice(21)].join('') +
@@ -66,9 +62,9 @@ export const getRolesInClient = async (clientID, token) => {
     });
 };
 
-export const getRolesInRealm = async (token) => {
+export const getRolesInRealm = async (token, env) => {
   const tokenDecoded = jwt_decode(token);
-
+  typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
   return axios
     .get(
       [env.OIDC_ISSUER.slice(0, 21), '/' + tokenDecoded.preferred_username, env.OIDC_ISSUER.slice(21)].join('') +
@@ -85,9 +81,9 @@ export const getRolesInRealm = async (token) => {
     });
 };
 
-export const allUsers = async (token) => {
+export const allUsers = async (token, env) => {
   const tokenDecoded = jwt_decode(token);
-
+  typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
   return axios
     .get(
       [env.OIDC_ISSUER.slice(0, 21), '/' + tokenDecoded.preferred_username, env.OIDC_ISSUER.slice(21)].join('') +
@@ -104,17 +100,18 @@ export const allUsers = async (token) => {
     });
 };
 
-export const getAllRoles = async (token) => {
-  const clients = await getClients(token);
+export const getAllRoles = async (token, env) => {
+  typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
+  const clients = await getClients(token, env);
   const clientsId = [];
   let roles = [];
   clients.map((client) => clientsId.push(client.id));
   for (let id of clientsId) {
-    let clientRoles = await getRolesInClient(id, token);
+    let clientRoles = await getRolesInClient(id, token, env);
     clientRoles.map((thisRole) => roles.push(thisRole.name));
   }
 
-  let realmRoles = await getRolesInRealm(token);
+  let realmRoles = await getRolesInRealm(token, env);
   realmRoles.map((thisRole) => roles.push(thisRole.name));
   return roles;
 };

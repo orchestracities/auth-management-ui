@@ -239,8 +239,9 @@ export default class App extends Component {
       }
     },
     getTenants: () => {
+      const anubisURL = typeof env !== 'undefined' ? env.ANUBIS_API_URL : '';
       axios
-        .get(env.ANUBIS_API_URL + 'v1/tenants')
+        .get(anubisURL + 'v1/tenants')
         .then((response) => {
           const userTenants = [];
           let tenantFiltered = [];
@@ -412,6 +413,7 @@ export default class App extends Component {
                   </div>
                   <div>
                     <UserMenu
+                      env={env}
                       token={this.props.accessToken}
                       language={{
                         language: this.state.language,
@@ -472,6 +474,7 @@ export default class App extends Component {
                           <AuthorizedElement tokenDecoded={this.state.tokenData} iSuperAdmin={true}>
                             <TenantPage
                               token={this.props.accessToken}
+                              env={env}
                               getTenants={this.state.getTenants}
                               tenantValues={this.state.tenants}
                               seTenant={this.state.seTenant}
@@ -486,6 +489,7 @@ export default class App extends Component {
                         element={
                           <ServicePage
                             getTenants={this.state.getTenants}
+                            env={env}
                             tenantValues={this.state.tenants}
                             thisTenant={this.state.thisTenant}
                             graphqlErrors={this.state.connectionIssue}
@@ -497,6 +501,7 @@ export default class App extends Component {
                         element={
                           <PolicyPage
                             token={this.props.accessToken}
+                            env={env}
                             getTenants={this.state.getTenants}
                             tenantValues={this.state.tenants}
                             thisTenant={this.state.thisTenant}

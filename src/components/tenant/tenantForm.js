@@ -16,13 +16,10 @@ import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client
 import { setContext } from '@apollo/client/link/context';
 import { Trans } from 'react-i18next';
 import useNotification from '../shared/messages/alerts';
-import { getEnv } from '../../env';
 import Box from '@mui/material/Box';
 import { DropzoneDialog } from 'mui-file-dropzone';
 import Avatar from '@mui/material/Avatar';
 import * as log from 'loglevel';
-
-const env = getEnv();
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -30,8 +27,9 @@ const CustomDialogTitle = styled(AppBar)({
   boxShadow: 'none'
 });
 
-export default function TenantForm({ title, close, action, tenant, getTenants, token }) {
-  typeof env.LOG_LEVEL === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
+export default function TenantForm({ title, close, action, tenant, getTenants, token, env }) {
+  typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
+  const anubisURL = typeof env !== 'undefined' ? env.ANUBIS_API_URL : '';
 
   const [msg, sendNotification] = useNotification();
   log.debug(msg);
@@ -55,7 +53,7 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
     close(false);
   };
   const httpLink = createHttpLink({
-    uri: env.CONFIGURATION_API_URL
+    uri: typeof env !== 'undefined' ? env.CONFIGURATION_API_URL : ''
   });
 
   const authLink = setContext((_, { headers }) => {
@@ -86,7 +84,7 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
     switch (action) {
       case 'create':
         axios
-          .post(env.ANUBIS_API_URL + 'v1/tenants', {
+          .post(anubisURL + 'v1/tenants', {
             name
           })
           .then(() => {
@@ -253,7 +251,7 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
               dialogTitle={''}
               submitButtonText={<Trans>tenant.form.fileSubmit</Trans>}
               dropzoneText={<Trans>tenant.form.fileIstructions</Trans>}
-              maxFileSize={env.IMAGE_SIZE}
+              maxFileSize={typeof env !== 'undefined' ? env.IMAGE_SIZE : ''}
               filesLimit={1}
               open={openImageUpload}
               onClose={() => setOpenImageUpload(false)}

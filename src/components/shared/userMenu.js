@@ -25,10 +25,7 @@ import { ApolloClient, ApolloLink, InMemoryCache, gql, createHttpLink } from '@a
 import { onError } from '@apollo/client/link/error';
 import { setContext } from '@apollo/client/link/context';
 import useNotification from './messages/alerts';
-import { getEnv } from '../../env';
 import * as log from 'loglevel';
-
-const env = getEnv();
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -42,8 +39,8 @@ const CustomDialogTitle = styled(AppBar)({
   boxShadow: 'none'
 });
 
-export default function UserMenu({ language, userData, token, lastTenantSelected }) {
-  typeof env.LOG_LEVEL === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
+export default function UserMenu({ language, userData, token, lastTenantSelected, env }) {
+  typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
 
   const { i18n } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState(null);

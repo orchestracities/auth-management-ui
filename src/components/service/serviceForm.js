@@ -13,11 +13,8 @@ import axios from 'axios';
 import InputAdornment from '@mui/material/InputAdornment';
 import useNotification from '../shared/messages/alerts';
 import { Trans } from 'react-i18next';
-import { getEnv } from '../../env';
 import Autocomplete from '@mui/material/Autocomplete';
 import * as log from 'loglevel';
-
-const env = getEnv();
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -25,9 +22,9 @@ const CustomDialogTitle = styled(AppBar)({
   boxShadow: 'none'
 });
 
-export default function ServiceForm({ title, close, action, service, tenantName_id, getServices }) {
-  typeof env.LOG_LEVEL === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
-
+export default function ServiceForm({ title, close, action, service, tenantName_id, getServices, env }) {
+  typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
+  const anubisURL = typeof env !== 'undefined' ? env.ANUBIS_API_URL : '';
   const [msg, sendNotification] = useNotification();
   log.debug(msg);
 
@@ -40,7 +37,7 @@ export default function ServiceForm({ title, close, action, service, tenantName_
   const [pathSelected, setPathSelected] = React.useState('');
   const getPaths = () => {
     axios
-      .get(env.ANUBIS_API_URL + 'v1/tenants/' + tenantName_id.id + '/service_paths?name=' + service.path)
+      .get(anubisURL + 'v1/tenants/' + tenantName_id.id + '/service_paths?name=' + service.path)
       .then((results) => {
         let mapper = [];
         results.data.map((thisPath) => mapper.push(thisPath.path));
@@ -58,7 +55,7 @@ export default function ServiceForm({ title, close, action, service, tenantName_
     switch (action) {
       case 'create':
         axios
-          .post(env.ANUBIS_API_URL + 'v1/tenants/' + tenantName_id.id + '/service_paths', {
+          .post(anubisURL  + 'v1/tenants/' + tenantName_id.id + '/service_paths', {
             path
           })
           .then(() => {
@@ -85,7 +82,7 @@ export default function ServiceForm({ title, close, action, service, tenantName_
         break;
       case 'Sub-service-creation':
         axios
-          .post(env.ANUBIS_API_URL + 'v1/tenants/' + tenantName_id.id + '/service_paths', {
+          .post(anubisURL + 'v1/tenants/' + tenantName_id.id + '/service_paths', {
             path: pathSelected !== '/' ? pathSelected + path : path
           })
           .then(() => {

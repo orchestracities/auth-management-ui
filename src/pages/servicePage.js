@@ -9,14 +9,11 @@ import axios from 'axios';
 import Grow from '@mui/material/Grow';
 import { Trans } from 'react-i18next';
 import useNotification from '../components/shared/messages/alerts';
-import { getEnv } from '../env';
 import Box from '@mui/material/Box';
 import * as log from 'loglevel';
 
-const env = getEnv();
-
-export default function ServicePage({ getTenants, tenantValues, thisTenant, graphqlErrors }) {
-  typeof env.LOG_LEVEL === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
+export default function ServicePage({ getTenants, tenantValues, thisTenant, graphqlErrors, env }) {
+  typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
 
   const [createOpen, setCreateOpen] = React.useState(false);
   const [services, setServices] = React.useState([]);
@@ -46,7 +43,7 @@ export default function ServicePage({ getTenants, tenantValues, thisTenant, grap
 
   const getServices = () => {
     axios
-      .get(env.ANUBIS_API_URL + 'v1/tenants/' + thisTenant + '/service_paths')
+      .get((typeof env !== 'undefined' ? env.ANUBIS_API_URL : '') + 'v1/tenants/' + thisTenant + '/service_paths')
       .then((response) => {
         response.data[0].children.map(
           (service, index) => (service.primaryColor = incrementColor(tenantData.props.primaryColor, index * 5))
@@ -81,6 +78,7 @@ export default function ServicePage({ getTenants, tenantValues, thisTenant, grap
         <AddButton
           pageType={
             <ServiceForm
+              env={env}
               title={<Trans>service.titles.new</Trans>}
               close={setCreateOpen}
               action={'create'}
@@ -106,10 +104,12 @@ export default function ServicePage({ getTenants, tenantValues, thisTenant, grap
           >
             <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
               <DashboardCard
+                env={env}
                 key={service.id}
                 colors={{ secondaryColor: service.secondaryColor, primaryColor: service.primaryColor }}
                 pageType={
                   <ServiceForm
+                    env={env}
                     title={<Trans>service.titles.edit</Trans>}
                     action={'Sub-service-creation'}
                     service={service}
