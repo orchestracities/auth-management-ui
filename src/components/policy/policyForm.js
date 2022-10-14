@@ -26,8 +26,8 @@ import useNotification from '../shared/messages/alerts';
 import { getEnv } from '../../env';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import * as log from 'loglevel';
-import { getAllRoles, allUsers, getSubGroups } from '../../realmApi/getRealmData';
+import log from 'loglevel';
+import * as realmApi from '../../realmApi/getRealmData';
 import Autocomplete from '@mui/material/Autocomplete';
 const env = getEnv();
 
@@ -265,25 +265,38 @@ export default function PolicyForm({
   const getLabelData = async (name, mapper) => {
     setDataModel([]);
     let model = [];
-    let data;
     let dataMatrix = [];
     switch (name) {
       case 'acl:agent':
-        data = await allUsers(token);
-        data.map((thisName) => dataMatrix.push({ name: thisName.username, value: thisName.username, mapper: mapper }));
-        setDataModel(dataMatrix);
+        await realmApi
+          .allUsers(token)
+          .then((data) => {
+            data.map((thisName) =>
+              dataMatrix.push({ name: thisName.username, value: thisName.username, mapper: mapper })
+            );
+            setDataModel(dataMatrix);
+          })
+          .catch(() => setDataModel([]));
         break;
       case 'acl:agentGroup':
-        data = await getSubGroups(tenantName(), token);
-        data.subGroups.map((thisGroup) =>
-          dataMatrix.push({ name: thisGroup.name, value: thisGroup.name, mapper: mapper })
-        );
-        setDataModel(dataMatrix);
+        await realmApi
+          .getSubGroups(tenantName(), token)
+          .then((data) => {
+            data.subGroups.map((thisGroup) =>
+              dataMatrix.push({ name: thisGroup.name, value: thisGroup.name, mapper: mapper })
+            );
+            setDataModel(dataMatrix);
+          })
+          .catch(() => setDataModel([]));
         break;
       case 'acl:agentClass':
-        data = await getAllRoles(token);
-        data.map((data) => model.push({ name: data, value: data, mapper: mapper }));
-        setDataModel(model);
+        await realmApi
+          .getAllRoles(token)
+          .then((data) => {
+            data.map((thisClass) => model.push({ name: thisClass, value: thisClass, mapper: mapper }));
+            setDataModel(model);
+          })
+          .catch(() => setDataModel([]));
         break;
       default:
         return [];
