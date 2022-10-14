@@ -58,7 +58,7 @@ const DinamicPaper = styled(Paper)(({ theme }) => ({
   }
 }));
 
-export default function PoliciesTable({ data, getData, access_modes, tenantName, agentsTypes, services,token }) {
+export default function PoliciesTable({ data, getData, access_modes, tenantName, agentsTypes, services, token }) {
   // DELETE
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
 

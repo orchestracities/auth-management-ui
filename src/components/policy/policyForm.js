@@ -27,9 +27,8 @@ import { getEnv } from '../../env';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import * as log from 'loglevel';
-import { getAllRoles } from '../../realmApi/getRealmData';
+import { getAllRoles, allUsers, getSubGroups } from '../../realmApi/getRealmData';
 import Autocomplete from '@mui/material/Autocomplete';
-
 const env = getEnv();
 
 const CustomDialogTitle = styled(AppBar)({
@@ -50,7 +49,6 @@ export default function PolicyForm({
   data,
   token
 }) {
-
   const [msg, sendNotification] = useNotification();
   typeof env.LOG_LEVEL === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
 
@@ -135,7 +133,7 @@ export default function PolicyForm({
   const handleAgentsType = (event) => {
     const newArray = agentsMap;
     newArray[Number(event.target.name)].type = event.target.value;
-    newArray[Number(event.target.name)].name = "";
+    newArray[Number(event.target.name)].name = '';
     setAgentsMap([...[], ...newArray]);
   };
   const addAgents = () => {
@@ -261,34 +259,36 @@ export default function PolicyForm({
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    setLoading(false)
+    setLoading(!loading);
   }, [dataModel]);
 
-  React.useEffect(() => {
-    if (!open) {
-      setOptions([]);
-    }
-  }, [open]);
   const getLabelData = async (name, mapper) => {
-    let model = []
-    setLoading(true)
+    setDataModel([]);
+    let model = [];
+    let data;
+    let dataMatrix = [];
     switch (name) {
       case 'acl:agent':
-        setDataModel(model);
-        break
+        data = await allUsers(token);
+        data.map((thisName) => dataMatrix.push({ name: thisName.username, value: thisName.username, mapper: mapper }));
+        setDataModel(dataMatrix);
+        break;
       case 'acl:agentGroup':
-        setDataModel(model);
-        break
+        data = await getSubGroups(tenantName(), token);
+        data.subGroups.map((thisGroup) =>
+          dataMatrix.push({ name: thisGroup.name, value: thisGroup.name, mapper: mapper })
+        );
+        setDataModel(dataMatrix);
+        break;
       case 'acl:agentClass':
-        let dataMock = await getAllRoles(token)
-        dataMock.map(((data) => model.push({ name: data, value: data, mapper: mapper })))
+        data = await getAllRoles(token);
+        data.map((data) => model.push({ name: data, value: data, mapper: mapper }));
         setDataModel(model);
         break;
       default:
         return [];
     }
   };
-
 
   const errorCases = (value) => {
     if (error !== null) {
@@ -530,7 +530,7 @@ export default function PolicyForm({
                                   loading={loading}
                                   onOpen={() => getLabelData(agent.type, i.toString())}
                                   fullWidth={true}
-                                  defaultValue={(typeof agent.name === "undefined") ? null : agent}
+                                  defaultValue={typeof agent.name === 'undefined' ? null : agent}
                                   onChange={(event, value) => handleAgentsName(event, value)}
                                   getOptionLabel={(option) => option.name}
                                   isOptionEqualToValue={(option, value) => option.value === value.value}

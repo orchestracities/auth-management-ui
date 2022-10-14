@@ -11,6 +11,7 @@
 - Update repository to use v0.0.5 of keycloak scripts and realm export
 - Verify of tenantPage if the user is a superAdmin
 - Add more clear logging
+- The values displayed on the policyForm are from Keycloack
 
 ### Bug fixes
 
