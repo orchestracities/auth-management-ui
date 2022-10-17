@@ -1,18 +1,32 @@
 # Auth Management UI Release Notes
 
-## 0.4
+## 0.5
 
 ### New features
 
-- The token is also passed to the policies
-- Unit tests for the configuration api
-- The last tenant selected would be displayed
-- Possibility do add custom icons (with some size limitation) to your tenant
-- Update repository to use v0.0.5 of keycloak scripts and realm export
 - Verify of tenantPage if the user is a superAdmin
 - Add more clear logging
 - The values displayed on the policyForm are from Keycloack
 - Components are now totally indipendent from the API
+
+### Bug fixes
+
+### Documentation
+
+### Continuous Integration
+
+### Technical debt
+
+## 0.4
+
+### New features
+
+- Pass the token to the policy api
+- The last tenant selected is loaded by default
+- Add custom icons (with some size limitation) to your tenant
+- Update repository to use v0.0.5 of keycloak scripts and realm export
+- Allow tenantPage only if the user is a superAdmin
+- Support configurable logging
 
 ### Bug fixes
 
@@ -21,6 +35,8 @@
 ### Documentation
 
 ### Continuous Integration
+
+- Unit tests for the configuration api
 
 ### Technical debt
 
