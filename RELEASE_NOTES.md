@@ -4,13 +4,12 @@
 
 ### New features
 
-- The token is also passed to the policies
-- Unit tests for the configuration api
-- The last tenant selected would be displayed
-- Possibility do add custom icons (with some size limitation) to your tenant
+- Pass the token to the policy api
+- The last tenant selected is loaded by default
+- Add custom icons (with some size limitation) to your tenant
 - Update repository to use v0.0.5 of keycloak scripts and realm export
-- Verify of tenantPage if the user is a superAdmin
-- Add more clear logging
+- Allow tenantPage only if the user is a superAdmin
+- Support configurable logging
 
 ### Bug fixes
 
@@ -19,6 +18,8 @@
 ### Documentation
 
 ### Continuous Integration
+
+- Unit tests for the configuration api
 
 ### Technical debt
 
