@@ -23,12 +23,11 @@ import Grow from '@mui/material/Grow';
 import Zoom from '@mui/material/Zoom';
 import FormHelperText from '@mui/material/FormHelperText';
 import useNotification from '../shared/messages/alerts';
-import { getEnv } from '../../env';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import * as log from 'loglevel';
-
-const env = getEnv();
+import log from 'loglevel';
+import * as realmApi from '../../realmApi/getRealmData';
+import Autocomplete from '@mui/material/Autocomplete';
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -46,11 +45,12 @@ export default function PolicyForm({
   agentsTypes,
   getServices,
   data,
-  token
+  token,
+  env
 }) {
   const [msg, sendNotification] = useNotification();
-  typeof env.LOG_LEVEL === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
-
+  typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
+  const anubisURL = typeof env !== 'undefined' ? env.ANUBIS_API_URL : '';
   log.debug(msg);
   const handleClose = () => {
     close(false);
@@ -124,14 +124,15 @@ export default function PolicyForm({
     setAgentsMap(agentsMap);
   }, [agentsMap]);
 
-  const handleAgentsName = (event) => {
+  const handleAgentsName = (event, value) => {
     const newArray = agentsMap;
-    agentsMap[Number(event.target.id)].name = event.target.value;
+    agentsMap[Number(value.mapper)].name = value.value;
     setAgentsMap([...[], ...newArray]);
   };
   const handleAgentsType = (event) => {
     const newArray = agentsMap;
     newArray[Number(event.target.name)].type = event.target.value;
+    newArray[Number(event.target.name)].name = '';
     setAgentsMap([...[], ...newArray]);
   };
   const addAgents = () => {
@@ -160,7 +161,7 @@ export default function PolicyForm({
       case 'create':
         axios
           .post(
-            env.ANUBIS_API_URL + 'v1/policies/',
+            anubisURL + 'v1/policies/',
             {
               access_to: access,
               resource_type: resource,
@@ -199,7 +200,7 @@ export default function PolicyForm({
       case 'modify':
         axios
           .put(
-            env.ANUBIS_API_URL + 'v1/policies/' + data.id,
+            anubisURL + 'v1/policies/' + data.id,
             {
               access_to: access,
               resource_type: resource,
@@ -253,6 +254,58 @@ export default function PolicyForm({
     }
   };
 
+  const [dataModel, setDataModel] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    setLoading(!loading);
+  }, [dataModel]);
+
+  const getLabelData = async (name, mapper) => {
+    setDataModel([]);
+    let model = [];
+    let dataMatrix = [];
+    switch (name) {
+      case 'acl:agent':
+        await realmApi
+          .allUsers(token, env)
+          .then((data) => {
+            data.map((thisName) =>
+              dataMatrix.push({
+                name: typeof thisName.email === 'undefined' ? thisName.username : thisName.email,
+                value: typeof thisName.email === 'undefined' ? thisName.username : thisName.email,
+                mapper: mapper
+              })
+            );
+            setDataModel(dataMatrix);
+          })
+          .catch(() => setDataModel([]));
+        break;
+      case 'acl:agentGroup':
+        await realmApi
+          .getSubGroups(tenantName(), token, env)
+          .then((data) => {
+            data.subGroups.map((thisGroup) =>
+              dataMatrix.push({ name: thisGroup.name, value: thisGroup.name, mapper: mapper })
+            );
+            setDataModel(dataMatrix);
+          })
+          .catch(() => setDataModel([]));
+        break;
+      case 'acl:agentClass':
+        await realmApi
+          .getAllRoles(token, env)
+          .then((data) => {
+            data.map((thisClass) => model.push({ name: thisClass, value: thisClass, mapper: mapper }));
+            setDataModel(model);
+          })
+          .catch(() => setDataModel([]));
+        break;
+      default:
+        return [];
+    }
+  };
+
   const errorCases = (value) => {
     if (error !== null) {
       switch (true) {
@@ -296,13 +349,7 @@ export default function PolicyForm({
           <IconButton edge="start" onClick={handleClose} aria-label="close">
             <CloseIcon />
           </IconButton>
-          <Typography
-            sx={{ maxWidth: '70%', ml: 2, flex: 1, color: 'black' }}
-            noWrap
-            gutterBottom
-            variant="h6"
-            component="div"
-          >
+          <Typography sx={{ ml: 2, flex: 1, color: 'black' }} noWrap gutterBottom variant="h6" component="div">
             {title}
           </Typography>
           <Button autoFocus color="secondary" onClick={handleSave}>
@@ -489,19 +536,21 @@ export default function PolicyForm({
                                   display: agent.type !== null ? 'block' : 'none'
                                 }}
                               >
-                                <TextField
+                                <Autocomplete
+                                  disablePortal
                                   color="secondary"
-                                  id={i}
-                                  key={'actorName' + i}
+                                  id={i.toString()}
+                                  key={'actorName' + i.toString()}
                                   variant="outlined"
-                                  label={getLabelName(agent.type)}
-                                  value={agent.name}
-                                  onChange={handleAgentsName}
-                                  sx={{
-                                    width: '100%'
-                                  }}
-                                  error={errorCases(agent.name)}
-                                  helperText={errorText(agent.name)}
+                                  options={dataModel}
+                                  loading={loading}
+                                  onOpen={() => getLabelData(agent.type, i.toString())}
+                                  fullWidth={true}
+                                  defaultValue={typeof agent.name === 'undefined' ? null : agent}
+                                  onChange={(event, value) => handleAgentsName(event, value)}
+                                  getOptionLabel={(option) => option.name}
+                                  isOptionEqualToValue={(option, value) => option.value === value.value}
+                                  renderInput={(params) => <TextField {...params} label={getLabelName(agent.type)} />}
                                 />
                               </Grid>
                             </Grow>

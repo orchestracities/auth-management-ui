@@ -10,10 +10,8 @@ import ServiceChildren from '../service/serviceChildren';
 import PoliciesChildren from '../policy/policiesChildren';
 import IconList from '../tenant/iconList';
 import axios from 'axios';
-import { getEnv } from '../../env';
 import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
-const env = getEnv();
 
 const RadiusDiv = styled(Box)(({ theme }) => ({
   borderRadius: '15px',
@@ -22,8 +20,9 @@ const RadiusDiv = styled(Box)(({ theme }) => ({
   maxWidth: 550
 }));
 
-export default function DashboardCard({ pageType, data, getData, seTenant, colors, tenantName_id }) {
+export default function DashboardCard({ pageType, data, getData, seTenant, colors, tenantName_id, env }) {
   const [subpathOpen, setSubpathOpen] = React.useState(false);
+  const anubisURL = typeof env !== 'undefined' ? env.ANUBIS_API_URL : '';
 
   const [status, setOpen] = React.useState(false);
   const props = { close: setOpen };
@@ -41,7 +40,7 @@ export default function DashboardCard({ pageType, data, getData, seTenant, color
   const [allPaths, setAllPaths] = React.useState([]);
   const getPaths = () => {
     axios
-      .get(env.ANUBIS_API_URL + 'v1/tenants/' + layout.props.tenantName_id.name + '/service_paths?name=' + data.path)
+      .get(anubisURL + 'v1/tenants/' + layout.props.tenantName_id.name + '/service_paths?name=' + data.path)
       .then((results) => {
         setAllPaths(results.data);
       });
@@ -73,6 +72,7 @@ export default function DashboardCard({ pageType, data, getData, seTenant, color
         action={
           <MultifunctionButton
             data={data}
+            env={env}
             getData={getData}
             pageType={layout}
             setOpen={setOpen}
@@ -95,6 +95,7 @@ export default function DashboardCard({ pageType, data, getData, seTenant, color
       </CardContent>
       <CardActions>
         <ServiceChildren
+          env={env}
           setOpen={setSubpathOpen}
           tenantName_id={tenantName_id}
           status={subpathOpen}
@@ -107,6 +108,7 @@ export default function DashboardCard({ pageType, data, getData, seTenant, color
           ''
         ) : (
           <PoliciesChildren
+            env={env}
             color={avatarColor}
             tenantId={data.id}
             tenantName={data.name}

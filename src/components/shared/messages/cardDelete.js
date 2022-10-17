@@ -9,10 +9,7 @@ import { styled } from '@mui/material/styles';
 import axios from 'axios';
 import { Trans } from 'react-i18next';
 import useNotification from './alerts';
-import { getEnv } from '../../../env';
 import * as log from 'loglevel';
-
-const env = getEnv();
 
 const DialogDiv = styled('div')(() => ({
   background: '#ff000040'
@@ -23,21 +20,21 @@ const DialogRounded = styled(Dialog)(() => ({
   }
 }));
 
-export default function DeleteDialog(props) {
-  typeof env.LOG_LEVEL === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
+export default function DeleteDialog({ open, onClose, getData, data, env }) {
+  typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
+  const anubisURL = typeof env !== 'undefined' ? env.ANUBIS_API_URL : '';
 
   const [msg, sendNotification] = useNotification();
   log.debug(msg);
-  const { open, onClose, getData, data } = props;
 
   const deleteMapper = (thisData) => {
     switch (true) {
       case typeof thisData.name !== 'undefined':
-        return env.ANUBIS_API_URL + 'v1/tenants/' + thisData.id;
+        return anubisURL + 'v1/tenants/' + thisData.id;
       case typeof thisData.path !== 'undefined':
-        return env.ANUBIS_API_URL + 'v1/tenants/' + thisData.tenant_id + '/service_paths/' + thisData.id;
+        return anubisURL + 'v1/tenants/' + thisData.tenant_id + '/service_paths/' + thisData.id;
       case typeof thisData.access_to !== 'undefined':
-        return env.ANUBIS_API_URL + 'v1/policies/' + thisData.id;
+        return anubisURL + 'v1/policies/' + thisData.id;
       default:
         break;
     }

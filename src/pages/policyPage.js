@@ -9,16 +9,13 @@ import axios from 'axios';
 import Typography from '@mui/material/Typography';
 import { Trans } from 'react-i18next';
 import useNotification from '../components/shared/messages/alerts';
-import { getEnv } from '../env';
 import Box from '@mui/material/Box';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import * as log from 'loglevel';
 
-const env = getEnv();
-
-export default function PolicyPage({ getTenants, tenantValues, thisTenant, graphqlErrors, token }) {
-  typeof env.LOG_LEVEL === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
+export default function PolicyPage({ getTenants, tenantValues, thisTenant, graphqlErrors, token, env }) {
+  typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
 
   const [mode, setMode] = React.useState(null);
   const [agent, setAgent] = React.useState(null);
@@ -39,7 +36,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
   const [services, setServices] = React.useState([]);
   const getServices = () => {
     axios
-      .get(env.ANUBIS_API_URL + 'v1/tenants/' + thisTenant + '/service_paths', {
+      .get((typeof env !== 'undefined' ? env.ANUBIS_API_URL : '') + 'v1/tenants/' + thisTenant + '/service_paths', {
         headers: {
           // authorization: `Bearer ${token}`
         }
@@ -66,7 +63,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
     let datAccumulator = [];
     for (const service of servicesResponse) {
       axios
-        .get(env.ANUBIS_API_URL + 'v1/policies', {
+        .get((typeof env !== 'undefined' ? env.ANUBIS_API_URL : '') + 'v1/policies', {
           headers: {
             'fiware-service': tenantName_id(),
             'fiware-servicepath': service.path
@@ -102,7 +99,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
     let datAccumulator = [];
     for (const service of servicesResponse) {
       axios
-        .get(env.ANUBIS_API_URL + 'v1/policies' + queryParameters, {
+        .get((typeof env !== 'undefined' ? env.ANUBIS_API_URL : '') + 'v1/policies' + queryParameters, {
           headers: {
             'fiware-service': tenantName_id(),
             'fiware-servicepath': policyFilter !== null ? policyFilter.fiware_service_path : service.path
@@ -138,7 +135,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
     if (!(thisTenant === null || typeof thisTenant === 'undefined')) {
       getServices();
       axios
-        .get(env.ANUBIS_API_URL + 'v1/policies/access-modes', {
+        .get((typeof env !== 'undefined' ? env.ANUBIS_API_URL : '') + 'v1/policies/access-modes', {
           headers: {
             //'authorization': `Bearer ${token}`
           }
@@ -156,7 +153,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
     if (!(thisTenant === null || typeof thisTenant === 'undefined')) {
       getServices();
       axios
-        .get(env.ANUBIS_API_URL + 'v1/policies/agent-types', {
+        .get((typeof env !== 'undefined' ? env.ANUBIS_API_URL : '') + 'v1/policies/agent-types', {
           headers: {
             //'authorization': `Bearer ${token}`
           }
@@ -223,6 +220,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
               title={<Trans>policies.titles.new</Trans>}
               close={setOpen}
               token={token}
+              env={env}
             ></PolicyForm>
           }
           setOpen={setOpen}
@@ -260,6 +258,8 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
               getData={getServices}
               access_modes={access_modes}
               agentsTypes={agentsTypes}
+              token={token}
+              env={env}
             ></PolicyTable>
           </Grid>
         </Grid>

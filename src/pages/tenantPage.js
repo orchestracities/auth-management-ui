@@ -9,7 +9,7 @@ import Grow from '@mui/material/Grow';
 import { Trans } from 'react-i18next';
 import Box from '@mui/material/Box';
 
-export default function TenantPage({ tenantValues, getTenants, seTenant, client, token, graphqlErrors }) {
+export default function TenantPage({ tenantValues, getTenants, seTenant, client, token, graphqlErrors, env }) {
   const [createOpen, setCreateOpen] = React.useState(false);
   const [sortedTenants, sortTenants] = React.useState([]);
   const [count, counter] = React.useState(1);
@@ -28,6 +28,7 @@ export default function TenantPage({ tenantValues, getTenants, seTenant, client,
       <AddButton
         pageType={
           <TenantForm
+            env={env}
             client={client}
             title={<Trans>tenant.titles.new</Trans>}
             close={setCreateOpen}
@@ -52,10 +53,12 @@ export default function TenantPage({ tenantValues, getTenants, seTenant, client,
           >
             <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
               <DashboardCard
+                env={env}
                 index={index}
                 key={index}
                 pageType={
                   <TenantForm
+                    env={env}
                     token={token}
                     client={client}
                     title={<Trans i18nKey="tenant.titles.edit" values={{ name: tenant.name }} />}
