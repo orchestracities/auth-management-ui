@@ -4,8 +4,6 @@
 
 ### New features
 
-- Verify of tenantPage if the user is a superAdmin
-- Add more clear logging
 - The values displayed on the policyForm are from Keycloack
 - Components are now totally indipendent from the API
 
