@@ -76,12 +76,12 @@ export const allUsers = async (token, env) => {
 export const getAllRoles = async (token, env) => {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
   const clients = await getClients(token, env);
-  const clientsId = [];
+  const clientsData = [];
   let roles = [];
-  clients.map((client) => clientsId.push(client.id));
-  for (let id of clientsId) {
-    let clientRoles = await getRolesInClient(id, token, env);
-    clientRoles.map((thisRole) => roles.push(thisRole.name));
+  clients.map((client) => clientsData.push({ id: client.id, name: client.clientId }));
+  for (let thisClient of clientsData) {
+    let clientRoles = await getRolesInClient(thisClient.id, token, env);
+    clientRoles.map((thisRole) => roles.push(thisClient.name + ':' + thisRole.name));
   }
 
   let realmRoles = await getRolesInRealm(token, env);
