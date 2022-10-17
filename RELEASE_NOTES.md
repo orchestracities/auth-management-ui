@@ -1,5 +1,17 @@
 # Auth Management UI Release Notes
 
+## 0.5
+
+### New features
+
+### Bug fixes
+
+### Documentation
+
+### Continuous Integration
+
+### Technical debt
+
 ## 0.4
 
 ### New features
