@@ -271,7 +271,11 @@ export default function PolicyForm({
           .allUsers(token, env)
           .then((data) => {
             data.map((thisName) =>
-              dataMatrix.push({ name: thisName.username, value: thisName.username, mapper: mapper })
+              dataMatrix.push({
+                name: typeof thisName.email === 'undefined' ? thisName.username : thisName.email,
+                value: typeof thisName.email === 'undefined' ? thisName.username : thisName.email,
+                mapper: mapper
+              })
             );
             setDataModel(dataMatrix);
           })
