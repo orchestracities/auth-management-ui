@@ -28,9 +28,13 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
   const [msg, sendNotification] = useNotification();
   log.debug(msg);
 
-  const tenantName_id = () => {
+  const GeTenantData = (type) => {
     const tenantArray = tenantValues.filter((e) => e.id === thisTenant);
-    return tenantArray[0].name;
+    if (type === 'name') {
+      return tenantArray[0].name;
+    } else {
+      return tenantArray[0].id;
+    }
   };
   // services
   const [services, setServices] = React.useState([]);
@@ -65,13 +69,13 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
       axios
         .get((typeof env !== 'undefined' ? env.ANUBIS_API_URL : '') + 'v1/policies', {
           headers: {
-            'fiware-service': tenantName_id(),
+            'fiware-service': GeTenantData('name'),
             'fiware-servicepath': service.path
             //'authorization': `Bearer ${token}`
           }
         })
         .then((response) => {
-          response.data.forEach((e) => (e.fiware_service = tenantName_id()));
+          response.data.forEach((e) => (e.fiware_service = GeTenantData('name')));
           response.data.forEach((e) => (e.fiware_service_path = service.path));
           datAccumulator = [...datAccumulator, ...response.data];
           setPolicies(datAccumulator);
@@ -101,19 +105,19 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
       axios
         .get((typeof env !== 'undefined' ? env.ANUBIS_API_URL : '') + 'v1/policies' + queryParameters, {
           headers: {
-            'fiware-service': tenantName_id(),
+            'fiware-service': GeTenantData('name'),
             'fiware-servicepath': policyFilter !== null ? policyFilter.fiware_service_path : service.path
             //'authorization': `Bearer ${token}`
           }
         })
         .then((response) => {
           if (policyFilter === null) {
-            response.data.forEach((e) => (e.fiware_service = tenantName_id()));
+            response.data.forEach((e) => (e.fiware_service = GeTenantData('name')));
             response.data.forEach((e) => (e.fiware_service_path = service.path));
             datAccumulator = [...datAccumulator, ...response.data];
             setPoliciesFiltered(datAccumulator);
           } else {
-            response.data.forEach((e) => (e.fiware_service = tenantName_id()));
+            response.data.forEach((e) => (e.fiware_service = GeTenantData('name')));
             response.data.forEach((e) => (e.fiware_service_path = policyFilter.fiware_service_path));
             setPoliciesFiltered(response.data);
           }
@@ -211,7 +215,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
         <AddButton
           pageType={
             <PolicyForm
-              tenantName={tenantName_id}
+              tenantName={GeTenantData}
               action="create"
               agentsTypes={agentsTypes}
               services={services}
@@ -252,7 +256,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
           </Grid>
           <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
             <PolicyTable
-              tenantName={tenantName_id}
+              tenantName={GeTenantData}
               services={services}
               data={policiesFiltered}
               getData={getServices}

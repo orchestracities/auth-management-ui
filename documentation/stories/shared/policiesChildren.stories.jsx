@@ -34,7 +34,7 @@ const Template = (args) => <ShowPoliciesChildren {...args} />;
 export const TenantPolicies = Template.bind({});
 TenantPolicies.args = {
   tenantId: 'b2e35303-2747-4d1f-9767-519f9310b83e',
-  tenantName: 'Tenant1',
+  tenantName: 'Demo1',
   seTenant: emptyFunction,
   color: '#8086bab8'
 };

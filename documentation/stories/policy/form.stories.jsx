@@ -150,7 +150,7 @@ ModifyAPolicy.args = {
   data: {
     access_to: '*',
     agent: ['acl:AuthenticatedAgent'],
-    fiware_service: 'Tenant1',
+    fiware_service: 'Demo1',
     fiware_service_path: '/',
     id: '3a17f496-30b8-4ae1-9129-36bee20eec67',
     mode: ['acl:Control'],

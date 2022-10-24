@@ -29,7 +29,7 @@ Settings.deleteMany({}, function (err) {
     } else {
       Config.create(
         {
-          name: 'Tenant1',
+          name: 'Demo1',
           icon: 'none',
           primaryColor: '#8086ba',
           secondaryColor: '#8086ba',
@@ -39,10 +39,10 @@ Settings.deleteMany({}, function (err) {
           if (err) {
             console.log(err);
           } else {
-            console.log('Tenant1 created!');
+            console.log('Demo1 created!');
             Config.create(
               {
-                name: 'Tenant2',
+                name: 'Demo2',
                 icon: 'none',
                 primaryColor: '#8086ba',
                 secondaryColor: '#8086ba',
@@ -52,7 +52,7 @@ Settings.deleteMany({}, function (err) {
                 if (err) {
                   console.log(err);
                 } else {
-                  console.log('Tenant2 created!');
+                  console.log('Demo2 created!');
                   process.exit();
                 }
               }

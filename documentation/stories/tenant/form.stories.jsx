@@ -45,10 +45,10 @@ TenantCreation.args = {
   action: 'create',
   getTenants: () => {},
   tenant: {
-    name: 'Tenant1',
+    name: 'Demo1',
     id: 'b2e35303-2747-4d1f-9767-519f9310b83e',
     props: {
-      name: 'Tenant1',
+      name: 'Demo1',
       icon: 'none',
       primaryColor: '#0018ef',
       secondaryColor: '#8086ba',
@@ -76,10 +76,10 @@ TenantModification.args = {
   action: 'modify',
   getTenants: () => {},
   tenant: {
-    name: 'Tenant1',
+    name: 'Demo1',
     id: 'b2e35303-2747-4d1f-9767-519f9310b83e',
     props: {
-      name: 'Tenant1',
+      name: 'Demo1',
       icon: 'none',
       primaryColor: '#0018ef',
       secondaryColor: '#8086ba',

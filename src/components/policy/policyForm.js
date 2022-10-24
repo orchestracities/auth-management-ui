@@ -170,7 +170,7 @@ export default function PolicyForm({
             },
             {
               headers: {
-                'fiware-service': tenantName(),
+                'fiware-service': tenantName('name'),
                 'fiware-servicepath': path,
                 authorization: `Bearer ${token}`
               }
@@ -210,7 +210,7 @@ export default function PolicyForm({
             {
               headers: {
                 policy_id: data.id,
-                'fiware-service': tenantName(),
+                'fiware-service': tenantName('name'),
                 'fiware-servicepath': path,
                 authorization: `Bearer ${token}`
               }
@@ -283,7 +283,7 @@ export default function PolicyForm({
         break;
       case 'acl:agentGroup':
         await realmApi
-          .getSubGroups(tenantName(), token, env)
+          .getSubGroups(tenantName('id'), token, env)
           .then((data) => {
             data.subGroups.map((thisGroup) =>
               dataMatrix.push({ name: thisGroup.name, value: thisGroup.name, mapper: mapper })
@@ -364,7 +364,7 @@ export default function PolicyForm({
               id="Service"
               label="Service"
               variant="outlined"
-              defaultValue={tenantName()}
+              defaultValue={tenantName('name')}
               disabled
               sx={{
                 width: '100%'

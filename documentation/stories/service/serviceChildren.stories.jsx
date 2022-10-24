@@ -43,7 +43,7 @@ Main.args = {
   setOpen: () => {},
   status: true,
   getData: () => {},
-  tenantName_id: { name: 'Tenant1', id: 'b2e35303-2747-4d1f-9767-519f9310b83e' },
+  tenantName_id: { name: 'Demo1', id: 'b2e35303-2747-4d1f-9767-519f9310b83e' },
   data: [
     {
       path: '/path',

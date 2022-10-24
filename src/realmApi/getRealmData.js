@@ -2,11 +2,11 @@ import axios from 'axios';
 import * as log from 'loglevel';
 import jwt_decode from 'jwt-decode';
 
-export const getSubGroups = async (tenantName, token, env) => {
+export const getSubGroups = async (tenantID, token, env) => {
   const tokenDecoded = jwt_decode(token);
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
   return axios
-    .get(env.KEYCLOACK_ADMIN + '/groups/' + tokenDecoded.tenants[tenantName].id, {
+    .get(env.KEYCLOACK_ADMIN + '/groups/' + tenantID, {
       headers: {
         authorization: `Bearer ${token}`
       }

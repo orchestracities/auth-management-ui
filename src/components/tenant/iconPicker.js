@@ -8,7 +8,7 @@ import Select from '@mui/material/Select';
 import IconList from './iconList';
 import { Trans } from 'react-i18next';
 
-export default function IconPicker({ previusValue, setValue, mode }) {
+export default function IconPicker({ previusValue, setValue }) {
   const handleChange = (event) => {
     setValue(event.target.value);
   };
@@ -26,7 +26,7 @@ export default function IconPicker({ previusValue, setValue, mode }) {
         <Select
           labelId="icon-select"
           id="demo-simple-select"
-          value={mode === 'modify' ? previusValue : ''}
+          value={previusValue}
           label={<Trans>tenant.form.icon</Trans>}
           onChange={handleChange}
         >

@@ -11,7 +11,7 @@ fi
 echo "Downloading Keycloak scripts..."
 mkdir keycloak
 cd keycloak
-wget https://github.com/orchestracities/keycloak-scripts/releases/download/v0.0.5/oc-custom.jar -O oc-custom.jar
+wget https://github.com/orchestracities/keycloak-scripts/releases/download/v0.0.6/oc-custom.jar -O oc-custom.jar
 wget https://raw.githubusercontent.com/orchestracities/keycloak-scripts/master/realm-export.json -O realm-export.json
 cd ..
 
@@ -47,30 +47,30 @@ if [ $wait -gt 120 ]; then
   exit -1
 fi
 
-echo "Setting up tenant Tenant1..."
+echo "Setting up tenant Demo1..."
 curl -s -i -X 'POST' \
   'http://127.0.0.1:8085/v1/tenants/' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
-  "name": "Tenant1"
+  "name": "Demo1"
 }'
 
-echo "Setting up tenant Tenant2..."
+echo "Setting up tenant Demo2..."
 curl -s -i -X 'POST' \
   'http://127.0.0.1:8085/v1/tenants/' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
-  "name": "Tenant2"
+  "name": "Demo2"
 }'
 
-echo "Setting up policy that allows creating entities under tenant Tenant1 and path / ..."
+echo "Setting up policy that allows creating entities under tenant Demo1 and path / ..."
 
 curl -s -i -X 'POST' \
 'http://127.0.0.1:8085/v1/policies/' \
 -H 'accept: */*' \
--H 'fiware-service: Tenant1' \
+-H 'fiware-service: Demo1' \
 -H 'fiware-servicepath: /' \
 -H 'Content-Type: application/json' \
 -d '{
@@ -83,7 +83,7 @@ curl -s -i -X 'POST' \
 curl -s -i -X 'POST' \
 'http://127.0.0.1:8085/v1/policies/' \
 -H 'accept: */*' \
--H 'fiware-service: Tenant1' \
+-H 'fiware-service: Demo1' \
 -H 'fiware-servicepath: /' \
 -H 'Content-Type: application/json' \
 -d '{
