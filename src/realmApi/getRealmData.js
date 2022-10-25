@@ -1,9 +1,7 @@
 import axios from 'axios';
 import * as log from 'loglevel';
-import jwt_decode from 'jwt-decode';
 
 export const getSubGroups = async (tenantID, token, env) => {
-  const tokenDecoded = jwt_decode(token);
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
   return axios
     .get(env.KEYCLOACK_ADMIN + '/groups/' + tenantID, {

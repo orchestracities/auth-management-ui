@@ -84,9 +84,17 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
     switch (action) {
       case 'create':
         axios
-          .post(anubisURL + 'v1/tenants', {
-            name
-          })
+          .post(
+            anubisURL + 'v1/tenants',
+            {
+              name: name
+            },
+            {
+              headers: {
+                authorization: `Bearer ${token}`
+              }
+            }
+          )
           .then(() => {
             close(false);
             sendNotification({

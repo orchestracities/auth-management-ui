@@ -29,7 +29,7 @@ export const PolicyMainForm = ({
   token
 }) => {
   const getTenantName = () => {
-    return 'Demo1';
+    return 'Tenant1';
   };
   return (
     <SnackbarProvider maxSnack={5}>

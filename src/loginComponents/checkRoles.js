@@ -2,7 +2,7 @@ import React from 'react';
 
 /*
 ***EXAMPLE***
-<AuthorizedElement tokenDecoded={props} tenantNeeded={"Demo1"} roleNeeded={"tenant-admin"} groupNeeded={"admins"} iSuperAdmin={"false"}></AuthorizedElement>
+<AuthorizedElement tokenDecoded={props} tenantNeeded={"Tenant1"} roleNeeded={"tenant-admin"} groupNeeded={"admins"} iSuperAdmin={"false"}></AuthorizedElement>
 */
 
 export class AuthorizedElement extends React.Component {

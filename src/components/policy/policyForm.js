@@ -286,7 +286,11 @@ export default function PolicyForm({
           .getSubGroups(tenantName('id'), token, env)
           .then((data) => {
             data.subGroups.map((thisGroup) =>
-              dataMatrix.push({ name: thisGroup.name, value: thisGroup.name, mapper: mapper })
+              dataMatrix.push({
+                name: thisGroup.path.replace('/' + tenantName('name'), ''),
+                value: thisGroup.path.replace('/' + tenantName('name'), ''),
+                mapper: mapper
+              })
             );
             setDataModel(dataMatrix);
           })

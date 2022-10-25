@@ -3,7 +3,8 @@
     "titles": {
       "page": "Tenant Admin List",
       "new": "New Tenant",
-      "edit": "Edit Tenant: <0>{{name}}</0>"
+      "edit": "Edit Tenant: <0>{{name}}</0>",
+      "noData": "No data available. Please create a Tenant"
     },
     "form": {
       "name": "Name",
@@ -24,7 +25,8 @@
     "titles": {
       "page": "Service paths",
       "new": "New Service",
-      "edit": "New Sub-service"
+      "edit": "New Sub-service",
+      "noData": "No data available."
     },
     "tooltip": {
       "editIcon": "New Sub-service"

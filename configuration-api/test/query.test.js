@@ -22,7 +22,7 @@ describe('GraphQL-Query', function () {
               secondaryColor
             }
           }`,
-    variables: { tenantNames: ['Demo1'] }
+    variables: { tenantNames: ['Tenant1'] }
   };
 
   const getUserPreferences = {

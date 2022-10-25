@@ -42,10 +42,10 @@ const Template = (args) => <ShowServicesChildren {...args} />;
 export const Services = Template.bind({});
 Services.args = {
   data: {
-    name: 'Demo1',
+    name: 'Tenant1',
     id: 'b2e35303-2747-4d1f-9767-519f9310b83e',
     props: {
-      name: 'Demo1',
+      name: 'Tenant1',
       icon: 'none',
       primaryColor: '#0018ef',
       secondaryColor: '#8086ba',

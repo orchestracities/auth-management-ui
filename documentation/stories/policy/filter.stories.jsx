@@ -94,7 +94,7 @@ AllFilters.args = {
     {
       access_to: 'default',
       agent: ['acl:agentClass:Admin'],
-      fiware_service: 'Demo1',
+      fiware_service: 'Tenant1',
       fiware_service_path: '/',
       id: 'cb077db5-ec93-48df-923d-99f9ad594799',
       mode: ['acl:Control'],
@@ -103,7 +103,7 @@ AllFilters.args = {
     {
       access_to: 'default',
       agent: ['acl:agentClass:Admin'],
-      fiware_service: 'Demo1',
+      fiware_service: 'Tenant1',
       fiware_service_path: '/',
       id: 'cb077db5-ec93-48df-923d-99f9ad594799',
       mode: ['acl:Control'],
