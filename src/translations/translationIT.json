@@ -3,7 +3,8 @@
     "titles": {
       "page": "Lista Dei Tenant",
       "new": "Nuovo Tenant",
-      "edit": "Modifica Tenant: <0>{{name}}</0>"
+      "edit": "Modifica Tenant: <0>{{name}}</0>",
+      "noData": "Nessun dato disponibile, per favore crea un Tenant"
     },
     "form": {
       "name": "Nome",
@@ -24,7 +25,8 @@
     "titles": {
       "page": "Paths dei Servizi",
       "new": "Nuovo Servizio",
-      "edit": "Nuovo sotto-servizio"
+      "edit": "Nuovo sotto-servizio",
+      "noData": "Nessun dato disponibile"
     },
     "tooltip": {
       "editIcon": "Nuovo sotto-servizio"

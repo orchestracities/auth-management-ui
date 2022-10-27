@@ -4,7 +4,7 @@ config.loadConfig();
 const url = 'http://localhost:' + config.getConfig().port + '/configuration';
 const request = require('supertest');
 const loginSettings = {
-  username: 'admin',
+  username: 'admin@mail.com',
   password: 'admin',
   grant_type: 'password',
   client_id: 'configuration'

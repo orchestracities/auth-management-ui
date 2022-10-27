@@ -9,14 +9,14 @@ if [ $status -eq 7 ]; then
 fi
 
 echo "Downloading Keycloak scripts..."
-mkdir keycloak
+mkdir -p keycloak
 cd keycloak
-wget https://github.com/orchestracities/keycloak-scripts/releases/download/v0.0.5/oc-custom.jar -O oc-custom.jar
-wget https://raw.githubusercontent.com/orchestracities/keycloak-scripts/master/realm-export.json -O realm-export.json
+wget https://github.com/orchestracities/keycloak-scripts/releases/download/v0.0.6/oc-custom.jar -O oc-custom.jar
+wget https://raw.githubusercontent.com/orchestracities/keycloak-scripts/master/realm-export-empty.json -O realm-export.json
 cd ..
 
 echo "Downloading opa-service config..."
-mkdir opa-service
+mkdir -p opa-service
 cd opa-service
 wget https://raw.githubusercontent.com/orchestracities/anubis/master/config/opa-service/default_policies.ttl -O default_policies.ttl
 wget https://raw.githubusercontent.com/orchestracities/anubis/master/config/opa-service/default_wac_config.yml -O default_wac_config.yml
@@ -43,33 +43,65 @@ done
 
 if [ $wait -gt 120 ]; then
   echo "timeout while waiting services to be ready"
-  docker-compose down -v
+  if [[ $1 == "dev" ]]; then
+      docker-compose -f docker-compose-dev.yml down -v
+  else
+      docker-compose down -v
+  fi
   exit -1
 fi
 
+echo "Obtaining token from Keycloak..."
+
+export json=$( curl -sS --location --request POST 'http://localhost:8080/realms/default/protocol/openid-connect/token' \
+--header 'Host: keycloak:8080' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'username=admin@mail.com' \
+--data-urlencode 'password=admin' \
+--data-urlencode 'grant_type=password' \
+--data-urlencode 'client_id=configuration')
+
+export token=$( jq -r ".access_token" <<<"$json" )
+
+echo ""
+echo "decoded token:"
+echo ""
+
+jq -R 'split(".") | .[1] | @base64d | fromjson' <<< $( jq -r ".access_token" <<<"$json" )
+
+echo ""
 echo "Setting up tenant Tenant1..."
+echo ""
 curl -s -i -X 'POST' \
   'http://127.0.0.1:8085/v1/tenants/' \
   -H 'accept: */*' \
+  -H "Authorization: Bearer $token" \
   -H 'Content-Type: application/json' \
   -d '{
   "name": "Tenant1"
 }'
 
+echo ""
 echo "Setting up tenant Tenant2..."
+echo ""
+
 curl -s -i -X 'POST' \
   'http://127.0.0.1:8085/v1/tenants/' \
   -H 'accept: */*' \
+  -H "Authorization: Bearer $token" \
   -H 'Content-Type: application/json' \
   -d '{
   "name": "Tenant2"
 }'
 
+echo ""
 echo "Setting up policy that allows creating entities under tenant Tenant1 and path / ..."
+echo ""
 
 curl -s -i -X 'POST' \
 'http://127.0.0.1:8085/v1/policies/' \
 -H 'accept: */*' \
+-H "Authorization: Bearer $token" \
 -H 'fiware-service: Tenant1' \
 -H 'fiware-servicepath: /' \
 -H 'Content-Type: application/json' \
@@ -83,6 +115,7 @@ curl -s -i -X 'POST' \
 curl -s -i -X 'POST' \
 'http://127.0.0.1:8085/v1/policies/' \
 -H 'accept: */*' \
+-H "Authorization: Bearer $token" \
 -H 'fiware-service: Tenant1' \
 -H 'fiware-servicepath: /' \
 -H 'Content-Type: application/json' \
@@ -92,6 +125,108 @@ curl -s -i -X 'POST' \
 "mode": ["acl:Control"],
 "agent": ["acl:AuthenticatedAgent"]
 }'
+
+curl -s -i -X 'POST' \
+'http://127.0.0.1:8085/v1/policies/' \
+-H 'accept: */*' \
+-H "Authorization: Bearer $token" \
+-H 'fiware-service: Tenant1' \
+-H 'fiware-servicepath: /' \
+-H 'Content-Type: application/json' \
+-d '{
+"access_to": "*",
+"resource_type": "policy",
+"mode": ["acl:Read"],
+"agent": ["acl:AuthenticatedAgent"]
+}'
+
+curl -s -i -X 'POST' \
+'http://127.0.0.1:8085/v1/policies/' \
+-H 'accept: */*' \
+-H "Authorization: Bearer $token" \
+-H 'fiware-service: Tenant1' \
+-H 'fiware-servicepath: /' \
+-H 'Content-Type: application/json' \
+-d '{
+"access_to": "*",
+"resource_type": "policy",
+"mode": ["acl:Write"],
+"agent": ["acl:AuthenticatedAgent"]
+}'
+
+curl -s -i -X 'POST' \
+'http://127.0.0.1:8085/v1/policies/' \
+-H 'accept: */*' \
+-H "Authorization: Bearer $token" \
+-H 'fiware-service: Tenant1' \
+-H 'fiware-servicepath: /' \
+-H 'Content-Type: application/json' \
+-d '{
+"access_to": "Tenant1",
+"resource_type": "tenant",
+"mode": ["acl:Read"],
+"agent": ["acl:AuthenticatedAgent"]
+}'
+
+curl -s -i -X 'POST' \
+'http://127.0.0.1:8085/v1/policies/' \
+-H 'accept: */*' \
+-H "Authorization: Bearer $token" \
+-H 'fiware-service: Tenant1' \
+-H 'fiware-servicepath: /' \
+-H 'Content-Type: application/json' \
+-d '{
+"access_to": "Tenant1",
+"resource_type": "tenant",
+"mode": ["acl:Write"],
+"agent": ["acl:AuthenticatedAgent"]
+}'
+
+curl -s -i -X 'POST' \
+'http://127.0.0.1:8085/v1/policies/' \
+-H 'accept: */*' \
+-H "Authorization: Bearer $token" \
+-H 'fiware-service: Tenant1' \
+-H 'fiware-servicepath: /' \
+-H 'Content-Type: application/json' \
+-d '{
+"access_to": "/",
+"resource_type": "service_path",
+"mode": ["acl:Read"],
+"agent": ["acl:AuthenticatedAgent"]
+}'
+
+curl -s -i -X 'POST' \
+'http://127.0.0.1:8085/v1/policies/' \
+-H 'accept: */*' \
+-H "Authorization: Bearer $token" \
+-H 'fiware-service: Tenant1' \
+-H 'fiware-servicepath: /' \
+-H 'Content-Type: application/json' \
+-d '{
+"access_to": "/",
+"resource_type": "service_path",
+"mode": ["acl:Write"],
+"agent": ["acl:AuthenticatedAgent"]
+}'
+
+echo "Re-check token from Keycloak..."
+
+export json=$( curl -sS --location --request POST 'http://localhost:8080/realms/default/protocol/openid-connect/token' \
+--header 'Host: keycloak:8080' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'username=admin@mail.com' \
+--data-urlencode 'password=admin' \
+--data-urlencode 'grant_type=password' \
+--data-urlencode 'client_id=configuration')
+
+export token=$( jq -r ".access_token" <<<"$json" )
+
+echo ""
+echo "decoded token:"
+echo ""
+
+jq -R 'split(".") | .[1] | @base64d | fromjson' <<< $( jq -r ".access_token" <<<"$json" )
 
 if [[ $1 == "dev" ]]; then
     echo "Dev environment deployed"
@@ -109,4 +244,3 @@ else
         start http://localhost:3000
     fi
 fi
-

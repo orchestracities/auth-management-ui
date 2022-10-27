@@ -11,6 +11,7 @@ import { Trans } from 'react-i18next';
 import useNotification from '../components/shared/messages/alerts';
 import Box from '@mui/material/Box';
 import * as log from 'loglevel';
+import Typography from '@mui/material/Typography';
 
 export default function ServicePage({ getTenants, tenantValues, thisTenant, graphqlErrors, env }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
@@ -91,40 +92,46 @@ export default function ServicePage({ getTenants, tenantValues, thisTenant, grap
           graphqlErrors={graphqlErrors}
         ></AddButton>
       )}
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          {services.length > 0 ? <SortButton data={services} id={'path'} sortData={rerOder}></SortButton> : ''}
+      {services.length > 0 ? (
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            {services.length > 0 ? <SortButton data={services} id={'path'} sortData={rerOder}></SortButton> : ''}
+          </Grid>
+          {services.map((service, index) => (
+            <Grow
+              key={index}
+              in={true}
+              style={{ transformOrigin: '0 0 0' }}
+              {...(service.id === service.id ? { timeout: index * 600 } : {})}
+            >
+              <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+                <DashboardCard
+                  env={env}
+                  key={service.id}
+                  colors={{ secondaryColor: service.secondaryColor, primaryColor: service.primaryColor }}
+                  pageType={
+                    <ServiceForm
+                      env={env}
+                      title={<Trans>service.titles.edit</Trans>}
+                      action={'Sub-service-creation'}
+                      service={service}
+                      getServices={getServices}
+                      tenantName_id={tenantData}
+                    />
+                  }
+                  tenantName_id={tenantData}
+                  data={service}
+                  getData={getServices}
+                ></DashboardCard>
+              </Grid>
+            </Grow>
+          ))}
         </Grid>
-        {services.map((service, index) => (
-          <Grow
-            key={index}
-            in={true}
-            style={{ transformOrigin: '0 0 0' }}
-            {...(service.id === service.id ? { timeout: index * 600 } : {})}
-          >
-            <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-              <DashboardCard
-                env={env}
-                key={service.id}
-                colors={{ secondaryColor: service.secondaryColor, primaryColor: service.primaryColor }}
-                pageType={
-                  <ServiceForm
-                    env={env}
-                    title={<Trans>service.titles.edit</Trans>}
-                    action={'Sub-service-creation'}
-                    service={service}
-                    getServices={getServices}
-                    tenantName_id={tenantData}
-                  />
-                }
-                tenantName_id={tenantData}
-                data={service}
-                getData={getServices}
-              ></DashboardCard>
-            </Grid>
-          </Grow>
-        ))}
-      </Grid>
+      ) : (
+        <Typography sx={{ padding: '20px' }} variant="h6" component="h3">
+          <Trans>service.titles.noData</Trans>
+        </Typography>
+      )}
     </Box>
   );
 }

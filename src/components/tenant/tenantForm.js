@@ -43,11 +43,11 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
   const [name, setName] = React.useState(action === 'modify' ? tenant.name : ' ');
   const [primaryColor, setPrimaryColor] = React.useState(action === 'modify' ? tenant.props.primaryColor : null);
   const [secondaryColor, setSecondaryColor] = React.useState(action === 'modify' ? tenant.props.secondaryColor : null);
-  const [iconName, setIconName] = React.useState(action === 'modify' ? tenant.props.icon : null);
+  const [iconName, setIconName] = React.useState(action === 'modify' ? tenant.props.icon : 'none');
 
   const [openImageUpload, setOpenImageUpload] = React.useState(false);
   const [customImage, uploadCustomImage] = React.useState([]);
-  const [base64Image, setBase64Image] = React.useState(tenant.props.customImage);
+  const [base64Image, setBase64Image] = React.useState(action === 'modify' ? tenant.props.customImage : '');
 
   const handleClose = () => {
     close(false);
@@ -84,9 +84,17 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
     switch (action) {
       case 'create':
         axios
-          .post(anubisURL + 'v1/tenants', {
-            name
-          })
+          .post(
+            anubisURL + 'v1/tenants',
+            {
+              name: name
+            },
+            {
+              headers: {
+                authorization: `Bearer ${token}`
+              }
+            }
+          )
           .then(() => {
             close(false);
             sendNotification({

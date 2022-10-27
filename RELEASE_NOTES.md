@@ -6,8 +6,11 @@
 
 - The values displayed on the policyForm are from Keycloack
 - Components are now totally indipendent from the API
+- Migration to realm v0.0.6
 
 ### Bug fixes
+
+- Change the Group from name to path
 
 ### Documentation
 

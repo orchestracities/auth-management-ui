@@ -203,6 +203,7 @@ export default class App extends Component {
         this.setState({
           tenants: userTenants
         });
+        return userTenants;
       }
     },
     connectionIssue: false,

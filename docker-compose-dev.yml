@@ -11,6 +11,9 @@ services:
       - DEFAULT_POLICIES_CONFIG_FILE=/home/apiuser/config/opa-service/default_policies.ttl
       - DEFAULT_WAC_CONFIG_FILE=/home/apiuser/config/opa-service/default_wac_config.yml
       - DB_TYPE=sqlite
+      - KEYCLOACK_ENABLED=True
+      - TENANT_ADMIN_ROLE_ID=9dc79aa8-d42f-4720-8de0-fe79a00a46b7
+      - KEYCLOACK_ADMIN_ENDPOINT=http://keycloak:8080/admin/realms/default
     volumes:
       - ./opa-service/default_policies.ttl:/home/apiuser/config/opa-service/default_policies.ttl
       - ./opa-service/default_wac_config.yml:/home/apiuser/config/opa-service/default_wac_config.yml
