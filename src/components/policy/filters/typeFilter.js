@@ -99,10 +99,30 @@ export default function ResourceTypeFilter({ data, status, setstatus, filterValu
               options={data}
               getOptionLabel={(option) => option.resource_type}
               defaultValue={filterValue.value}
-              renderInput={(params) => <TextField {...params} label="Resource Type" placeholder="Resource Type" />}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label={
+                    <Trans
+                      i18nKey="policies.filters.resource_type"
+                      values={{
+                        name: ''
+                      }}
+                    />
+                  }
+                  placeholder={
+                    <Trans
+                      i18nKey="policies.filters.resource_type"
+                      values={{
+                        name: ''
+                      }}
+                    />
+                  }
+                />
+              )}
               onChange={(event, value) => filterValue.set(value)}
               isOptionEqualToValue={(option, value) => option.resource_type === value.resource_type}
-              sx={{ width: '100%', marginTop: '10px' }}
+              sx={{ width: '100%', marginTop: '2%' }}
             />
           </Grow>
         </Grid>

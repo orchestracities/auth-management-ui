@@ -99,10 +99,30 @@ export default function PathFilter({ data, status, setstatus, filterValue }) {
               options={data}
               getOptionLabel={(option) => option.fiware_service_path}
               defaultValue={filterValue.value}
-              renderInput={(params) => <TextField {...params} label="Path" placeholder="Path" />}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label={
+                    <Trans
+                      i18nKey="policies.filters.path"
+                      values={{
+                        name: ''
+                      }}
+                    />
+                  }
+                  placeholder={
+                    <Trans
+                      i18nKey="policies.filters.path"
+                      values={{
+                        name: ''
+                      }}
+                    />
+                  }
+                />
+              )}
               onChange={(event, value) => filterValue.set(value)}
               isOptionEqualToValue={(option, value) => option.fiware_service_path === value.fiware_service_path}
-              sx={{ width: '100%', marginTop: '10px' }}
+              sx={{ width: '100%', marginTop: '2%' }}
             />
           </Grow>
         </Grid>

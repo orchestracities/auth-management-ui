@@ -11,6 +11,7 @@
 ### Bug fixes
 
 - Change the Group from name to path
+- Fixed filters margin top
 
 ### Documentation
 

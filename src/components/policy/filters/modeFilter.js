@@ -99,10 +99,30 @@ export default function ModeFilter({ data, status, setstatus, filterValue }) {
               options={data}
               defaultValue={filterValue.value}
               getOptionLabel={(option) => option.name}
-              renderInput={(params) => <TextField {...params} label="Mode" placeholder="Mode" />}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label={
+                    <Trans
+                      i18nKey="policies.filters.mode"
+                      values={{
+                        name: ''
+                      }}
+                    />
+                  }
+                  placeholder={
+                    <Trans
+                      i18nKey="policies.filters.mode"
+                      values={{
+                        name: ''
+                      }}
+                    />
+                  }
+                />
+              )}
               onChange={(event, value) => filterValue.set(value)}
               isOptionEqualToValue={(option, value) => option.iri === value.iri}
-              sx={{ width: '100%', marginTop: '10px' }}
+              sx={{ width: '100%', marginTop: '2%' }}
             />
           </Grow>
         </Grid>
