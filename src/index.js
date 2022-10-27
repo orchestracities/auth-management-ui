@@ -19,11 +19,17 @@ const configuration = {
 };
 
 function LoginMockup() {
-  const { login, isAuthenticated,renewTokens } = useOidc();
+  const { login, isAuthenticated, renewTokens } = useOidc();
   const { idTokenPayload } = useOidcIdToken();
   const { accessToken } = useOidcAccessToken();
   return (
-    <App login={login} renewTokens={login} isAuthenticated={isAuthenticated} accessToken={accessToken} idTokenPayload={idTokenPayload} />
+    <App
+      login={login}
+      renewTokens={login}
+      isAuthenticated={isAuthenticated}
+      accessToken={accessToken}
+      idTokenPayload={idTokenPayload}
+    />
   );
 }
 

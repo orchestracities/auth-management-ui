@@ -10,7 +10,16 @@ import { Trans } from 'react-i18next';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
-export default function TenantPage({ tenantValues, getTenants, seTenant, client, token, graphqlErrors, env,renewTokens}) {
+export default function TenantPage({
+  tenantValues,
+  getTenants,
+  seTenant,
+  client,
+  token,
+  graphqlErrors,
+  env,
+  renewTokens
+}) {
   const [createOpen, setCreateOpen] = React.useState(false);
   const [sortedTenants, sortTenants] = React.useState([]);
   const [count, counter] = React.useState(1);
