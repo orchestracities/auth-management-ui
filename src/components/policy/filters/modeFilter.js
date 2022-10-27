@@ -110,14 +110,6 @@ export default function ModeFilter({ data, status, setstatus, filterValue }) {
                       }}
                     />
                   }
-                  placeholder={
-                    <Trans
-                      i18nKey="policies.filters.mode"
-                      values={{
-                        name: ''
-                      }}
-                    />
-                  }
                 />
               )}
               onChange={(event, value) => filterValue.set(value)}

@@ -110,14 +110,6 @@ export default function AcessToFilter({ data, status, setstatus, filterValue }) 
                       }}
                     />
                   }
-                  placeholder={
-                    <Trans
-                      i18nKey="policies.filters.resource"
-                      values={{
-                        name: ''
-                      }}
-                    />
-                  }
                 />
               )}
               onChange={(event, value) => filterValue.set(value)}

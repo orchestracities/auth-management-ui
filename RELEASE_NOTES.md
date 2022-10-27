@@ -12,6 +12,8 @@
 
 - Change the Group from name to path
 - Fixed filters margin top
+- Filters name
+- filters behaviur when another tenant is selected
 
 ### Documentation
 

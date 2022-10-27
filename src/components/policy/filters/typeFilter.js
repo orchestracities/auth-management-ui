@@ -110,14 +110,6 @@ export default function ResourceTypeFilter({ data, status, setstatus, filterValu
                       }}
                     />
                   }
-                  placeholder={
-                    <Trans
-                      i18nKey="policies.filters.resource_type"
-                      values={{
-                        name: ''
-                      }}
-                    />
-                  }
                 />
               )}
               onChange={(event, value) => filterValue.set(value)}

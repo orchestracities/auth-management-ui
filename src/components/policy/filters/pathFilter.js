@@ -110,14 +110,6 @@ export default function PathFilter({ data, status, setstatus, filterValue }) {
                       }}
                     />
                   }
-                  placeholder={
-                    <Trans
-                      i18nKey="policies.filters.path"
-                      values={{
-                        name: ''
-                      }}
-                    />
-                  }
                 />
               )}
               onChange={(event, value) => filterValue.set(value)}
