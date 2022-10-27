@@ -4,17 +4,17 @@
 
 ### New features
 
-- The values displayed on the policyForm are from Keycloack
-- Components are now totally indipendent from the API
-- Migration to realm v0.0.6
-- Token refresh on new Tenant
+- Load values from Keycloak to populate users, groups and roles in policyForm
+- Decouple components from the APIs
+- Migration to orchestracities realm v0.0.6
+- Refresh Token on the creation of a new Tenant
 
 ### Bug fixes
 
 - Change the Group from name to path
 - Fixed filters margin top
-- Filters name
-- filters behaviur when another tenant is selected
+- Filters naming
+- Filters behavior when another tenant is selected
 
 ### Documentation
 
