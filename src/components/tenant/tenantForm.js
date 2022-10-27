@@ -27,7 +27,7 @@ const CustomDialogTitle = styled(AppBar)({
   boxShadow: 'none'
 });
 
-export default function TenantForm({ title, close, action, tenant, getTenants, token, env }) {
+export default function TenantForm({ title, close, action, tenant, getTenants, token, env,renewTokens }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
   const anubisURL = typeof env !== 'undefined' ? env.ANUBIS_API_URL : '';
 
@@ -108,6 +108,7 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
               ),
               variant: 'success'
             });
+            renewTokens();
             getTenants();
           })
           .catch((e) => {
