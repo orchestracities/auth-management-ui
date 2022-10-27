@@ -475,6 +475,7 @@ export default class App extends Component {
                           <AuthorizedElement tokenDecoded={this.state.tokenData} iSuperAdmin={true}>
                             <TenantPage
                               token={this.props.accessToken}
+                              renewTokens={this.props.renewTokens}
                               env={env}
                               getTenants={this.state.getTenants}
                               tenantValues={this.state.tenants}

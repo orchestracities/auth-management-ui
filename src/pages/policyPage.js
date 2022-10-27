@@ -199,6 +199,15 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
   };
 
   React.useEffect(() => {
+    setMode(null);
+    setAgent(null);
+    setResource(null);
+    setResourceType(null);
+    setAgentype(null);
+    setPolicyFilter(null);
+  }, [thisTenant]);
+
+  React.useEffect(() => {
     if (policies.length > 0) {
       getPoliciesFiltered(services);
     }

@@ -99,10 +99,22 @@ export default function AcessToFilter({ data, status, setstatus, filterValue }) 
               options={data}
               getOptionLabel={(option) => option.access_to}
               defaultValue={filterValue.value}
-              renderInput={(params) => <TextField {...params} label="Resource Type" placeholder="Resource Type" />}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label={
+                    <Trans
+                      i18nKey="policies.filters.resource"
+                      values={{
+                        name: ''
+                      }}
+                    />
+                  }
+                />
+              )}
               onChange={(event, value) => filterValue.set(value)}
               isOptionEqualToValue={(option, value) => option.access_to === value.access_to}
-              sx={{ width: '100%', marginTop: '10px' }}
+              sx={{ width: '100%', marginTop: '2%' }}
             />
           </Grow>
         </Grid>

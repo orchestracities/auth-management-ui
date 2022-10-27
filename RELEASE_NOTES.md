@@ -7,10 +7,14 @@
 - The values displayed on the policyForm are from Keycloack
 - Components are now totally indipendent from the API
 - Migration to realm v0.0.6
+- Token refresh on new Tenant
 
 ### Bug fixes
 
 - Change the Group from name to path
+- Fixed filters margin top
+- Filters name
+- filters behaviur when another tenant is selected
 
 ### Documentation
 
