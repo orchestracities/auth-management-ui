@@ -501,6 +501,7 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
       <DeleteDialog
         open={openDeleteDialog}
         env={env}
+        token={token}
         onClose={handleCloseDeleteDialog}
         getData={getData}
         data={{

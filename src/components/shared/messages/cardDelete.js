@@ -20,7 +20,7 @@ const DialogRounded = styled(Dialog)(() => ({
   }
 }));
 
-export default function DeleteDialog({ open, onClose, getData, data, env }) {
+export default function DeleteDialog({ open, onClose, getData, data, env, token }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
   const anubisURL = typeof env !== 'undefined' ? env.ANUBIS_API_URL : '';
 
@@ -94,8 +94,9 @@ export default function DeleteDialog({ open, onClose, getData, data, env }) {
       data.setSelected([]);
       onClose(false);
     } else {
+      let header = typeof data.name !== 'undefined' ? { headers: { authorization: `Bearer ${token}` } } : {};
       axios
-        .delete(deleteMapper(data))
+        .delete(deleteMapper(data), header)
         .then(() => {
           onClose(false);
           getData();

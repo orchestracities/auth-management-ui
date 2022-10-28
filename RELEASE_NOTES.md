@@ -15,6 +15,7 @@
 - Fixed filters margin top
 - Filters naming
 - Filters behavior when another tenant is selected
+- Token on TenantDelete
 
 ### Documentation
 
