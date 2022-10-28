@@ -16,6 +16,7 @@
 - Filters naming
 - Filters behavior when another tenant is selected
 - Token on TenantDelete
+- Display Tenant selector if only superAdmin
 
 ### Documentation
 

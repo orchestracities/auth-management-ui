@@ -406,11 +406,13 @@ export default class App extends Component {
                   </IconButton>
                   <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}></Typography>
                   <div>
-                    <TenantSelection
-                      seTenant={this.state.seTenant}
-                      tenantValues={this.state.tenants}
-                      correntValue={this.state.thisTenant}
-                    ></TenantSelection>
+                    <AuthorizedElement tokenDecoded={this.state.tokenData} iSuperAdmin={true}>
+                      <TenantSelection
+                        seTenant={this.state.seTenant}
+                        tenantValues={this.state.tenants}
+                        correntValue={this.state.thisTenant}
+                      ></TenantSelection>
+                    </AuthorizedElement>
                   </div>
                   <div>
                     <UserMenu
