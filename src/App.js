@@ -356,10 +356,10 @@ export default class App extends Component {
       name: 'Tenant',
       route: '/Tenant',
       icon: <InboxIcon></InboxIcon>,
-      isAdmin: <AuthorizedElement tokenDecoded={this.state.tokenData} iSuperAdmin={true} />
+      withPermissions: true
     },
-    { name: 'Service', route: '/Service', icon: <InboxIcon></InboxIcon>, isAdmin: 'not-necessary' },
-    { name: 'Policy', route: '/Policy', icon: <InboxIcon></InboxIcon>, isAdmin: 'not-necessary' }
+    { name: 'Service', route: '/Service', icon: <InboxIcon></InboxIcon>, withPermissions: false },
+    { name: 'Policy', route: '/Policy', icon: <InboxIcon></InboxIcon>, withPermissions: false }
   ];
 
   componentDidMount() {
@@ -406,13 +406,11 @@ export default class App extends Component {
                   </IconButton>
                   <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}></Typography>
                   <div>
-                    <AuthorizedElement tokenDecoded={this.state.tokenData} iSuperAdmin={true}>
-                      <TenantSelection
-                        seTenant={this.state.seTenant}
-                        tenantValues={this.state.tenants}
-                        correntValue={this.state.thisTenant}
-                      ></TenantSelection>
-                    </AuthorizedElement>
+                    <TenantSelection
+                      seTenant={this.state.seTenant}
+                      tenantValues={this.state.tenants}
+                      correntValue={this.state.thisTenant}
+                    ></TenantSelection>
                   </div>
                   <div>
                     <UserMenu
@@ -450,7 +448,7 @@ export default class App extends Component {
                 <Divider />
                 <List>
                   {this.links.map((thisItem, index) =>
-                    thisItem.isAdmin !== false ? (
+                    thisItem.withPermissions === false ? (
                       <NavLink to={thisItem.route} key={index}>
                         <ListItem button key={thisItem.name}>
                           <ListItemIcon>{thisItem.icon}</ListItemIcon>
@@ -458,7 +456,14 @@ export default class App extends Component {
                         </ListItem>
                       </NavLink>
                     ) : (
-                      ''
+                      <AuthorizedElement tokenDecoded={this.state.tokenData} iSuperAdmin={true}>
+                        <NavLink to={thisItem.route} key={index}>
+                          <ListItem button key={thisItem.name}>
+                            <ListItemIcon>{thisItem.icon}</ListItemIcon>
+                            <ListItemText primary={thisItem.name} />
+                          </ListItem>
+                        </NavLink>
+                      </AuthorizedElement>
                     )
                   )}
                 </List>
