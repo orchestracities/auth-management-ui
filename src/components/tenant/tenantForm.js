@@ -83,40 +83,82 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
   const handleSave = () => {
     switch (action) {
       case 'create':
-        axios
-          .post(
-            anubisURL + 'v1/tenants',
-            {
-              name: name
-            },
-            {
-              headers: {
-                authorization: `Bearer ${token}`
+        if (iconName === 'custom' && customImage.length === 0) {
+          sendNotification({ msg: 'No image uploaded', variant: 'error' });
+          break;
+        } else {
+          axios
+            .post(
+              anubisURL + 'v1/tenants',
+              {
+                name: name
+              },
+              {
+                headers: {
+                  authorization: `Bearer ${token}`
+                }
               }
-            }
-          )
-          .then(() => {
-            close(false);
-            sendNotification({
-              msg: (
-                <Trans
-                  i18nKey="common.messages.sucessCreate"
-                  values={{
-                    data: 'Tenant'
-                  }}
-                />
-              ),
-              variant: 'success'
+            )
+            .then(() => {
+              client
+                .mutate({
+                  mutation: gql`
+                    mutation getTenantConfig(
+                      $name: String!
+                      $icon: String!
+                      $primaryColor: String!
+                      $secondaryColor: String!
+                      $file: String
+                    ) {
+                      getTenantConfig(
+                        name: $name
+                        icon: $icon
+                        primaryColor: $primaryColor
+                        secondaryColor: $secondaryColor
+                        file: $file
+                      ) {
+                        name
+                        icon
+                        primaryColor
+                        secondaryColor
+                      }
+                    }
+                  `,
+                  variables: {
+                    name,
+                    icon: iconName,
+                    file: iconName === 'custom' && customImage.length > 0 && base64Image !== '' ? base64Image : '',
+                    primaryColor: primaryColor.toString(),
+                    secondaryColor: secondaryColor.toString()
+                  }
+                })
+                .then(() => {
+                  close(false);
+                  getTenants();
+                  sendNotification({
+                    msg: (
+                      <Trans
+                        i18nKey="common.messages.sucessCreate"
+                        values={{
+                          data: name
+                        }}
+                      />
+                    ),
+                    variant: 'success'
+                  });
+                  renewTokens();
+                })
+                .catch((e) => {
+                  sendNotification({ msg: e.message + ' the config', variant: 'error' });
+                });
+            })
+            .catch((e) => {
+              getTenants();
+              e.response.data.detail.map((thisError) => sendNotification({ msg: thisError.msg, variant: 'error' }));
             });
-            renewTokens();
-            getTenants();
-          })
-          .catch((e) => {
-            getTenants();
-            e.response.data.detail.map((thisError) => sendNotification({ msg: thisError.msg, variant: 'error' }));
-          });
 
-        break;
+          break;
+        }
       case 'modify':
         client
           .mutate({
