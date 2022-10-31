@@ -41,8 +41,10 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
       reader.onerror = (error) => reject(error);
     });
   const [name, setName] = React.useState(action === 'modify' ? tenant.name : ' ');
-  const [primaryColor, setPrimaryColor] = React.useState(action === 'modify' ? tenant.props.primaryColor : null);
-  const [secondaryColor, setSecondaryColor] = React.useState(action === 'modify' ? tenant.props.secondaryColor : null);
+  const [primaryColor, setPrimaryColor] = React.useState(action === 'modify' ? tenant.props.primaryColor : '#8086ba');
+  const [secondaryColor, setSecondaryColor] = React.useState(
+    action === 'modify' ? tenant.props.secondaryColor : '#8086ba'
+  );
   const [iconName, setIconName] = React.useState(action === 'modify' ? tenant.props.icon : 'none');
 
   const [openImageUpload, setOpenImageUpload] = React.useState(false);
