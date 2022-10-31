@@ -76,8 +76,10 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
   });
 
   React.useEffect(async () => {
-    const result = await toBase64(customImage[0]);
-    setBase64Image(result);
+    if (iconName === 'custom') {
+      const result = await toBase64(customImage[0]);
+      setBase64Image(result);
+    }
   }, [customImage]);
 
   const handleSave = () => {
@@ -154,7 +156,9 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
             })
             .catch((e) => {
               getTenants();
-              e.response.data.detail.map((thisError) => sendNotification({ msg: thisError.msg, variant: 'error' }));
+              typeof e.response.data.detail === 'string'
+                ? sendNotification({ msg: e.response.data.detail, variant: 'error' })
+                : e.response.data.detail.map((msgObj) => sendNotification({ msg: msgObj.msg, variant: 'error' }));
             });
 
           break;
