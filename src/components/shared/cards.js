@@ -20,7 +20,7 @@ const RadiusDiv = styled(Box)(({ theme }) => ({
   maxWidth: 550
 }));
 
-export default function DashboardCard({ pageType, data, getData, seTenant, colors, tenantName_id, env }) {
+export default function DashboardCard({ pageType, data, getData, seTenant, colors, tenantName_id, env, token }) {
   const [subpathOpen, setSubpathOpen] = React.useState(false);
   const anubisURL = typeof env !== 'undefined' ? env.ANUBIS_API_URL : '';
 
@@ -71,6 +71,7 @@ export default function DashboardCard({ pageType, data, getData, seTenant, color
         }
         action={
           <MultifunctionButton
+            token={token}
             data={data}
             env={env}
             getData={getData}

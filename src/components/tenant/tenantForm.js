@@ -41,8 +41,10 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
       reader.onerror = (error) => reject(error);
     });
   const [name, setName] = React.useState(action === 'modify' ? tenant.name : ' ');
-  const [primaryColor, setPrimaryColor] = React.useState(action === 'modify' ? tenant.props.primaryColor : null);
-  const [secondaryColor, setSecondaryColor] = React.useState(action === 'modify' ? tenant.props.secondaryColor : null);
+  const [primaryColor, setPrimaryColor] = React.useState(action === 'modify' ? tenant.props.primaryColor : '#8086ba');
+  const [secondaryColor, setSecondaryColor] = React.useState(
+    action === 'modify' ? tenant.props.secondaryColor : '#8086ba'
+  );
   const [iconName, setIconName] = React.useState(action === 'modify' ? tenant.props.icon : 'none');
 
   const [openImageUpload, setOpenImageUpload] = React.useState(false);
@@ -76,47 +78,93 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
   });
 
   React.useEffect(async () => {
-    const result = await toBase64(customImage[0]);
-    setBase64Image(result);
+    if (iconName === 'custom') {
+      const result = await toBase64(customImage[0]);
+      setBase64Image(result);
+    }
   }, [customImage]);
 
   const handleSave = () => {
     switch (action) {
       case 'create':
-        axios
-          .post(
-            anubisURL + 'v1/tenants',
-            {
-              name: name
-            },
-            {
-              headers: {
-                authorization: `Bearer ${token}`
+        if (iconName === 'custom' && customImage.length === 0) {
+          sendNotification({ msg: 'No image uploaded', variant: 'error' });
+          break;
+        } else {
+          axios
+            .post(
+              anubisURL + 'v1/tenants',
+              {
+                name: name
+              },
+              {
+                headers: {
+                  authorization: `Bearer ${token}`
+                }
               }
-            }
-          )
-          .then(() => {
-            close(false);
-            sendNotification({
-              msg: (
-                <Trans
-                  i18nKey="common.messages.sucessCreate"
-                  values={{
-                    data: 'Tenant'
-                  }}
-                />
-              ),
-              variant: 'success'
+            )
+            .then(() => {
+              client
+                .mutate({
+                  mutation: gql`
+                    mutation getTenantConfig(
+                      $name: String!
+                      $icon: String!
+                      $primaryColor: String!
+                      $secondaryColor: String!
+                      $file: String
+                    ) {
+                      getTenantConfig(
+                        name: $name
+                        icon: $icon
+                        primaryColor: $primaryColor
+                        secondaryColor: $secondaryColor
+                        file: $file
+                      ) {
+                        name
+                        icon
+                        primaryColor
+                        secondaryColor
+                      }
+                    }
+                  `,
+                  variables: {
+                    name,
+                    icon: iconName,
+                    file: iconName === 'custom' && customImage.length > 0 && base64Image !== '' ? base64Image : '',
+                    primaryColor: primaryColor.toString(),
+                    secondaryColor: secondaryColor.toString()
+                  }
+                })
+                .then(() => {
+                  close(false);
+                  getTenants();
+                  sendNotification({
+                    msg: (
+                      <Trans
+                        i18nKey="common.messages.sucessCreate"
+                        values={{
+                          data: name
+                        }}
+                      />
+                    ),
+                    variant: 'success'
+                  });
+                  renewTokens();
+                })
+                .catch((e) => {
+                  sendNotification({ msg: e.message + ' the config', variant: 'error' });
+                });
+            })
+            .catch((e) => {
+              getTenants();
+              typeof e.response.data.detail === 'string'
+                ? sendNotification({ msg: e.response.data.detail, variant: 'error' })
+                : e.response.data.detail.map((msgObj) => sendNotification({ msg: msgObj.msg, variant: 'error' }));
             });
-            renewTokens();
-            getTenants();
-          })
-          .catch((e) => {
-            getTenants();
-            e.response.data.detail.map((thisError) => sendNotification({ msg: thisError.msg, variant: 'error' }));
-          });
 
-        break;
+          break;
+        }
       case 'modify':
         client
           .mutate({

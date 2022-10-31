@@ -15,6 +15,9 @@
 - Fixed filters margin top
 - Filters naming
 - Filters behavior when another tenant is selected
+- Token on TenantDelete
+- Display Tenant selector if only superAdmin
+_ fix tenantPreferencies creation when a new tenant is created
 
 ### Documentation
 

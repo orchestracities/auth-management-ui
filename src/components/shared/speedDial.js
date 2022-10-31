@@ -36,7 +36,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Grow direction="up" ref={ref} {...props} />;
 });
 
-export default function MultifunctionButton({ pageType, setOpen, status, data, getData, env }) {
+export default function MultifunctionButton({ pageType, setOpen, status, data, getData, env, token }) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -95,7 +95,14 @@ export default function MultifunctionButton({ pageType, setOpen, status, data, g
           <SpeedDialAction onClick={action.click} key={index} icon={action.icon} tooltipTitle={action.name} />
         ))}
       </SpeedDial>
-      <DeleteDialog open={openDeleteDialog} onClose={handleCloseDeleteDialog} getData={getData} data={data} env={env} />
+      <DeleteDialog
+        open={openDeleteDialog}
+        onClose={handleCloseDeleteDialog}
+        getData={getData}
+        data={data}
+        env={env}
+        token={token}
+      />
       <DialogRounded
         open={status}
         fullWidth={true}

@@ -61,6 +61,14 @@ To run this demo you'll need to have the following installed:
 To run the demo in your local environment, you need to create a `.env`
 (an example file is provided [.env.docker](.env.docker)).
 
+To be able to create tenants, the hostname of the token issuer (Keycloak) in
+docker and in your local system, needs to be the same, to ensure that,
+add the following entry in your `/etc/hosts`:
+
+```console
+127.0.0.1       keycloak
+```
+
 To deploy the demo that includes the Auth UI, Anubis, the Configuration API
 and Keycloak, run the following script:
 
@@ -147,6 +155,13 @@ the `src/env.js` file:
 ```bash
 $ npx generate-env-getter js
 ```
+
+> **NOTE:** Tenant creation won't work due to the issuer different between
+docker (`keycloak`) and your local environment (`localhost`), you can solve this
+by adding and entry in your `/etc/hosts` file that points `127.0.0.1` to
+`keycloak` and using using `keycloak` as hostname in
+`REACT_APP_KEYCLOACK_ADMIN` and `REACT_APP_OIDC_ISSUER`. This is already
+the default value in case of `.env.docker`.
 
 ### Management UI
 
