@@ -1,5 +1,17 @@
 # Auth Management UI Release Notes
 
+## 0.6-dev
+
+### New features
+
+### Bug fixes
+
+### Documentation
+
+### Continuous Integration
+
+### Technical debt
+
 ## 0.5
 
 ### New features
@@ -11,13 +23,13 @@
 
 ### Bug fixes
 
-- Change the Group from name to path
-- Fixed filters margin top
-- Filters naming
-- Filters behavior when another tenant is selected
-- Token on TenantDelete
-- Display Tenant selector if only superAdmin
-_ fix tenantPreferencies creation when a new tenant is created
+- Change the Group selector from name to path
+- Fix filters top margin
+- Fix filters naming
+- Fix filter behavior when another tenant is selected
+- Add OAuth Token on TenantDelete
+- Display Tenant selector only if superAdmin
+- Fix tenantPreferences creation issue when a new tenant is created
 
 ### Documentation
 
