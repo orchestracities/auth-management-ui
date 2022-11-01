@@ -26,7 +26,7 @@ jobs:
         run: cp .env.docker .env
       - name: Set up Node.js
         uses: actions/setup-node@v1
-         with:
+        with:
           node-version: 16
       - name: Install Node.js dependencies Management UI
         run: npm ci
