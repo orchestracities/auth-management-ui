@@ -13,15 +13,13 @@ on:
 jobs:
   javascript:
     runs-on: ubuntu-latest
- strategy:
-      matrix:
-        node:
-          - 16
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v2
       - name: Set up Node.js
         uses: actions/setup-node@v1
+        with:
+          node-version: 16
       - name: Install Node.js dependencies Management UI
         run: npm ci
       - name: ESLint Management UI
