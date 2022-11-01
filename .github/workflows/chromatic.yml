@@ -19,10 +19,6 @@ jobs:
   publish-storybook:
     # Operating System
     runs-on: ubuntu-latest
-     strategy:
-      matrix:
-        node:
-          - 16
     # Job steps
     steps:
       - uses: actions/checkout@v1
@@ -30,6 +26,8 @@ jobs:
         run: cp .env.docker .env
       - name: Set up Node.js
         uses: actions/setup-node@v1
+         with:
+          node-version: 16
       - name: Install Node.js dependencies Management UI
         run: npm ci
       - name: Install Node.js dependencies Documentation
