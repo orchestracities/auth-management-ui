@@ -37,6 +37,29 @@ describe('GraphQL-Query', function () {
     variables: { userName: '5c67b251-6f63-46f3-b3b0-085e1f7040b2' }
   };
 
+  const getUserResourceType = {
+    query: `
+        query getUserResourceType($userID: String!) {
+            getUserResourceType(userID: $userID) {
+              name
+              userID
+            }
+          }`,
+    variables: { userID: '5c67b251-6f63-46f3-b3b0-085e1f7040b2' }
+  };
+
+  const getEndpoints = {
+    query: `
+        query getEndpoints($resourceTypeName: String!) {
+            getEndpoints(resourceTypeName: $resourceTypeName) {
+              name
+              resourceTypeName
+              nameAndID
+            }
+          }`,
+    variables: { resourceTypeName: "resourceTypeName" }
+  };
+
   it('Returns tenant properties', (done) => {
     request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
       .post('/')
@@ -81,4 +104,52 @@ describe('GraphQL-Query', function () {
           });
       });
   });
+
+  it('Returns user-resourceTypes', (done) => {
+    request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
+      .post('/')
+      .set('Content-type', 'application/x-www-form-urlencoded')
+      .send(loginSettings)
+      .end(function (err, res) {
+        const token = res.body.access_token;
+        request(url)
+          .post('/')
+          .set('Authorization', `Bearer ${token}`)
+          .send(getUserResourceType)
+          .expect(200)
+          .end((err, res) => {
+            if (err) return done(err);
+            if (res.body.data.length > 0) {
+              expect(res.body.data.getUserResourceType[0]).to.have.own.property('name');
+              expect(res.body.data.getUserResourceType[0]).to.have.own.property('userID');
+            }
+            done();
+          });
+      });
+  });
+  it('Returns resourceTypes endpoints', (done) => {
+    request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
+      .post('/')
+      .set('Content-type', 'application/x-www-form-urlencoded')
+      .send(loginSettings)
+      .end(function (err, res) {
+        const token = res.body.access_token;
+        request(url)
+          .post('/')
+          .set('Authorization', `Bearer ${token}`)
+          .send(getEndpoints)
+          .expect(200)
+          .end((err, res) => {
+            if (err) return done(err);
+            if (res.body.data.length > 0) {
+              expect(res.body.data.getEndpoints[0]).to.have.own.property('name');
+              expect(res.body.data.getEndpoints[0]).to.have.own.property('resourceTypeName');
+              expect(res.body.data.getEndpoints[0]).to.have.own.property('nameAndID');
+            }
+            done();
+          });
+      });
+  });
+
+
 });

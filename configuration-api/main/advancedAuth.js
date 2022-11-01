@@ -14,6 +14,14 @@ config.loadConfig();
 
 const { get, update, add, deleteTenant } = require('./mongo/tenantsQueries');
 const { getUserPref, updateUserPref } = require('./mongo/userSettings');
+const {
+  getResource,
+  deleteResource,
+  newResource,
+  getEndpoint,
+  deleteEndpoint,
+  newEndPoint
+} = require('./mongo/resourceTypes');
 const typeDefs = gql`
   type TenantConfiguration {
     name: String!
@@ -27,11 +35,26 @@ const typeDefs = gql`
     language: String!
     lastTenantSelected: String
   }
+  type ResourceType {
+    name: String!
+    userID: String!
+  }
+  type ResourceEndpoint {
+    name: String!
+    resourceTypeName: String!
+    nameAndID:String!
+  }
   type Query {
     listTenants(tenantNames: [String]!): [TenantConfiguration]
     getUserPreferences(userName: String!): [UserPreferencies]
+    getUserResourceType(userID: String!): [ResourceType]
+    getEndpoints(resourceTypeName: String!): [ResourceEndpoint]
   }
   type Mutation {
+    newResourceType(name: String!, userID: String!): [ResourceType]
+    deleteResourceType(name: [String]!): [ResourceType]
+    deleteThisEndpoint(name: [String]!): [ResourceEndpoint]
+    addEndpoint(nameAndID: String!, name: String!,resourceTypeName: String!): [ResourceEndpoint]
     modifyUserPreferences(userName: String!, language: String!, lastTenantSelected: String): [UserPreferencies]
     getTenantConfig(
       name: String!
@@ -70,6 +93,24 @@ const resolvers = {
         config.getLogger().error(logContext, err);
         throw new ApolloError({ data: { reason: err.message } });
       }
+    },
+    getUserResourceType: async (object, args, context, info) => {
+      try {
+        config.getLogger().info(logContext, 'getUserResourceType: %s', args.userName);
+        return await getResource(args.userID);
+      } catch (err) {
+        config.getLogger().error(logContext, err);
+        throw new ApolloError({ data: { reason: err.message } });
+      }
+    },
+    getEndpoints: async (object, args, context, info) => {
+      try {
+        config.getLogger().info(logContext, 'getEndpoints: %s', args.userName);
+        return await getEndpoint(args.resourceTypeName);
+      } catch (err) {
+        config.getLogger().error(logContext, err);
+        throw new ApolloError({ data: { reason: err.message } });
+      }
     }
   },
   Mutation: {
@@ -104,6 +145,42 @@ const resolvers = {
       try {
         config.getLogger().info(logContext, 'removeTenantConfig: %s', JSON.stringify(args));
         return await deleteTenant(args);
+      } catch (err) {
+        config.getLogger().error(logContext, err);
+        throw new ApolloError({ data: { reason: err.message } });
+      }
+    },
+    newResourceType: async (object, args, context, info) => {
+      try {
+        config.getLogger().info(logContext, 'newResourceType: %s', JSON.stringify(args));
+        return await newResource(args);
+      } catch (err) {
+        config.getLogger().error(logContext, err);
+        throw new ApolloError({ data: { reason: err.message } });
+      }
+    },
+    deleteResourceType: async (object, args, context, info) => {
+      try {
+        config.getLogger().info(logContext, 'deleteResourceType: %s', JSON.stringify(args));
+        return await deleteResource(args);
+      } catch (err) {
+        config.getLogger().error(logContext, err);
+        throw new ApolloError({ data: { reason: err.message } });
+      }
+    },
+    addEndpoint: async (object, args, context, info) => {
+      try {
+        config.getLogger().info(logContext, 'addEndpoint: %s', JSON.stringify(args));
+        return await newEndPoint(args);
+      } catch (err) {
+        config.getLogger().error(logContext, err);
+        throw new ApolloError({ data: { reason: err.message } });
+      }
+    },
+    deleteThisEndpoint: async (object, args, context, info) => {
+      try {
+        config.getLogger().info(logContext, 'deleteThisEndpoint: %s', JSON.stringify(args));
+        return await deleteEndpoint(args);
       } catch (err) {
         config.getLogger().error(logContext, err);
         throw new ApolloError({ data: { reason: err.message } });
