@@ -4,6 +4,8 @@
 
 ### New features
 
+- Tests are now running on Node 16
+
 ### Bug fixes
 
 ### Documentation

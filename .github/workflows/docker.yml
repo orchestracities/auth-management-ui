@@ -14,6 +14,10 @@ on:
 jobs:
   management-ui:
     runs-on: ubuntu-latest
+     strategy:
+      matrix:
+        node:
+          - 16
     steps:
       -
         name: Checkout

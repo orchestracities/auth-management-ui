@@ -6,6 +6,10 @@ on:
 jobs:
   release_notes:
     runs-on: ubuntu-latest
+     strategy:
+      matrix:
+        node:
+          - 16
     steps:
       - uses: actions/checkout@v1
       - name: Changelog check
