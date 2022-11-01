@@ -14,7 +14,7 @@ on:
 jobs:
   management-ui:
     runs-on: ubuntu-latest
-     strategy:
+    strategy:
       matrix:
         node:
           - 16
@@ -63,6 +63,10 @@ jobs:
           cache-to: type=gha,mode=max
   configuration-api:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node:
+          - 16
     steps:
       -
         name: Checkout
