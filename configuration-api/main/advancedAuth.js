@@ -42,7 +42,7 @@ const typeDefs = gql`
   type ResourceEndpoint {
     name: String!
     resourceTypeName: String!
-    nameAndID:String!
+    nameAndID: String!
   }
   type Query {
     listTenants(tenantNames: [String]!): [TenantConfiguration]
@@ -54,7 +54,7 @@ const typeDefs = gql`
     newResourceType(name: String!, userID: String!): [ResourceType]
     deleteResourceType(name: [String]!): [ResourceType]
     deleteThisEndpoint(name: [String]!): [ResourceEndpoint]
-    addEndpoint(nameAndID: String!, name: String!,resourceTypeName: String!): [ResourceEndpoint]
+    addEndpoint(nameAndID: String!, name: String!, resourceTypeName: String!): [ResourceEndpoint]
     modifyUserPreferences(userName: String!, language: String!, lastTenantSelected: String): [UserPreferencies]
     getTenantConfig(
       name: String!
@@ -96,8 +96,8 @@ const resolvers = {
     },
     getUserResourceType: async (object, args, context, info) => {
       try {
-        config.getLogger().info(logContext, 'getUserResourceType: %s', args.userName);
-        return await getResource(args.userID);
+        config.getLogger().info(logContext, 'getUserResourceType: %s', JSON.stringify(args));
+        return await getResource(args);
       } catch (err) {
         config.getLogger().error(logContext, err);
         throw new ApolloError({ data: { reason: err.message } });
@@ -105,8 +105,8 @@ const resolvers = {
     },
     getEndpoints: async (object, args, context, info) => {
       try {
-        config.getLogger().info(logContext, 'getEndpoints: %s', args.userName);
-        return await getEndpoint(args.resourceTypeName);
+        config.getLogger().info(logContext, 'getEndpoints: %s', JSON.stringify(args));
+        return await getEndpoint(args);
       } catch (err) {
         config.getLogger().error(logContext, err);
         throw new ApolloError({ data: { reason: err.message } });
@@ -156,7 +156,7 @@ const resolvers = {
         return await newResource(args);
       } catch (err) {
         config.getLogger().error(logContext, err);
-        throw new ApolloError({ data: { reason: err.message } });
+        throw new ApolloError(err.message);
       }
     },
     deleteResourceType: async (object, args, context, info) => {
@@ -165,7 +165,7 @@ const resolvers = {
         return await deleteResource(args);
       } catch (err) {
         config.getLogger().error(logContext, err);
-        throw new ApolloError({ data: { reason: err.message } });
+        throw new ApolloError(err.message);
       }
     },
     addEndpoint: async (object, args, context, info) => {
@@ -174,7 +174,7 @@ const resolvers = {
         return await newEndPoint(args);
       } catch (err) {
         config.getLogger().error(logContext, err);
-        throw new ApolloError({ data: { reason: err.message } });
+        throw new ApolloError(err.message);
       }
     },
     deleteThisEndpoint: async (object, args, context, info) => {
@@ -183,7 +183,7 @@ const resolvers = {
         return await deleteEndpoint(args);
       } catch (err) {
         config.getLogger().error(logContext, err);
-        throw new ApolloError({ data: { reason: err.message } });
+        throw new ApolloError(err.message);
       }
     }
   }

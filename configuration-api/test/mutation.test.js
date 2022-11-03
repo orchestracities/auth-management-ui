@@ -88,7 +88,6 @@ describe('GraphQL-Mutations', function () {
     variables: { userName: '5c67b251-6f63-46f3-b3b0-085e1f7040b2', language: 'default', lastTenantSelected: 'test' }
   };
 
-
   const newResourceType = {
     query: `
         mutation newResourceType($name: String!, $userID: String!) {
@@ -97,7 +96,7 @@ describe('GraphQL-Mutations', function () {
               userID
             }
           }`,
-    variables: { name:"newName",userID:'5c67b251-6f63-46f3-b3b0-085e1f7040b2' }
+    variables: { name: 'newName', userID: '5c67b251-6f63-46f3-b3b0-085e1f7040b2' }
   };
 
   const deleteResourceType = {
@@ -108,9 +107,8 @@ describe('GraphQL-Mutations', function () {
               userID
             }
           }`,
-    variables: { name:["newName"] }
+    variables: { name: ['newName'] }
   };
-  
 
   const addEndpoint = {
     query: `
@@ -121,7 +119,7 @@ describe('GraphQL-Mutations', function () {
               nameAndID
             }
           }`,
-    variables: { nameAndID:"endpointName/newName",name:"endpointName",resourceTypeName:'newName' }
+    variables: { nameAndID: 'endpointName/newName', name: 'endpointName', resourceTypeName: 'newName' }
   };
   const deleteThisEndpoint = {
     query: `
@@ -132,10 +130,9 @@ describe('GraphQL-Mutations', function () {
               nameAndID
             }
           }`,
-    variables: { name:["endpointName"] }
+    variables: { name: ['endpointName'] }
   };
-  
-  
+
   it('create new tenant configuration', (done) => {
     request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
       .post('/')
@@ -285,7 +282,7 @@ describe('GraphQL-Mutations', function () {
           });
       });
   });
-  
+
   it('Delete Endpoint', (done) => {
     request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
       .post('/')
@@ -305,5 +302,4 @@ describe('GraphQL-Mutations', function () {
           });
       });
   });
-  
 });

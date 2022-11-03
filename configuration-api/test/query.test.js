@@ -57,7 +57,7 @@ describe('GraphQL-Query', function () {
               nameAndID
             }
           }`,
-    variables: { resourceTypeName: "resourceTypeName" }
+    variables: { resourceTypeName: 'resourceTypeName' }
   };
 
   it('Returns tenant properties', (done) => {
@@ -150,6 +150,4 @@ describe('GraphQL-Query', function () {
           });
       });
   });
-
-
 });

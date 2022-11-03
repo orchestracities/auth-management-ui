@@ -4,6 +4,8 @@
 
 ### New features
 
+- New form for creating resource types and endpoints
+
 ### Bug fixes
 
 ### Documentation

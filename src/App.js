@@ -24,6 +24,7 @@ import { SnackbarProvider } from 'notistack';
 import TenantPage from './pages/tenantPage';
 import ServicePage from './pages/servicePage';
 import PolicyPage from './pages/policyPage';
+import ResourcePage from './pages/resourcePage';
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import UserMenu from './components/shared/userMenu';
@@ -359,7 +360,8 @@ export default class App extends Component {
       withPermissions: true
     },
     { name: 'Service', route: '/Service', icon: <InboxIcon></InboxIcon>, withPermissions: false },
-    { name: 'Policy', route: '/Policy', icon: <InboxIcon></InboxIcon>, withPermissions: false }
+    { name: 'Policy', route: '/Policy', icon: <InboxIcon></InboxIcon>, withPermissions: false },
+    { name: 'ResourceType', route: '/ResourceType', icon: <InboxIcon></InboxIcon>, withPermissions: true }
   ];
 
   componentDidMount() {
@@ -516,6 +518,19 @@ export default class App extends Component {
                             thisTenant={this.state.thisTenant}
                             graphqlErrors={this.state.connectionIssue}
                           />
+                        }
+                      />
+                      <Route
+                        path="ResourceType"
+                        element={
+                          <AuthorizedElement tokenDecoded={this.state.tokenData} iSuperAdmin={true}>
+                            <ResourcePage
+                              token={this.props.accessToken}
+                              tokenData={this.state.tokenData}
+                              env={env}
+                              graphqlErrors={this.state.connectionIssue}
+                            />
+                          </AuthorizedElement>
                         }
                       />
                     </Routes>

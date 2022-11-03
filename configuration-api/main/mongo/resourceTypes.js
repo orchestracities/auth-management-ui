@@ -14,8 +14,13 @@ const ResourceType = new mongoose.Schema({
 const Resource = connection.model('ResourceType', ResourceType);
 
 async function getResource(data) {
-  const resourceTypes = await Resource.find({ userID: data.userID });
+  if (data.userID !== '') {
+    const resourceTypes = await Resource.find({ userID: data.userID });
     return await resourceTypes;
+  } else {
+    const resourceTypes = await Resource.find({});
+    return await resourceTypes;
+  }
 }
 
 async function deleteResource(data) {
@@ -24,7 +29,7 @@ async function deleteResource(data) {
   for (const e of resourceTypes) {
     deletedResourceTypes = await Resource.findByIdAndRemove(e._id);
   }
-  return !!(await (typeof deletedResourceTypes === 'object'));
+  return resourceTypes;
 }
 
 async function newResource(data) {
@@ -33,9 +38,8 @@ async function newResource(data) {
     userID: data.userID
   };
   await Resource.create(arrayOfData);
-  return await getResource(data)
+  return await getResource(data);
 }
-
 
 const ResourceEndpoint = new mongoose.Schema({
   nameAndID: {
@@ -50,8 +54,7 @@ const Endpoints = connection.model('ResourceEndpoint', ResourceEndpoint);
 
 async function getEndpoint(data) {
   const endpoints = await Endpoints.find({ resourceTypeName: data.resourceTypeName });
-    return await endpoints;
-  
+  return await endpoints;
 }
 
 async function deleteEndpoint(data) {
@@ -60,7 +63,7 @@ async function deleteEndpoint(data) {
   for (const e of endpoints) {
     deletedendpoints = await Endpoints.findByIdAndRemove(e._id);
   }
-  return !!(await (typeof deletedendpoints === 'object'));
+  return endpoints;
 }
 
 async function newEndPoint(data) {
@@ -70,10 +73,8 @@ async function newEndPoint(data) {
     resourceTypeName: data.resourceTypeName
   };
   await Endpoints.create(arrayOfData);
-  return await getEndpoint(data)
+  return await getEndpoint(data);
 }
-
-
 
 module.exports = {
   getResource,
