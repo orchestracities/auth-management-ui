@@ -4,6 +4,8 @@
 
 ### New features
 
+- Update tests to use Node 16 (#93)
+
 ### Bug fixes
 
 ### Documentation
