@@ -4,7 +4,7 @@
 
 ### New features
 
-- Tests are now running on Node 16
+- Update tests to use Node 16 (#93)
 
 ### Bug fixes
 
