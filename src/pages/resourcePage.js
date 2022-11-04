@@ -36,7 +36,7 @@ export default function ResourcePage({ token, graphqlErrors, env, tokenData }) {
 
   const [createOpen, setCreateOpen] = React.useState(false);
   const [resources, setResources] = React.useState([]);
-  const mainTitle = <Trans>tenant.titles.page</Trans>;
+  const mainTitle = "Title";
 
   const getTheResources = () => {
     client
@@ -100,7 +100,7 @@ export default function ResourcePage({ token, graphqlErrors, env, tokenData }) {
         </Grid>
       ) : (
         <Typography sx={{ padding: '20px' }} variant="h6" component="h3">
-          <Trans>tenant.titles.noData</Trans>
+         no data
         </Typography>
       )}
     </Box>

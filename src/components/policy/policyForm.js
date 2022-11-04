@@ -28,6 +28,9 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import log from 'loglevel';
 import * as realmApi from '../../realmApi/getRealmData';
 import Autocomplete from '@mui/material/Autocomplete';
+import Chip from '@mui/material/Chip';
+import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -50,6 +53,21 @@ export default function PolicyForm({
 }) {
   const [msg, sendNotification] = useNotification();
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
+  const httpLink = createHttpLink({
+    uri: typeof env !== 'undefined' ? env.CONFIGURATION_API_URL : ''
+  });
+  const authLink = setContext((_, { headers }) => {
+    return {
+      headers: {
+        ...headers,
+        Authorization: `Bearer ${token}`
+      }
+    };
+  });
+  const client = new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache()
+  });
   const anubisURL = typeof env !== 'undefined' ? env.ANUBIS_API_URL : '';
   log.debug(msg);
   const handleClose = () => {
@@ -74,10 +92,19 @@ export default function PolicyForm({
   };
 
   // RESOURCE
-  const [resource, setResource] = React.useState(action === 'create' ? '' : data.resource_type);
-
-  const handleResource = (event) => {
-    setResource(event.target.value);
+  const [resource, setResource] = React.useState(action === 'create' ? [] : [data.resource_type]);
+  const [ limitTheNumberOfValues, setLimitTheNumberOfValues]=React.useState(false)
+  const handleResource = (event, value) => {
+   switch (true) {
+    case (value.length === 1 && resource.length ===0):
+      setResource(value);
+      setLimitTheNumberOfValues(true)
+    break;
+    case (value.length === 0 && resource.length ===1):
+      setResource(value);
+      setLimitTheNumberOfValues(false)
+    break;
+   }
   };
 
   // MODE
@@ -164,7 +191,7 @@ export default function PolicyForm({
             anubisURL + 'v1/policies/',
             {
               access_to: access,
-              resource_type: resource,
+              resource_type: resource[0],
               mode,
               agent: agentMapper()
             },
@@ -203,7 +230,7 @@ export default function PolicyForm({
             anubisURL + 'v1/policies/' + data.id,
             {
               access_to: access,
-              resource_type: resource,
+              resource_type: resource[0],
               mode,
               agent: agentMapper()
             },
@@ -308,6 +335,28 @@ export default function PolicyForm({
       default:
         return [];
     }
+  };
+
+
+  const getTheResources = () => {
+    client
+      .query({
+        query: gql`
+          query getUserResourceType($userID: String!) {
+            getUserResourceType(userID: $userID) {
+              name
+              userID
+            }
+          }
+        `,
+        variables: { userID: "" }
+      })
+      .then((response) => {
+        setDataModel(response.data.getUserResourceType);
+      })
+      .catch((e) => {
+        sendNotification({ msg: e.message + ' the config', variant: 'error' });
+      });
   };
 
   const errorCases = (value) => {
@@ -417,15 +466,29 @@ export default function PolicyForm({
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              id="resource"
-              variant="outlined"
-              value={resource}
-              label={<Trans>policies.form.resourceType</Trans>}
-              onChange={handleResource}
-              sx={{
-                width: '100%'
-              }}
+            <Autocomplete
+              multiple
+              id="tags-filled"
+              options={dataModel.map((option) => option.name)}
+              loading={loading}
+              onOpen={() => getTheResources()}
+              fullWidth={true}
+              freeSolo={!limitTheNumberOfValues}
+              getOptionDisabled={(option) => ( limitTheNumberOfValues? true : false)}
+              defaultValue={typeof action === 'create' ? [] : resource}
+              onChange={(event, value) => handleResource(event, value)}
+              renderTags={(value, getTagProps) =>
+                value.map((option, index) => (
+                  <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                ))
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  label={<Trans>policies.form.resourceType</Trans>}
+                />
+              )}
             />
           </Grid>
           <Grid item xs={12}>
