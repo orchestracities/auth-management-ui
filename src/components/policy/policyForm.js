@@ -93,18 +93,18 @@ export default function PolicyForm({
 
   // RESOURCE
   const [resource, setResource] = React.useState(action === 'create' ? [] : [data.resource_type]);
-  const [ limitTheNumberOfValues, setLimitTheNumberOfValues]=React.useState(false)
+  const [limitTheNumberOfValues, setLimitTheNumberOfValues] = React.useState(false);
   const handleResource = (event, value) => {
-   switch (true) {
-    case (value.length === 1 && resource.length ===0):
-      setResource(value);
-      setLimitTheNumberOfValues(true)
-    break;
-    case (value.length === 0 && resource.length ===1):
-      setResource(value);
-      setLimitTheNumberOfValues(false)
-    break;
-   }
+    switch (true) {
+      case value.length === 1 && resource.length === 0:
+        setResource(value);
+        setLimitTheNumberOfValues(true);
+        break;
+      case value.length === 0 && resource.length === 1:
+        setResource(value);
+        setLimitTheNumberOfValues(false);
+        break;
+    }
   };
 
   // MODE
@@ -337,22 +337,22 @@ export default function PolicyForm({
     }
   };
 
-
   const getTheResources = () => {
     client
       .query({
         query: gql`
-          query getUserResourceType($userID: String!) {
-            getUserResourceType(userID: $userID) {
+          query getUserResourceType($tenantID: String!) {
+            getUserResourceType(tenantID: $tenantID) {
               name
               userID
+              tenantID
             }
           }
         `,
-        variables: { userID: "" }
+        variables: { tenantID: data[0].tenant_id }
       })
-      .then((response) => {
-        setDataModel(response.data.getUserResourceType);
+      .then((data) => {
+        setDataModel(data.data.getUserResourceType);
       })
       .catch((e) => {
         sendNotification({ msg: e.message + ' the config', variant: 'error' });
@@ -474,20 +474,16 @@ export default function PolicyForm({
               onOpen={() => getTheResources()}
               fullWidth={true}
               freeSolo={!limitTheNumberOfValues}
-              getOptionDisabled={(option) => ( limitTheNumberOfValues? true : false)}
-              defaultValue={typeof action === 'create' ? [] : resource}
+              getOptionDisabled={() => (limitTheNumberOfValues ? true : false)}
+              defaultValue={action === 'create' ? [] : resource}
               onChange={(event, value) => handleResource(event, value)}
               renderTags={(value, getTagProps) =>
                 value.map((option, index) => (
-                  <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                  <Chip variant="outlined" key={index} label={option} {...getTagProps({ index })} />
                 ))
               }
               renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  label={<Trans>policies.form.resourceType</Trans>}
-                />
+                <TextField {...params} variant="outlined" label={<Trans>policies.form.resourceType</Trans>} />
               )}
             />
           </Grid>

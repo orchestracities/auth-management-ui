@@ -12,7 +12,7 @@ import * as log from 'loglevel';
 import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import useNotification from '../components/shared/messages/alerts';
-export default function ResourcePage({ token, graphqlErrors, env, tokenData }) {
+export default function ResourcePage({ token, graphqlErrors, env, tokenData, thisTenant }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
 
   const httpLink = createHttpLink({
@@ -36,20 +36,21 @@ export default function ResourcePage({ token, graphqlErrors, env, tokenData }) {
 
   const [createOpen, setCreateOpen] = React.useState(false);
   const [resources, setResources] = React.useState([]);
-  const mainTitle = "Title";
+  const mainTitle = 'Title';
 
   const getTheResources = () => {
     client
       .query({
         query: gql`
-          query getUserResourceType($userID: String!) {
-            getUserResourceType(userID: $userID) {
+          query getUserResourceType($tenantID: String!) {
+            getUserResourceType(tenantID: $tenantID) {
               name
               userID
+              tenantID
             }
           }
         `,
-        variables: { userID: tokenData.preferred_username }
+        variables: { tenantID: thisTenant }
       })
       .then((data) => {
         setResources(data.data.getUserResourceType);
@@ -60,8 +61,8 @@ export default function ResourcePage({ token, graphqlErrors, env, tokenData }) {
   };
 
   React.useEffect(() => {
-    getTheResources();
-  }, []);
+    thisTenant !== null ? getTheResources() : '';
+  }, [thisTenant]);
 
   return (
     <Box sx={{ marginBottom: 15 }}>
@@ -72,6 +73,7 @@ export default function ResourcePage({ token, graphqlErrors, env, tokenData }) {
             title="New Resource Type"
             close={setCreateOpen}
             action={'create'}
+            thisTenant={thisTenant}
             token={token}
             tokenData={tokenData}
             env={env}
@@ -92,6 +94,7 @@ export default function ResourcePage({ token, graphqlErrors, env, tokenData }) {
                 token={token}
                 tokenData={tokenData}
                 env={env}
+                thisTenant={thisTenant}
                 resources={resources}
                 getTheResources={getTheResources}
               ></ResourceTable>
@@ -100,7 +103,7 @@ export default function ResourcePage({ token, graphqlErrors, env, tokenData }) {
         </Grid>
       ) : (
         <Typography sx={{ padding: '20px' }} variant="h6" component="h3">
-         no data
+          no data
         </Typography>
       )}
     </Box>

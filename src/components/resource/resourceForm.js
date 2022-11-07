@@ -21,7 +21,7 @@ const CustomDialogTitle = styled(AppBar)({
   boxShadow: 'none'
 });
 
-export default function ResourceForm({ title, close, action, token, tokenData, env, getTheResources }) {
+export default function ResourceForm({ title, close, action, token, tokenData, env, getTheResources, thisTenant }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
 
   const httpLink = createHttpLink({
@@ -47,9 +47,20 @@ export default function ResourceForm({ title, close, action, token, tokenData, e
     close(false);
   };
 
-  const [name, setName] = React.useState('');
+  const urlPattern = new RegExp(
+    '^(https?:\\/\\/)?' +
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' +
+      '((\\d{1,3}\\.){3}\\d{1,3}))' +
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' +
+      '(\\?[;&a-z\\d%_.~+=-]*)?' +
+      '(\\#[-a-z\\d_]*)?$',
+    'i'
+  );
 
-  const cases = () => {
+  const [name, setName] = React.useState('');
+  const [endpoint, setEndpoint] = React.useState('');
+
+  const nameCases = () => {
     switch (true) {
       case name === '':
         return 'The name is mandatory';
@@ -60,36 +71,68 @@ export default function ResourceForm({ title, close, action, token, tokenData, e
     }
   };
 
+  const linkCases = () => {
+    switch (true) {
+      case endpoint === '':
+        return 'The url is mandatory';
+      case endpoint.indexOf(' ') >= 0:
+        return 'The url should be without spaces';
+      case urlPattern.test(endpoint) === false:
+        return 'The url should be valid';
+      default:
+        return false;
+    }
+  };
+
   const handleSave = () => {
-    if (cases() === false) {
+    if (nameCases() === false && linkCases() === false) {
       switch (action) {
         case 'create':
           client
             .mutate({
               mutation: gql`
-                mutation newResourceType($name: String!, $userID: String!) {
-                  newResourceType(name: $name, userID: $userID) {
+                mutation newResourceType($name: String!, $userID: String!, $tenantID: String!) {
+                  newResourceType(name: $name, userID: $userID, tenantID: $tenantID) {
                     name
                     userID
+                    tenantID
                   }
                 }
               `,
-              variables: { name: name, userID: tokenData.preferred_username }
+              variables: { name: name, userID: tokenData.preferred_username, tenantID: thisTenant }
             })
             .then(() => {
-              close(false);
-              getTheResources();
-              sendNotification({
-                msg: (
-                  <Trans
-                    i18nKey="common.messages.sucessCreate"
-                    values={{
-                      data: 'new Resource Type called: ' + name
-                    }}
-                  />
-                ),
-                variant: 'success'
-              });
+              client
+                .mutate({
+                  mutation: gql`
+                    mutation addEndpoint($nameAndID: String!, $name: String!, $resourceTypeName: String!) {
+                      addEndpoint(nameAndID: $nameAndID, name: $name, resourceTypeName: $resourceTypeName) {
+                        name
+                        resourceTypeName
+                        nameAndID
+                      }
+                    }
+                  `,
+                  variables: { nameAndID: name + '/' + thisTenant, name: endpoint, resourceTypeName: name }
+                })
+                .then(() => {
+                  close(false);
+                  getTheResources();
+                  sendNotification({
+                    msg: (
+                      <Trans
+                        i18nKey="common.messages.sucessCreate"
+                        values={{
+                          data: 'new Resource Type called: ' + name
+                        }}
+                      />
+                    ),
+                    variant: 'success'
+                  });
+                })
+                .catch((e) => {
+                  sendNotification({ msg: e.message + ' the config', variant: 'error' });
+                });
             })
             .catch((e) => {
               sendNotification({ msg: e.message + ' the config', variant: 'error' });
@@ -122,19 +165,7 @@ export default function ResourceForm({ title, close, action, token, tokenData, e
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <TextField
-              id="User ID"
-              label="User ID"
-              variant="outlined"
-              defaultValue={tokenData.preferred_username}
-              disabled
-              sx={{
-                width: '100%'
-              }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              id="Resource type name"
+              id="name"
               label="Resource type name"
               variant="outlined"
               sx={{
@@ -143,8 +174,23 @@ export default function ResourceForm({ title, close, action, token, tokenData, e
               onChange={(event) => {
                 setName(event.target.value);
               }}
-              helperText={cases()}
+              helperText={nameCases()}
               error={name === '' || name.indexOf(' ') >= 0}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              id="Endpoint"
+              label="Endpoint"
+              variant="outlined"
+              sx={{
+                width: '100%'
+              }}
+              onChange={(event) => {
+                setEndpoint(event.target.value);
+              }}
+              helperText={linkCases()}
+              error={endpoint === '' || endpoint.indexOf(' ') >= 0 || urlPattern.test(endpoint) === false}
             />
           </Grid>
         </Grid>

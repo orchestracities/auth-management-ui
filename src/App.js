@@ -159,23 +159,24 @@ export default class App extends Component {
         link: authLink.concat(httpLink),
         cache: new InMemoryCache()
       });
-      client.mutate({
-        mutation: gql`
-          mutation modifyUserPreferences($userName: String!, $language: String!, $lastTenantSelected: String) {
-            modifyUserPreferences(userName: $userName, language: $language, lastTenantSelected: $lastTenantSelected) {
-              userName
-              language
-              lastTenantSelected
+      if (newValue !== null) {
+        client.mutate({
+          mutation: gql`
+            mutation modifyUserPreferences($userName: String!, $language: String!, $lastTenantSelected: String) {
+              modifyUserPreferences(userName: $userName, language: $language, lastTenantSelected: $lastTenantSelected) {
+                userName
+                language
+                lastTenantSelected
+              }
             }
+          `,
+          variables: {
+            userName: this.props.idTokenPayload.sub,
+            language: this.state.language,
+            lastTenantSelected: newValue
           }
-        `,
-        variables: {
-          userName: this.props.idTokenPayload.sub,
-          language: this.state.language,
-          lastTenantSelected: newValue
-        }
-      });
-
+        });
+      }
       this.setState({ thisTenant: tenantFiltered.length === 0 ? (newValue = this.state.tenants[0].id) : newValue });
       this.state.catchColor(newValue);
     },
@@ -529,6 +530,7 @@ export default class App extends Component {
                               tokenData={this.state.tokenData}
                               env={env}
                               graphqlErrors={this.state.connectionIssue}
+                              thisTenant={this.state.thisTenant}
                             />
                           </AuthorizedElement>
                         }

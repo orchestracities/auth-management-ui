@@ -12,11 +12,9 @@ import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
 import { visuallyHidden } from '@mui/utils';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -27,6 +25,7 @@ import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client
 import { setContext } from '@apollo/client/link/context';
 import useNotification from '../shared/messages/alerts';
 import EndpointsForm from './endpointsForm';
+
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
     borderRadius: 15
@@ -85,6 +84,7 @@ export default function EndpointsTable({ token, resourceTypeName, env, getTheRes
   };
   React.useEffect(() => {
     getTheEndPoints(resourceTypeName);
+    console.log(msg);
   }, []);
 
   function descendingComparator(a, b, orderBy) {
@@ -103,8 +103,6 @@ export default function EndpointsTable({ token, resourceTypeName, env, getTheRes
       : (a, b) => -descendingComparator(a, b, orderBy);
   }
 
-  // This method is created for cross-browser compatibility, if you don't
-  // need to support IE11, you can use Array.prototype.sort() directly
   function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
@@ -119,21 +117,15 @@ export default function EndpointsTable({ token, resourceTypeName, env, getTheRes
 
   const headCells = [
     {
-      id: 'name',
+      id: 'Link',
       numeric: false,
       disablePadding: true,
-      label: 'Name'
-    },
-    {
-      id: 'nameAndID',
-      numeric: false,
-      disablePadding: true,
-      label: 'ID'
+      label: 'Link'
     }
   ];
 
   function EnhancedTableHead(props) {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+    const { order, orderBy, onRequestSort } = props;
     const createSortHandler = (property) => (event) => {
       onRequestSort(event, property);
     };
@@ -141,17 +133,6 @@ export default function EndpointsTable({ token, resourceTypeName, env, getTheRes
     return (
       <TableHead>
         <SecondaryColorRow>
-          <TableCell padding="checkbox">
-            <Checkbox
-              color="secondary"
-              indeterminate={numSelected > 0 && numSelected < rowCount}
-              checked={rowCount > 0 && numSelected === rowCount}
-              onChange={onSelectAllClick}
-              inputProps={{
-                'aria-label': 'select all endpoints'
-              }}
-            />
-          </TableCell>
           {headCells.map((headCell) => (
             <TableCell
               key={headCell.id}
@@ -199,9 +180,7 @@ export default function EndpointsTable({ token, resourceTypeName, env, getTheRes
         }}
       >
         {numSelected > 0 ? (
-          <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">
-            {numSelected} selected
-          </Typography>
+          <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div"></Typography>
         ) : (
           <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
             {resourceTypeName}
@@ -209,17 +188,13 @@ export default function EndpointsTable({ token, resourceTypeName, env, getTheRes
         )}
 
         {numSelected > 0 ? (
-          <Tooltip title="Delete">
+          <Tooltip title="Modify the link">
             <IconButton>
-              <DeleteIcon onClick={() => deleteResourceTypes()} />
+              <EditIcon onClick={() => setOpen(true)} />
             </IconButton>
           </Tooltip>
         ) : (
-          <Tooltip title="Add new endpoint">
-            <IconButton>
-              <AddIcon onClick={() => setOpen(true)} />
-            </IconButton>
-          </Tooltip>
+          ''
         )}
       </Toolbar>
     );
@@ -274,28 +249,6 @@ export default function EndpointsTable({ token, resourceTypeName, env, getTheRes
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
-  const deleteResourceTypes = () => {
-    client
-      .mutate({
-        mutation: gql`
-          mutation deleteThisEndpoint($name: [String]!) {
-            deleteThisEndpoint(name: $name) {
-              name
-              resourceTypeName
-              nameAndID
-            }
-          }
-        `,
-        variables: { name: selected }
-      })
-      .then(() => {
-        getTheResources();
-      })
-      .catch((e) => {
-        sendNotification({ msg: e.message + ' the config', variant: 'error' });
-      });
-  };
-
   return rows.length > 0 ? (
     <>
       <Box sx={{ width: '100%' }}>
@@ -311,9 +264,8 @@ export default function EndpointsTable({ token, resourceTypeName, env, getTheRes
               rowCount={rows.length}
             />
             <TableBody>
-              {stableSort(rows, getComparator(order, orderBy)).map((row, index) => {
+              {stableSort(rows, getComparator(order, orderBy)).map((row) => {
                 const isItemSelected = isSelected(row.name);
-                const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
                   <SecondaryColorRow
@@ -325,20 +277,8 @@ export default function EndpointsTable({ token, resourceTypeName, env, getTheRes
                     key={row.name}
                     selected={isItemSelected}
                   >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="secondary"
-                        checked={isItemSelected}
-                        inputProps={{
-                          'aria-labelledby': labelId
-                        }}
-                      />
-                    </TableCell>
                     <TableCell component="th" align="left" scope="row" padding="none">
                       {row.name}
-                    </TableCell>
-                    <TableCell component="th" align="left" scope="row" padding="none">
-                      {row.nameAndID}
                     </TableCell>
                   </SecondaryColorRow>
                 );
@@ -358,9 +298,10 @@ export default function EndpointsTable({ token, resourceTypeName, env, getTheRes
         aria-describedby="edit"
       >
         <EndpointsForm
-          title={'new Endpoint'}
+          title={'Edit the endpoint of ' + resourceTypeName}
+          data={rows}
           close={handleClose}
-          action={'create'}
+          action={'modify'}
           token={token}
           resourceTypeName={resourceTypeName}
           env={env}
@@ -370,35 +311,6 @@ export default function EndpointsTable({ token, resourceTypeName, env, getTheRes
       </DialogRounded>
     </>
   ) : (
-    <>
-      <Box sx={{ width: '100%' }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <Typography variant="body2" id="tableTitle" component="div">
-          No data
-        </Typography>
-      </Box>
-      <DialogRounded
-        msg={msg}
-        open={open}
-        fullWidth={true}
-        maxWidth={'xl'}
-        TransitionComponent={Transition}
-        fullScreen={fullScreen}
-        onClose={handleClose}
-        aria-labelledby="edit"
-        aria-describedby="edit"
-      >
-        <EndpointsForm
-          title={'new Endpoint'}
-          close={handleClose}
-          action={'create'}
-          token={token}
-          resourceTypeName={resourceTypeName}
-          env={env}
-          getTheResources={getTheResources}
-        />
-        <DialogActions></DialogActions>
-      </DialogRounded>
-    </>
+    <></>
   );
 }

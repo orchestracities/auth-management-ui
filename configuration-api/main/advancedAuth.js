@@ -19,6 +19,7 @@ const {
   deleteResource,
   newResource,
   getEndpoint,
+  updateEndpoint,
   deleteEndpoint,
   newEndPoint
 } = require('./mongo/resourceTypes');
@@ -38,6 +39,7 @@ const typeDefs = gql`
   type ResourceType {
     name: String!
     userID: String!
+    tenantID: String!
   }
   type ResourceEndpoint {
     name: String!
@@ -47,14 +49,15 @@ const typeDefs = gql`
   type Query {
     listTenants(tenantNames: [String]!): [TenantConfiguration]
     getUserPreferences(userName: String!): [UserPreferencies]
-    getUserResourceType(userID: String!): [ResourceType]
+    getUserResourceType(tenantID: String!): [ResourceType]
     getEndpoints(resourceTypeName: String!): [ResourceEndpoint]
   }
   type Mutation {
-    newResourceType(name: String!, userID: String!): [ResourceType]
+    newResourceType(name: String!, userID: String!, tenantID: String!): [ResourceType]
     deleteResourceType(name: [String]!): [ResourceType]
     deleteThisEndpoint(name: [String]!): [ResourceEndpoint]
     addEndpoint(nameAndID: String!, name: String!, resourceTypeName: String!): [ResourceEndpoint]
+    updateThisEndpoint(nameAndID: String!, name: String!, resourceTypeName: String!): [ResourceEndpoint]
     modifyUserPreferences(userName: String!, language: String!, lastTenantSelected: String): [UserPreferencies]
     getTenantConfig(
       name: String!
@@ -172,6 +175,15 @@ const resolvers = {
       try {
         config.getLogger().info(logContext, 'addEndpoint: %s', JSON.stringify(args));
         return await newEndPoint(args);
+      } catch (err) {
+        config.getLogger().error(logContext, err);
+        throw new ApolloError(err.message);
+      }
+    },
+    updateThisEndpoint: async (object, args, context, info) => {
+      try {
+        config.getLogger().info(logContext, 'addEndpoint: %s', JSON.stringify(args));
+        return await updateEndpoint(args);
       } catch (err) {
         config.getLogger().error(logContext, err);
         throw new ApolloError(err.message);

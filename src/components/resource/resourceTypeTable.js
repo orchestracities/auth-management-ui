@@ -147,14 +147,14 @@ export default function ResourceTable({ token, tokenData, env, resources, getThe
     {
       id: 'Dropdown',
       numeric: false,
-      disablePadding: true,
+      disablePadding: false,
       label: ''
     },
     {
-      id: 'Resource Type Name',
+      id: 'author',
       numeric: false,
       disablePadding: false,
-      label: 'Resource Type Name'
+      label: 'Created By'
     }
   ];
 
@@ -278,6 +278,7 @@ export default function ResourceTable({ token, tokenData, env, resources, getThe
               variables: { resourceTypeName: thisResource }
             })
             .then((response) => {
+              setSelected([]);
               let deleteEndpoints = response.data.getEndpoints.map((a) => a.name);
               if (deleteEndpoints.length > 0) {
                 client
@@ -374,10 +375,10 @@ function EnhancedRows({ row, isItemSelected, token, handleClick, tokenData, env,
           {''}
         </TableCell>
         <TableCell onClick={() => handleClick(row.name)} align="left">
-          {row.userID}
+          {row.name}
         </TableCell>
         <TableCell onClick={() => handleClick(row.name)} align="left">
-          {row.name}
+          {row.userID}
         </TableCell>
       </TableRow>
       <TableRow>

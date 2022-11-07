@@ -8,14 +8,16 @@ const ResourceType = new mongoose.Schema({
     type: String,
     unique: true
   },
-  userID: String
+  userID: String,
+  tenantID: String
 });
 
 const Resource = connection.model('ResourceType', ResourceType);
 
 async function getResource(data) {
-  if (data.userID !== '') {
-    const resourceTypes = await Resource.find({ userID: data.userID });
+  // Resource.deleteMany({}, function (err) {console.log(err)})
+  if (data.tenantID !== '') {
+    const resourceTypes = await Resource.find({ tenantID: data.tenantID });
     return await resourceTypes;
   } else {
     const resourceTypes = await Resource.find({});
@@ -35,17 +37,15 @@ async function deleteResource(data) {
 async function newResource(data) {
   const arrayOfData = {
     name: data.name,
-    userID: data.userID
+    userID: data.userID,
+    tenantID: data.tenantID
   };
   await Resource.create(arrayOfData);
   return await getResource(data);
 }
 
 const ResourceEndpoint = new mongoose.Schema({
-  nameAndID: {
-    type: String,
-    unique: true
-  },
+  nameAndID: String,
   name: String,
   resourceTypeName: String
 });
@@ -55,6 +55,20 @@ const Endpoints = connection.model('ResourceEndpoint', ResourceEndpoint);
 async function getEndpoint(data) {
   const endpoints = await Endpoints.find({ resourceTypeName: data.resourceTypeName });
   return await endpoints;
+}
+
+async function updateEndpoint(data) {
+  const filter = { nameAndID: data.nameAndID };
+  const thisEndpoint = await Endpoints.find(filter);
+  if (thisEndpoint.length > 0) {
+    const update = {
+      nameAndID: data.nameAndID,
+      name: data.name,
+      resourceTypeName: data.resourceTypeName
+    };
+    await Endpoints.findOneAndUpdate(filter, update);
+    return await getEndpoint(data);
+  }
 }
 
 async function deleteEndpoint(data) {
@@ -82,5 +96,6 @@ module.exports = {
   newResource,
   getEndpoint,
   deleteEndpoint,
+  updateEndpoint,
   newEndPoint
 };

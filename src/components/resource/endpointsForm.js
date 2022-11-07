@@ -21,7 +21,7 @@ const CustomDialogTitle = styled(AppBar)({
   boxShadow: 'none'
 });
 
-export default function EndpointsForm({ title, close, action, token, resourceTypeName, env, getTheResources }) {
+export default function EndpointsForm({ title, close, action, token, resourceTypeName, env, getTheResources, data }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
 
   const httpLink = createHttpLink({
@@ -47,14 +47,26 @@ export default function EndpointsForm({ title, close, action, token, resourceTyp
     close(false);
   };
 
-  const [name, setName] = React.useState('');
+  const urlPattern = new RegExp(
+    '^(https?:\\/\\/)?' +
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' +
+      '((\\d{1,3}\\.){3}\\d{1,3}))' +
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' +
+      '(\\?[;&a-z\\d%_.~+=-]*)?' +
+      '(\\#[-a-z\\d_]*)?$',
+    'i'
+  );
+
+  const [endpoint, setEndpoint] = React.useState(data[0].name);
 
   const cases = () => {
     switch (true) {
-      case name === '':
-        return 'The name is mandatory';
-      case name.indexOf(' ') >= 0:
-        return 'The name should be without spaces';
+      case endpoint === '':
+        return 'The url is mandatory';
+      case endpoint.indexOf(' ') >= 0:
+        return 'The url should be without spaces';
+      case urlPattern.test(endpoint) === false:
+        return 'The url should be valid';
       default:
         return false;
     }
@@ -63,19 +75,19 @@ export default function EndpointsForm({ title, close, action, token, resourceTyp
   const handleSave = () => {
     if (cases() === false) {
       switch (action) {
-        case 'create':
+        case 'modify':
           client
             .mutate({
               mutation: gql`
-                mutation addEndpoint($nameAndID: String!, $name: String!, $resourceTypeName: String!) {
-                  addEndpoint(nameAndID: $nameAndID, name: $name, resourceTypeName: $resourceTypeName) {
+                mutation updateThisEndpoint($nameAndID: String!, $name: String!, $resourceTypeName: String!) {
+                  updateThisEndpoint(nameAndID: $nameAndID, name: $name, resourceTypeName: $resourceTypeName) {
                     name
                     resourceTypeName
                     nameAndID
                   }
                 }
               `,
-              variables: { nameAndID: resourceTypeName + '/' + name, name: name, resourceTypeName: resourceTypeName }
+              variables: { nameAndID: data[0].nameAndID, name: endpoint, resourceTypeName: data[0].resourceTypeName }
             })
             .then(() => {
               close(false);
@@ -96,7 +108,7 @@ export default function EndpointsForm({ title, close, action, token, resourceTyp
               sendNotification({ msg: e.message + ' the config', variant: 'error' });
             });
           break;
-        case 'modify':
+        case 'create':
           break;
         default:
           break;
@@ -123,8 +135,8 @@ export default function EndpointsForm({ title, close, action, token, resourceTyp
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <TextField
-              id="User ID"
-              label="User ID"
+              id="Resource Type"
+              label="Resource Type"
               variant="outlined"
               defaultValue={resourceTypeName}
               disabled
@@ -135,17 +147,18 @@ export default function EndpointsForm({ title, close, action, token, resourceTyp
           </Grid>
           <Grid item xs={12}>
             <TextField
-              id="Resource node name"
-              label="Resource node name"
+              id="Endpoint"
+              label="Endpoint"
               variant="outlined"
+              value={endpoint}
               sx={{
                 width: '100%'
               }}
               onChange={(event) => {
-                setName(event.target.value);
+                setEndpoint(event.target.value);
               }}
               helperText={cases()}
-              error={name === '' || name.indexOf(' ') >= 0}
+              error={endpoint === '' || endpoint.indexOf(' ') >= 0 || urlPattern.test(endpoint) === false}
             />
           </Grid>
         </Grid>
