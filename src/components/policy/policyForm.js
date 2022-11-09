@@ -104,7 +104,6 @@ export default function PolicyForm({
     }
   };
 
-
   // ACCESS
   const [access, setAccess] = React.useState(action === 'create' ? '' : data.access_to);
   const [accessList, setAccessList] = React.useState([
@@ -120,19 +119,19 @@ export default function PolicyForm({
   };
 
   React.useEffect(() => {
-    getTheResources()
-   
-    if (action === 'create') { 
-      setAccess('')
-      setAccessList([]) } 
+    getTheResources();
+
+    if (action === 'create') {
+      setAccess('');
+      setAccessList([]);
+    }
   }, []);
 
   React.useEffect(() => {
-    const data=(action === 'modify')?resource[0]:""
+    const data = action === 'modify' ? resource[0] : '';
     const areThisValuesInside = resources.filter((e) => e.name === data);
-    (areThisValuesInside.length > 0)?getTheEndPoints(resource[0]):setAccessList([])
+    areThisValuesInside.length > 0 ? getTheEndPoints(resource[0]) : setAccessList([]);
   }, [resources]);
-
 
   // MODE
   const [mode, setMode] = React.useState(action === 'create' ? [] : data.mode);
@@ -392,14 +391,14 @@ export default function PolicyForm({
       client
         .query({
           query: gql`
-          query getEndpoints($resourceTypeName: String!) {
-            getEndpoints(resourceTypeName: $resourceTypeName) {
-              name
-              resourceTypeName
-              nameAndID
+            query getEndpoints($resourceTypeName: String!) {
+              getEndpoints(resourceTypeName: $resourceTypeName) {
+                name
+                resourceTypeName
+                nameAndID
+              }
             }
-          }
-        `,
+          `,
           variables: { resourceTypeName: resourceTypeName }
         })
         .then((response) => {
@@ -429,7 +428,7 @@ export default function PolicyForm({
         })
         .catch(() => {
           setAccess('');
-          setAccessList([])
+          setAccessList([]);
         });
     }
   };
@@ -539,7 +538,7 @@ export default function PolicyForm({
               fullWidth={true}
               freeSolo={!limitTheNumberOfValues}
               getOptionDisabled={() => (limitTheNumberOfValues ? true : false)}
-              defaultValue={action === 'create' ?  [] : resource}
+              defaultValue={action === 'create' ? [] : resource}
               onChange={(event, value) => handleResource(event, value)}
               renderTags={(value, getTagProps) =>
                 value.map((option, index) => (
@@ -560,7 +559,9 @@ export default function PolicyForm({
                 variant="outlined"
                 options={accessList}
                 fullWidth={true}
-                defaultValue={action === 'create' ? { name: "default", value: "default" } : { name: access, value: access }}
+                defaultValue={
+                  action === 'create' ? { name: 'default', value: 'default' } : { name: access, value: access }
+                }
                 onChange={(event, value) => handleAccessAutocomplete(event, value)}
                 getOptionLabel={(option) => option.name}
                 isOptionEqualToValue={(option, value) => option.value === value.value}
