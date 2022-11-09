@@ -2,7 +2,6 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -14,13 +13,10 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Checkbox from '@mui/material/Checkbox';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { visuallyHidden } from '@mui/utils';
-import { Grid } from '@mui/material';
 import EndpointsTable from './endpointsTable';
 import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
@@ -148,7 +144,7 @@ export default function ResourceTable({ token, tokenData, env, resources, getThe
       id: 'name',
       numeric: false,
       disablePadding: false,
-      label: 'Name',
+      label: 'Name'
     },
     {
       id: 'author',
@@ -353,7 +349,6 @@ export default function ResourceTable({ token, tokenData, env, resources, getThe
                   token={token}
                   tokenData={tokenData}
                   env={env}
-
                   getTheResources={getTheResources}
                 ></EnhancedRows>
               ))}
@@ -365,11 +360,8 @@ export default function ResourceTable({ token, tokenData, env, resources, getThe
   );
 }
 
-function EnhancedRows({ row, isItemSelected, token,handleClick, tokenData, env, getTheResources }) {
+function EnhancedRows({ row, isItemSelected, token, handleClick, tokenData, env, getTheResources }) {
   const [open, setOpen] = React.useState(false);
-  const manageOpens = () => {
-    setOpen(!open);
-  };
   return (
     <React.Fragment>
       <TableRow
@@ -379,25 +371,19 @@ function EnhancedRows({ row, isItemSelected, token,handleClick, tokenData, env, 
         tabIndex={-1}
         key={''}
         selected={isItemSelected}
-        onClick={(event) => (event.target.parentElement.id === "endpoint")?"":handleClick(row.name)}
+        onClick={(event) => (event.target.parentElement.id === 'endpoint' ? '' : handleClick(row.name))}
         sx={{ '& > *': { borderBottom: 'unset' } }}
       >
-        <TableCell padding="checkbox" >
-       
-        </TableCell>
-        <TableCell  align="left">
-          {row.name}
-        </TableCell>
-        <TableCell  align="left">
-          {row.userID}
-        </TableCell>
+        <TableCell padding="checkbox"></TableCell>
+        <TableCell align="left">{row.name}</TableCell>
+        <TableCell align="left">{row.userID}</TableCell>
         <EndpointsTable
-                  token={token}
-                  tokenData={tokenData}
-                  env={env}
-                  resourceTypeName={row.name}
-                  getTheResources={getTheResources}
-                ></EndpointsTable>
+          token={token}
+          tokenData={tokenData}
+          env={env}
+          resourceTypeName={row.name}
+          getTheResources={getTheResources}
+        ></EndpointsTable>
       </TableRow>
     </React.Fragment>
   );

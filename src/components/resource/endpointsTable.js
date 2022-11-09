@@ -1,21 +1,9 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
-import { lighten } from '@mui/material';
-import Box from '@mui/material/Box';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import EditIcon from '@mui/icons-material/Edit';
-import { visuallyHidden } from '@mui/utils';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import { useTheme } from '@mui/material/styles';
@@ -36,14 +24,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Grow direction="up" ref={ref} {...props} />;
 });
 
-const SecondaryColorRow = styled(TableRow)(({ theme }) => ({
-  '&.Mui-selected': {
-    backgroundColor: lighten(theme.palette.secondary.light, 0.7)
-  },
-  '&.Mui-selected:hover': {
-    backgroundColor: lighten(theme.palette.secondary.light, 0.5)
-  }
-}));
 export default function EndpointsTable({ token, resourceTypeName, env, getTheResources }) {
   const httpLink = createHttpLink({
     uri: typeof env !== 'undefined' ? env.CONFIGURATION_API_URL : ''
@@ -87,8 +67,6 @@ export default function EndpointsTable({ token, resourceTypeName, env, getTheRes
     console.log(msg);
   }, []);
 
-
-
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -102,17 +80,16 @@ export default function EndpointsTable({ token, resourceTypeName, env, getTheRes
 
   return rows.length > 0 ? (
     <>
-
       {rows.map((row) => {
         return (
           <>
-            <TableCell component="th" align="left" scope="row" padding="none" >
+            <TableCell component="th" align="left" scope="row" padding="none">
               {row.name}
             </TableCell>
             <TableCell component="th" align="right" scope="row" padding="none" onClick={handlePropagation}>
               <Tooltip title="Modify the link">
                 <IconButton>
-                  <EditIcon onClick={() => setOpen(true)} color={"secondary"}/>
+                  <EditIcon onClick={() => setOpen(true)} color={'secondary'} />
                 </IconButton>
               </Tooltip>
             </TableCell>
@@ -120,7 +97,7 @@ export default function EndpointsTable({ token, resourceTypeName, env, getTheRes
         );
       })}
       <DialogRounded
-       unmountonexit="true"
+        unmountonexit="true"
         open={open}
         fullWidth={true}
         maxWidth={'xl'}

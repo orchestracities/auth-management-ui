@@ -90,23 +90,24 @@ describe('GraphQL-Mutations', function () {
 
   const newResourceType = {
     query: `
-        mutation newResourceType($name: String!, $userID: String!) {
-            newResourceType(name: $name,userID:$userID) {
-              name
-              userID
-            }
-          }`,
-    variables: { name: 'newName', userID: '5c67b251-6f63-46f3-b3b0-085e1f7040b2' }
+    mutation newResourceType($name: String!, $userID: String!, $tenantID: String!) {
+      newResourceType(name: $name, userID: $userID, tenantID: $tenantID) {
+        name
+        userID
+        tenantID
+      }
+    }`,
+    variables: { name: 'newName', userID: '5c67b251-6f63-46f3-b3b0-085e1f7040b2', tenantID: 'Tenant1' }
   };
 
   const deleteResourceType = {
     query: `
-        mutation deleteResourceType($name: [String]!) {
-            deleteResourceType(name: $name) {
-              name
-              userID
-            }
-          }`,
+    mutation deleteResourceType($name: [String]!) {
+      deleteResourceType(name: $name) {
+        name
+        userID
+      }
+    }`,
     variables: { name: ['newName'] }
   };
 
@@ -121,6 +122,19 @@ describe('GraphQL-Mutations', function () {
           }`,
     variables: { nameAndID: 'endpointName/newName', name: 'endpointName', resourceTypeName: 'newName' }
   };
+
+  const updateEndpoint = {
+    query: `
+    mutation updateThisEndpoint($nameAndID: String!, $name: String!, $resourceTypeName: String!) {
+      updateThisEndpoint(nameAndID: $nameAndID, name: $name, resourceTypeName: $resourceTypeName) {
+        name
+        resourceTypeName
+        nameAndID
+      }
+    }`,
+    variables: { nameAndID: 'endpointName/newName', name: 'endpointName3', resourceTypeName: 'newName' }
+  };
+
   const deleteThisEndpoint = {
     query: `
         mutation deleteThisEndpoint($name: [String]!) {
@@ -130,7 +144,7 @@ describe('GraphQL-Mutations', function () {
               nameAndID
             }
           }`,
-    variables: { name: ['endpointName'] }
+    variables: { name: ['endpointName3'] }
   };
 
   it('create new tenant configuration', (done) => {
@@ -236,6 +250,7 @@ describe('GraphQL-Mutations', function () {
             if (err) return done(err);
             expect(res.body.data.newResourceType[0]).to.have.own.property('name');
             expect(res.body.data.newResourceType[0]).to.have.own.property('userID');
+            expect(res.body.data.newResourceType[0]).to.have.own.property('tenantID');
             done();
           });
       });
@@ -255,7 +270,8 @@ describe('GraphQL-Mutations', function () {
           .expect(200)
           .end((err, res) => {
             if (err) return done(err);
-            expect(res.body.data.deleteResourceType).to.be.a('null');
+            expect(res.body.data.deleteResourceType[0]).to.have.own.property('name');
+            expect(res.body.data.deleteResourceType[0]).to.have.own.property('userID');
             done();
           });
       });
@@ -283,6 +299,28 @@ describe('GraphQL-Mutations', function () {
       });
   });
 
+  it('New Endpoint', (done) => {
+    request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
+      .post('/')
+      .set('Content-type', 'application/x-www-form-urlencoded')
+      .send(loginSettings)
+      .end(function (err, res) {
+        const token = res.body.access_token;
+        request(url)
+          .post('/')
+          .set('Authorization', `Bearer ${token}`)
+          .send(updateEndpoint)
+          .expect(200)
+          .end((err, res) => {
+            if (err) return done(err);
+            expect(res.body.data.updateThisEndpoint[0]).to.have.own.property('name');
+            expect(res.body.data.updateThisEndpoint[0]).to.have.own.property('resourceTypeName');
+            expect(res.body.data.updateThisEndpoint[0]).to.have.own.property('nameAndID');
+            done();
+          });
+      });
+  });
+
   it('Delete Endpoint', (done) => {
     request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
       .post('/')
@@ -297,7 +335,9 @@ describe('GraphQL-Mutations', function () {
           .expect(200)
           .end((err, res) => {
             if (err) return done(err);
-            expect(res.body.data.deleteThisEndpoint).to.be.a('null');
+            expect(res.body.data.deleteThisEndpoint[0]).to.have.own.property('name');
+            expect(res.body.data.deleteThisEndpoint[0]).to.have.own.property('resourceTypeName');
+            expect(res.body.data.deleteThisEndpoint[0]).to.have.own.property('nameAndID');
             done();
           });
       });

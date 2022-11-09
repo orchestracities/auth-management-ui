@@ -39,13 +39,14 @@ describe('GraphQL-Query', function () {
 
   const getUserResourceType = {
     query: `
-        query getUserResourceType($userID: String!) {
-            getUserResourceType(userID: $userID) {
-              name
-              userID
-            }
-          }`,
-    variables: { userID: '5c67b251-6f63-46f3-b3b0-085e1f7040b2' }
+    query getUserResourceType($tenantID: String!) {
+      getUserResourceType(tenantID: $tenantID) {
+        name
+        userID
+        tenantID
+      }
+    }`,
+    variables: { tenantID: 'Tenant1' }
   };
 
   const getEndpoints = {

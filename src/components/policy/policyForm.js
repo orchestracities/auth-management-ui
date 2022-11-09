@@ -84,28 +84,55 @@ export default function PolicyForm({
     setPath(event.target.value);
   };
 
-  // ACCESS
-  const [access, setAccess] = React.useState(action === 'create' ? '' : data.access_to);
-
-  const handleAccess = (event) => {
-    setAccess(event.target.value);
-  };
-
   // RESOURCE
   const [resource, setResource] = React.useState(action === 'create' ? [] : [data.resource_type]);
   const [limitTheNumberOfValues, setLimitTheNumberOfValues] = React.useState(action === 'create' ? false : true);
+  const [resources, setResources] = React.useState([]);
   const handleResource = (event, value) => {
     switch (true) {
       case value.length === 1 && resource.length === 0:
         setResource(value);
         setLimitTheNumberOfValues(true);
+        getTheEndPoints(value[0]);
         break;
       case value.length === 0 && resource.length === 1:
         setResource(value);
         setLimitTheNumberOfValues(false);
+        setAccess('');
+        getTheEndPoints(value[0]);
         break;
     }
   };
+
+
+  // ACCESS
+  const [access, setAccess] = React.useState(action === 'create' ? '' : data.access_to);
+  const [accessList, setAccessList] = React.useState([
+    { name: '*', value: '*' },
+    { name: 'default', value: 'default' }
+  ]);
+  const handleAccess = (event) => {
+    setAccess(event.target.value);
+  };
+
+  const handleAccessAutocomplete = (event, data) => {
+    setAccess(data.value);
+  };
+
+  React.useEffect(() => {
+    getTheResources()
+   
+    if (action === 'create') { 
+      setAccess('')
+      setAccessList([]) } 
+  }, []);
+
+  React.useEffect(() => {
+    const data=(action === 'modify')?resource[0]:""
+    const areThisValuesInside = resources.filter((e) => e.name === data);
+    (areThisValuesInside.length > 0)?getTheEndPoints(resource[0]):setAccessList([])
+  }, [resources]);
+
 
   // MODE
   const [mode, setMode] = React.useState(action === 'create' ? [] : data.mode);
@@ -352,11 +379,59 @@ export default function PolicyForm({
         variables: { tenantID: services[0].tenant_id }
       })
       .then((data) => {
-        setDataModel(data.data.getUserResourceType);
+        setResources(data.data.getUserResourceType);
       })
       .catch((e) => {
         sendNotification({ msg: e.message + ' the config', variant: 'error' });
       });
+  };
+
+  const getTheEndPoints = (resourceTypeName) => {
+    const areThisValuesInside = resources.filter((e) => e.name === resourceTypeName);
+    if (areThisValuesInside.length > 0) {
+      client
+        .query({
+          query: gql`
+          query getEndpoints($resourceTypeName: String!) {
+            getEndpoints(resourceTypeName: $resourceTypeName) {
+              name
+              resourceTypeName
+              nameAndID
+            }
+          }
+        `,
+          variables: { resourceTypeName: resourceTypeName }
+        })
+        .then((response) => {
+          axios
+            .get(response.data.getEndpoints[0].name, {
+              'fiware-Service': tenantName('name'),
+              'fiware-ServicePath': path
+            })
+            .then((response) => {
+              setAccessList([
+                ...response.data,
+                ...[
+                  { name: '*', value: '*' },
+                  { name: 'default', value: 'default' }
+                ]
+              ]);
+              setAccess('');
+            })
+            .catch((e) => {
+              setAccessList([
+                { name: '*', value: '*' },
+                { name: 'default', value: 'default' }
+              ]);
+              setAccess('');
+              setError(e);
+            });
+        })
+        .catch(() => {
+          setAccess('');
+          setAccessList([])
+        });
+    }
   };
 
   const errorCases = (value) => {
@@ -454,28 +529,17 @@ export default function PolicyForm({
             </FormControl>
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              id="access"
-              variant="outlined"
-              value={access}
-              label={<Trans>policies.form.resource</Trans>}
-              onChange={handleAccess}
-              sx={{
-                width: '100%'
-              }}
-            />
-          </Grid>
-          <Grid item xs={12}>
             <Autocomplete
               multiple
               id="tags-filled"
-              options={dataModel.map((option) => option.name)}
+              color="primary"
+              options={resources.map((option) => option.name)}
               loading={loading}
               onOpen={() => getTheResources()}
               fullWidth={true}
               freeSolo={!limitTheNumberOfValues}
               getOptionDisabled={() => (limitTheNumberOfValues ? true : false)}
-              defaultValue={action === 'create' ? [] : resource}
+              defaultValue={action === 'create' ?  [] : resource}
               onChange={(event, value) => handleResource(event, value)}
               renderTags={(value, getTagProps) =>
                 value.map((option, index) => (
@@ -487,6 +551,36 @@ export default function PolicyForm({
               )}
             />
           </Grid>
+          {accessList.length > 0 ? (
+            <Grid item xs={12}>
+              <Autocomplete
+                disablePortal
+                color="secondary"
+                key={'accessName'}
+                variant="outlined"
+                options={accessList}
+                fullWidth={true}
+                defaultValue={action === 'create' ? { name: "default", value: "default" } : { name: access, value: access }}
+                onChange={(event, value) => handleAccessAutocomplete(event, value)}
+                getOptionLabel={(option) => option.name}
+                isOptionEqualToValue={(option, value) => option.value === value.value}
+                renderInput={(params) => <TextField {...params} label={<Trans>policies.form.resource</Trans>} />}
+              />
+            </Grid>
+          ) : (
+            <Grid item xs={12}>
+              <TextField
+                id="access"
+                variant="outlined"
+                value={access}
+                label={<Trans>policies.form.resource</Trans>}
+                onChange={handleAccess}
+                sx={{
+                  width: '100%'
+                }}
+              />
+            </Grid>
+          )}
           <Grid item xs={12}>
             <FormControl fullWidth>
               <InputLabel id="mode" error={errorCases(mode)}>
