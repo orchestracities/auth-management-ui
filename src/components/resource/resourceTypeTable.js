@@ -145,16 +145,28 @@ export default function ResourceTable({ token, tokenData, env, resources, getThe
 
   const headCells = [
     {
-      id: 'Dropdown',
+      id: 'name',
       numeric: false,
       disablePadding: false,
-      label: ''
+      label: 'Name',
     },
     {
       id: 'author',
       numeric: false,
       disablePadding: false,
       label: 'Created By'
+    },
+    {
+      id: 'endpoint',
+      numeric: false,
+      disablePadding: true,
+      label: 'Endpoint Link'
+    },
+    {
+      id: 'modify',
+      numeric: false,
+      disablePadding: false,
+      label: ''
     }
   ];
 
@@ -341,6 +353,7 @@ export default function ResourceTable({ token, tokenData, env, resources, getThe
                   token={token}
                   tokenData={tokenData}
                   env={env}
+
                   getTheResources={getTheResources}
                 ></EnhancedRows>
               ))}
@@ -352,7 +365,7 @@ export default function ResourceTable({ token, tokenData, env, resources, getThe
   );
 }
 
-function EnhancedRows({ row, isItemSelected, token, handleClick, tokenData, env, getTheResources }) {
+function EnhancedRows({ row, isItemSelected, token,handleClick, tokenData, env, getTheResources }) {
   const [open, setOpen] = React.useState(false);
   const manageOpens = () => {
     setOpen(!open);
@@ -366,40 +379,25 @@ function EnhancedRows({ row, isItemSelected, token, handleClick, tokenData, env,
         tabIndex={-1}
         key={''}
         selected={isItemSelected}
+        onClick={(event) => (event.target.parentElement.id === "endpoint")?"":handleClick(row.name)}
         sx={{ '& > *': { borderBottom: 'unset' } }}
       >
-        <TableCell padding="checkbox">
-          <IconButton aria-label="expand row" size="small" onClick={() => manageOpens()}>
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
-          {''}
+        <TableCell padding="checkbox" >
+       
         </TableCell>
-        <TableCell onClick={() => handleClick(row.name)} align="left">
+        <TableCell  align="left">
           {row.name}
         </TableCell>
-        <TableCell onClick={() => handleClick(row.name)} align="left">
+        <TableCell  align="left">
           {row.userID}
         </TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell
-          style={open ? { paddingBottom: 15, paddingTop: 10 } : { paddingBottom: 0, paddingTop: 0 }}
-          colSpan={6}
-        >
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <EndpointsTable
+        <EndpointsTable
                   token={token}
                   tokenData={tokenData}
                   env={env}
                   resourceTypeName={row.name}
                   getTheResources={getTheResources}
                 ></EndpointsTable>
-              </Grid>
-            </Grid>
-          </Collapse>
-        </TableCell>
       </TableRow>
     </React.Fragment>
   );

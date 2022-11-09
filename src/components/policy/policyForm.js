@@ -93,7 +93,7 @@ export default function PolicyForm({
 
   // RESOURCE
   const [resource, setResource] = React.useState(action === 'create' ? [] : [data.resource_type]);
-  const [limitTheNumberOfValues, setLimitTheNumberOfValues] = React.useState(false);
+  const [limitTheNumberOfValues, setLimitTheNumberOfValues] = React.useState(action === 'create' ? false : true);
   const handleResource = (event, value) => {
     switch (true) {
       case value.length === 1 && resource.length === 0:
@@ -349,7 +349,7 @@ export default function PolicyForm({
             }
           }
         `,
-        variables: { tenantID: data[0].tenant_id }
+        variables: { tenantID: services[0].tenant_id }
       })
       .then((data) => {
         setDataModel(data.data.getUserResourceType);
