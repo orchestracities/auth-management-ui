@@ -18,7 +18,8 @@ async function getResource(data) {
   // Resource.deleteMany({}, function (err) {console.log(err)})
   if (data.tenantID !== '') {
     const resourceTypes = await Resource.find({ tenantID: data.tenantID });
-    return await resourceTypes;
+    const fiwareType = await Resource.find({ tenantID: 'fiwareType' });
+    return [...(await resourceTypes), ...(await fiwareType)];
   } else {
     const resourceTypes = await Resource.find({});
     return await resourceTypes;
