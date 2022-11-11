@@ -2,7 +2,6 @@ import * as React from 'react';
 import MainTitle from '../components/shared/mainTitle';
 import AddButton from '../components/shared/addButton';
 import { Grid } from '@mui/material';
-import Grow from '@mui/material/Grow';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import ResourceTable from '../components/resource/resourceTypeTable';
