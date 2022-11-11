@@ -48,42 +48,41 @@ ResourceTypeCreation.propTypes = {
   /**
    * The hook function to close the modal
    */
-   close: PropTypes.func,
+  close: PropTypes.func,
 
   /**
    * The token passed by keycloack
    */
-   token: PropTypes.string,
-    /**
+  token: PropTypes.string,
+  /**
    * The form action
    */
   action: PropTypes.oneOf(['create']),
- /**
+  /**
    * The data inside the token after the decode
    */
   tokendata: PropTypes.object,
- /**
+  /**
    * The ENV variables
    */
   env: PropTypes.object,
-   /**
+  /**
    * The function to call to get the resources
    */
-    getTheResources: PropTypes.func,
+  getTheResources: PropTypes.func,
   /**
    * The Tenant name
    */
-   thisTenant: PropTypes.string,
-  
+  thisTenant: PropTypes.string
 };
 
 ResourceTypeCreation.defaultProps = {
-  title:"",
-  close:undefined,
-  action:"create",
-  token:"",
-  tokendata:{},
-  env:{},
-  getTheResources:undefined,
-  thisTenant:""
+  title: '',
+  close: undefined,
+  action: 'create',
+  token: '',
+  tokendata: {},
+  env: {},
+  getTheResources: undefined,
+  thisTenant: ''
 };

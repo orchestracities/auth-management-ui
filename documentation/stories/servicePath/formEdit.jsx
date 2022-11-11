@@ -50,38 +50,37 @@ EndpointEdit.propTypes = {
    */
   close: PropTypes.func,
   /**
- * The form action
- */
+   * The form action
+   */
   action: PropTypes.oneOf(['modify']),
   /**
    * The token passed by keycloack
    */
   token: PropTypes.string,
   /**
-    * The Resource Type name
-    */
-   resourceTypeName: PropTypes.string,
+   * The Resource Type name
+   */
+  resourceTypeName: PropTypes.string,
   /**
-    * The ENV variables
-    */
+   * The ENV variables
+   */
   env: PropTypes.object,
   /**
-  * The function to call to get the resources
-  */
+   * The function to call to get the resources
+   */
   getTheResources: PropTypes.func,
   /**
    * The data that needs to be displayed
    */
-   data: PropTypes.arrayOf(PropTypes.object),
-
+  data: PropTypes.arrayOf(PropTypes.object)
 };
 
 EndpointEdit.defaultProps = {
-  title: "",
+  title: '',
   close: undefined,
-  action: "modify",
-  token: "",
-  resourceTypeName: "",
+  action: 'modify',
+  token: '',
+  resourceTypeName: '',
   env: {},
   getTheResources: undefined,
   data: []

@@ -21,6 +21,7 @@ import EndpointsTable from './endpointsTable';
 import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import useNotification from '../shared/messages/alerts';
+import { Trans } from 'react-i18next';
 
 export default function ResourceTable({ token, tokenData, env, resources, getTheResources }) {
   const httpLink = createHttpLink({
@@ -144,19 +145,19 @@ export default function ResourceTable({ token, tokenData, env, resources, getThe
       id: 'name',
       numeric: false,
       disablePadding: false,
-      label: 'Name'
+      label: <Trans>resourceType.table.name</Trans>
     },
     {
       id: 'author',
       numeric: false,
       disablePadding: false,
-      label: 'Created By'
+      label: <Trans>resourceType.table.author</Trans>
     },
     {
       id: 'endpoint',
       numeric: false,
       disablePadding: true,
-      label: 'Endpoint Link'
+      label: <Trans>resourceType.table.endpoint</Trans>
     },
     {
       id: 'modify',
@@ -234,7 +235,7 @@ export default function ResourceTable({ token, tokenData, env, resources, getThe
       >
         {numSelected > 0 ? (
           <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">
-            {numSelected} selected
+            <Trans i18nKey="policies.table.selected" values={{ name: numSelected }} />
           </Typography>
         ) : (
           ''
@@ -361,7 +362,6 @@ export default function ResourceTable({ token, tokenData, env, resources, getThe
 }
 
 function EnhancedRows({ row, isItemSelected, token, handleClick, tokenData, env, getTheResources }) {
-  const [open, setOpen] = React.useState(false);
   return (
     <React.Fragment>
       <TableRow

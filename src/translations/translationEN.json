@@ -77,6 +77,17 @@
       "mainTitle": "Main data"
     }
   },
+  "resourceType":{
+    "form":{
+      "resourceName":"Resource Type",
+      "endpoint":"Endpoint"
+    },
+    "table": {
+     "name":"name",
+     "author":"Created By",
+     "endpoint":"Endpoint Link"
+    }
+  },
   "common": {
     "messages":{
       "sucessUpdate": "{{data}}  Updated",

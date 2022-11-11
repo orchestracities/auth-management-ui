@@ -166,7 +166,7 @@ export default function ResourceForm({ title, close, action, token, tokenData, e
           <Grid item xs={12}>
             <TextField
               id="name"
-              label="Resource type name"
+              label={<Trans>resourceType.form.ResourceName</Trans>}
               variant="outlined"
               sx={{
                 width: '100%'
@@ -181,7 +181,7 @@ export default function ResourceForm({ title, close, action, token, tokenData, e
           <Grid item xs={12}>
             <TextField
               id="Endpoint"
-              label="Endpoint"
+              label={<Trans>resourceType.form.endpoint</Trans>}
               variant="outlined"
               sx={{
                 width: '100%'

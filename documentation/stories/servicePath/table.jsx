@@ -45,26 +45,26 @@ ServicePathTable.propTypes = {
   /**
    * The user token decoded passed by Keycloack
    */
-   tokenData: PropTypes.object,
+  tokenData: PropTypes.object,
 
   /**
    * the ENV variables
    */
-   env: PropTypes.object,
- /**
+  env: PropTypes.object,
+  /**
    * the array of values that will be displayed
    */
   resources: PropTypes.arrayOf(PropTypes.object),
   /**
    * The function to get the resource types data after a save
    */
-   getTheResources: PropTypes.func,
+  getTheResources: PropTypes.func
 };
 
 ServicePathTable.defaultProps = {
-    token:"",
-    tokenData:{},
-    env:{},
-    resources:[],
-    getTheResources:undefined
+  token: '',
+  tokenData: {},
+  env: {},
+  resources: [],
+  getTheResources: undefined
 };

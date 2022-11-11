@@ -77,6 +77,17 @@
       "mainTitle": "Dati principali"
     }
   },
+  "resourceType":{
+    "form":{
+      "resourceName":"Tipo Risorsa",
+      "endpoint":"Endpoint"
+    },
+    "table": {
+     "name":"Nome",
+     "author":"Autore",
+     "endpoint":"Endpoint Link"
+    }
+  },
   "common": {
     "messages":{
       "sucessUpdate": "{{data}}  Aggiornato",

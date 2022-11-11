@@ -136,7 +136,7 @@ export default function EndpointsForm({ title, close, action, token, resourceTyp
           <Grid item xs={12}>
             <TextField
               id="Resource Type"
-              label="Resource Type"
+              label={<Trans>resourceType.form.ResourceName</Trans>}
               variant="outlined"
               defaultValue={resourceTypeName}
               disabled
@@ -148,7 +148,7 @@ export default function EndpointsForm({ title, close, action, token, resourceTyp
           <Grid item xs={12}>
             <TextField
               id="Endpoint"
-              label="Endpoint"
+              label={<Trans>resourceType.form.endpoint</Trans>}
               variant="outlined"
               value={endpoint}
               sx={{

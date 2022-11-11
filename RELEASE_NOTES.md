@@ -5,6 +5,7 @@
 ### New features
 
 - New form for creating resource types and endpoints
+- New interaction between policies and resource types
 
 ### Bug fixes
 
