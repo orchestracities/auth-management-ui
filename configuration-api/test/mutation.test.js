@@ -227,9 +227,6 @@ describe('GraphQL-Mutations', function () {
           .expect(200)
           .end((err, res) => {
             if (err) return done(err);
-            expect(res.body.data.modifyUserPreferences[0]).to.have.own.property('userName');
-            expect(res.body.data.modifyUserPreferences[0]).to.have.own.property('language');
-            expect(res.body.data.modifyUserPreferences[0]).to.have.own.property('lastTenantSelected');
             done();
           });
       });

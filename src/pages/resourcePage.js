@@ -3,7 +3,6 @@ import MainTitle from '../components/shared/mainTitle';
 import AddButton from '../components/shared/addButton';
 import { Grid } from '@mui/material';
 import Grow from '@mui/material/Grow';
-import { Trans } from 'react-i18next';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import ResourceTable from '../components/resource/resourceTypeTable';
@@ -88,18 +87,16 @@ export default function ResourcePage({ token, graphqlErrors, env, tokenData, thi
         <Grid container spacing={2}>
           <Grid item xs={12}></Grid>
 
-          <Grow key={1} in={true} style={{ transformOrigin: '0 0 0' }} {...(1 === 1 ? { timeout: 1 * 600 } : {})}>
-            <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-              <ResourceTable
-                token={token}
-                tokenData={tokenData}
-                env={env}
-                thisTenant={thisTenant}
-                resources={resources}
-                getTheResources={getTheResources}
-              ></ResourceTable>
-            </Grid>
-          </Grow>
+          <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+            <ResourceTable
+              token={token}
+              tokenData={tokenData}
+              env={env}
+              thisTenant={thisTenant}
+              resources={resources}
+              getTheResources={getTheResources}
+            ></ResourceTable>
+          </Grid>
         </Grid>
       ) : (
         <Typography sx={{ padding: '20px' }} variant="h6" component="h3">
