@@ -13,16 +13,16 @@ jobs:
     strategy:
       matrix:
         node:
-          - 14
+          - 16
     steps:
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v3
         with:
           node-version: '${{ matrix.node }}'
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Generate env file
         run: cp .env.development .env
       - name: 'Cache node_modules'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-v${{ matrix.node }}-${{ hashFiles('**/package.json') }}

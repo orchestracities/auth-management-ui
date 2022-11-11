@@ -6,6 +6,7 @@
 
 - New form for creating resource types and endpoints
 - New interaction between policies and resource types
+- Update tests to use Node 16 (#93)
 
 ### Bug fixes
 
