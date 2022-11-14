@@ -95,7 +95,7 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
           : agentsNames.filter((e) => e.iri === thisAgent.replace(':' + thisAgentSplit, ''));
       agentString = agentString + foundAgent[0].name + (thisAgentSplit === '' ? ' ' : ' : ') + thisAgentSplit + '  ';
     }
-    return agentString;
+    return <Typography variant="body2">{agentString}</Typography>;
   };
 
   const modeToString = (modes) => {
