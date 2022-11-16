@@ -8,6 +8,8 @@
 
 ### Bug fixes
 
+- Fonts inside the policy table fixed
+
 ### Documentation
 
 ### Continuous Integration
