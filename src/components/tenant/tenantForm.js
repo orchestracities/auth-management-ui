@@ -137,20 +137,56 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
                   }
                 })
                 .then(() => {
-                  close(false);
-                  getTenants();
-                  sendNotification({
-                    msg: (
-                      <Trans
-                        i18nKey="common.messages.sucessCreate"
-                        values={{
-                          data: name
-                        }}
-                      />
-                    ),
-                    variant: 'success'
-                  });
-                  renewTokens();
+                  client
+                    .mutate({
+                      mutation: gql`
+                      mutation newResourceType($name: String!, $userID: String!, $tenantName: String!, resourceID:String!) {
+                        newResourceType(name: $name, userID: $userID, tenantName: $tenantName, resourceID:$resourceID) {
+                          name
+                          userID
+                          tenantName
+                          resourceID
+                        }
+                      }
+                    `,
+                      variables: { name: 'Orion', userID: '', tenantName: name, resourceID: name + '/' + 'Orion' }
+                    })
+                    .then(() => {
+                      client
+                        .mutate({
+                          mutation: gql`
+                            mutation addEndpoint($resourceID: String!, $url: String!) {
+                              addEndpoint(resourceID: $resourceID, url: $url) {
+                                url
+                                resourceID
+                              }
+                            }
+                          `,
+                          variables: { resourceID: name + '/' + 'Orion', url: env.REACT_APP_ORION }
+                        })
+                        .then(() => {
+                          close(false);
+                          getTenants();
+                          sendNotification({
+                            msg: (
+                              <Trans
+                                i18nKey="common.messages.sucessCreate"
+                                values={{
+                                  data: name
+                                }}
+                              />
+                            ),
+                            variant: 'success'
+                          });
+                          renewTokens();
+                        })
+                        .catch((e) => {
+                          sendNotification({ msg: e.message + ' the config', variant: 'error' });
+                        });
+                    })
+                    .catch((e) => {
+                      sendNotification({ msg: e.message + ' the config', variant: 'error' });
+                    });
                 })
                 .catch((e) => {
                   sendNotification({ msg: e.message + ' the config', variant: 'error' });

@@ -14,6 +14,7 @@ import { setContext } from '@apollo/client/link/context';
 import useNotification from '../shared/messages/alerts';
 import { Trans } from 'react-i18next';
 import * as log from 'loglevel';
+import isURL from 'validator/lib/isURL';
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -47,17 +48,7 @@ export default function EndpointsForm({ title, close, action, token, resourceTyp
     close(false);
   };
 
-  const urlPattern = new RegExp(
-    '^(https?:\\/\\/)?' +
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' +
-      '((\\d{1,3}\\.){3}\\d{1,3}))' +
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' +
-      '(\\?[;&a-z\\d%_.~+=-]*)?' +
-      '(\\#[-a-z\\d_]*)?$',
-    'i'
-  );
-
-  const [endpoint, setEndpoint] = React.useState(data[0].name);
+  const [endpoint, setEndpoint] = React.useState(data[0].url);
 
   const cases = () => {
     switch (true) {
@@ -65,7 +56,7 @@ export default function EndpointsForm({ title, close, action, token, resourceTyp
         return 'The url is mandatory';
       case endpoint.indexOf(' ') >= 0:
         return 'The url should be without spaces';
-      case urlPattern.test(endpoint) === false:
+      case isURL(endpoint) === false:
         return 'The url should be valid';
       default:
         return false;
@@ -79,30 +70,18 @@ export default function EndpointsForm({ title, close, action, token, resourceTyp
           client
             .mutate({
               mutation: gql`
-                mutation updateThisEndpoint($nameAndID: String!, $name: String!, $resourceTypeName: String!) {
-                  updateThisEndpoint(nameAndID: $nameAndID, name: $name, resourceTypeName: $resourceTypeName) {
-                    name
-                    resourceTypeName
-                    nameAndID
+                mutation updateThisEndpoint($resourceID: String!, $url: String!) {
+                  updateThisEndpoint(resourceID: $resourceID, url: $url) {
+                    url
+                    resourceID
                   }
                 }
               `,
-              variables: { nameAndID: data[0].nameAndID, name: endpoint, resourceTypeName: data[0].resourceTypeName }
+              variables: { resourceID: data[0].resourceID, url: endpoint }
             })
             .then(() => {
               close(false);
               getTheResources();
-              sendNotification({
-                msg: (
-                  <Trans
-                    i18nKey="common.messages.sucessCreate"
-                    values={{
-                      data: 'new Resource Type called: ' + name
-                    }}
-                  />
-                ),
-                variant: 'success'
-              });
             })
             .catch((e) => {
               sendNotification({ msg: e.message + ' the config', variant: 'error' });
@@ -114,6 +93,9 @@ export default function EndpointsForm({ title, close, action, token, resourceTyp
           break;
       }
     }
+  };
+  const handlePropagation = (e) => {
+    e.stopPropagation();
   };
 
   return (
@@ -136,7 +118,7 @@ export default function EndpointsForm({ title, close, action, token, resourceTyp
           <Grid item xs={12}>
             <TextField
               id="Resource Type"
-              label={<Trans>resourceType.form.ResourceName</Trans>}
+              label={<Trans>resourceType.form.resourceName</Trans>}
               variant="outlined"
               defaultValue={resourceTypeName}
               disabled
@@ -157,8 +139,9 @@ export default function EndpointsForm({ title, close, action, token, resourceTyp
               onChange={(event) => {
                 setEndpoint(event.target.value);
               }}
+              onClick={(e) => handlePropagation(e)}
               helperText={cases()}
-              error={endpoint === '' || endpoint.indexOf(' ') >= 0 || urlPattern.test(endpoint) === false}
+              error={endpoint === '' || endpoint.indexOf(' ') >= 0 || isURL(endpoint) === false}
             />
           </Grid>
         </Grid>

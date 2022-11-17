@@ -90,61 +90,65 @@ describe('GraphQL-Mutations', function () {
 
   const newResourceType = {
     query: `
-    mutation newResourceType($name: String!, $userID: String!, $tenantID: String!) {
-      newResourceType(name: $name, userID: $userID, tenantID: $tenantID) {
+    mutation newResourceType($name: String!, $userID: String!, $tenantName: String!, $resourceID: String!) {
+      newResourceType(name: $name, userID: $userID, tenantName: $tenantName, resourceID: $resourceID) {
         name
         userID
-        tenantID
+        tenantName
+        resourceID
       }
     }`,
-    variables: { name: 'newName', userID: '5c67b251-6f63-46f3-b3b0-085e1f7040b2', tenantID: 'Tenant1' }
-  };
+    variables: {
+      name: "new",
+      userID: "admin",
+      tenantName: "Tenant1",
+      resourceID: "Tenant1" + '/' + "new"
+    }  };
 
   const deleteResourceType = {
     query: `
-    mutation deleteResourceType($name: [String]!) {
-      deleteResourceType(name: $name) {
+    mutation deleteResourceType($resourceID: [String]!) {
+      deleteResourceType(resourceID: $resourceID) {
         name
         userID
+        tenantName
+        resourceID
       }
     }`,
-    variables: { name: ['newName'] }
+    variables: { resourceID: ["Tenant1" + '/' + "new"] }
   };
 
   const addEndpoint = {
     query: `
-        mutation addEndpoint($nameAndID: String!,$name: String!, $resourceTypeName: String!) {
-            addEndpoint(nameAndID: $nameAndID,name: $name,resourceTypeName:$resourceTypeName) {
-              name
-              resourceTypeName
-              nameAndID
-            }
-          }`,
-    variables: { nameAndID: 'endpointName/newName', name: 'endpointName', resourceTypeName: 'newName' }
-  };
+    mutation addEndpoint($resourceID: String!, $url: String!) {
+      addEndpoint(resourceID: $resourceID, url: $url) {
+        url
+        resourceID
+      }
+    }`,
+    variables: { resourceID: "Tenant1" + '/' + "new", url: "http..." }
+    };
 
   const updateEndpoint = {
     query: `
-    mutation updateThisEndpoint($nameAndID: String!, $name: String!, $resourceTypeName: String!) {
-      updateThisEndpoint(nameAndID: $nameAndID, name: $name, resourceTypeName: $resourceTypeName) {
-        name
-        resourceTypeName
-        nameAndID
+    mutation updateThisEndpoint($resourceID: String!, $url: String!) {
+      updateThisEndpoint(resourceID: $resourceID, url: $url) {
+        url
+        resourceID
       }
     }`,
-    variables: { nameAndID: 'endpointName/newName', name: 'endpointName3', resourceTypeName: 'newName' }
+    variables: { resourceID: "Tenant1" + '/' + "new", url: "httpnew." }
   };
 
   const deleteThisEndpoint = {
     query: `
-        mutation deleteThisEndpoint($name: [String]!) {
-            deleteThisEndpoint(name: $name) {
-              name
-              resourceTypeName
-              nameAndID
-            }
-          }`,
-    variables: { name: ['endpointName3'] }
+    mutation deleteThisEndpoint($resourceID: [String]!) {
+      deleteThisEndpoint(resourceID: $resourceID) {
+        url
+        resourceID
+      }
+    }`,
+    variables: { resourceID: "Tenant1" + '/' + "new" }
   };
 
   it('create new tenant configuration', (done) => {
@@ -247,7 +251,53 @@ describe('GraphQL-Mutations', function () {
             if (err) return done(err);
             expect(res.body.data.newResourceType[0]).to.have.own.property('name');
             expect(res.body.data.newResourceType[0]).to.have.own.property('userID');
-            expect(res.body.data.newResourceType[0]).to.have.own.property('tenantID');
+            expect(res.body.data.newResourceType[0]).to.have.own.property('tenantName');
+            expect(res.body.data.newResourceType[0]).to.have.own.property('resourceID');
+
+            done();
+          });
+      });
+  });
+
+ 
+
+  it('New Endpoint', (done) => {
+    request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
+      .post('/')
+      .set('Content-type', 'application/x-www-form-urlencoded')
+      .send(loginSettings)
+      .end(function (err, res) {
+        const token = res.body.access_token;
+        request(url)
+          .post('/')
+          .set('Authorization', `Bearer ${token}`)
+          .send(addEndpoint)
+          .expect(200)
+          .end((err, res) => {
+            if (err) return done(err);
+            expect(res.body.data.addEndpoint[0]).to.have.own.property('resourceID');
+            expect(res.body.data.addEndpoint[0]).to.have.own.property('url');
+            done();
+          });
+      });
+  });
+
+  it('update Endpoint', (done) => {
+    request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
+      .post('/')
+      .set('Content-type', 'application/x-www-form-urlencoded')
+      .send(loginSettings)
+      .end(function (err, res) {
+        const token = res.body.access_token;
+        request(url)
+          .post('/')
+          .set('Authorization', `Bearer ${token}`)
+          .send(updateEndpoint)
+          .expect(200)
+          .end((err, res) => {
+            if (err) return done(err);
+            expect(res.body.data.updateThisEndpoint[0]).to.have.own.property('resourceID');
+            expect(res.body.data.updateThisEndpoint[0]).to.have.own.property('url');
             done();
           });
       });
@@ -269,50 +319,8 @@ describe('GraphQL-Mutations', function () {
             if (err) return done(err);
             expect(res.body.data.deleteResourceType[0]).to.have.own.property('name');
             expect(res.body.data.deleteResourceType[0]).to.have.own.property('userID');
-            done();
-          });
-      });
-  });
-
-  it('New Endpoint', (done) => {
-    request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
-      .post('/')
-      .set('Content-type', 'application/x-www-form-urlencoded')
-      .send(loginSettings)
-      .end(function (err, res) {
-        const token = res.body.access_token;
-        request(url)
-          .post('/')
-          .set('Authorization', `Bearer ${token}`)
-          .send(addEndpoint)
-          .expect(200)
-          .end((err, res) => {
-            if (err) return done(err);
-            expect(res.body.data.addEndpoint[0]).to.have.own.property('name');
-            expect(res.body.data.addEndpoint[0]).to.have.own.property('resourceTypeName');
-            expect(res.body.data.addEndpoint[0]).to.have.own.property('nameAndID');
-            done();
-          });
-      });
-  });
-
-  it('New Endpoint', (done) => {
-    request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
-      .post('/')
-      .set('Content-type', 'application/x-www-form-urlencoded')
-      .send(loginSettings)
-      .end(function (err, res) {
-        const token = res.body.access_token;
-        request(url)
-          .post('/')
-          .set('Authorization', `Bearer ${token}`)
-          .send(updateEndpoint)
-          .expect(200)
-          .end((err, res) => {
-            if (err) return done(err);
-            expect(res.body.data.updateThisEndpoint[0]).to.have.own.property('name');
-            expect(res.body.data.updateThisEndpoint[0]).to.have.own.property('resourceTypeName');
-            expect(res.body.data.updateThisEndpoint[0]).to.have.own.property('nameAndID');
+            expect(res.body.data.deleteResourceType[0]).to.have.own.property('tenantName');
+            expect(res.body.data.deleteResourceType[0]).to.have.own.property('resourceID');
             done();
           });
       });
@@ -332,9 +340,8 @@ describe('GraphQL-Mutations', function () {
           .expect(200)
           .end((err, res) => {
             if (err) return done(err);
-            expect(res.body.data.deleteThisEndpoint[0]).to.have.own.property('name');
-            expect(res.body.data.deleteThisEndpoint[0]).to.have.own.property('resourceTypeName');
-            expect(res.body.data.deleteThisEndpoint[0]).to.have.own.property('nameAndID');
+            expect(res.body.data.deleteThisEndpoint[0]).to.have.own.property('resourceID');
+            expect(res.body.data.deleteThisEndpoint[0]).to.have.own.property('url');
             done();
           });
       });

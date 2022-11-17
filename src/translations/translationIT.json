@@ -86,6 +86,9 @@
      "name":"Nome",
      "author":"Autore",
      "endpoint":"Endpoint Link"
+    },
+    "page":{
+      "title":"Tipo Risorsa"
     }
   },
   "common": {

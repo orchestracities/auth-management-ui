@@ -39,25 +39,25 @@ const typeDefs = gql`
   type ResourceType {
     name: String!
     userID: String!
-    tenantID: String!
+    tenantName: String!
+    resourceID: String!
   }
   type ResourceEndpoint {
-    name: String!
-    resourceTypeName: String!
-    nameAndID: String!
+    url: String!
+    resourceID: String!
   }
   type Query {
     listTenants(tenantNames: [String]!): [TenantConfiguration]
     getUserPreferences(userName: String!): [UserPreferencies]
-    getUserResourceType(tenantID: String!): [ResourceType]
-    getEndpoints(resourceTypeName: String!): [ResourceEndpoint]
+    getTenantResourceType(tenantName: String!): [ResourceType]
+    getEndpoints(resourceID: String!): [ResourceEndpoint]
   }
   type Mutation {
-    newResourceType(name: String!, userID: String!, tenantID: String!): [ResourceType]
-    deleteResourceType(name: [String]!): [ResourceType]
-    deleteThisEndpoint(name: [String]!): [ResourceEndpoint]
-    addEndpoint(nameAndID: String!, name: String!, resourceTypeName: String!): [ResourceEndpoint]
-    updateThisEndpoint(nameAndID: String!, name: String!, resourceTypeName: String!): [ResourceEndpoint]
+    newResourceType(name: String!, userID: String!, tenantName: String!, resourceID: String!): [ResourceType]
+    deleteResourceType(resourceID: [String]!): [ResourceType]
+    deleteThisEndpoint(resourceID: [String]!): [ResourceEndpoint]
+    addEndpoint(resourceID: String!, url: String!): [ResourceEndpoint]
+    updateThisEndpoint(resourceID: String!, url: String!): [ResourceEndpoint]
     modifyUserPreferences(userName: String!, language: String!, lastTenantSelected: String): [UserPreferencies]
     getTenantConfig(
       name: String!
@@ -97,9 +97,9 @@ const resolvers = {
         throw new ApolloError({ data: { reason: err.message } });
       }
     },
-    getUserResourceType: async (object, args, context, info) => {
+    getTenantResourceType: async (object, args, context, info) => {
       try {
-        config.getLogger().info(logContext, 'getUserResourceType: %s', JSON.stringify(args));
+        config.getLogger().info(logContext, 'getTenantResourceType: %s', JSON.stringify(args));
         return await getResource(args);
       } catch (err) {
         config.getLogger().error(logContext, err);

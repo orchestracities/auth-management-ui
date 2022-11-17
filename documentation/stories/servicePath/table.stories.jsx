@@ -67,5 +67,8 @@ ResourceDisplay.args = {
     URI: 'http://localhost:3000/'
   },
   tokenData: {},
-  getTheResources: () => {}
+  getTheResources: () => {},
+  GeTenantData: () => {
+    return 'name';
+  }
 };

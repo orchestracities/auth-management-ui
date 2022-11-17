@@ -24,7 +24,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Grow direction="up" ref={ref} {...props} />;
 });
 
-export default function EndpointsTable({ token, resourceTypeName, env, getTheResources }) {
+export default function EndpointsTable({ token, resourceTypeName, env, getTheResources, GeTenantData }) {
   const httpLink = createHttpLink({
     uri: typeof env !== 'undefined' ? env.CONFIGURATION_API_URL : ''
   });
@@ -47,15 +47,14 @@ export default function EndpointsTable({ token, resourceTypeName, env, getTheRes
     client
       .query({
         query: gql`
-          query getEndpoints($resourceTypeName: String!) {
-            getEndpoints(resourceTypeName: $resourceTypeName) {
-              name
-              resourceTypeName
-              nameAndID
+          query getEndpoints($resourceID: String!) {
+            getEndpoints(resourceID: $resourceID) {
+              url
+              resourceID
             }
           }
         `,
-        variables: { resourceTypeName: resourceTypeName }
+        variables: { resourceID: GeTenantData('name') + '/' + resourceTypeName }
       })
       .then((response) => setRows(response.data.getEndpoints))
       .catch((e) => {
@@ -73,7 +72,6 @@ export default function EndpointsTable({ token, resourceTypeName, env, getTheRes
   const handleClose = () => {
     setOpen(false);
   };
-
   const handlePropagation = (e) => {
     e.stopPropagation();
   };
@@ -84,7 +82,7 @@ export default function EndpointsTable({ token, resourceTypeName, env, getTheRes
         return (
           <>
             <TableCell component="th" align="left" scope="row" padding="none">
-              {row.name}
+              {row.url}
             </TableCell>
             <TableCell component="th" align="right" scope="row" padding="none" onClick={handlePropagation}>
               <Tooltip title="Modify the link">
@@ -97,6 +95,7 @@ export default function EndpointsTable({ token, resourceTypeName, env, getTheRes
         );
       })}
       <DialogRounded
+        onClick={(e) => handlePropagation(e)}
         unmountonexit="true"
         open={open}
         fullWidth={true}

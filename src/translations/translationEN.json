@@ -86,6 +86,9 @@
      "name":"name",
      "author":"Created By",
      "endpoint":"Endpoint Link"
+    },
+    "page":{
+      "title":"Resource Type"
     }
   },
   "common": {

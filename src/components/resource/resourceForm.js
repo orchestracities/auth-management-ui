@@ -14,6 +14,7 @@ import { setContext } from '@apollo/client/link/context';
 import useNotification from '../shared/messages/alerts';
 import { Trans } from 'react-i18next';
 import * as log from 'loglevel';
+import isURL from 'validator/lib/isURL';
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -21,7 +22,7 @@ const CustomDialogTitle = styled(AppBar)({
   boxShadow: 'none'
 });
 
-export default function ResourceForm({ title, close, action, token, tokenData, env, getTheResources, thisTenant }) {
+export default function ResourceForm({ title, close, action, token, tokenData, env, getTheResources, GeTenantData }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
 
   const httpLink = createHttpLink({
@@ -47,16 +48,6 @@ export default function ResourceForm({ title, close, action, token, tokenData, e
     close(false);
   };
 
-  const urlPattern = new RegExp(
-    '^(https?:\\/\\/)?' +
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' +
-      '((\\d{1,3}\\.){3}\\d{1,3}))' +
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' +
-      '(\\?[;&a-z\\d%_.~+=-]*)?' +
-      '(\\#[-a-z\\d_]*)?$',
-    'i'
-  );
-
   const [name, setName] = React.useState('');
   const [endpoint, setEndpoint] = React.useState('');
 
@@ -77,7 +68,7 @@ export default function ResourceForm({ title, close, action, token, tokenData, e
         return 'The url is mandatory';
       case endpoint.indexOf(' ') >= 0:
         return 'The url should be without spaces';
-      case urlPattern.test(endpoint) === false:
+      case isURL(endpoint) === false:
         return 'The url should be valid';
       default:
         return false;
@@ -91,29 +82,34 @@ export default function ResourceForm({ title, close, action, token, tokenData, e
           client
             .mutate({
               mutation: gql`
-                mutation newResourceType($name: String!, $userID: String!, $tenantID: String!) {
-                  newResourceType(name: $name, userID: $userID, tenantID: $tenantID) {
+                mutation newResourceType($name: String!, $userID: String!, $tenantName: String!, $resourceID: String!) {
+                  newResourceType(name: $name, userID: $userID, tenantName: $tenantName, resourceID: $resourceID) {
                     name
                     userID
-                    tenantID
+                    tenantName
+                    resourceID
                   }
                 }
               `,
-              variables: { name: name, userID: tokenData.preferred_username, tenantID: thisTenant }
+              variables: {
+                name: name,
+                userID: tokenData.preferred_username,
+                tenantName: GeTenantData('name'),
+                resourceID: GeTenantData('name') + '/' + name
+              }
             })
             .then(() => {
               client
                 .mutate({
                   mutation: gql`
-                    mutation addEndpoint($nameAndID: String!, $name: String!, $resourceTypeName: String!) {
-                      addEndpoint(nameAndID: $nameAndID, name: $name, resourceTypeName: $resourceTypeName) {
-                        name
-                        resourceTypeName
-                        nameAndID
+                    mutation addEndpoint($resourceID: String!, $url: String!) {
+                      addEndpoint(resourceID: $resourceID, url: $url) {
+                        url
+                        resourceID
                       }
                     }
                   `,
-                  variables: { nameAndID: name + '/' + thisTenant, name: endpoint, resourceTypeName: name }
+                  variables: { resourceID: GeTenantData('name') + '/' + name, url: endpoint }
                 })
                 .then(() => {
                   close(false);
@@ -166,7 +162,7 @@ export default function ResourceForm({ title, close, action, token, tokenData, e
           <Grid item xs={12}>
             <TextField
               id="name"
-              label={<Trans>resourceType.form.ResourceName</Trans>}
+              label={<Trans>resourceType.form.resourceName</Trans>}
               variant="outlined"
               sx={{
                 width: '100%'
@@ -190,7 +186,7 @@ export default function ResourceForm({ title, close, action, token, tokenData, e
                 setEndpoint(event.target.value);
               }}
               helperText={linkCases()}
-              error={endpoint === '' || endpoint.indexOf(' ') >= 0 || urlPattern.test(endpoint) === false}
+              error={endpoint === '' || endpoint.indexOf(' ') >= 0 || isURL(endpoint) === false}
             />
           </Grid>
         </Grid>

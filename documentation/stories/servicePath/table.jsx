@@ -17,7 +17,7 @@ const theme = createTheme({
   }
 });
 
-export const ServicePathTable = ({ token, tokenData, env, resources, getTheResources }) => {
+export const ServicePathTable = ({ token, tokenData, env, resources, getTheResources, GeTenantData }) => {
   return (
     <SnackbarProvider maxSnack={5}>
       <ThemeProvider theme={theme}>
@@ -29,6 +29,7 @@ export const ServicePathTable = ({ token, tokenData, env, resources, getTheResou
               env={env}
               resources={resources}
               getTheResources={getTheResources}
+              GeTenantData={GeTenantData}
             />
           </Grid>
         </BrowserRouter>
@@ -58,7 +59,11 @@ ServicePathTable.propTypes = {
   /**
    * The function to get the resource types data after a save
    */
-  getTheResources: PropTypes.func
+  getTheResources: PropTypes.func,
+  /**
+   * The function to return the name or the ID of the tenant
+   */
+  GeTenantData: PropTypes.func
 };
 
 ServicePathTable.defaultProps = {
@@ -66,5 +71,6 @@ ServicePathTable.defaultProps = {
   tokenData: {},
   env: {},
   resources: [],
-  getTheResources: undefined
+  getTheResources: undefined,
+  GeTenantData: undefined
 };

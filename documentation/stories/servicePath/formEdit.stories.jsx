@@ -48,7 +48,7 @@ Modify.args = {
   close: () => {},
   action: 'create',
   token: '',
-  resourceTypeName: 'ResourceName',
+  resourceTypeName: 'resourceName',
   env: {
     ANUBIS_API_URL: 'http://localhost:8085/',
     CONFIGURATION_API_URL: 'http://localhost:4000/configuration',
@@ -64,9 +64,8 @@ Modify.args = {
   },
   data: [
     {
-      name: 'http://localhost:1026/v2/entities',
-      nameAndID: 'fiware',
-      resourceTypeName: 'entity'
+      url: 'http://localhost:1026/v2/entities',
+      resourceID: 'fiware'
     }
   ],
   getTheResources: () => {}

@@ -10,7 +10,9 @@ import * as log from 'loglevel';
 import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import useNotification from '../components/shared/messages/alerts';
-export default function ResourcePage({ token, graphqlErrors, env, tokenData, thisTenant }) {
+import { Trans } from 'react-i18next';
+
+export default function ResourcePage({ token, graphqlErrors, env, tokenData, thisTenant, tenantValues }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
 
   const httpLink = createHttpLink({
@@ -34,24 +36,34 @@ export default function ResourcePage({ token, graphqlErrors, env, tokenData, thi
 
   const [createOpen, setCreateOpen] = React.useState(false);
   const [resources, setResources] = React.useState([]);
-  const mainTitle = 'Title';
+  const mainTitle = <Trans>resourceType.page.title</Trans>;
+
+  const GeTenantData = (type) => {
+    const tenantArray = tenantValues.filter((e) => e.id === thisTenant);
+    if (type === 'name') {
+      return tenantArray[0].name;
+    } else {
+      return tenantArray[0].id;
+    }
+  };
 
   const getTheResources = () => {
     client
       .query({
         query: gql`
-          query getUserResourceType($tenantID: String!) {
-            getUserResourceType(tenantID: $tenantID) {
+          query getTenantResourceType($tenantName: String!) {
+            getTenantResourceType(tenantName: $tenantName) {
               name
               userID
-              tenantID
+              tenantName
+              resourceID
             }
           }
         `,
-        variables: { tenantID: thisTenant }
+        variables: { tenantName: GeTenantData('name') }
       })
       .then((data) => {
-        setResources(data.data.getUserResourceType);
+        setResources(data.data.getTenantResourceType);
       })
       .catch((e) => {
         sendNotification({ msg: e.message + ' the config', variant: 'error' });
@@ -71,7 +83,7 @@ export default function ResourcePage({ token, graphqlErrors, env, tokenData, thi
             title="New Resource Type"
             close={setCreateOpen}
             action={'create'}
-            thisTenant={thisTenant}
+            GeTenantData={GeTenantData}
             token={token}
             tokenData={tokenData}
             env={env}
@@ -91,7 +103,7 @@ export default function ResourcePage({ token, graphqlErrors, env, tokenData, thi
               token={token}
               tokenData={tokenData}
               env={env}
-              thisTenant={thisTenant}
+              GeTenantData={GeTenantData}
               resources={resources}
               getTheResources={getTheResources}
             ></ResourceTable>

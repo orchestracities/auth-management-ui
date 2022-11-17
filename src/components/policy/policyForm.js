@@ -367,18 +367,19 @@ export default function PolicyForm({
     client
       .query({
         query: gql`
-          query getUserResourceType($tenantID: String!) {
-            getUserResourceType(tenantID: $tenantID) {
+          query getTenantResourceType($tenantName: String!) {
+            getTenantResourceType(tenantName: $tenantName) {
               name
               userID
-              tenantID
+              tenantName
+              resourceID
             }
           }
         `,
-        variables: { tenantID: services[0].tenant_id }
+        variables: { tenantName: tenantName('name') }
       })
-      .then((data) => {
-        setResources(data.data.getUserResourceType);
+      .then((response) => {
+        setResources(response.data.getTenantResourceType);
       })
       .catch((e) => {
         sendNotification({ msg: e.message + ' the config', variant: 'error' });
@@ -391,19 +392,18 @@ export default function PolicyForm({
       client
         .query({
           query: gql`
-            query getEndpoints($resourceTypeName: String!) {
-              getEndpoints(resourceTypeName: $resourceTypeName) {
-                name
-                resourceTypeName
-                nameAndID
+            query getEndpoints($resourceID: String!) {
+              getEndpoints(resourceID: $resourceID) {
+                url
+                resourceID
               }
             }
           `,
-          variables: { resourceTypeName: resourceTypeName }
+          variables: { resourceID: tenantName('name') + '/' + resourceTypeName }
         })
         .then((response) => {
           axios
-            .get(response.data.getEndpoints[0].name, {
+            .get(response.data.getEndpoints[0].url, {
               'fiware-Service': tenantName('name'),
               'fiware-ServicePath': path
             })

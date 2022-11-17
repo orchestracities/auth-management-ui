@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 //require('dotenv').config({ path: '../.env' });
 
 const connection = mongoose.createConnection(process.env.MONGO_DB || 'mongodb://localhost:27017/graphql');
-const fiwareURL = process.env.FIWARE_SERVICE || 'http://localhost:1026/v2/entities';
+const fiwareURL = process.env.REACT_APP_ORION || 'http://localhost:1026/v2/entities';
 
 const TenantConfig = new mongoose.Schema({
   name: String,
@@ -14,18 +14,18 @@ const TenantConfig = new mongoose.Schema({
 });
 
 const ResourceType = new mongoose.Schema({
-  name: {
+  resourceID: {
     type: String,
     unique: true
   },
   userID: String,
-  tenantID: String
+  name: String,
+  tenantName: String
 });
 
 const ResourceEndpoint = new mongoose.Schema({
-  nameAndID: String,
-  name: String,
-  resourceTypeName: String
+  resourceID: String,
+  url: String
 });
 
 const Config = connection.model('TenantConfig', TenantConfig);
@@ -42,29 +42,59 @@ const Settings = connection.model('userSettings', userSettings);
 Resource.deleteMany({}, function (err) {
   Resource.create(
     {
-      name: 'entity',
+      resourceID: 'Tenant1/Orion',
       userID: '',
-      tenantID: 'fiwareType'
+      name: 'Orion',
+      tenantName: 'Tenant1'
     },
     function (err) {
       if (err) {
         console.log(err);
+      } else {
+        Resource.create(
+          {
+            resourceID: 'Tenant2/Orion',
+            userID: '',
+            name: 'Orion',
+            tenantName: 'Tenant2'
+          },
+          function (err) {
+            if (err) {
+              console.log(err);
+            }
+          }
+        );
       }
     }
   );
+
   Endpoints.deleteMany({}, function (err) {
     Endpoints.create(
       {
-        nameAndID: 'fiware',
-        name: fiwareURL,
-        resourceTypeName: 'entity'
+        resourceID: 'Tenant1/Orion',
+        url: fiwareURL
       },
       function (err) {
         if (err) {
           console.log(err);
+        } else {
+          Endpoints.create(
+            {
+              resourceID: 'Tenant2/Orion',
+              url: fiwareURL
+            },
+            function (err) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log('Resource Types Created');
+              }
+            }
+          );
         }
       }
     );
+
     Settings.deleteMany({}, function (err) {
       Config.deleteMany({}, function (err) {
         console.log('PopulateDB: clear old data...');

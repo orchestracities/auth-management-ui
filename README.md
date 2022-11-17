@@ -122,7 +122,7 @@ and the Configuration API:
 - `REACT_APP_IMAGE_SIZE`:the maximum allowed image size of the Tenant icon
 - `REACT_APP_LOG_LEVEL`:the console level (trace,debug,info,warn,error,silent)
 - `REACT_APP_KEYCLOACK_ADMIN`: the endpoint to retrive realm data
-- `FIWARE_SERVICE`:the url of fiware
+- `REACT_APP_ORION`:the url of fiware
 - `MONGO_DB`: the MongoDB endpoint of the Configuration API and by
   [populateDB.js](configuration-api/main/mongo/populateDB.js)
   to populate the Configuration API backend with example data

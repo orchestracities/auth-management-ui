@@ -37,28 +37,28 @@ describe('GraphQL-Query', function () {
     variables: { userName: '5c67b251-6f63-46f3-b3b0-085e1f7040b2' }
   };
 
-  const getUserResourceType = {
+  const getTenantResourceType = {
     query: `
-    query getUserResourceType($tenantID: String!) {
-      getUserResourceType(tenantID: $tenantID) {
+    query getTenantResourceType($tenantName: String!) {
+      getTenantResourceType(tenantName: $tenantName) {
         name
         userID
-        tenantID
+        tenantName
+        resourceID
       }
     }`,
-    variables: { tenantID: 'Tenant1' }
+    variables: { tenantName: 'Tenant1' }
   };
 
   const getEndpoints = {
     query: `
-        query getEndpoints($resourceTypeName: String!) {
-            getEndpoints(resourceTypeName: $resourceTypeName) {
-              name
-              resourceTypeName
-              nameAndID
-            }
-          }`,
-    variables: { resourceTypeName: 'resourceTypeName' }
+    query getEndpoints($resourceID: String!) {
+      getEndpoints(resourceID: $resourceID) {
+        url
+        resourceID
+      }
+    }`,
+    variables: { resourceID: 'Tenant1/Orion' }
   };
 
   it('Returns tenant properties', (done) => {
@@ -116,13 +116,13 @@ describe('GraphQL-Query', function () {
         request(url)
           .post('/')
           .set('Authorization', `Bearer ${token}`)
-          .send(getUserResourceType)
+          .send(getTenantResourceType)
           .expect(200)
           .end((err, res) => {
             if (err) return done(err);
             if (res.body.data.length > 0) {
-              expect(res.body.data.getUserResourceType[0]).to.have.own.property('name');
-              expect(res.body.data.getUserResourceType[0]).to.have.own.property('userID');
+              expect(res.body.data.getTenantResourceType[0]).to.have.own.property('name');
+              expect(res.body.data.getTenantResourceType[0]).to.have.own.property('userID');
             }
             done();
           });
@@ -145,7 +145,7 @@ describe('GraphQL-Query', function () {
             if (res.body.data.length > 0) {
               expect(res.body.data.getEndpoints[0]).to.have.own.property('name');
               expect(res.body.data.getEndpoints[0]).to.have.own.property('resourceTypeName');
-              expect(res.body.data.getEndpoints[0]).to.have.own.property('nameAndID');
+              expect(res.body.data.getEndpoints[0]).to.have.own.property('resourceID');
             }
             done();
           });

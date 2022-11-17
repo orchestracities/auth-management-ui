@@ -531,6 +531,7 @@ export default class App extends Component {
                               env={env}
                               graphqlErrors={this.state.connectionIssue}
                               thisTenant={this.state.thisTenant}
+                              tenantValues={this.state.tenants}
                             />
                           </AuthorizedElement>
                         }

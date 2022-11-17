@@ -23,7 +23,7 @@ import { setContext } from '@apollo/client/link/context';
 import useNotification from '../shared/messages/alerts';
 import { Trans } from 'react-i18next';
 
-export default function ResourceTable({ token, tokenData, env, resources, getTheResources }) {
+export default function ResourceTable({ token, tokenData, env, resources, getTheResources, GeTenantData }) {
   const httpLink = createHttpLink({
     uri: typeof env !== 'undefined' ? env.CONFIGURATION_API_URL : ''
   });
@@ -259,49 +259,51 @@ export default function ResourceTable({ token, tokenData, env, resources, getThe
   };
 
   const deleteResourceTypes = () => {
+    let resourceIDs = [];
+    selected.map((e) => resourceIDs.push(GeTenantData('name') + '/' + e));
     client
       .mutate({
         mutation: gql`
-          mutation deleteResourceType($name: [String]!) {
-            deleteResourceType(name: $name) {
+          mutation deleteResourceType($resourceID: [String]!) {
+            deleteResourceType(resourceID: $resourceID) {
               name
               userID
+              tenantName
+              resourceID
             }
           }
         `,
-        variables: { name: selected }
+        variables: { resourceID: resourceIDs }
       })
       .then(() => {
         for (let thisResource of selected) {
           client
             .query({
               query: gql`
-                query getEndpoints($resourceTypeName: String!) {
-                  getEndpoints(resourceTypeName: $resourceTypeName) {
-                    name
-                    resourceTypeName
-                    nameAndID
+                query getEndpoints($resourceID: String!) {
+                  getEndpoints(resourceID: $resourceID) {
+                    url
+                    resourceID
                   }
                 }
               `,
-              variables: { resourceTypeName: thisResource }
+              variables: { resourceID: GeTenantData('name') + '/' + thisResource }
             })
             .then((response) => {
               setSelected([]);
-              let deleteEndpoints = response.data.getEndpoints.map((a) => a.name);
+              let deleteEndpoints = response.data.getEndpoints.map((a) => a.resourceID);
               if (deleteEndpoints.length > 0) {
                 client
                   .mutate({
                     mutation: gql`
-                      mutation deleteThisEndpoint($name: [String]!) {
-                        deleteThisEndpoint(name: $name) {
-                          name
-                          resourceTypeName
-                          nameAndID
+                      mutation deleteThisEndpoint($resourceID: [String]!) {
+                        deleteThisEndpoint(resourceID: $resourceID) {
+                          url
+                          resourceID
                         }
                       }
                     `,
-                    variables: { name: deleteEndpoints }
+                    variables: { resourceID: deleteEndpoints }
                   })
                   .then(() => {
                     getTheResources();
@@ -351,6 +353,7 @@ export default function ResourceTable({ token, tokenData, env, resources, getThe
                   tokenData={tokenData}
                   env={env}
                   getTheResources={getTheResources}
+                  GeTenantData={GeTenantData}
                 ></EnhancedRows>
               ))}
             </TableBody>
@@ -360,8 +363,11 @@ export default function ResourceTable({ token, tokenData, env, resources, getThe
     </Box>
   );
 }
+const handlePropagation = (e) => {
+  e.stopPropagation();
+};
 
-function EnhancedRows({ row, isItemSelected, token, handleClick, tokenData, env, getTheResources }) {
+function EnhancedRows({ row, isItemSelected, token, handleClick, tokenData, env, getTheResources, GeTenantData }) {
   return (
     <React.Fragment>
       <TableRow
@@ -371,13 +377,16 @@ function EnhancedRows({ row, isItemSelected, token, handleClick, tokenData, env,
         tabIndex={-1}
         key={''}
         selected={isItemSelected}
-        onClick={(event) => (event.target.parentElement.id === 'endpoint' ? '' : handleClick(row.name))}
+        onClick={(event) =>
+          event.target.parentElement.id === 'Endpoint' || event.target.id === 'Endpoint' ? '' : handleClick(row.name)
+        }
         sx={{ '& > *': { borderBottom: 'unset' } }}
       >
         <TableCell padding="checkbox"></TableCell>
         <TableCell align="left">{row.name}</TableCell>
         <TableCell align="left">{row.userID}</TableCell>
         <EndpointsTable
+          GeTenantData={GeTenantData}
           token={token}
           tokenData={tokenData}
           env={env}

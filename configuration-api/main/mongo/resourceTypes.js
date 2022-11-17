@@ -4,30 +4,24 @@ const connection = mongoose.createConnection(config.getConfig().mongo_db);
 const logContext = { op: 'configuration-api.advancedAuth' };
 
 const ResourceType = new mongoose.Schema({
-  name: {
+  resourceID: {
     type: String,
     unique: true
   },
   userID: String,
-  tenantID: String
+  name: String,
+  tenantName: String
 });
 
 const Resource = connection.model('ResourceType', ResourceType);
 
 async function getResource(data) {
-  // Resource.deleteMany({}, function (err) {console.log(err)})
-  if (data.tenantID !== '') {
-    const resourceTypes = await Resource.find({ tenantID: data.tenantID });
-    const fiwareType = await Resource.find({ tenantID: 'fiwareType' });
-    return [...(await resourceTypes), ...(await fiwareType)];
-  } else {
-    const resourceTypes = await Resource.find({});
-    return await resourceTypes;
-  }
+  const resourceTypes = await Resource.find({ tenantName: data.tenantName });
+  return await resourceTypes;
 }
 
 async function deleteResource(data) {
-  const resourceTypes = await Resource.find({ name: { $in: data.name } });
+  const resourceTypes = await Resource.find({ resourceID: { $in: data.resourceID } });
   let deletedResourceTypes = {};
   for (const e of resourceTypes) {
     deletedResourceTypes = await Resource.findByIdAndRemove(e._id);
@@ -37,35 +31,34 @@ async function deleteResource(data) {
 
 async function newResource(data) {
   const arrayOfData = {
+    resourceID: data.resourceID,
     name: data.name,
     userID: data.userID,
-    tenantID: data.tenantID
+    tenantName: data.tenantName
   };
   await Resource.create(arrayOfData);
   return await getResource(data);
 }
 
 const ResourceEndpoint = new mongoose.Schema({
-  nameAndID: String,
-  name: String,
-  resourceTypeName: String
+  resourceID: String,
+  url: String
 });
 
 const Endpoints = connection.model('ResourceEndpoint', ResourceEndpoint);
 
 async function getEndpoint(data) {
-  const endpoints = await Endpoints.find({ resourceTypeName: data.resourceTypeName });
+  const endpoints = await Endpoints.find({ resourceID: data.resourceID });
   return await endpoints;
 }
 
 async function updateEndpoint(data) {
-  const filter = { nameAndID: data.nameAndID };
+  const filter = { resourceID: data.resourceID };
   const thisEndpoint = await Endpoints.find(filter);
   if (thisEndpoint.length > 0) {
     const update = {
-      nameAndID: data.nameAndID,
-      name: data.name,
-      resourceTypeName: data.resourceTypeName
+      resourceID: data.resourceID,
+      url: data.url
     };
     await Endpoints.findOneAndUpdate(filter, update);
     return await getEndpoint(data);
@@ -73,7 +66,7 @@ async function updateEndpoint(data) {
 }
 
 async function deleteEndpoint(data) {
-  const endpoints = await Endpoints.find({ name: { $in: data.name } });
+  const endpoints = await Endpoints.find({ resourceID: { $in: data.resourceID } });
   let deletedendpoints = {};
   for (const e of endpoints) {
     deletedendpoints = await Endpoints.findByIdAndRemove(e._id);
@@ -83,9 +76,8 @@ async function deleteEndpoint(data) {
 
 async function newEndPoint(data) {
   const arrayOfData = {
-    nameAndID: data.nameAndID,
-    name: data.name,
-    resourceTypeName: data.resourceTypeName
+    resourceID: data.resourceID,
+    url: data.url
   };
   await Endpoints.create(arrayOfData);
   return await getEndpoint(data);
