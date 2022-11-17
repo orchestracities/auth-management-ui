@@ -99,11 +99,12 @@ describe('GraphQL-Mutations', function () {
       }
     }`,
     variables: {
-      name: "new",
-      userID: "admin",
-      tenantName: "Tenant1",
-      resourceID: "Tenant1" + '/' + "new"
-    }  };
+      name: 'new',
+      userID: 'admin',
+      tenantName: 'Tenant1',
+      resourceID: 'Tenant1' + '/' + 'new'
+    }
+  };
 
   const deleteResourceType = {
     query: `
@@ -115,7 +116,7 @@ describe('GraphQL-Mutations', function () {
         resourceID
       }
     }`,
-    variables: { resourceID: ["Tenant1" + '/' + "new"] }
+    variables: { resourceID: ['Tenant1' + '/' + 'new'] }
   };
 
   const addEndpoint = {
@@ -126,8 +127,8 @@ describe('GraphQL-Mutations', function () {
         resourceID
       }
     }`,
-    variables: { resourceID: "Tenant1" + '/' + "new", url: "http..." }
-    };
+    variables: { resourceID: 'Tenant1' + '/' + 'new', url: 'http...' }
+  };
 
   const updateEndpoint = {
     query: `
@@ -137,7 +138,7 @@ describe('GraphQL-Mutations', function () {
         resourceID
       }
     }`,
-    variables: { resourceID: "Tenant1" + '/' + "new", url: "httpnew." }
+    variables: { resourceID: 'Tenant1' + '/' + 'new', url: 'httpnew.' }
   };
 
   const deleteThisEndpoint = {
@@ -148,7 +149,7 @@ describe('GraphQL-Mutations', function () {
         resourceID
       }
     }`,
-    variables: { resourceID: "Tenant1" + '/' + "new" }
+    variables: { resourceID: 'Tenant1' + '/' + 'new' }
   };
 
   it('create new tenant configuration', (done) => {
@@ -258,8 +259,6 @@ describe('GraphQL-Mutations', function () {
           });
       });
   });
-
- 
 
   it('New Endpoint', (done) => {
     request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')

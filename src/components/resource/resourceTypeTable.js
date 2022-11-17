@@ -363,9 +363,6 @@ export default function ResourceTable({ token, tokenData, env, resources, getThe
     </Box>
   );
 }
-const handlePropagation = (e) => {
-  e.stopPropagation();
-};
 
 function EnhancedRows({ row, isItemSelected, token, handleClick, tokenData, env, getTheResources, GeTenantData }) {
   return (

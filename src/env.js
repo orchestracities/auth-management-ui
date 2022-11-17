@@ -16,6 +16,7 @@ export const envNames = [
   'IMAGE_SIZE',
   'LOG_LEVEL',
   'KEYCLOACK_ADMIN',
+  'ORION',
   'TITLE',
   'DESCRIPTION'
 ];
