@@ -17,7 +17,22 @@ const Resource = connection.model('ResourceType', ResourceType);
 
 async function getResource(data) {
   const resourceTypes = await Resource.find({ tenantName: data.tenantName });
-  return await resourceTypes;
+  let resourceTypesWithEndpoint = [];
+  if (resourceTypes.length > 0) {
+    for (const e of resourceTypes) {
+      let endpoint = await getEndpoint(e);
+      resourceTypesWithEndpoint.push({
+        resourceID: e.resourceID,
+        userID: e.userID,
+        name: e.name,
+        tenantName: e.tenantName,
+        endpoint: endpoint[0]
+      });
+    }
+    return resourceTypesWithEndpoint;
+  } else {
+    return await resourceTypes;
+  }
 }
 
 async function deleteResource(data) {

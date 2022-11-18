@@ -36,16 +36,20 @@ const typeDefs = gql`
     language: String!
     lastTenantSelected: String
   }
+
+  type ResourceEndpoint {
+    url: String!
+    resourceID: String!
+  }
+
   type ResourceType {
     name: String!
     userID: String!
     tenantName: String!
     resourceID: String!
+    endpoint: ResourceEndpoint!
   }
-  type ResourceEndpoint {
-    url: String!
-    resourceID: String!
-  }
+
   type Query {
     listTenants(tenantNames: [String]!): [TenantConfiguration]
     getUserPreferences(userName: String!): [UserPreferencies]
