@@ -25,6 +25,7 @@
     "jwt-decode": "^3.1.2",
     "keycloak-js": "^17.0.0",
     "loglevel": "^1.8.0",
+    "mocha": "^6.1.4",
     "mui-file-dropzone": "^4.0.1",
     "notistack": "^2.0.5",
     "react": "^17.0.2",
@@ -34,7 +35,9 @@
     "react-query": "^3.34.16",
     "react-router-dom": "^6.2.2",
     "react-scripts": "^5.0.0",
+    "selenium-webdriver": "^4.0.0-alpha.3",
     "subscriptions-transport-ws": "^0.9.19",
+    "supertest": "^6.3.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -75,6 +78,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-react": "^7.29.4",
+    "jest-watch-typeahead": "^0.6.5",
     "prettier": "^2.6.2"
   }
 }

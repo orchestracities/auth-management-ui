@@ -70,6 +70,7 @@ export default function TenantPage({
                   token={token}
                   index={index}
                   key={index}
+                  id={'DashboardCard' + index}
                   pageType={
                     <TenantForm
                       env={env}

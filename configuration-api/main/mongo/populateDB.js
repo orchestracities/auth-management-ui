@@ -30,7 +30,7 @@ Settings.deleteMany({}, function (err) {
       Config.create(
         {
           name: 'Tenant1',
-          icon: 'none',
+          icon: 'copy',
           primaryColor: '#8086ba',
           secondaryColor: '#8086ba',
           customImage: ''

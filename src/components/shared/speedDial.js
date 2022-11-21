@@ -61,6 +61,7 @@ export default function MultifunctionButton({ pageType, setOpen, status, data, g
   const actions = [
     {
       icon: pageType.props.action === 'modify' ? <EditIcon /> : <AddIcon />,
+      id: 'multifunctional',
       name:
         pageType.props.action === 'modify' ? (
           <Trans>tenant.tooltip.editIcon</Trans>
@@ -71,6 +72,7 @@ export default function MultifunctionButton({ pageType, setOpen, status, data, g
     },
     {
       icon: <DeleteIcon color="error" />,
+      id: 'delete',
       name: <Trans>common.deleteTooltip</Trans>,
       click: handleClickOpenDeleteDialog
     }
@@ -92,7 +94,13 @@ export default function MultifunctionButton({ pageType, setOpen, status, data, g
         icon={<MoreVertIcon />}
       >
         {actions.map((action, index) => (
-          <SpeedDialAction onClick={action.click} key={index} icon={action.icon} tooltipTitle={action.name} />
+          <SpeedDialAction
+            onClick={action.click}
+            key={index}
+            id={action.id + index}
+            icon={action.icon}
+            tooltipTitle={action.name}
+          />
         ))}
       </SpeedDial>
       <DeleteDialog
