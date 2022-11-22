@@ -56,8 +56,8 @@ export default function ResourcePage({ token, graphqlErrors, env, tokenData, thi
               name
               userID
               tenantName
-              resourceID
               endpointUrl
+              ID
             }
           }
         `,

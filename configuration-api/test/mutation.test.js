@@ -12,6 +12,7 @@ const loginSettings = {
 };
 
 describe('GraphQL-Mutations', function () {
+  let ID;
   const newTenantConfig = {
     query: `
     mutation getTenantConfig(
@@ -94,20 +95,12 @@ describe('GraphQL-Mutations', function () {
       $name: String!
       $userID: String!
       $tenantName: String!
-      $resourceID: String!
       $endpointUrl: String!
     ) {
-      newResourceType(
-        name: $name
-        userID: $userID
-        tenantName: $tenantName
-        resourceID: $resourceID
-        endpointUrl: $endpointUrl
-      ) {
+      newResourceType(name: $name, userID: $userID, tenantName: $tenantName, endpointUrl: $endpointUrl) {
         name
         userID
         tenantName
-        resourceID
         endpointUrl
       }
     }`,
@@ -115,62 +108,42 @@ describe('GraphQL-Mutations', function () {
       name: 'new',
       userID: 'admin',
       tenantName: 'Tenant1',
-      resourceID: 'Tenant1' + '/' + 'new',
-      endpointUrl:"URL"
+      endpointUrl: 'URL'
     }
   };
 
-  const updateEndpoint = {
+  const updateThisResource = {
     query: `
-    mutation updateThisEndpoint(
+    mutation updateThisResource(
       $name: String!
       $userID: String!
       $tenantName: String!
-      $resourceID: String!
       $endpointUrl: String!
+      $id: String!
     ) {
-      updateThisEndpoint(
-        name: $name
-        userID: $userID
-        tenantName: $tenantName
-        resourceID: $resourceID
-        endpointUrl: $endpointUrl
-      ) {
+      updateThisResource(name: $name, userID: $userID, tenantName: $tenantName, endpointUrl: $endpointUrl, id:$id) {
+        ID
         name
         userID
         tenantName
-        resourceID
         endpointUrl
       }
     }`,
-    variables: { 
-      name: 'new',
-      userID: 'admin',
-      tenantName: 'Tenant1',
-      resourceID: 'Tenant1' + '/' + 'new',
-      endpointUrl:"URLNEW"
-    }
+    variables: {"name":"aaaaaaaaaaaaaaaabc","userID":"admin@mail.com","tenantName":"Tenant1","endpointUrl":"http://localhost:3000/ResourceTypebc","id":""}
   };
 
   const deleteResourceType = {
     query: `
-    mutation deleteResourceType($resourceID: [String]!) {
-      deleteResourceType(resourceID: $resourceID) {
+    mutation deleteResourceType($name: [String]!, $tenantName: String!) {
+      deleteResourceType(name: $name, tenantName: $tenantName) {
         name
         userID
         tenantName
-        resourceID
         endpointUrl
       }
     }`,
-    variables: { resourceID: ['Tenant1' + '/' + 'new'] }
+    variables: { name: ['new'], tenantName: 'Tenant1' }
   };
-
-
-
-
-
-
 
   it('create new tenant configuration', (done) => {
     request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
@@ -270,18 +243,17 @@ describe('GraphQL-Mutations', function () {
           .expect(200)
           .end((err, res) => {
             if (err) return done(err);
+            ID=res.body.data.newResourceType[0].ID
             expect(res.body.data.newResourceType[0]).to.have.own.property('name');
             expect(res.body.data.newResourceType[0]).to.have.own.property('userID');
             expect(res.body.data.newResourceType[0]).to.have.own.property('tenantName');
-            expect(res.body.data.newResourceType[0]).to.have.own.property('resourceID');
-              expect(res.body.data.newResourceType[0]).to.have.own.property('endpointUrl');
+            expect(res.body.data.newResourceType[0]).to.have.own.property('endpointUrl');
             done();
           });
       });
   });
 
-  
-  it('update Endpoint', (done) => {
+  it('update Resource', (done) => {
     request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
       .post('/')
       .set('Content-type', 'application/x-www-form-urlencoded')
@@ -291,15 +263,10 @@ describe('GraphQL-Mutations', function () {
         request(url)
           .post('/')
           .set('Authorization', `Bearer ${token}`)
-          .send(updateEndpoint)
+          .send(updateThisResource)
           .expect(200)
           .end((err, res) => {
             if (err) return done(err);
-            expect(res.body.data.updateThisEndpoint[0]).to.have.own.property('name');
-            expect(res.body.data.updateThisEndpoint[0]).to.have.own.property('userID');
-            expect(res.body.data.updateThisEndpoint[0]).to.have.own.property('tenantName');
-            expect(res.body.data.updateThisEndpoint[0]).to.have.own.property('resourceID');
-              expect(res.body.data.updateThisEndpoint[0]).to.have.own.property('endpointUrl');
             done();
           });
       });
@@ -322,12 +289,9 @@ describe('GraphQL-Mutations', function () {
             expect(res.body.data.deleteResourceType[0]).to.have.own.property('name');
             expect(res.body.data.deleteResourceType[0]).to.have.own.property('userID');
             expect(res.body.data.deleteResourceType[0]).to.have.own.property('tenantName');
-            expect(res.body.data.deleteResourceType[0]).to.have.own.property('resourceID');
-              expect(res.body.data.deleteResourceType[0]).to.have.own.property('endpointUrl');
+            expect(res.body.data.deleteResourceType[0]).to.have.own.property('endpointUrl');
             done();
           });
       });
   });
-
-  
 });

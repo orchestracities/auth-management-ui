@@ -372,7 +372,8 @@ export default function PolicyForm({
               name
               userID
               tenantName
-              resourceID
+              endpointUrl
+              ID
             }
           }
         `,
@@ -389,46 +390,28 @@ export default function PolicyForm({
   const getTheEndPoints = (resourceTypeName) => {
     const areThisValuesInside = resources.filter((e) => e.name === resourceTypeName);
     if (areThisValuesInside.length > 0) {
-      client
-        .query({
-          query: gql`
-            query getEndpoints($resourceID: String!) {
-              getEndpoints(resourceID: $resourceID) {
-                url
-                resourceID
-              }
-            }
-          `,
-          variables: { resourceID: tenantName('name') + '/' + resourceTypeName }
+      axios
+        .get(areThisValuesInside[0].endpointUrl, {
+          'fiware-Service': tenantName('name'),
+          'fiware-ServicePath': path
         })
         .then((response) => {
-          axios
-            .get(response.data.getEndpoints[0].url, {
-              'fiware-Service': tenantName('name'),
-              'fiware-ServicePath': path
-            })
-            .then((response) => {
-              setAccessList([
-                ...response.data,
-                ...[
-                  { name: '*', value: '*' },
-                  { name: 'default', value: 'default' }
-                ]
-              ]);
-              setAccess('');
-            })
-            .catch((e) => {
-              setAccessList([
-                { name: '*', value: '*' },
-                { name: 'default', value: 'default' }
-              ]);
-              setAccess('');
-              setError(e);
-            });
-        })
-        .catch(() => {
+          setAccessList([
+            ...response.data,
+            ...[
+              { name: '*', value: '*' },
+              { name: 'default', value: 'default' }
+            ]
+          ]);
           setAccess('');
-          setAccessList([]);
+        })
+        .catch((e) => {
+          setAccessList([
+            { name: '*', value: '*' },
+            { name: 'default', value: 'default' }
+          ]);
+          setAccess('');
+          setError(e);
         });
     }
   };

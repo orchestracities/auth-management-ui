@@ -259,22 +259,20 @@ export default function ResourceTable({ token, tokenData, env, resources, getThe
   };
 
   const deleteResourceTypes = () => {
-    let resourceIDs = [];
-    selected.map((e) => resourceIDs.push(GeTenantData('name') + '/' + e));
     client
       .mutate({
         mutation: gql`
-          mutation deleteResourceType($resourceID: [String]!) {
-            deleteResourceType(resourceID: $resourceID) {
+          mutation deleteResourceType($name: [String]!, $tenantName: String!) {
+            deleteResourceType(name: $name, tenantName: $tenantName) {
+              ID
               name
               userID
               tenantName
-              resourceID
               endpointUrl
             }
           }
         `,
-        variables: { resourceID: resourceIDs }
+        variables: { name: selected, tenantName: GeTenantData('name') }
       })
       .then(() => {
         getTheResources();

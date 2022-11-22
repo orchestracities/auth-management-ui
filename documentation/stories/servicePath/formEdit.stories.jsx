@@ -64,21 +64,11 @@ Modify.args = {
   },
   data: [
     {
-      endpointUrl
-      : 
-      "http://localhost:1026/v2/entities",
-      name
-      : 
-      "Orion",
-      resourceID
-      : 
-      "Tenant1/Orion",
-      tenantName
-      : 
-      "Tenant1",
-      userID
-      : 
-      ""
+      endpointUrl: 'http://localhost:1026/v2/entities',
+      name: 'Orion',
+      resourceID: 'Tenant1/Orion',
+      tenantName: 'Tenant1',
+      userID: ''
     }
   ],
   getTheResources: () => {}

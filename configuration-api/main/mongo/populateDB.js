@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { uid }=require('uid');
 
 //require('dotenv').config({ path: '../.env' });
 
@@ -14,7 +15,7 @@ const TenantConfig = new mongoose.Schema({
 });
 
 const ResourceType = new mongoose.Schema({
-  resourceID: {
+  ID: {
     type: String,
     unique: true
   },
@@ -37,9 +38,9 @@ const Settings = connection.model('userSettings', userSettings);
 Resource.deleteMany({}, function (err) {
   Resource.create(
     {
-      resourceID: 'Tenant1/Orion',
+      ID: uid(16),
       userID: '',
-      name: 'Orion',
+      name: 'Entity',
       tenantName: 'Tenant1',
       endpointUrl: fiwareURL
     },
@@ -49,9 +50,9 @@ Resource.deleteMany({}, function (err) {
       } else {
         Resource.create(
           {
-            resourceID: 'Tenant2/Orion',
+            ID: uid(16),
             userID: '',
-            name: 'Orion',
+            name: 'Entity',
             tenantName: 'Tenant2',
             endpointUrl: fiwareURL
           },

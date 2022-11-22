@@ -15,6 +15,7 @@ import useNotification from '../shared/messages/alerts';
 import { Trans } from 'react-i18next';
 import * as log from 'loglevel';
 import isURL from 'validator/lib/isURL';
+import charNotAllowed  from './charNotAllowed';
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -24,7 +25,8 @@ const CustomDialogTitle = styled(AppBar)({
 
 export default function ResourceForm({ title, close, action, token, tokenData, env, getTheResources, GeTenantData }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
-
+  const notAllowed=charNotAllowed;
+ 
   const httpLink = createHttpLink({
     uri: typeof env !== 'undefined' ? env.CONFIGURATION_API_URL : ''
   });
@@ -57,6 +59,8 @@ export default function ResourceForm({ title, close, action, token, tokenData, e
         return 'The name is mandatory';
       case name.indexOf(' ') >= 0:
         return 'The name should be without spaces';
+      case notAllowed(name):
+      return 'Special characters not allowed';
       default:
         return false;
     }
@@ -68,7 +72,7 @@ export default function ResourceForm({ title, close, action, token, tokenData, e
         return 'The url is mandatory';
       case endpoint.indexOf(' ') >= 0:
         return 'The url should be without spaces';
-      case isURL(endpoint) === false:
+      case !isURL(endpoint, { host_whitelist: ['localhost'] }):
         return 'The url should be valid';
       default:
         return false;
@@ -86,29 +90,21 @@ export default function ResourceForm({ title, close, action, token, tokenData, e
                   $name: String!
                   $userID: String!
                   $tenantName: String!
-                  $resourceID: String!
                   $endpointUrl: String!
                 ) {
-                  newResourceType(
-                    name: $name
-                    userID: $userID
-                    tenantName: $tenantName
-                    resourceID: $resourceID
-                    endpointUrl: $endpointUrl
-                  ) {
+                  newResourceType(name: $name, userID: $userID, tenantName: $tenantName, endpointUrl: $endpointUrl) {
+                    ID
                     name
                     userID
                     tenantName
-                    resourceID
                     endpointUrl
                   }
                 }
               `,
               variables: {
-                name: name,
+                name: name.toLowerCase(),
                 userID: tokenData.preferred_username,
                 tenantName: GeTenantData('name'),
-                resourceID: GeTenantData('name') + '/' + name,
                 endpointUrl: endpoint
               }
             })
@@ -120,7 +116,7 @@ export default function ResourceForm({ title, close, action, token, tokenData, e
                   <Trans
                     i18nKey="common.messages.sucessCreate"
                     values={{
-                      data: 'new Resource Type called: ' + name
+                      data: 'new Resource Type called: ' + name.toLowerCase()
                     }}
                   />
                 ),
@@ -165,10 +161,10 @@ export default function ResourceForm({ title, close, action, token, tokenData, e
                 width: '100%'
               }}
               onChange={(event) => {
-                setName(event.target.value);
+                setName(event.target.value.toLowerCase());
               }}
               helperText={nameCases()}
-              error={name === '' || name.indexOf(' ') >= 0}
+              error={name === '' || name.indexOf(' ') >= 0 || notAllowed(name)}
             />
           </Grid>
           <Grid item xs={12}>
@@ -183,7 +179,11 @@ export default function ResourceForm({ title, close, action, token, tokenData, e
                 setEndpoint(event.target.value);
               }}
               helperText={linkCases()}
-              error={endpoint === '' || endpoint.indexOf(' ') >= 0 || isURL(endpoint) === false}
+              error={
+                endpoint === '' ||
+                endpoint.indexOf(' ') >= 0 ||
+                isURL(endpoint, { host_whitelist: ['localhost'] }) === false
+              }
             />
           </Grid>
         </Grid>

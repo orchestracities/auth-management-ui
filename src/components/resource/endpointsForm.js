@@ -15,6 +15,7 @@ import useNotification from '../shared/messages/alerts';
 import { Trans } from 'react-i18next';
 import * as log from 'loglevel';
 import isURL from 'validator/lib/isURL';
+import charNotAllowed  from './charNotAllowed';
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -24,7 +25,7 @@ const CustomDialogTitle = styled(AppBar)({
 
 export default function EndpointsForm({ title, close, action, token, env, getTheResources, data }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
-
+  const notAllowed=charNotAllowed;
   const httpLink = createHttpLink({
     uri: typeof env !== 'undefined' ? env.CONFIGURATION_API_URL : ''
   });
@@ -49,14 +50,28 @@ export default function EndpointsForm({ title, close, action, token, env, getThe
   };
 
   const [endpoint, setEndpoint] = React.useState(data[0].endpointUrl);
+  const [name, setName] = React.useState(data[0].name);
 
-  const cases = () => {
+  const nameCases = () => {
+    switch (true) {
+      case name === '':
+        return 'The name is mandatory';
+      case name.indexOf(' ') >= 0:
+        return 'The name should be without spaces';
+        case notAllowed(name):
+          return 'Special characters not allowed';
+      default:
+        return false;
+    }
+  };
+
+  const linkCases = () => {
     switch (true) {
       case endpoint === '':
         return 'The url is mandatory';
       case endpoint.indexOf(' ') >= 0:
         return 'The url should be without spaces';
-      case isURL(endpoint) === false:
+      case !isURL(endpoint, { host_whitelist: ['localhost'] }):
         return 'The url should be valid';
       default:
         return false;
@@ -64,39 +79,33 @@ export default function EndpointsForm({ title, close, action, token, env, getThe
   };
 
   const handleSave = () => {
-    if (cases() === false) {
+    if (nameCases() === false && linkCases() === false) {
       switch (action) {
         case 'modify':
           client
             .mutate({
               mutation: gql`
-                mutation updateThisEndpoint(
+                mutation updateThisResource(
                   $name: String!
                   $userID: String!
                   $tenantName: String!
-                  $resourceID: String!
                   $endpointUrl: String!
+                  $id: String!
                 ) {
-                  updateThisEndpoint(
-                    name: $name
-                    userID: $userID
-                    tenantName: $tenantName
-                    resourceID: $resourceID
-                    endpointUrl: $endpointUrl
-                  ) {
+                  updateThisResource(name: $name, userID: $userID, tenantName: $tenantName, endpointUrl: $endpointUrl, id:$id) {
+                    ID
                     name
                     userID
                     tenantName
-                    resourceID
                     endpointUrl
                   }
                 }
               `,
               variables: {
-                name: data[0].name,
+                id:data[0].ID,
+                name: name.toLowerCase(),
                 userID: data[0].userID,
                 tenantName: data[0].tenantName,
-                resourceID: data[0].resourceID,
                 endpointUrl: endpoint
               }
             })
@@ -138,14 +147,18 @@ export default function EndpointsForm({ title, close, action, token, env, getThe
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <TextField
-              id="Resource Type"
+              id="name"
               label={<Trans>resourceType.form.resourceName</Trans>}
               variant="outlined"
-              defaultValue={data[0].name}
-              disabled
               sx={{
                 width: '100%'
               }}
+              value={name}
+              onChange={(event) => {
+                setName(event.target.value.toLowerCase());
+              }}
+              helperText={nameCases()}
+              error={name === '' || name.indexOf(' ') >= 0 || notAllowed(name)}
             />
           </Grid>
           <Grid item xs={12}>
@@ -161,8 +174,8 @@ export default function EndpointsForm({ title, close, action, token, env, getThe
                 setEndpoint(event.target.value);
               }}
               onClick={(e) => handlePropagation(e)}
-              helperText={cases()}
-              error={endpoint === '' || endpoint.indexOf(' ') >= 0 || isURL(endpoint) === false}
+              helperText={linkCases()}
+              error={endpoint === '' || endpoint.indexOf(' ') >= 0 || !(isURL(endpoint, { host_whitelist: ['localhost'] }))}
             />
           </Grid>
         </Grid>

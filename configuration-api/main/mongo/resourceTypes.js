@@ -2,9 +2,11 @@ const mongoose = require('mongoose');
 const config = require('../config');
 const connection = mongoose.createConnection(config.getConfig().mongo_db);
 const logContext = { op: 'configuration-api.advancedAuth' };
+const { ApolloError } = require('apollo-server-errors');
+const { uid }=require('uid');
 
 const ResourceType = new mongoose.Schema({
-  resourceID: {
+  ID: {
     type: String,
     unique: true
   },
@@ -22,7 +24,9 @@ async function getResource(data) {
 }
 
 async function deleteResource(data) {
-  const resourceTypes = await Resource.find({ resourceID: { $in: data.resourceID } });
+  const resourceTypes = await Resource.find({
+    $and: [{ tenantName: data.tenantName }, { name: { $in: data.name } }]
+  });
   let deletedResourceTypes = {};
   for (const e of resourceTypes) {
     deletedResourceTypes = await Resource.findByIdAndRemove(e._id);
@@ -31,23 +35,32 @@ async function deleteResource(data) {
 }
 
 async function newResource(data) {
-  const arrayOfData = {
-    resourceID: data.resourceID,
-    name: data.name,
-    userID: data.userID,
-    tenantName: data.tenantName,
-    endpointUrl: data.endpointUrl
-  };
-  await Resource.create(arrayOfData);
-  return await getResource(data);
+  const previusResourceTypes = await Resource.find({
+    $and: [{ tenantName: data.tenantName }, { name: { $in: data.name } }]
+  });
+  if (previusResourceTypes.length === 0) {
+    const arrayOfData = {
+      ID: uid(16),
+      name: data.name,
+      userID: data.userID,
+      tenantName: data.tenantName,
+      endpointUrl: data.endpointUrl
+    };
+    await Resource.create(arrayOfData);
+    return await getResource(data);
+  } else {
+    throw new ApolloError(data.name + 'already exist on this Tenant');
+  }
 }
 
-async function updateEndpoint(data) {
-  const filter = { resourceID: data.resourceID };
+async function updateResource(data) {
+  const filter={
+    ID: data.id
+  }
   const thisEndpoint = await Resource.find(filter);
   if (thisEndpoint.length > 0) {
     const update = {
-      resourceID: data.resourceID,
+      ID:uid(16),
       name: data.name,
       userID: data.userID,
       tenantName: data.tenantName,
@@ -62,5 +75,5 @@ module.exports = {
   getResource,
   deleteResource,
   newResource,
-  updateEndpoint
+  updateResource
 };

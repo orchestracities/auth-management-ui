@@ -14,7 +14,7 @@ config.loadConfig();
 
 const { get, update, add, deleteTenant } = require('./mongo/tenantsQueries');
 const { getUserPref, updateUserPref } = require('./mongo/userSettings');
-const { getResource, deleteResource, newResource, updateEndpoint } = require('./mongo/resourceTypes');
+const { getResource, deleteResource, newResource, updateResource } = require('./mongo/resourceTypes');
 const typeDefs = gql`
   type TenantConfiguration {
     name: String!
@@ -30,10 +30,10 @@ const typeDefs = gql`
   }
 
   type ResourceType {
+    ID:String!
     name: String!
     userID: String!
     tenantName: String!
-    resourceID: String!
     endpointUrl: String!
   }
 
@@ -43,21 +43,9 @@ const typeDefs = gql`
     getTenantResourceType(tenantName: String!): [ResourceType]
   }
   type Mutation {
-    newResourceType(
-      name: String!
-      userID: String!
-      tenantName: String!
-      resourceID: String!
-      endpointUrl: String!
-    ): [ResourceType]
-    deleteResourceType(resourceID: [String]!): [ResourceType]
-    updateThisEndpoint(
-      name: String!
-      userID: String!
-      tenantName: String!
-      resourceID: String!
-      endpointUrl: String!
-    ): [ResourceType]
+    newResourceType(name: String!, userID: String!, tenantName: String!, endpointUrl: String!): [ResourceType]
+    deleteResourceType(name: [String]!, tenantName: String!): [ResourceType]
+    updateThisResource(name: String!, userID: String!, tenantName: String!, endpointUrl: String!, id: String!): [ResourceType]
     modifyUserPreferences(userName: String!, language: String!, lastTenantSelected: String): [UserPreferencies]
     getTenantConfig(
       name: String!
@@ -162,10 +150,10 @@ const resolvers = {
         throw new ApolloError(err.message);
       }
     },
-    updateThisEndpoint: async (object, args, context, info) => {
+    updateThisResource: async (object, args, context, info) => {
       try {
         config.getLogger().info(logContext, 'addEndpoint: %s', JSON.stringify(args));
-        return await updateEndpoint(args);
+        return await updateResource(args);
       } catch (err) {
         config.getLogger().error(logContext, err);
         throw new ApolloError(err.message);

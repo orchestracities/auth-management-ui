@@ -44,13 +44,12 @@ describe('GraphQL-Query', function () {
         name
         userID
         tenantName
-        resourceID
+        endpointUrl
+        ID
       }
     }`,
     variables: { tenantName: 'Tenant1' }
   };
-
-
 
   it('Returns tenant properties', (done) => {
     request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
@@ -122,5 +121,4 @@ describe('GraphQL-Query', function () {
           });
       });
   });
- 
 });
