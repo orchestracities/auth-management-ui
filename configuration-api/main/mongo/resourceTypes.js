@@ -3,7 +3,7 @@ const config = require('../config');
 const connection = mongoose.createConnection(config.getConfig().mongo_db);
 const logContext = { op: 'configuration-api.advancedAuth' };
 const { ApolloError } = require('apollo-server-errors');
-const { uid }=require('uid');
+const { uid } = require('uid');
 
 const ResourceType = new mongoose.Schema({
   ID: {
@@ -54,13 +54,13 @@ async function newResource(data) {
 }
 
 async function updateResource(data) {
-  const filter={
+  const filter = {
     ID: data.id
-  }
+  };
   const thisEndpoint = await Resource.find(filter);
   if (thisEndpoint.length > 0) {
     const update = {
-      ID:uid(16),
+      ID: uid(16),
       name: data.name,
       userID: data.userID,
       tenantName: data.tenantName,

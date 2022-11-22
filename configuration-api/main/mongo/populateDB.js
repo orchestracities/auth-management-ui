@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { uid }=require('uid');
+const { uid } = require('uid');
 
 //require('dotenv').config({ path: '../.env' });
 

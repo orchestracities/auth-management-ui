@@ -15,7 +15,7 @@ import useNotification from '../shared/messages/alerts';
 import { Trans } from 'react-i18next';
 import * as log from 'loglevel';
 import isURL from 'validator/lib/isURL';
-import charNotAllowed  from './charNotAllowed';
+import charNotAllowed from './charNotAllowed';
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -25,8 +25,8 @@ const CustomDialogTitle = styled(AppBar)({
 
 export default function ResourceForm({ title, close, action, token, tokenData, env, getTheResources, GeTenantData }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
-  const notAllowed=charNotAllowed;
- 
+  const notAllowed = charNotAllowed;
+
   const httpLink = createHttpLink({
     uri: typeof env !== 'undefined' ? env.CONFIGURATION_API_URL : ''
   });
@@ -60,7 +60,7 @@ export default function ResourceForm({ title, close, action, token, tokenData, e
       case name.indexOf(' ') >= 0:
         return 'The name should be without spaces';
       case notAllowed(name):
-      return 'Special characters not allowed';
+        return 'Special characters not allowed';
       default:
         return false;
     }

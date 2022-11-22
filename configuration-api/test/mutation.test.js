@@ -129,7 +129,13 @@ describe('GraphQL-Mutations', function () {
         endpointUrl
       }
     }`,
-    variables: {"name":"aaaaaaaaaaaaaaaabc","userID":"admin@mail.com","tenantName":"Tenant1","endpointUrl":"http://localhost:3000/ResourceTypebc","id":""}
+    variables: {
+      name: 'aaaaaaaaaaaaaaaabc',
+      userID: 'admin@mail.com',
+      tenantName: 'Tenant1',
+      endpointUrl: 'http://localhost:3000/ResourceTypebc',
+      id: ''
+    }
   };
 
   const deleteResourceType = {
@@ -243,7 +249,7 @@ describe('GraphQL-Mutations', function () {
           .expect(200)
           .end((err, res) => {
             if (err) return done(err);
-            ID=res.body.data.newResourceType[0].ID
+            ID = res.body.data.newResourceType[0].ID;
             expect(res.body.data.newResourceType[0]).to.have.own.property('name');
             expect(res.body.data.newResourceType[0]).to.have.own.property('userID');
             expect(res.body.data.newResourceType[0]).to.have.own.property('tenantName');

@@ -30,7 +30,7 @@ const typeDefs = gql`
   }
 
   type ResourceType {
-    ID:String!
+    ID: String!
     name: String!
     userID: String!
     tenantName: String!
@@ -45,7 +45,13 @@ const typeDefs = gql`
   type Mutation {
     newResourceType(name: String!, userID: String!, tenantName: String!, endpointUrl: String!): [ResourceType]
     deleteResourceType(name: [String]!, tenantName: String!): [ResourceType]
-    updateThisResource(name: String!, userID: String!, tenantName: String!, endpointUrl: String!, id: String!): [ResourceType]
+    updateThisResource(
+      name: String!
+      userID: String!
+      tenantName: String!
+      endpointUrl: String!
+      id: String!
+    ): [ResourceType]
     modifyUserPreferences(userName: String!, language: String!, lastTenantSelected: String): [UserPreferencies]
     getTenantConfig(
       name: String!

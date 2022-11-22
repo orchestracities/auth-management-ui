@@ -15,7 +15,7 @@ import useNotification from '../shared/messages/alerts';
 import { Trans } from 'react-i18next';
 import * as log from 'loglevel';
 import isURL from 'validator/lib/isURL';
-import charNotAllowed  from './charNotAllowed';
+import charNotAllowed from './charNotAllowed';
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -25,7 +25,7 @@ const CustomDialogTitle = styled(AppBar)({
 
 export default function EndpointsForm({ title, close, action, token, env, getTheResources, data }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
-  const notAllowed=charNotAllowed;
+  const notAllowed = charNotAllowed;
   const httpLink = createHttpLink({
     uri: typeof env !== 'undefined' ? env.CONFIGURATION_API_URL : ''
   });
@@ -58,8 +58,8 @@ export default function EndpointsForm({ title, close, action, token, env, getThe
         return 'The name is mandatory';
       case name.indexOf(' ') >= 0:
         return 'The name should be without spaces';
-        case notAllowed(name):
-          return 'Special characters not allowed';
+      case notAllowed(name):
+        return 'Special characters not allowed';
       default:
         return false;
     }
@@ -92,7 +92,13 @@ export default function EndpointsForm({ title, close, action, token, env, getThe
                   $endpointUrl: String!
                   $id: String!
                 ) {
-                  updateThisResource(name: $name, userID: $userID, tenantName: $tenantName, endpointUrl: $endpointUrl, id:$id) {
+                  updateThisResource(
+                    name: $name
+                    userID: $userID
+                    tenantName: $tenantName
+                    endpointUrl: $endpointUrl
+                    id: $id
+                  ) {
                     ID
                     name
                     userID
@@ -102,7 +108,7 @@ export default function EndpointsForm({ title, close, action, token, env, getThe
                 }
               `,
               variables: {
-                id:data[0].ID,
+                id: data[0].ID,
                 name: name.toLowerCase(),
                 userID: data[0].userID,
                 tenantName: data[0].tenantName,
@@ -175,7 +181,9 @@ export default function EndpointsForm({ title, close, action, token, env, getThe
               }}
               onClick={(e) => handlePropagation(e)}
               helperText={linkCases()}
-              error={endpoint === '' || endpoint.indexOf(' ') >= 0 || !(isURL(endpoint, { host_whitelist: ['localhost'] }))}
+              error={
+                endpoint === '' || endpoint.indexOf(' ') >= 0 || !isURL(endpoint, { host_whitelist: ['localhost'] })
+              }
             />
           </Grid>
         </Grid>
