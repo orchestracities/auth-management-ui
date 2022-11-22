@@ -285,14 +285,8 @@ else
 fi
 
 if [[ $1 == "dev" ]]; then
-    cd configuration-api
-    node main/mongo/populateDB.js
-    cd ..
     echo "Dev environment deployed"
 else
-    cd configuration-api
-    node main/mongo/populateDB.js
-    cd ..
     echo "Demo deployed!"
     echo "Your browser will open at: http://localhost:3000"
     echo "User: admin / Password: admin"
