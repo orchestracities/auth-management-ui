@@ -9,9 +9,6 @@ import DialogActions from '@mui/material/DialogActions';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Grow from '@mui/material/Grow';
-import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client';
-import { setContext } from '@apollo/client/link/context';
-import useNotification from '../shared/messages/alerts';
 import EndpointsForm from './endpointsForm';
 
 const DialogRounded = styled(Dialog)(() => ({
@@ -24,48 +21,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Grow direction="up" ref={ref} {...props} />;
 });
 
-export default function EndpointsTable({ token, resourceTypeName, env, getTheResources, GeTenantData }) {
-  const httpLink = createHttpLink({
-    uri: typeof env !== 'undefined' ? env.CONFIGURATION_API_URL : ''
-  });
-  const authLink = setContext((_, { headers }) => {
-    return {
-      headers: {
-        ...headers,
-        Authorization: `Bearer ${token}`
-      }
-    };
-  });
-  const client = new ApolloClient({
-    link: authLink.concat(httpLink),
-    cache: new InMemoryCache()
-  });
-  const [rows, setRows] = React.useState([]);
-  const [msg, sendNotification] = useNotification();
-
-  const getTheEndPoints = (resourceTypeName) => {
-    client
-      .query({
-        query: gql`
-          query getEndpoints($resourceID: String!) {
-            getEndpoints(resourceID: $resourceID) {
-              url
-              resourceID
-            }
-          }
-        `,
-        variables: { resourceID: GeTenantData('name') + '/' + resourceTypeName }
-      })
-      .then((response) => setRows(response.data.getEndpoints))
-      .catch((e) => {
-        sendNotification({ msg: e.message + ' the config', variant: 'error' });
-      });
-  };
-  React.useEffect(() => {
-    getTheEndPoints(resourceTypeName);
-    console.log(msg);
-  }, []);
-
+export default function EndpointsTable({ token, resourceTypeData, env, getTheResources }) {
+  const rows = [resourceTypeData];
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -82,7 +39,7 @@ export default function EndpointsTable({ token, resourceTypeName, env, getTheRes
         return (
           <>
             <TableCell component="th" align="left" scope="row" padding="none">
-              {row.url}
+              {row.endpointUrl}
             </TableCell>
             <TableCell component="th" align="right" scope="row" padding="none" onClick={handlePropagation}>
               <Tooltip title="Modify the link">
@@ -108,12 +65,11 @@ export default function EndpointsTable({ token, resourceTypeName, env, getTheRes
         aria-describedby="edit"
       >
         <EndpointsForm
-          title={'Edit the endpoint of ' + resourceTypeName}
+          title={'Edit the endpoint of ' + resourceTypeData.name}
           data={rows}
           close={handleClose}
           action={'modify'}
           token={token}
-          resourceTypeName={resourceTypeName}
           env={env}
           getTheResources={getTheResources}
         />

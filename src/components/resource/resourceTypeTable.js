@@ -270,55 +270,14 @@ export default function ResourceTable({ token, tokenData, env, resources, getThe
               userID
               tenantName
               resourceID
+              endpointUrl
             }
           }
         `,
         variables: { resourceID: resourceIDs }
       })
       .then(() => {
-        for (let thisResource of selected) {
-          client
-            .query({
-              query: gql`
-                query getEndpoints($resourceID: String!) {
-                  getEndpoints(resourceID: $resourceID) {
-                    url
-                    resourceID
-                  }
-                }
-              `,
-              variables: { resourceID: GeTenantData('name') + '/' + thisResource }
-            })
-            .then((response) => {
-              setSelected([]);
-              let deleteEndpoints = response.data.getEndpoints.map((a) => a.resourceID);
-              if (deleteEndpoints.length > 0) {
-                client
-                  .mutate({
-                    mutation: gql`
-                      mutation deleteThisEndpoint($resourceID: [String]!) {
-                        deleteThisEndpoint(resourceID: $resourceID) {
-                          url
-                          resourceID
-                        }
-                      }
-                    `,
-                    variables: { resourceID: deleteEndpoints }
-                  })
-                  .then(() => {
-                    getTheResources();
-                  })
-                  .catch((e) => {
-                    sendNotification({ msg: e.message + ' the config', variant: 'error' });
-                  });
-              } else {
-                getTheResources();
-              }
-            })
-            .catch((e) => {
-              sendNotification({ msg: e.message + ' the config', variant: 'error' });
-            });
-        }
+        getTheResources();
       })
       .catch((e) => {
         sendNotification({ msg: e.message + ' the config', variant: 'error' });
@@ -353,7 +312,6 @@ export default function ResourceTable({ token, tokenData, env, resources, getThe
                   tokenData={tokenData}
                   env={env}
                   getTheResources={getTheResources}
-                  GeTenantData={GeTenantData}
                 ></EnhancedRows>
               ))}
             </TableBody>
@@ -364,7 +322,7 @@ export default function ResourceTable({ token, tokenData, env, resources, getThe
   );
 }
 
-function EnhancedRows({ row, isItemSelected, token, handleClick, tokenData, env, getTheResources, GeTenantData }) {
+function EnhancedRows({ row, isItemSelected, token, handleClick, tokenData, env, getTheResources }) {
   return (
     <React.Fragment>
       <TableRow
@@ -383,11 +341,10 @@ function EnhancedRows({ row, isItemSelected, token, handleClick, tokenData, env,
         <TableCell align="left">{row.name}</TableCell>
         <TableCell align="left">{row.userID}</TableCell>
         <EndpointsTable
-          GeTenantData={GeTenantData}
           token={token}
           tokenData={tokenData}
           env={env}
-          resourceTypeName={row.name}
+          resourceTypeData={row}
           getTheResources={getTheResources}
         ></EndpointsTable>
       </TableRow>

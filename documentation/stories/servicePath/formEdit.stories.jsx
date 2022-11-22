@@ -64,8 +64,21 @@ Modify.args = {
   },
   data: [
     {
-      url: 'http://localhost:1026/v2/entities',
-      resourceID: 'fiware'
+      endpointUrl
+      : 
+      "http://localhost:1026/v2/entities",
+      name
+      : 
+      "Orion",
+      resourceID
+      : 
+      "Tenant1/Orion",
+      tenantName
+      : 
+      "Tenant1",
+      userID
+      : 
+      ""
     }
   ],
   getTheResources: () => {}

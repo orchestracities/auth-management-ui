@@ -82,12 +82,25 @@ export default function ResourceForm({ title, close, action, token, tokenData, e
           client
             .mutate({
               mutation: gql`
-                mutation newResourceType($name: String!, $userID: String!, $tenantName: String!, $resourceID: String!) {
-                  newResourceType(name: $name, userID: $userID, tenantName: $tenantName, resourceID: $resourceID) {
+                mutation newResourceType(
+                  $name: String!
+                  $userID: String!
+                  $tenantName: String!
+                  $resourceID: String!
+                  $endpointUrl: String!
+                ) {
+                  newResourceType(
+                    name: $name
+                    userID: $userID
+                    tenantName: $tenantName
+                    resourceID: $resourceID
+                    endpointUrl: $endpointUrl
+                  ) {
                     name
                     userID
                     tenantName
                     resourceID
+                    endpointUrl
                   }
                 }
               `,
@@ -95,40 +108,24 @@ export default function ResourceForm({ title, close, action, token, tokenData, e
                 name: name,
                 userID: tokenData.preferred_username,
                 tenantName: GeTenantData('name'),
-                resourceID: GeTenantData('name') + '/' + name
+                resourceID: GeTenantData('name') + '/' + name,
+                endpointUrl: endpoint
               }
             })
             .then(() => {
-              client
-                .mutate({
-                  mutation: gql`
-                    mutation addEndpoint($resourceID: String!, $url: String!) {
-                      addEndpoint(resourceID: $resourceID, url: $url) {
-                        url
-                        resourceID
-                      }
-                    }
-                  `,
-                  variables: { resourceID: GeTenantData('name') + '/' + name, url: endpoint }
-                })
-                .then(() => {
-                  close(false);
-                  getTheResources();
-                  sendNotification({
-                    msg: (
-                      <Trans
-                        i18nKey="common.messages.sucessCreate"
-                        values={{
-                          data: 'new Resource Type called: ' + name
-                        }}
-                      />
-                    ),
-                    variant: 'success'
-                  });
-                })
-                .catch((e) => {
-                  sendNotification({ msg: e.message + ' the config', variant: 'error' });
-                });
+              close(false);
+              getTheResources();
+              sendNotification({
+                msg: (
+                  <Trans
+                    i18nKey="common.messages.sucessCreate"
+                    values={{
+                      data: 'new Resource Type called: ' + name
+                    }}
+                  />
+                ),
+                variant: 'success'
+              });
             })
             .catch((e) => {
               sendNotification({ msg: e.message + ' the config', variant: 'error' });

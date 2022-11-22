@@ -90,19 +90,65 @@ describe('GraphQL-Mutations', function () {
 
   const newResourceType = {
     query: `
-    mutation newResourceType($name: String!, $userID: String!, $tenantName: String!, $resourceID: String!) {
-      newResourceType(name: $name, userID: $userID, tenantName: $tenantName, resourceID: $resourceID) {
+    mutation newResourceType(
+      $name: String!
+      $userID: String!
+      $tenantName: String!
+      $resourceID: String!
+      $endpointUrl: String!
+    ) {
+      newResourceType(
+        name: $name
+        userID: $userID
+        tenantName: $tenantName
+        resourceID: $resourceID
+        endpointUrl: $endpointUrl
+      ) {
         name
         userID
         tenantName
         resourceID
+        endpointUrl
       }
     }`,
     variables: {
       name: 'new',
       userID: 'admin',
       tenantName: 'Tenant1',
-      resourceID: 'Tenant1' + '/' + 'new'
+      resourceID: 'Tenant1' + '/' + 'new',
+      endpointUrl:"URL"
+    }
+  };
+
+  const updateEndpoint = {
+    query: `
+    mutation updateThisEndpoint(
+      $name: String!
+      $userID: String!
+      $tenantName: String!
+      $resourceID: String!
+      $endpointUrl: String!
+    ) {
+      updateThisEndpoint(
+        name: $name
+        userID: $userID
+        tenantName: $tenantName
+        resourceID: $resourceID
+        endpointUrl: $endpointUrl
+      ) {
+        name
+        userID
+        tenantName
+        resourceID
+        endpointUrl
+      }
+    }`,
+    variables: { 
+      name: 'new',
+      userID: 'admin',
+      tenantName: 'Tenant1',
+      resourceID: 'Tenant1' + '/' + 'new',
+      endpointUrl:"URLNEW"
     }
   };
 
@@ -114,43 +160,17 @@ describe('GraphQL-Mutations', function () {
         userID
         tenantName
         resourceID
+        endpointUrl
       }
     }`,
     variables: { resourceID: ['Tenant1' + '/' + 'new'] }
   };
 
-  const addEndpoint = {
-    query: `
-    mutation addEndpoint($resourceID: String!, $url: String!) {
-      addEndpoint(resourceID: $resourceID, url: $url) {
-        url
-        resourceID
-      }
-    }`,
-    variables: { resourceID: 'Tenant1' + '/' + 'new', url: 'http...' }
-  };
 
-  const updateEndpoint = {
-    query: `
-    mutation updateThisEndpoint($resourceID: String!, $url: String!) {
-      updateThisEndpoint(resourceID: $resourceID, url: $url) {
-        url
-        resourceID
-      }
-    }`,
-    variables: { resourceID: 'Tenant1' + '/' + 'new', url: 'httpnew.' }
-  };
 
-  const deleteThisEndpoint = {
-    query: `
-    mutation deleteThisEndpoint($resourceID: [String]!) {
-      deleteThisEndpoint(resourceID: $resourceID) {
-        url
-        resourceID
-      }
-    }`,
-    variables: { resourceID: 'Tenant1' + '/' + 'new' }
-  };
+
+
+
 
   it('create new tenant configuration', (done) => {
     request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
@@ -254,33 +274,13 @@ describe('GraphQL-Mutations', function () {
             expect(res.body.data.newResourceType[0]).to.have.own.property('userID');
             expect(res.body.data.newResourceType[0]).to.have.own.property('tenantName');
             expect(res.body.data.newResourceType[0]).to.have.own.property('resourceID');
-
+              expect(res.body.data.newResourceType[0]).to.have.own.property('endpointUrl');
             done();
           });
       });
   });
 
-  it('New Endpoint', (done) => {
-    request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
-      .post('/')
-      .set('Content-type', 'application/x-www-form-urlencoded')
-      .send(loginSettings)
-      .end(function (err, res) {
-        const token = res.body.access_token;
-        request(url)
-          .post('/')
-          .set('Authorization', `Bearer ${token}`)
-          .send(addEndpoint)
-          .expect(200)
-          .end((err, res) => {
-            if (err) return done(err);
-            expect(res.body.data.addEndpoint[0]).to.have.own.property('resourceID');
-            expect(res.body.data.addEndpoint[0]).to.have.own.property('url');
-            done();
-          });
-      });
-  });
-
+  
   it('update Endpoint', (done) => {
     request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
       .post('/')
@@ -295,8 +295,11 @@ describe('GraphQL-Mutations', function () {
           .expect(200)
           .end((err, res) => {
             if (err) return done(err);
+            expect(res.body.data.updateThisEndpoint[0]).to.have.own.property('name');
+            expect(res.body.data.updateThisEndpoint[0]).to.have.own.property('userID');
+            expect(res.body.data.updateThisEndpoint[0]).to.have.own.property('tenantName');
             expect(res.body.data.updateThisEndpoint[0]).to.have.own.property('resourceID');
-            expect(res.body.data.updateThisEndpoint[0]).to.have.own.property('url');
+              expect(res.body.data.updateThisEndpoint[0]).to.have.own.property('endpointUrl');
             done();
           });
       });
@@ -320,29 +323,11 @@ describe('GraphQL-Mutations', function () {
             expect(res.body.data.deleteResourceType[0]).to.have.own.property('userID');
             expect(res.body.data.deleteResourceType[0]).to.have.own.property('tenantName');
             expect(res.body.data.deleteResourceType[0]).to.have.own.property('resourceID');
+              expect(res.body.data.deleteResourceType[0]).to.have.own.property('endpointUrl');
             done();
           });
       });
   });
 
-  it('Delete Endpoint', (done) => {
-    request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
-      .post('/')
-      .set('Content-type', 'application/x-www-form-urlencoded')
-      .send(loginSettings)
-      .end(function (err, res) {
-        const token = res.body.access_token;
-        request(url)
-          .post('/')
-          .set('Authorization', `Bearer ${token}`)
-          .send(deleteThisEndpoint)
-          .expect(200)
-          .end((err, res) => {
-            if (err) return done(err);
-            expect(res.body.data.deleteThisEndpoint[0]).to.have.own.property('resourceID');
-            expect(res.body.data.deleteThisEndpoint[0]).to.have.own.property('url');
-            done();
-          });
-      });
-  });
+  
 });

@@ -14,15 +14,7 @@ config.loadConfig();
 
 const { get, update, add, deleteTenant } = require('./mongo/tenantsQueries');
 const { getUserPref, updateUserPref } = require('./mongo/userSettings');
-const {
-  getResource,
-  deleteResource,
-  newResource,
-  getEndpoint,
-  updateEndpoint,
-  deleteEndpoint,
-  newEndPoint
-} = require('./mongo/resourceTypes');
+const { getResource, deleteResource, newResource, updateEndpoint } = require('./mongo/resourceTypes');
 const typeDefs = gql`
   type TenantConfiguration {
     name: String!
@@ -37,31 +29,35 @@ const typeDefs = gql`
     lastTenantSelected: String
   }
 
-  type ResourceEndpoint {
-    url: String!
-    resourceID: String!
-  }
-
   type ResourceType {
     name: String!
     userID: String!
     tenantName: String!
     resourceID: String!
-    endpoint: ResourceEndpoint!
+    endpointUrl: String!
   }
 
   type Query {
     listTenants(tenantNames: [String]!): [TenantConfiguration]
     getUserPreferences(userName: String!): [UserPreferencies]
     getTenantResourceType(tenantName: String!): [ResourceType]
-    getEndpoints(resourceID: String!): [ResourceEndpoint]
   }
   type Mutation {
-    newResourceType(name: String!, userID: String!, tenantName: String!, resourceID: String!): [ResourceType]
+    newResourceType(
+      name: String!
+      userID: String!
+      tenantName: String!
+      resourceID: String!
+      endpointUrl: String!
+    ): [ResourceType]
     deleteResourceType(resourceID: [String]!): [ResourceType]
-    deleteThisEndpoint(resourceID: [String]!): [ResourceEndpoint]
-    addEndpoint(resourceID: String!, url: String!): [ResourceEndpoint]
-    updateThisEndpoint(resourceID: String!, url: String!): [ResourceEndpoint]
+    updateThisEndpoint(
+      name: String!
+      userID: String!
+      tenantName: String!
+      resourceID: String!
+      endpointUrl: String!
+    ): [ResourceType]
     modifyUserPreferences(userName: String!, language: String!, lastTenantSelected: String): [UserPreferencies]
     getTenantConfig(
       name: String!
@@ -105,15 +101,6 @@ const resolvers = {
       try {
         config.getLogger().info(logContext, 'getTenantResourceType: %s', JSON.stringify(args));
         return await getResource(args);
-      } catch (err) {
-        config.getLogger().error(logContext, err);
-        throw new ApolloError({ data: { reason: err.message } });
-      }
-    },
-    getEndpoints: async (object, args, context, info) => {
-      try {
-        config.getLogger().info(logContext, 'getEndpoints: %s', JSON.stringify(args));
-        return await getEndpoint(args);
       } catch (err) {
         config.getLogger().error(logContext, err);
         throw new ApolloError({ data: { reason: err.message } });
@@ -175,28 +162,10 @@ const resolvers = {
         throw new ApolloError(err.message);
       }
     },
-    addEndpoint: async (object, args, context, info) => {
-      try {
-        config.getLogger().info(logContext, 'addEndpoint: %s', JSON.stringify(args));
-        return await newEndPoint(args);
-      } catch (err) {
-        config.getLogger().error(logContext, err);
-        throw new ApolloError(err.message);
-      }
-    },
     updateThisEndpoint: async (object, args, context, info) => {
       try {
         config.getLogger().info(logContext, 'addEndpoint: %s', JSON.stringify(args));
         return await updateEndpoint(args);
-      } catch (err) {
-        config.getLogger().error(logContext, err);
-        throw new ApolloError(err.message);
-      }
-    },
-    deleteThisEndpoint: async (object, args, context, info) => {
-      try {
-        config.getLogger().info(logContext, 'deleteThisEndpoint: %s', JSON.stringify(args));
-        return await deleteEndpoint(args);
       } catch (err) {
         config.getLogger().error(logContext, err);
         throw new ApolloError(err.message);

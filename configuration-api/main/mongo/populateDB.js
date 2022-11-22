@@ -20,12 +20,8 @@ const ResourceType = new mongoose.Schema({
   },
   userID: String,
   name: String,
-  tenantName: String
-});
-
-const ResourceEndpoint = new mongoose.Schema({
-  resourceID: String,
-  url: String
+  tenantName: String,
+  endpointUrl: String
 });
 
 const Config = connection.model('TenantConfig', TenantConfig);
@@ -35,7 +31,6 @@ const userSettings = new mongoose.Schema({
   language: String,
   lastTenantSelected: String
 });
-const Endpoints = connection.model('ResourceEndpoint', ResourceEndpoint);
 const Resource = connection.model('ResourceType', ResourceType);
 
 const Settings = connection.model('userSettings', userSettings);
@@ -45,7 +40,8 @@ Resource.deleteMany({}, function (err) {
       resourceID: 'Tenant1/Orion',
       userID: '',
       name: 'Orion',
-      tenantName: 'Tenant1'
+      tenantName: 'Tenant1',
+      endpointUrl: fiwareURL
     },
     function (err) {
       if (err) {
@@ -56,7 +52,8 @@ Resource.deleteMany({}, function (err) {
             resourceID: 'Tenant2/Orion',
             userID: '',
             name: 'Orion',
-            tenantName: 'Tenant2'
+            tenantName: 'Tenant2',
+            endpointUrl: fiwareURL
           },
           function (err) {
             if (err) {
@@ -67,75 +64,46 @@ Resource.deleteMany({}, function (err) {
       }
     }
   );
-
-  Endpoints.deleteMany({}, function (err) {
-    Endpoints.create(
-      {
-        resourceID: 'Tenant1/Orion',
-        url: fiwareURL
-      },
-      function (err) {
-        if (err) {
-          console.log(err);
-        } else {
-          Endpoints.create(
-            {
-              resourceID: 'Tenant2/Orion',
-              url: fiwareURL
-            },
-            function (err) {
-              if (err) {
-                console.log(err);
-              } else {
-                console.log('Resource Types Created');
-              }
-            }
-          );
-        }
-      }
-    );
-
-    Settings.deleteMany({}, function (err) {
-      Config.deleteMany({}, function (err) {
-        console.log('PopulateDB: clear old data...');
-        if (err) {
-          console.log(err);
-        } else {
-          Config.create(
-            {
-              name: 'Tenant1',
-              icon: 'none',
-              primaryColor: '#8086ba',
-              secondaryColor: '#8086ba',
-              customImage: ''
-            },
-            function (err) {
-              if (err) {
-                console.log(err);
-              } else {
-                console.log('Tenant1 created!');
-                Config.create(
-                  {
-                    name: 'Tenant2',
-                    icon: 'none',
-                    primaryColor: '#8086ba',
-                    secondaryColor: '#8086ba',
-                    customImage: ''
-                  },
-                  function (err) {
-                    if (err) {
-                      console.log(err);
-                    } else {
-                      console.log('Tenant2 created!');
-                      process.exit();
-                    }
+  Settings.deleteMany({}, function (err) {
+    Config.deleteMany({}, function (err) {
+      console.log('PopulateDB: clear old data...');
+      if (err) {
+        console.log(err);
+      } else {
+        Config.create(
+          {
+            name: 'Tenant1',
+            icon: 'none',
+            primaryColor: '#8086ba',
+            secondaryColor: '#8086ba',
+            customImage: ''
+          },
+          function (err) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log('Tenant1 created!');
+              Config.create(
+                {
+                  name: 'Tenant2',
+                  icon: 'none',
+                  primaryColor: '#8086ba',
+                  secondaryColor: '#8086ba',
+                  customImage: ''
+                },
+                function (err) {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    console.log('Tenant2 created!');
+                    process.exit();
                   }
-                );
-              }
+                }
+              );
             }
-          );
-        }
-      });
+          }
+        );
+      }
     });
   });
 });

@@ -17,7 +17,7 @@ const theme = createTheme({
   }
 });
 
-export const EndpointEdit = ({ title, close, action, token, resourceTypeName, env, getTheResources, data }) => {
+export const EndpointEdit = ({ title, close, action, token, env, getTheResources, data }) => {
   return (
     <SnackbarProvider maxSnack={5}>
       <ThemeProvider theme={theme}>
@@ -28,7 +28,6 @@ export const EndpointEdit = ({ title, close, action, token, resourceTypeName, en
               close={close}
               action={action}
               token={token}
-              resourceTypeName={resourceTypeName}
               env={env}
               getTheResources={getTheResources}
               data={data}
@@ -57,10 +56,6 @@ EndpointEdit.propTypes = {
    * The token passed by keycloack
    */
   token: PropTypes.string,
-  /**
-   * The Resource Type name
-   */
-  resourceTypeName: PropTypes.string,
   /**
    * The ENV variables
    */

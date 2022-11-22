@@ -47,9 +47,21 @@ export const ResourceDisplay = Template.bind({});
 ResourceDisplay.args = {
   resources: [
     {
-      name: 'entity',
-      tenantID: 'fiwareType',
-      userID: ''
+      endpointUrl
+      : 
+      "http://localhost:1026/v2/entities",
+      name
+      : 
+      "Orion",
+      resourceID
+      : 
+      "Tenant1/Orion",
+      tenantName
+      : 
+      "Tenant1",
+      userID
+      : 
+      ""
     }
   ],
   token: '',

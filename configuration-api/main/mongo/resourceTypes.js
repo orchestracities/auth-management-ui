@@ -10,29 +10,15 @@ const ResourceType = new mongoose.Schema({
   },
   userID: String,
   name: String,
-  tenantName: String
+  tenantName: String,
+  endpointUrl: String
 });
 
 const Resource = connection.model('ResourceType', ResourceType);
 
 async function getResource(data) {
   const resourceTypes = await Resource.find({ tenantName: data.tenantName });
-  let resourceTypesWithEndpoint = [];
-  if (resourceTypes.length > 0) {
-    for (const e of resourceTypes) {
-      let endpoint = await getEndpoint(e);
-      resourceTypesWithEndpoint.push({
-        resourceID: e.resourceID,
-        userID: e.userID,
-        name: e.name,
-        tenantName: e.tenantName,
-        endpoint: endpoint[0]
-      });
-    }
-    return resourceTypesWithEndpoint;
-  } else {
-    return await resourceTypes;
-  }
+  return await resourceTypes;
 }
 
 async function deleteResource(data) {
@@ -49,61 +35,32 @@ async function newResource(data) {
     resourceID: data.resourceID,
     name: data.name,
     userID: data.userID,
-    tenantName: data.tenantName
+    tenantName: data.tenantName,
+    endpointUrl: data.endpointUrl
   };
   await Resource.create(arrayOfData);
   return await getResource(data);
 }
 
-const ResourceEndpoint = new mongoose.Schema({
-  resourceID: String,
-  url: String
-});
-
-const Endpoints = connection.model('ResourceEndpoint', ResourceEndpoint);
-
-async function getEndpoint(data) {
-  const endpoints = await Endpoints.find({ resourceID: data.resourceID });
-  return await endpoints;
-}
-
 async function updateEndpoint(data) {
   const filter = { resourceID: data.resourceID };
-  const thisEndpoint = await Endpoints.find(filter);
+  const thisEndpoint = await Resource.find(filter);
   if (thisEndpoint.length > 0) {
     const update = {
       resourceID: data.resourceID,
-      url: data.url
+      name: data.name,
+      userID: data.userID,
+      tenantName: data.tenantName,
+      endpointUrl: data.endpointUrl
     };
-    await Endpoints.findOneAndUpdate(filter, update);
-    return await getEndpoint(data);
+    await Resource.findOneAndUpdate(filter, update);
+    return await getResource(data);
   }
-}
-
-async function deleteEndpoint(data) {
-  const endpoints = await Endpoints.find({ resourceID: { $in: data.resourceID } });
-  let deletedendpoints = {};
-  for (const e of endpoints) {
-    deletedendpoints = await Endpoints.findByIdAndRemove(e._id);
-  }
-  return endpoints;
-}
-
-async function newEndPoint(data) {
-  const arrayOfData = {
-    resourceID: data.resourceID,
-    url: data.url
-  };
-  await Endpoints.create(arrayOfData);
-  return await getEndpoint(data);
 }
 
 module.exports = {
   getResource,
   deleteResource,
   newResource,
-  getEndpoint,
-  deleteEndpoint,
-  updateEndpoint,
-  newEndPoint
+  updateEndpoint
 };

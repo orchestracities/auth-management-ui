@@ -22,7 +22,7 @@ const CustomDialogTitle = styled(AppBar)({
   boxShadow: 'none'
 });
 
-export default function EndpointsForm({ title, close, action, token, resourceTypeName, env, getTheResources, data }) {
+export default function EndpointsForm({ title, close, action, token, env, getTheResources, data }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
 
   const httpLink = createHttpLink({
@@ -48,7 +48,7 @@ export default function EndpointsForm({ title, close, action, token, resourceTyp
     close(false);
   };
 
-  const [endpoint, setEndpoint] = React.useState(data[0].url);
+  const [endpoint, setEndpoint] = React.useState(data[0].endpointUrl);
 
   const cases = () => {
     switch (true) {
@@ -70,14 +70,35 @@ export default function EndpointsForm({ title, close, action, token, resourceTyp
           client
             .mutate({
               mutation: gql`
-                mutation updateThisEndpoint($resourceID: String!, $url: String!) {
-                  updateThisEndpoint(resourceID: $resourceID, url: $url) {
-                    url
+                mutation updateThisEndpoint(
+                  $name: String!
+                  $userID: String!
+                  $tenantName: String!
+                  $resourceID: String!
+                  $endpointUrl: String!
+                ) {
+                  updateThisEndpoint(
+                    name: $name
+                    userID: $userID
+                    tenantName: $tenantName
+                    resourceID: $resourceID
+                    endpointUrl: $endpointUrl
+                  ) {
+                    name
+                    userID
+                    tenantName
                     resourceID
+                    endpointUrl
                   }
                 }
               `,
-              variables: { resourceID: data[0].resourceID, url: endpoint }
+              variables: {
+                name: data[0].name,
+                userID: data[0].userID,
+                tenantName: data[0].tenantName,
+                resourceID: data[0].resourceID,
+                endpointUrl: endpoint
+              }
             })
             .then(() => {
               close(false);
@@ -120,7 +141,7 @@ export default function EndpointsForm({ title, close, action, token, resourceTyp
               id="Resource Type"
               label={<Trans>resourceType.form.resourceName</Trans>}
               variant="outlined"
-              defaultValue={resourceTypeName}
+              defaultValue={data[0].name}
               disabled
               sx={{
                 width: '100%'

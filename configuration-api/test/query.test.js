@@ -50,16 +50,7 @@ describe('GraphQL-Query', function () {
     variables: { tenantName: 'Tenant1' }
   };
 
-  const getEndpoints = {
-    query: `
-    query getEndpoints($resourceID: String!) {
-      getEndpoints(resourceID: $resourceID) {
-        url
-        resourceID
-      }
-    }`,
-    variables: { resourceID: 'Tenant1/Orion' }
-  };
+
 
   it('Returns tenant properties', (done) => {
     request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
@@ -123,32 +114,13 @@ describe('GraphQL-Query', function () {
             if (res.body.data.length > 0) {
               expect(res.body.data.getTenantResourceType[0]).to.have.own.property('name');
               expect(res.body.data.getTenantResourceType[0]).to.have.own.property('userID');
+              expect(res.body.data.getTenantResourceType[0]).to.have.own.property('tenantName');
+              expect(res.body.data.getTenantResourceType[0]).to.have.own.property('resourceID');
+              expect(res.body.data.getTenantResourceType[0]).to.have.own.property('endpointUrl');
             }
             done();
           });
       });
   });
-  it('Returns resourceTypes endpoints', (done) => {
-    request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
-      .post('/')
-      .set('Content-type', 'application/x-www-form-urlencoded')
-      .send(loginSettings)
-      .end(function (err, res) {
-        const token = res.body.access_token;
-        request(url)
-          .post('/')
-          .set('Authorization', `Bearer ${token}`)
-          .send(getEndpoints)
-          .expect(200)
-          .end((err, res) => {
-            if (err) return done(err);
-            if (res.body.data.length > 0) {
-              expect(res.body.data.getEndpoints[0]).to.have.own.property('name');
-              expect(res.body.data.getEndpoints[0]).to.have.own.property('resourceTypeName');
-              expect(res.body.data.getEndpoints[0]).to.have.own.property('resourceID');
-            }
-            done();
-          });
-      });
-  });
+ 
 });
