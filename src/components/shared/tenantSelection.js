@@ -93,7 +93,7 @@ export default function TenantSelection({ tenantValues, seTenant, correntValue }
           onChange={handleChange}
         >
           {tenantValues.map((tenant) => (
-            <MenuItem key={tenant.id} value={tenant.id}>
+            <MenuItem key={tenant.id} id={tenant.id} value={tenant.id}>
               {tenant.props.icon === 'custom' ? (
                 <ListItemIcon>
                   <Avatar
