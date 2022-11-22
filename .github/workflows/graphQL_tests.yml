@@ -31,7 +31,7 @@ jobs:
       - name: Setup Docker
         run: bash start.sh dev
       - name: Install Dependencies
-        run: npm install
+        run: npm install --force
         working-directory: configuration-api
       - name: populate DB
         run: node main/mongo/populateDB.js
