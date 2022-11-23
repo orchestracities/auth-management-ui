@@ -1,11 +1,11 @@
 import React from 'react';
-import { ResourceTypeCreation } from './formCreation';
+import { ServicePathCreation } from './formCreation';
 import { Title, Subtitle, Description, ArgsTable, PRIMARY_STORY } from '@storybook/addon-docs';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
   title: 'ResourceType/Form/Creation',
-  component: ResourceTypeCreation,
+  component: ServicePathCreation,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
     resources: {
@@ -40,7 +40,7 @@ export default {
 };
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => <ResourceTypeCreation {...args} />;
+const Template = (args) => <ServicePathCreation {...args} />;
 
 export const Creation = Template.bind({});
 Creation.args = {

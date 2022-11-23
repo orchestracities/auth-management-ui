@@ -4,7 +4,7 @@ import { Title, Subtitle, Description, ArgsTable, PRIMARY_STORY } from '@storybo
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'ResourceType/Form/Creation',
+  title: 'ResourceType/Form/Edit',
   component: EndpointEdit,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {

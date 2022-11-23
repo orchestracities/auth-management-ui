@@ -392,8 +392,10 @@ export default function PolicyForm({
     if (areThisValuesInside.length > 0) {
       axios
         .get(areThisValuesInside[0].endpointUrl, {
-          'fiware-Service': tenantName('name'),
-          'fiware-ServicePath': path
+          headers: {
+            'fiware-Service': tenantName('name'),
+            'fiware-ServicePath': path
+          }
         })
         .then((response) => {
           setAccessList([
