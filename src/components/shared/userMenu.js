@@ -101,37 +101,39 @@ export default function UserMenu({ language, userData, token, lastTenantSelected
       link: authLink.concat(httpLink),
       cache: new InMemoryCache()
     });
-    client
-      .mutate({
-        mutation: gql`
-          mutation modifyUserPreferences($userName: String!, $language: String!, $lastTenantSelected: String) {
-            modifyUserPreferences(userName: $userName, language: $language, lastTenantSelected: $lastTenantSelected) {
-              userName
-              language
-              lastTenantSelected
+    if (lastTenantSelected !== null) {
+      client
+        .mutate({
+          mutation: gql`
+            mutation modifyUserPreferences($userName: String!, $language: String!, $lastTenantSelected: String) {
+              modifyUserPreferences(userName: $userName, language: $language, lastTenantSelected: $lastTenantSelected) {
+                userName
+                language
+                lastTenantSelected
+              }
             }
+          `,
+          variables: {
+            userName: userData.sub,
+            language: newValue,
+            lastTenantSelected: lastTenantSelected
           }
-        `,
-        variables: {
-          userName: userData.sub,
-          language: newValue,
-          lastTenantSelected: lastTenantSelected
-        }
-      })
-      .then((result) => {
-        log.debug(result);
-        sendNotification({
-          msg: (
-            <Trans
-              i18nKey="common.messages.sucessUpdate"
-              values={{
-                data: 'User Preference'
-              }}
-            />
-          ),
-          variant: 'success'
+        })
+        .then((result) => {
+          log.debug(result);
+          sendNotification({
+            msg: (
+              <Trans
+                i18nKey="common.messages.sucessUpdate"
+                values={{
+                  data: 'User Preference'
+                }}
+              />
+            ),
+            variant: 'success'
+          });
         });
-      });
+    }
   };
 
   return (
