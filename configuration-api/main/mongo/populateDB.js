@@ -40,7 +40,7 @@ Resource.deleteMany({}, function (err) {
     {
       ID: uid(16),
       userID: '',
-      name: 'Entity',
+      name: 'entity',
       tenantName: 'Tenant1',
       endpointUrl: fiwareURL
     },
@@ -52,7 +52,7 @@ Resource.deleteMany({}, function (err) {
           {
             ID: uid(16),
             userID: '',
-            name: 'Entity',
+            name: 'entity',
             tenantName: 'Tenant2',
             endpointUrl: fiwareURL
           },

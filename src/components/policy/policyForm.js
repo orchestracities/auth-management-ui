@@ -398,8 +398,10 @@ export default function PolicyForm({
           }
         })
         .then((response) => {
+          let dataToPush = [{ id: 'ID' }];
+          response.data.map((e) => dataToPush.push({ name: e.id, value: e.id }));
           setAccessList([
-            ...response.data,
+            ...dataToPush,
             ...[
               { name: '*', value: '*' },
               { name: 'default', value: 'default' }
