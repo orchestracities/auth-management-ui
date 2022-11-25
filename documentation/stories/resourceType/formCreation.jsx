@@ -17,7 +17,7 @@ const theme = createTheme({
   }
 });
 
-export const ServicePathCreation = ({ title, close, action, token, tokenData, env, getTheResources, thisTenant }) => {
+export const ResourceTypeCreation = ({ title, close, action, token, tokenData, env, getTheResources, thisTenant }) => {
   return (
     <SnackbarProvider maxSnack={5}>
       <ThemeProvider theme={theme}>
@@ -40,7 +40,7 @@ export const ServicePathCreation = ({ title, close, action, token, tokenData, en
   );
 };
 
-ServicePathCreation.propTypes = {
+ResourceTypeCreation.propTypes = {
   /**
    * The title that will be displayed inside the form
    */
@@ -76,7 +76,7 @@ ServicePathCreation.propTypes = {
   thisTenant: PropTypes.string
 };
 
-ServicePathCreation.defaultProps = {
+ResourceTypeCreation.defaultProps = {
   title: '',
   close: undefined,
   action: 'create',

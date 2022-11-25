@@ -1,11 +1,11 @@
 import React from 'react';
-import { ServicePathCreation } from './formCreation';
+import { EndpointEdit } from './formEdit';
 import { Title, Subtitle, Description, ArgsTable, PRIMARY_STORY } from '@storybook/addon-docs';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'ResourceType/Form/Creation',
-  component: ServicePathCreation,
+  title: 'ResourceType/Form/Edit',
+  component: EndpointEdit,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
     resources: {
@@ -14,7 +14,7 @@ export default {
     env: {
       control: false
     },
-    tokenData: {
+    data: {
       control: false
     },
     getTheResources: {
@@ -25,12 +25,12 @@ export default {
     docs: {
       page: () => (
         <>
-          <Title>Resource Type Creation:</Title>
+          <Title>Resource Type Modification:</Title>
           <Subtitle>Description:</Subtitle>
-          <Description>This is the one used to create a new resource type and a new endpoint</Description>
+          <Description>This is the one used to modify the endpoint of a resource type</Description>
           <Subtitle>API Documentation:</Subtitle>
           <Description>
-            The Resource Type Creation component is inside resource/resourceForm.js should be rendered inside a modal:
+            The Resource Type Creation component is inside resource/endpointsForm.js should be rendered inside a modal:
           </Description>
           <ArgsTable story={PRIMARY_STORY} />
         </>
@@ -40,15 +40,15 @@ export default {
 };
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => <ServicePathCreation {...args} />;
+const Template = (args) => <EndpointEdit {...args} />;
 
-export const Creation = Template.bind({});
-Creation.args = {
-  title: 'New element',
+export const Modify = Template.bind({});
+Modify.args = {
+  title: 'Modify element',
   close: () => {},
   action: 'create',
   token: '',
-  tokenData: { preferred_username: 'mail@mail.com' },
+  resourceTypeName: 'resourceName',
   env: {
     ANUBIS_API_URL: 'http://localhost:8085/',
     CONFIGURATION_API_URL: 'http://localhost:4000/configuration',
@@ -62,6 +62,14 @@ Creation.args = {
     TITLE: 'Anubis',
     URI: 'http://localhost:3000/'
   },
-  thisTenant: 'TenantName',
+  data: [
+    {
+      endpointUrl: 'http://localhost:1026/v2/entities',
+      name: 'entity',
+      resourceID: 'Tenant1/entity',
+      tenantName: 'Tenant1',
+      userID: ''
+    }
+  ],
   getTheResources: () => {}
 };

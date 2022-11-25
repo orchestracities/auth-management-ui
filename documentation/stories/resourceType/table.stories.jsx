@@ -1,11 +1,11 @@
 import React from 'react';
-import { ServicePathTable } from './table';
+import { ResourceTypeTable } from './table';
 import { Title, Subtitle, Description, ArgsTable, PRIMARY_STORY } from '@storybook/addon-docs';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
   title: 'ResourceType/Display/Table',
-  component: ServicePathTable,
+  component: ResourceTypeTable,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
     resources: {
@@ -41,15 +41,15 @@ export default {
 };
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => <ServicePathTable {...args} />;
+const Template = (args) => <ResourceTypeTable {...args} />;
 
 export const ResourceDisplay = Template.bind({});
 ResourceDisplay.args = {
   resources: [
     {
       endpointUrl: 'http://localhost:1026/v2/entities',
-      name: 'Orion',
-      resourceID: 'Tenant1/Orion',
+      name: 'entity',
+      resourceID: 'Tenant1/entity',
       tenantName: 'Tenant1',
       userID: ''
     }

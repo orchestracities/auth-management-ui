@@ -17,7 +17,7 @@ const theme = createTheme({
   }
 });
 
-export const ServicePathTable = ({ token, tokenData, env, resources, getTheResources, GeTenantData }) => {
+export const ResourceTypeTable = ({ token, tokenData, env, resources, getTheResources, GeTenantData }) => {
   return (
     <SnackbarProvider maxSnack={5}>
       <ThemeProvider theme={theme}>
@@ -38,7 +38,7 @@ export const ServicePathTable = ({ token, tokenData, env, resources, getTheResou
   );
 };
 
-ServicePathTable.propTypes = {
+ResourceTypeTable.propTypes = {
   /**
    * The user token passed by Keycloack
    */
@@ -66,7 +66,7 @@ ServicePathTable.propTypes = {
   GeTenantData: PropTypes.func
 };
 
-ServicePathTable.defaultProps = {
+ResourceTypeTable.defaultProps = {
   token: '',
   tokenData: {},
   env: {},
