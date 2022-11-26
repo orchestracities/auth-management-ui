@@ -181,7 +181,7 @@ from the one where you launched the Management UI):
 ```bash
 $ cd configuration-api
 $ npm install
-$ source ../.env
+$ cp ../.env .
 $ node main/mongo/populateDB.js
 $ node main/advancedAuth.js
 ```

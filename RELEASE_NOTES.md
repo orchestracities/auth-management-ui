@@ -12,10 +12,14 @@
 ### Bug fixes
 
 - Fix fonts inside the policy table
+- Fix environment variables loading for configuration-api
+- Update security dependencies
 
 ### Documentation
 
 ### Continuous Integration
+
+- Clean up dependencies
 
 ### Technical debt
 
