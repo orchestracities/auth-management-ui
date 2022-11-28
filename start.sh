@@ -27,9 +27,16 @@ if [[ $1 == "dev" ]]; then
     docker-compose -f docker-compose-dev.yml up -d
 else
     docker-compose up -d
-    docker run --name populatedb --env MONGO_DB="mongodb://mongo:27017/graphql" --network=auth-management-ui_envoymesh orchestracities/configuration-api node main/mongo/populateDB.js
-    docker rm -f populatedb
 fi
+
+wait=0
+while ! nc -z localhost 27017 && $wait -le 60;
+do
+  echo "Waiting for MongoDB..."
+  sleep 5
+  wait=$((wait+5))
+  echo "Elapsed time: $wait"
+done
 
 wait=0
 HOST="http://localhost:8080"
@@ -295,8 +302,14 @@ else
 fi
 
 if [[ $1 == "dev" ]]; then
+    echo ""
     echo "Dev environment deployed"
 else
+    echo ""
+    echo "Populate mongo db ..."
+    docker run --name populatedb --env MONGO_DB="mongodb://mongo:27017/graphql" --network=auth-management-ui_envoymesh orchestracities/configuration-api node main/mongo/populateDB.js
+    docker rm -f populatedb
+
     wait=0
     HOST="http://localhost:3000"
     while [ "$(curl -s -o /dev/null -L -w ''%{http_code}'' $HOST)" != "200" ] && [ $wait -le 60 ]
@@ -313,6 +326,7 @@ else
       exit -1
     fi
 
+    echo ""
     echo "Demo deployed!"
     echo "Your browser will open at: http://localhost:3000"
     echo "User: admin / Password: admin"
