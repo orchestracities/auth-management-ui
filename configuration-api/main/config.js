@@ -54,7 +54,7 @@ function loadConfig() {
   } else {
     newConfig.oidc_audience = '';
   }
-  getLogger().debug(logContext, 'New server configuration: %s', JSON.stringify(newConfig));
+  getLogger().info(logContext, 'New server configuration: %s', JSON.stringify(newConfig));
   setConfig(newConfig);
 }
 
