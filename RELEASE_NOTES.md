@@ -14,6 +14,7 @@
 - Fix fonts inside the policy table
 - Fix environment variables loading for configuration-api
 - Update security dependencies
+- Remove hardcoded env file
 
 ### Documentation
 

@@ -41,7 +41,17 @@ do
   echo "Elapsed time: $wait"
 done
 
-if [ $wait -gt 120 ]; then
+wait=0
+HOST="http://localhost:8085"
+while [ "$(curl -s -o /dev/null -L -w ''%{http_code}'' $HOST)" != "200" ] && [ $wait -le 60 ]
+do
+  echo "Waiting for Anubis API..."
+  sleep 5
+  wait=$((wait+5))
+  echo "Elapsed time: $wait"
+done
+
+if [ $wait -gt 60 ]; then
   echo "timeout while waiting services to be ready"
   if [[ $1 == "dev" ]]; then
       docker-compose -f docker-compose-dev.yml down -v
@@ -287,6 +297,22 @@ fi
 if [[ $1 == "dev" ]]; then
     echo "Dev environment deployed"
 else
+    wait=0
+    HOST="http://localhost:3000"
+    while [ "$(curl -s -o /dev/null -L -w ''%{http_code}'' $HOST)" != "200" ] && [ $wait -le 60 ]
+    do
+      echo "Waiting for Anubis UI..."
+      sleep 5
+      wait=$((wait+5))
+      echo "Elapsed time: $wait"
+    done
+
+    if [ $wait -gt 60 ]; then
+      echo "timeout while waiting Anubis UI to be ready"
+      docker-compose down -v
+      exit -1
+    fi
+
     echo "Demo deployed!"
     echo "Your browser will open at: http://localhost:3000"
     echo "User: admin / Password: admin"
