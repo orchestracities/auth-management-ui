@@ -26,7 +26,7 @@ function loadConfig() {
   const newConfig = getConfig();
   const result = dotenv.config();
   if (result.error) {
-    throw result.error;
+    getLogger().warn(logContext, 'No .env file in path %s', result.error.path);
   }
   if (process.env.CONFIGURATION_API_PORT) {
     newConfig.port = process.env.CONFIGURATION_API_PORT;
