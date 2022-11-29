@@ -22,7 +22,7 @@
 
 - Clean up dependencies
 - Update to login-action@v2
-- Add support for arm64 builds 
+- Add support for arm64 builds
 
 ### Technical debt
 
