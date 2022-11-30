@@ -4,7 +4,10 @@ const connection = mongoose.createConnection(config.getConfig().mongo_db);
 const logContext = { op: 'configuration-api.advancedAuth' };
 
 const TenantConfig = new mongoose.Schema({
-  name: String,
+  name: {
+    type: String,
+    unique: true
+  },
   icon: String,
   primaryColor: String,
   secondaryColor: String,
@@ -66,12 +69,12 @@ async function fromScratch(data) {
 }
 
 async function deleteTenant(data) {
-  const tenants = await Config.find({ name: { $in: data } });
+  const tenants = await Config.find({ name: data.tenantName });
   let deletedTenants = {};
   for (const e of tenants) {
     deletedTenants = await Config.findByIdAndRemove(e._id);
   }
-  return !!(await (typeof deletedTenants === 'object'));
+  return tenants;
 }
 
 module.exports = {

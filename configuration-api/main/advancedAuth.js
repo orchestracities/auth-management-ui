@@ -60,7 +60,7 @@ const typeDefs = gql`
       secondaryColor: String!
       file: String
     ): [TenantConfiguration]
-    removeTenantConfig(tenantNames: [String]!): [TenantConfiguration]
+    removeTenantConfig(tenantName: String!): [TenantConfiguration]
     modifyTenantConfig(
       name: String!
       icon: String!

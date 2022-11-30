@@ -65,15 +65,15 @@ describe('GraphQL-Mutations', function () {
 
   const removeTenantConfig = {
     query: `
-        mutation removeTenantConfig($tenantNames: [String]!) {
-            removeTenantConfig(tenantNames: $tenantNames) {
+        mutation removeTenantConfig($tenantName: String!) {
+            removeTenantConfig(tenantName: $tenantName) {
               name
               icon
               primaryColor
               secondaryColor
             }
           }`,
-    variables: { tenantNames: ['testTenant'] }
+    variables: { tenantName: 'testTenant' }
   };
 
   const modifyUserPreferences = {
@@ -107,7 +107,7 @@ describe('GraphQL-Mutations', function () {
     variables: {
       name: 'new',
       userID: 'admin',
-      tenantName: 'Tenant1',
+      tenantName: 'TenantTest',
       endpointUrl: 'URL'
     }
   };
@@ -132,7 +132,7 @@ describe('GraphQL-Mutations', function () {
     variables: {
       name: 'aaaaaaaaaaaaaaaabc',
       userID: 'admin@mail.com',
-      tenantName: 'Tenant1',
+      tenantName: 'TenantTest',
       endpointUrl: 'http://localhost:3000/ResourceTypebc',
       id: ''
     }
@@ -148,7 +148,7 @@ describe('GraphQL-Mutations', function () {
         endpointUrl
       }
     }`,
-    variables: { name: ['new'], tenantName: 'Tenant1' }
+    variables: { name: ['new'], tenantName: 'TenantTest' }
   };
 
   it('create new tenant configuration', (done) => {
@@ -211,7 +211,10 @@ describe('GraphQL-Mutations', function () {
           .expect(200)
           .end((err, res) => {
             if (err) return done(err);
-            expect(res.body.data.removeTenantConfig).to.be.a('null');
+            expect(res.body.data.removeTenantConfig[0]).to.have.own.property('name');
+            expect(res.body.data.removeTenantConfig[0]).to.have.own.property('icon');
+            expect(res.body.data.removeTenantConfig[0]).to.have.own.property('primaryColor');
+            expect(res.body.data.removeTenantConfig[0]).to.have.own.property('secondaryColor');
             done();
           });
       });
@@ -231,6 +234,9 @@ describe('GraphQL-Mutations', function () {
           .expect(200)
           .end((err, res) => {
             if (err) return done(err);
+            expect(res.body.data.modifyUserPreferences[0]).to.have.own.property('userName');
+            expect(res.body.data.modifyUserPreferences[0]).to.have.own.property('language');
+            expect(res.body.data.modifyUserPreferences[0]).to.have.own.property('lastTenantSelected');
             done();
           });
       });

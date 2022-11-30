@@ -64,7 +64,7 @@ describe('GraphQL-Query', function () {
           .send(listTenants)
           .expect(200)
           .end((err, res) => {
-            if (err) return done(err);
+            if (err) return done(err);        
             expect(res.body.data.listTenants[0]).to.have.own.property('name');
             expect(res.body.data.listTenants[0]).to.have.own.property('icon');
             expect(res.body.data.listTenants[0]).to.have.own.property('primaryColor');
