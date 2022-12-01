@@ -36,8 +36,8 @@ async function updateUserPref(data) {
     const thisTenant = await Settings.findOneAndUpdate(filter, update);
     return await thisTenant;
   } else {
-    const results=await addUserPref(data.userName);
-   return await results;
+    const results = await addUserPref(data.userName);
+    return await results;
   }
 }
 
