@@ -1,6 +1,6 @@
 {
   "name": "auth-management-ui-documentation",
-  "version": "0.3.0",
+  "version": "0.6.0-dev",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -15,31 +15,20 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@babel/core": "^7.18.2",
-    "@babel/preset-react": "^7.17.12",
-    "@storybook/addon-actions": "^6.5.5",
-    "@storybook/addon-essentials": "^6.5.5",
-    "@storybook/addon-interactions": "^6.5.5",
-    "@storybook/addon-links": "^6.5.5",
-    "@storybook/builder-webpack4": "^6.5.5",
-    "@storybook/manager-webpack4": "^6.5.5",
-    "@storybook/react": "^6.5.5",
-    "@storybook/testing-library": "^0.0.11",
-    "babel-loader": "^8.2.5",
+    "@storybook/addon-actions": "^6.5.13",
+    "@storybook/addon-essentials": "^6.5.13",
+    "@storybook/addon-interactions": "^6.5.13",
+    "@storybook/addon-links": "^6.5.13",
+    "@storybook/builder-webpack4": "^6.5.13",
+    "@storybook/manager-webpack4": "^6.5.13",
+    "@storybook/react": "^6.5.13",
+    "@storybook/testing-library": "^0.0.13",
     "chromatic": "^6.6.4",
     "eslint": "^8.14.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-config-standard": "^17.0.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-n": "^15.2.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-promise": "^6.0.0",
-    "eslint-plugin-react": "^7.29.4",
-    "prettier": "^2.6.2",
-    "storybook": "^6.5.12"
+    "prettier": "^2.6.2"
   },
   "dependencies": {
-    "@storybook/addon-docs": "^6.5.6"
+    "@storybook/addon-docs": "^6.5.13"
   },
   "readme": "ERROR: No README data found!",
   "_id": "documentation@1.0.0"

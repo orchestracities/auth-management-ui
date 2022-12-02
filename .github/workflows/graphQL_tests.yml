@@ -19,8 +19,6 @@ jobs:
         with:
           node-version: '${{ matrix.node }}'
       - uses: actions/checkout@v3
-      - name: Generate env file
-        run: cp .env.development .env
       - name: 'Cache node_modules'
         uses: actions/cache@v3
         with:
@@ -29,15 +27,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-v${{ matrix.node }}-
       - name: Setup Docker
-        run: bash start.sh dev
+        run: ./start.sh dev
       - name: Install Dependencies
-        run: npm install --force
+        run: npm install
         working-directory: configuration-api
       - name: populate DB
         run: node main/mongo/populateDB.js
         working-directory: configuration-api
       - name: Run All Node.js Tests
-        run: node  main/advancedAuth.js & npm test 
+        run: node main/advancedAuth.js & npm test
         working-directory: configuration-api
       - name: stop Docker
-        run: bash stop.sh
+        run: ./stop.sh dev

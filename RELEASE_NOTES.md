@@ -13,10 +13,17 @@
 
 - Fix fonts inside the policy table
 - Policy form user mapping
+- Fix environment variables loading for configuration-api
+- Update security dependencies
+- Remove hardcoded env file
 
 ### Documentation
 
 ### Continuous Integration
+
+- Clean up dependencies
+- Update to login-action@v2
+- Add support for arm64 builds
 
 ### Technical debt
 

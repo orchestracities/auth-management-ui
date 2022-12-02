@@ -4,7 +4,10 @@ const config = require('../config');
 const connection = mongoose.createConnection(config.getConfig().mongo_db);
 const logContext = { op: 'configuration-api.advancedAuth' };
 const userSettings = new mongoose.Schema({
-  userName: String,
+  userName: {
+    type: String,
+    unique: true
+  },
   language: String,
   lastTenantSelected: String
 });
@@ -33,8 +36,8 @@ async function updateUserPref(data) {
     const thisTenant = await Settings.findOneAndUpdate(filter, update);
     return await thisTenant;
   } else {
-    await addUserPref(data.userName);
-    updateUserPref(data);
+    const results = await addUserPref(data.userName);
+    return await results;
   }
 }
 
