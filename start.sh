@@ -228,6 +228,62 @@ echo ""
 
 jq -R 'split(".") | .[1] | @base64d | fromjson' <<< $( jq -r ".access_token" <<<"$json" )
 
+
+echo ""
+
+echo "Create an entity in ServicePath / for Tenant1?"
+echo "==============================================================="
+export response=`curl -s -o /dev/null -w "%{http_code}" --request POST 'http://localhost:1026/v2/entities' \
+--header 'Content: application/json' \
+--header 'fiware-Service: Tenant1' \
+--header 'fiware-ServicePath: /' \
+--header 'Content-Type: application/json' \
+--header "Authorization: Bearer $token" \
+--data-raw '{
+  "id": "urn:ngsi-ld:AirQualityObserved:Tenant1",
+  "type": "AirQualityObserved",
+  "temperature": {
+    "type": "Number",
+    "value": 12.2,
+    "metadata": {}
+  }
+}'`
+if [ $response == "201" ]
+then
+  echo "PASSED"
+else
+  echo "ERROR: Can't create entity"
+  exit 1
+fi
+
+
+echo ""
+
+echo "Create an entity in ServicePath / for Tenant2?"
+echo "==============================================================="
+export response=`curl -s -o /dev/null -w "%{http_code}" --request POST 'http://localhost:1026/v2/entities' \
+--header 'Content: application/json' \
+--header 'fiware-Service: Tenant2' \
+--header 'fiware-ServicePath: /' \
+--header 'Content-Type: application/json' \
+--header "Authorization: Bearer $token" \
+--data-raw '{
+  "id": "urn:ngsi-ld:AirQualityObserved:Tenant2",
+  "type": "AirQualityObserved",
+  "temperature": {
+    "type": "Number",
+    "value": 12.2,
+    "metadata": {}
+  }
+}'`
+if [ $response == "201" ]
+then
+  echo "PASSED"
+else
+  echo "ERROR: Can't create entity"
+  exit 1
+fi
+
 if [[ $1 == "dev" ]]; then
     echo "Dev environment deployed"
 else

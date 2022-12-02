@@ -22,6 +22,7 @@
     "i18next": "^21.6.16",
     "i18next-browser-languagedetector": "^6.1.4",
     "i18next-http-backend": "^1.4.0",
+    "isurl": "^4.0.2",
     "jwt-decode": "^3.1.2",
     "keycloak-js": "^17.0.0",
     "loglevel": "^1.8.0",

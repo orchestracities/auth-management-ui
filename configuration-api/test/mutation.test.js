@@ -12,7 +12,7 @@ const loginSettings = {
 };
 
 describe('GraphQL-Mutations', function () {
-  this.retries(10);
+  let ID;
   const newTenantConfig = {
     query: `
     mutation getTenantConfig(
@@ -87,6 +87,68 @@ describe('GraphQL-Mutations', function () {
     }
   `,
     variables: { userName: '5c67b251-6f63-46f3-b3b0-085e1f7040b2', language: 'default', lastTenantSelected: 'test' }
+  };
+
+  const newResourceType = {
+    query: `
+    mutation newResourceType(
+      $name: String!
+      $userID: String!
+      $tenantName: String!
+      $endpointUrl: String!
+    ) {
+      newResourceType(name: $name, userID: $userID, tenantName: $tenantName, endpointUrl: $endpointUrl) {
+        name
+        userID
+        tenantName
+        endpointUrl
+      }
+    }`,
+    variables: {
+      name: 'new',
+      userID: 'admin',
+      tenantName: 'Tenant1',
+      endpointUrl: 'URL'
+    }
+  };
+
+  const updateThisResource = {
+    query: `
+    mutation updateThisResource(
+      $name: String!
+      $userID: String!
+      $tenantName: String!
+      $endpointUrl: String!
+      $id: String!
+    ) {
+      updateThisResource(name: $name, userID: $userID, tenantName: $tenantName, endpointUrl: $endpointUrl, id:$id) {
+        ID
+        name
+        userID
+        tenantName
+        endpointUrl
+      }
+    }`,
+    variables: {
+      name: 'aaaaaaaaaaaaaaaabc',
+      userID: 'admin@mail.com',
+      tenantName: 'Tenant1',
+      endpointUrl: 'http://localhost:3000/ResourceTypebc',
+      id: ''
+    }
+  };
+
+  const deleteResourceType = {
+    query: `
+    mutation deleteResourceType($name: [String]!, $tenantName: String!) {
+      deleteResourceType(name: $name, tenantName: $tenantName) {
+        name
+        userID
+        tenantName
+        endpointUrl
+      }
+    }`,
+    variables: { name: ['new'], tenantName: 'Tenant1' }
   };
 
   it('create new tenant configuration', (done) => {
@@ -169,9 +231,71 @@ describe('GraphQL-Mutations', function () {
           .expect(200)
           .end((err, res) => {
             if (err) return done(err);
-            expect(res.body.data.modifyUserPreferences[0]).to.have.own.property('userName');
-            expect(res.body.data.modifyUserPreferences[0]).to.have.own.property('language');
-            expect(res.body.data.modifyUserPreferences[0]).to.have.own.property('lastTenantSelected');
+            done();
+          });
+      });
+  });
+  it('New Resource Type', (done) => {
+    request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
+      .post('/')
+      .set('Content-type', 'application/x-www-form-urlencoded')
+      .send(loginSettings)
+      .end(function (err, res) {
+        const token = res.body.access_token;
+        request(url)
+          .post('/')
+          .set('Authorization', `Bearer ${token}`)
+          .send(newResourceType)
+          .expect(200)
+          .end((err, res) => {
+            if (err) return done(err);
+            ID = res.body.data.newResourceType[0].ID;
+            expect(res.body.data.newResourceType[0]).to.have.own.property('name');
+            expect(res.body.data.newResourceType[0]).to.have.own.property('userID');
+            expect(res.body.data.newResourceType[0]).to.have.own.property('tenantName');
+            expect(res.body.data.newResourceType[0]).to.have.own.property('endpointUrl');
+            done();
+          });
+      });
+  });
+
+  it('update Resource', (done) => {
+    request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
+      .post('/')
+      .set('Content-type', 'application/x-www-form-urlencoded')
+      .send(loginSettings)
+      .end(function (err, res) {
+        const token = res.body.access_token;
+        request(url)
+          .post('/')
+          .set('Authorization', `Bearer ${token}`)
+          .send(updateThisResource)
+          .expect(200)
+          .end((err, res) => {
+            if (err) return done(err);
+            done();
+          });
+      });
+  });
+
+  it('delete Resource Type', (done) => {
+    request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
+      .post('/')
+      .set('Content-type', 'application/x-www-form-urlencoded')
+      .send(loginSettings)
+      .end(function (err, res) {
+        const token = res.body.access_token;
+        request(url)
+          .post('/')
+          .set('Authorization', `Bearer ${token}`)
+          .send(deleteResourceType)
+          .expect(200)
+          .end((err, res) => {
+            if (err) return done(err);
+            expect(res.body.data.deleteResourceType[0]).to.have.own.property('name');
+            expect(res.body.data.deleteResourceType[0]).to.have.own.property('userID');
+            expect(res.body.data.deleteResourceType[0]).to.have.own.property('tenantName');
+            expect(res.body.data.deleteResourceType[0]).to.have.own.property('endpointUrl');
             done();
           });
       });

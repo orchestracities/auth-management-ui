@@ -21,17 +21,17 @@ jobs:
         with:
           node-version: 16
       - name: Install Node.js dependencies Management UI
-        run: npm ci
+        run: npm install --force
       - name: ESLint Management UI
         run: npx --no-install eslint src/ --cache --fix
       - name: Install Node.js dependencies Configuration API
-        run: npm ci
+        run: npm install --force
         working-directory: configuration-api
       - name: ESLint Configuration API
         run: npx --no-install eslint main/ --cache --fix
         working-directory: configuration-api
       - name: Install Node.js dependencies Documentation
-        run: npm ci
+        run: npm install --force
         working-directory: documentation
       - name: ESLint Documentation
         run: npx --no-install eslint . --ext .js,.jsx --cache --fix

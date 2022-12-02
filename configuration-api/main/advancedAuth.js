@@ -14,6 +14,7 @@ config.loadConfig();
 
 const { get, update, add, deleteTenant } = require('./mongo/tenantsQueries');
 const { getUserPref, updateUserPref } = require('./mongo/userSettings');
+const { getResource, deleteResource, newResource, updateResource } = require('./mongo/resourceTypes');
 const typeDefs = gql`
   type TenantConfiguration {
     name: String!
@@ -27,11 +28,30 @@ const typeDefs = gql`
     language: String!
     lastTenantSelected: String
   }
+
+  type ResourceType {
+    ID: String!
+    name: String!
+    userID: String!
+    tenantName: String!
+    endpointUrl: String!
+  }
+
   type Query {
     listTenants(tenantNames: [String]!): [TenantConfiguration]
     getUserPreferences(userName: String!): [UserPreferencies]
+    getTenantResourceType(tenantName: String!): [ResourceType]
   }
   type Mutation {
+    newResourceType(name: String!, userID: String!, tenantName: String!, endpointUrl: String!): [ResourceType]
+    deleteResourceType(name: [String]!, tenantName: String!): [ResourceType]
+    updateThisResource(
+      name: String!
+      userID: String!
+      tenantName: String!
+      endpointUrl: String!
+      id: String!
+    ): [ResourceType]
     modifyUserPreferences(userName: String!, language: String!, lastTenantSelected: String): [UserPreferencies]
     getTenantConfig(
       name: String!
@@ -66,6 +86,15 @@ const resolvers = {
       try {
         config.getLogger().info(logContext, 'getUserPreferences: %s', args.userName);
         return await getUserPref(args.userName);
+      } catch (err) {
+        config.getLogger().error(logContext, err);
+        throw new ApolloError({ data: { reason: err.message } });
+      }
+    },
+    getTenantResourceType: async (object, args, context, info) => {
+      try {
+        config.getLogger().info(logContext, 'getTenantResourceType: %s', JSON.stringify(args));
+        return await getResource(args);
       } catch (err) {
         config.getLogger().error(logContext, err);
         throw new ApolloError({ data: { reason: err.message } });
@@ -107,6 +136,33 @@ const resolvers = {
       } catch (err) {
         config.getLogger().error(logContext, err);
         throw new ApolloError({ data: { reason: err.message } });
+      }
+    },
+    newResourceType: async (object, args, context, info) => {
+      try {
+        config.getLogger().info(logContext, 'newResourceType: %s', JSON.stringify(args));
+        return await newResource(args);
+      } catch (err) {
+        config.getLogger().error(logContext, err);
+        throw new ApolloError(err.message);
+      }
+    },
+    deleteResourceType: async (object, args, context, info) => {
+      try {
+        config.getLogger().info(logContext, 'deleteResourceType: %s', JSON.stringify(args));
+        return await deleteResource(args);
+      } catch (err) {
+        config.getLogger().error(logContext, err);
+        throw new ApolloError(err.message);
+      }
+    },
+    updateThisResource: async (object, args, context, info) => {
+      try {
+        config.getLogger().info(logContext, 'addEndpoint: %s', JSON.stringify(args));
+        return await updateResource(args);
+      } catch (err) {
+        config.getLogger().error(logContext, err);
+        throw new ApolloError(err.message);
       }
     }
   }

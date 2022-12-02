@@ -4,11 +4,14 @@
 
 ### New features
 
+- Add form for creating resource types
+- Add support for retrieving resource id based
+  on resource type endpoint in policy forms
 - Update tests to use Node 16 (#93)
 
 ### Bug fixes
 
-- Fonts inside the policy table fixed
+- Fix fonts inside the policy table
 
 ### Documentation
 

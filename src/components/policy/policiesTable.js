@@ -55,7 +55,8 @@ const DinamicPaper = styled(Paper)(({ theme }) => ({
   },
   [theme.breakpoints.up('xl')]: {
     width: '100%'
-  }
+  },
+  borderRadius: 10
 }));
 
 export default function PoliciesTable({ data, getData, access_modes, tenantName, agentsTypes, services, token, env }) {
