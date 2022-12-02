@@ -31,9 +31,9 @@ jobs:
         with:
           node-version: 16
       - name: Install Node.js dependencies Management UI
-        run: npm install --force
+        run: npm ci
       - name: Install Node.js dependencies Documentation
-        run: npm install --force
+        run: npm ci
         working-directory: documentation
       - uses: chromaui/action@v1
         # Options required for Chromatic's GitHub Action

@@ -23,7 +23,6 @@
     "i18next-browser-languagedetector": "^6.1.4",
     "jwt-decode": "^3.1.2",
     "loglevel": "^1.8.0",
-    "mocha": "^6.1.4",
     "mui-file-dropzone": "^4.0.1",
     "notistack": "^2.0.5",
     "prop-types": "^15.8.1",
@@ -33,15 +32,13 @@
     "react-i18next": "^11.16.7",
     "react-router-dom": "^6.2.2",
     "react-scripts": "^5.0.0",
-    "selenium-webdriver": "^4.0.0-alpha.3",
     "subscriptions-transport-ws": "^0.9.19",
-    "supertest": "^6.3.1",
+    "validator": "^13.7.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint --fix --ext .js,.jsx .",
     "prestart": "generate-env-getter js && prettier --write './**/*.{js,jsx}' --config .prettierrc.json",
@@ -71,7 +68,6 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.29.4",
-    "jest-watch-typeahead": "^0.6.5",
     "prettier": "^2.6.2"
   }
 }
