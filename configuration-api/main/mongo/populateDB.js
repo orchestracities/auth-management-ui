@@ -28,7 +28,10 @@ const ResourceType = new mongoose.Schema({
 const Config = connection.model('TenantConfig', TenantConfig);
 
 const userSettings = new mongoose.Schema({
-  userName: String,
+  userName: {
+    type: String,
+    unique: true
+  },
   language: String,
   lastTenantSelected: String
 });

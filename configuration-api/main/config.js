@@ -1,4 +1,5 @@
 let logger = require('logops');
+const dotenv = require('dotenv');
 logger.format = logger.formatters.pipe;
 let config = {};
 const logContext = { op: 'configuration-api.config' };
@@ -23,6 +24,10 @@ function getConfig() {
 
 function loadConfig() {
   const newConfig = getConfig();
+  const result = dotenv.config();
+  if (result.error) {
+    getLogger().warn(logContext, 'No .env file in path %s', result.error.path);
+  }
   if (process.env.CONFIGURATION_API_PORT) {
     newConfig.port = process.env.CONFIGURATION_API_PORT;
   } else {
@@ -44,12 +49,12 @@ function loadConfig() {
   } else {
     newConfig.oidc_issuer = 'http://localhost:8080/realms/default';
   }
-  if (process.env.OIDC_AUDIENCE) {
-    newConfig.oidc_audience = process.env.OIDC_AUDIENCE;
+  if (process.env.REACT_APP_OIDC_AUDIENCE) {
+    newConfig.oidc_audience = process.env.REACT_APP_OIDC_AUDIENCE;
   } else {
     newConfig.oidc_audience = '';
   }
-  getLogger().debug(logContext, 'New server configuration: %s', JSON.stringify(newConfig));
+  getLogger().info(logContext, 'New server configuration: %s', JSON.stringify(newConfig));
   setConfig(newConfig);
 }
 
