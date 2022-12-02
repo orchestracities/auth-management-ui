@@ -459,7 +459,7 @@ export default class App extends Component {
                         </ListItem>
                       </NavLink>
                     ) : (
-                      <AuthorizedElement tokenDecoded={this.state.tokenData} iSuperAdmin={true}>
+                      <AuthorizedElement tokenDecoded={this.state.tokenData} iSuperAdmin={true} key={index}>
                         <NavLink to={thisItem.route} key={index}>
                           <ListItem button key={thisItem.name}>
                             <ListItemIcon>{thisItem.icon}</ListItemIcon>

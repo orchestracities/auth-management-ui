@@ -12,6 +12,7 @@
 ### Bug fixes
 
 - Fix fonts inside the policy table
+- Policy form user mapping
 
 ### Documentation
 
