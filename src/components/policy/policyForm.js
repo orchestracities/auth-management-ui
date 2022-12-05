@@ -152,6 +152,7 @@ export default function PolicyForm({
 
   const handleFormType = (event) => {
     setFormType(event.target.value);
+    setAgentsMap([]);
   };
 
   // AGENT
@@ -684,14 +685,18 @@ export default function PolicyForm({
                                 <Autocomplete
                                   disablePortal
                                   color="secondary"
-                                  id={i.toString()}
+                                  id={'actorName' + i.toString()}
                                   key={'actorName' + i.toString()}
                                   variant="outlined"
                                   options={dataModel}
                                   loading={loading}
                                   onOpen={() => getLabelData(agent.type, i.toString())}
                                   fullWidth={true}
-                                  defaultValue={typeof agent.name === 'undefined' ? null : agent}
+                                  value={
+                                    typeof agent.name === 'undefined'
+                                      ? null
+                                      : { name: agent.name, value: agent.name, mapper: i.toString() }
+                                  }
                                   onChange={(event, value) => handleAgentsName(event, value)}
                                   getOptionLabel={(option) => option.name}
                                   isOptionEqualToValue={(option, value) => option.value === value.value}

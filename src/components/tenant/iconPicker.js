@@ -25,7 +25,7 @@ export default function IconPicker({ previusValue, setValue }) {
         </InputLabel>
         <Select
           labelId="icon-select"
-          id="demo-simple-select"
+          id="icons"
           value={previusValue}
           label={<Trans>tenant.form.icon</Trans>}
           onChange={handleChange}

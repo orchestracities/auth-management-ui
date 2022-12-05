@@ -71,6 +71,7 @@ export default function DashboardCard({ pageType, data, getData, seTenant, color
         }
         action={
           <MultifunctionButton
+            id={'multifucntionButton' + tenantName_id}
             token={token}
             data={data}
             env={env}

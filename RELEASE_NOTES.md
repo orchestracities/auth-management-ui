@@ -12,6 +12,7 @@
 ### Bug fixes
 
 - Fix fonts inside the policy table
+- Policy form user mapping
 - Fix environment variables loading for configuration-api
 - Update security dependencies
 - Remove hardcoded env file
