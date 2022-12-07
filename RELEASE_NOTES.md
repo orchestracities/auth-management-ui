@@ -16,6 +16,7 @@
 - Fix environment variables loading for configuration-api
 - Update security dependencies
 - Remove hardcoded env file
+- Authorization token is now working on policies restcalls
 
 ### Documentation
 
