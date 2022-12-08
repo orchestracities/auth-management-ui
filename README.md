@@ -197,9 +197,24 @@ $ npm install
 $ npm run storybook
 ```
 
+### How to test the UI with Cypress
+
+To test UI with Cypress the UI and API should be up and running, once completed:
+
+```bash
+$ npm install
+$ npm run cypress:test
+```
+
+If you want to open cypress studio to run tests in the UI, or add new tests:
+
+```bash
+$ npm run cypress:open
+```
+
 ### How to test the Configuration API
 
-To test Graphql is **mandatory** to set up the Configuration API
+To test GraphQL is **mandatory** to set up the Configuration API
 first, once completed:
 
 ```bash
