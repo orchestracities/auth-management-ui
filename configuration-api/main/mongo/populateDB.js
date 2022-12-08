@@ -4,7 +4,7 @@ const { uid } = require('uid');
 //require('dotenv').config({ path: '../.env' });
 
 const connection = mongoose.createConnection(process.env.MONGO_DB || 'mongodb://localhost:27017/graphql');
-const fiwareURL = process.env.REACT_APP_ORION || 'http://localhost:1026/v2/entities';
+const fiwareURL = process.env.REACT_APP_ORION || 'http://localhost:1026/v2/entities?attrs=id&orderBy=id';
 
 const TenantConfig = new mongoose.Schema({
   name: String,

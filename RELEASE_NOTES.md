@@ -9,6 +9,7 @@
   on resource type endpoint in policy forms
 - Update tests to use Node 16 (#93)
 - Pass authorization token to policies calls
+- Update configuration: orion query with filter, debug only in dev environment
 
 ### Bug fixes
 
