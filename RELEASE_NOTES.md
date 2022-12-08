@@ -8,6 +8,7 @@
 - Add support for retrieving resource id based
   on resource type endpoint in policy forms
 - Update tests to use Node 16 (#93)
+- Pass authorization token to policies calls
 
 ### Bug fixes
 
@@ -16,7 +17,6 @@
 - Fix environment variables loading for configuration-api
 - Update security dependencies
 - Remove hardcoded env file
-- Authorization token is now working on policies restcalls
 
 ### Documentation
 
