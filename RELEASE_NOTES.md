@@ -6,6 +6,8 @@
 
 ### Bug fixes
 
+- Fix git action test failure (#121)
+
 ### Documentation
 
 ### Continuous Integration
