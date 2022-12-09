@@ -6,7 +6,7 @@
 
 ### Bug fixes
 
-- Tests fails on git because keycloack auth is not ready
+- Fix git action test failure (#121)
 
 ### Documentation
 
