@@ -6,6 +6,8 @@
 
 ### Bug fixes
 
+- Tests fails on git because keycloack auth is not ready
+
 ### Documentation
 
 ### Continuous Integration
