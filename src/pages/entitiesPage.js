@@ -1,0 +1,134 @@
+import * as React from 'react';
+import MainTitle from '../components/shared/mainTitle';
+import AddButton from '../components/shared/addButton';
+import { Grid } from '@mui/material';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import * as log from 'loglevel';
+import axios from 'axios';
+import useNotification from '../components/shared/messages/alerts';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+import EntitiesFilters from '../components/entities/entitiesFilter';
+import EntitiesTable from '../components/entities/entitiesTable';
+
+export default function EntitiesPage({ token, graphqlErrors, env, tokenData, thisTenant, tenantValues }) {
+  typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
+
+  const [msg, sendNotification] = useNotification();
+  log.debug(msg);
+
+  const [createOpen, setCreateOpen] = React.useState(false);
+  const [entities, setEntities] = React.useState([]);
+  const mainTitle = 'Entities';
+
+  //FILTER PART
+  const [servicePath, setServicePath] = React.useState(null);
+  const [type, setType] = React.useState(null);
+
+  const filterMapper = {
+    servicePath: {
+      value: servicePath,
+      set: setServicePath
+    },
+    type: {
+      value: type,
+      set: setType
+    }
+  };
+
+  // services
+  const [services, setServices] = React.useState([]);
+  const getServices = () => {
+    axios
+      .get(
+        (typeof env !== 'undefined' ? env.ANUBIS_API_URL : '') + 'v1/tenants/' + GeTenantData('id') + '/service_paths',
+        {}
+      )
+      .then((response) => {
+        setServices(response.data);
+      });
+  };
+
+  const GeTenantData = (type) => {
+    const tenantArray = tenantValues.filter((e) => e.id === thisTenant);
+    if (type === 'name') {
+      return tenantArray[0].name;
+    } else {
+      return tenantArray[0].id;
+    }
+  };
+
+  const getEntities = () => {
+    const queryParameters = type !== null ? '&resource=' + type.type : '';
+
+    const headers =
+      servicePath !== null
+        ? { 'fiware-Service': GeTenantData('name'), 'fiware-ServicePath': servicePath.path }
+        : { 'fiware-Service': GeTenantData('name') };
+    axios
+      .get(env.ORION + queryParameters, {
+        headers: headers
+      })
+      .then((response) => {
+        setEntities(response.data);
+        getServices();
+      })
+      .catch((e) => {
+        sendNotification({ msg: e.message, variant: 'error' });
+      });
+  };
+
+  React.useEffect(() => {
+    thisTenant !== null ? getEntities() : '';
+  }, [thisTenant]);
+  React.useEffect(() => {
+    if (entities.length > 0) {
+      getEntities();
+    }
+  }, [servicePath, type]);
+  const theme = useTheme();
+  const smallDevice = useMediaQuery(theme.breakpoints.down('sm'));
+  return (
+    <Box sx={{ marginBottom: 15 }}>
+      <MainTitle mainTitle={mainTitle}></MainTitle>
+      <AddButton
+        pageType={<div></div>}
+        setOpen={setCreateOpen}
+        status={createOpen}
+        graphqlErrors={graphqlErrors}
+      ></AddButton>
+      {entities.length > 0 ? (
+        <Grid container spacing={2}>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={12}
+            lg={12}
+            xl={12}
+            sx={
+              smallDevice
+                ? { width: document.getElementById('filterContainer').clientWidth, 'overflow-x': 'scroll' }
+                : ''
+            }
+          >
+            <EntitiesFilters services={services} data={entities} mapper={filterMapper} />
+          </Grid>
+
+          <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+            <EntitiesTable
+              token={token}
+              env={env}
+              data={entities}
+            ></EntitiesTable>
+          </Grid>
+        </Grid>
+      ) : (
+        <Typography sx={{ padding: '20px' }} variant="h6" component="h3">
+          no data
+        </Typography>
+      )}
+    </Box>
+  );
+}
