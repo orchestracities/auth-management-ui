@@ -11,6 +11,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import EntitiesFilters from '../components/entities/entitiesFilter';
 import EntitiesTable from '../components/entities/entitiesTable';
+import dayjs from 'dayjs';
 
 export default function EntitiesPage({ token, graphqlErrors, env, tokenData, thisTenant, tenantValues }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
@@ -25,7 +26,7 @@ export default function EntitiesPage({ token, graphqlErrors, env, tokenData, thi
   //FILTER PART
   const [servicePath, setServicePath] = React.useState(null);
   const [type, setType] = React.useState(null);
-
+  const [date, setDate] = React.useState(null);
   const filterMapper = {
     servicePath: {
       value: servicePath,
@@ -34,6 +35,10 @@ export default function EntitiesPage({ token, graphqlErrors, env, tokenData, thi
     type: {
       value: type,
       set: setType
+    },
+    date: {
+      value: date,
+      set: setDate
     }
   };
 
@@ -60,14 +65,20 @@ export default function EntitiesPage({ token, graphqlErrors, env, tokenData, thi
   };
 
   const getEntities = () => {
-    const queryParameters = type !== null ? '&resource=' + type.type : '';
+    const queryParameters =
+      (type !== null ? '&type=' + type.type : '') +
+      (date !== null ? '&q=dateModified>=' + dayjs(date).toISOString() : '');
 
     const headers =
       servicePath !== null
-        ? { 'fiware-Service': GeTenantData('name'), 'fiware-ServicePath': servicePath.path }
+        ? {
+            'fiware-Service': GeTenantData('name'),
+            'fiware-ServicePath':
+              servicePath.path[servicePath.path.length - 1] === '/' ? servicePath.path : servicePath.path
+          }
         : { 'fiware-Service': GeTenantData('name') };
     axios
-      .get(env.ORION + queryParameters, {
+      .get(env.ORION.replace('&orderBy=id', ',') + 'dateCreated,dateModified,*' + queryParameters, {
         headers: headers
       })
       .then((response) => {
@@ -81,12 +92,8 @@ export default function EntitiesPage({ token, graphqlErrors, env, tokenData, thi
 
   React.useEffect(() => {
     thisTenant !== null ? getEntities() : '';
-  }, [thisTenant]);
-  React.useEffect(() => {
-    if (entities.length > 0) {
-      getEntities();
-    }
-  }, [servicePath, type]);
+  }, [thisTenant, servicePath, type, date]);
+
   const theme = useTheme();
   const smallDevice = useMediaQuery(theme.breakpoints.down('sm'));
   return (
@@ -98,37 +105,25 @@ export default function EntitiesPage({ token, graphqlErrors, env, tokenData, thi
         status={createOpen}
         graphqlErrors={graphqlErrors}
       ></AddButton>
-      {entities.length > 0 ? (
-        <Grid container spacing={2}>
-          <Grid
-            item
-            xs={12}
-            sm={12}
-            md={12}
-            lg={12}
-            xl={12}
-            sx={
-              smallDevice
-                ? { width: document.getElementById('filterContainer').clientWidth, 'overflow-x': 'scroll' }
-                : ''
-            }
-          >
-            <EntitiesFilters services={services} data={entities} mapper={filterMapper} />
-          </Grid>
-
-          <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-            <EntitiesTable
-              token={token}
-              env={env}
-              data={entities}
-            ></EntitiesTable>
-          </Grid>
+      <Grid container spacing={2}>
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          md={12}
+          lg={12}
+          xl={12}
+          sx={
+            smallDevice ? { width: document.getElementById('filterContainer').clientWidth, 'overflow-x': 'scroll' } : ''
+          }
+        >
+          <EntitiesFilters services={services} data={entities} mapper={filterMapper} />
         </Grid>
-      ) : (
-        <Typography sx={{ padding: '20px' }} variant="h6" component="h3">
-          no data
-        </Typography>
-      )}
+
+        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+          <EntitiesTable token={token} env={env} data={entities}></EntitiesTable>
+        </Grid>
+      </Grid>
     </Box>
   );
 }

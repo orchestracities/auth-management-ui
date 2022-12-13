@@ -2,6 +2,7 @@ import * as React from 'react';
 import Grid from '@mui/material/Grid';
 import PathFilter from './filters/pathFilter';
 import TypeFilter from './filters/typeFilter';
+import DateFilter from './filters/dateFilter';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
@@ -12,6 +13,7 @@ export default function EntitiesFilters({ data, mapper, services }) {
   };
 
   const type = getUniqueListBy(data, 'type');
+  type.map((thisElement) => delete thisElement.action);
   const fiware_service_path = getUniqueListBy(services, 'path');
   React.useEffect(() => {
     if (status === '') {
@@ -58,6 +60,20 @@ export default function EntitiesFilters({ data, mapper, services }) {
         zeroMinWidth
       >
         <TypeFilter filterValue={mapper.type} data={type} status={status} setstatus={setstatus} />
+      </Grid>
+      <Grid
+        item
+        xs={status === 'DateFilter' ? 12 : 'auto'}
+        sm={status === 'DateFilter' ? 12 : 'auto'}
+        md={status === 'DateFilter' ? 12 : 'auto'}
+        lg={status === 'DateFilter' ? 12 : 'auto'}
+        xl={status === 'DateFilter' ? 12 : 'auto'}
+        sx={{
+          display: status === null || status === 'DateFilter' ? 'flex' : 'none'
+        }}
+        zeroMinWidth
+      >
+        <DateFilter filterValue={mapper.date} status={status} setstatus={setstatus} />
       </Grid>
     </Grid>
   );

@@ -98,9 +98,17 @@ export default function TypeFilter({ data, status, setstatus, filterValue }) {
               id="multiple-limit-tags"
               options={data}
               getOptionLabel={(option) => option.type}
-              defaultValue={filterValue.value}
+              defaultValue={
+                filterValue.value !== null
+                  ? {
+                      type: filterValue.value.type
+                    }
+                  : null
+              }
               renderInput={(params) => <TextField {...params} label={'Type'} />}
-              onChange={(event, value) => filterValue.set(value)}
+              onChange={(event, value) => {
+                filterValue.set(value);
+              }}
               isOptionEqualToValue={(option, value) => option.type === value.type}
               sx={{ width: '100%', marginTop: '2%' }}
             />

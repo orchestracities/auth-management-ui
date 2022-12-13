@@ -57,7 +57,7 @@ const DinamicPaper = styled(Paper)(({ theme }) => ({
   borderRadius: 10
 }));
 
-export default function EntitiesTable({ data,env,token}) {
+export default function EntitiesTable({ data, env, token }) {
   // DELETE
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
 
@@ -75,7 +75,6 @@ export default function EntitiesTable({ data,env,token}) {
   const handleClose = () => {
     setOpen(false);
   };
-
 
   const handlePropagation = (e) => {
     e.stopPropagation();
@@ -137,7 +136,7 @@ export default function EntitiesTable({ data,env,token}) {
       id: 'type',
       numeric: false,
       disablePadding: false,
-      label: "Type"
+      label: 'Type'
     },
     {
       id: 'action',
@@ -250,8 +249,6 @@ export default function EntitiesTable({ data,env,token}) {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -389,10 +386,8 @@ export default function EntitiesTable({ data,env,token}) {
         aria-labelledby="edit"
         aria-describedby="edit"
       >
-     
         <DialogActions></DialogActions>
       </DialogRounded>
-   
     </>
   );
 }
