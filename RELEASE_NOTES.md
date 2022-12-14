@@ -4,6 +4,8 @@
 
 ### New features
 
+- Entities Filter and Table display
+
 ### Bug fixes
 
 - Fix git action test failure (#121)
