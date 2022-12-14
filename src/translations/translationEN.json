@@ -91,6 +91,18 @@
       "title":"Resource Type"
     }
   },
+  "entities":{
+    "table": {
+     "type":"type"
+    },
+    "page":{
+      "title":"Entities"
+    },
+    "filters": {
+      "path": "service path{{name}}",
+      "type": "Type<0>{{name}}</0>"
+    }
+  },
   "common": {
     "messages":{
       "sucessUpdate": "{{data}}  Updated",

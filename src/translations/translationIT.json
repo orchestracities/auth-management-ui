@@ -91,6 +91,18 @@
       "title":"Tipo Risorsa"
     }
   },
+  "entities":{
+    "table": {
+     "type":"Tipo"
+    },
+    "page":{
+      "title":"Entità"
+    },
+    "filters": {
+      "path": "Percorso servizi{{name}}",
+      "type": "Tipo<0>{{name}}</0>"
+    }
+  },
   "common": {
     "messages":{
       "sucessUpdate": "{{data}}  Aggiornato",

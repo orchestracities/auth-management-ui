@@ -57,9 +57,10 @@ const DinamicPaper = styled(Paper)(({ theme }) => ({
   borderRadius: 10
 }));
 
-export default function EntitiesTable({ data, env, token }) {
+export default function EntitiesTable({ data }) {
   // DELETE
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+  console.log(openDeleteDialog);
 
   const handleClickOpenDeleteDialog = () => {
     setOpenDeleteDialog(true);
@@ -68,10 +69,11 @@ export default function EntitiesTable({ data, env, token }) {
   const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false);
   };
+  console.log(handleCloseDeleteDialog);
   // EDIT
   const [open, setOpen] = React.useState(false);
   const [editData, setEditData] = React.useState({});
-
+  console.log(editData);
   const handleClose = () => {
     setOpen(false);
   };
@@ -136,7 +138,7 @@ export default function EntitiesTable({ data, env, token }) {
       id: 'type',
       numeric: false,
       disablePadding: false,
-      label: 'Type'
+      label: <Trans>entities.table.type</Trans>
     },
     {
       id: 'action',

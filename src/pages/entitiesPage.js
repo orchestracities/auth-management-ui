@@ -3,9 +3,9 @@ import MainTitle from '../components/shared/mainTitle';
 import AddButton from '../components/shared/addButton';
 import { Grid } from '@mui/material';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import * as log from 'loglevel';
 import axios from 'axios';
+import { Trans } from 'react-i18next';
 import useNotification from '../components/shared/messages/alerts';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
@@ -13,7 +13,7 @@ import EntitiesFilters from '../components/entities/entitiesFilter';
 import EntitiesTable from '../components/entities/entitiesTable';
 import dayjs from 'dayjs';
 
-export default function EntitiesPage({ token, graphqlErrors, env, tokenData, thisTenant, tenantValues }) {
+export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, tenantValues }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
 
   const [msg, sendNotification] = useNotification();
@@ -21,7 +21,7 @@ export default function EntitiesPage({ token, graphqlErrors, env, tokenData, thi
 
   const [createOpen, setCreateOpen] = React.useState(false);
   const [entities, setEntities] = React.useState([]);
-  const mainTitle = 'Entities';
+  const mainTitle = <Trans>entities.page.title</Trans>;
 
   //FILTER PART
   const [servicePath, setServicePath] = React.useState(null);
