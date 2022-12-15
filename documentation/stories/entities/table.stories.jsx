@@ -36,7 +36,8 @@ ResourceDisplay.args = {
   data: [
     {
       type: 'AirQualityObserved',
-      id: 'ID'
+      id: 'ID',
+      dateModified: new Date()
     }
   ]
 };
