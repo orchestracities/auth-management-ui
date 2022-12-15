@@ -4,7 +4,7 @@ const { uid } = require('uid');
 //require('dotenv').config({ path: '../.env' });
 
 const connection = mongoose.createConnection(process.env.MONGO_DB || 'mongodb://localhost:27017/graphql');
-const fiwareURL = process.env.REACT_APP_ORION || 'http://localhost:1026/v2/entities?attrs=id&orderBy=id';
+const orionURL = process.env.REACT_APP_ORION || 'http://localhost:1026';
 
 const TenantConfig = new mongoose.Schema({
   name: String,
@@ -45,7 +45,7 @@ Resource.deleteMany({}, function (err) {
       userID: '',
       name: 'entity',
       tenantName: 'Tenant1',
-      endpointUrl: fiwareURL
+      endpointUrl: orionURL + '/v2/entities?attrs=id&orderBy=id'
     },
     function (err) {
       if (err) {
@@ -57,11 +57,41 @@ Resource.deleteMany({}, function (err) {
             userID: '',
             name: 'entity',
             tenantName: 'Tenant2',
-            endpointUrl: fiwareURL
+            endpointUrl: orionURL + '/v2/entities?attrs=id&orderBy=id'
           },
           function (err) {
             if (err) {
               console.log(err);
+            } else {
+              Resource.create(
+                {
+                  ID: uid(16),
+                  userID: '',
+                  name: 'entityType',
+                  tenantName: 'Tenant1',
+                  endpointUrl: orionURL + '/v2/types'
+                },
+                function (err) {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    Resource.create(
+                      {
+                        ID: uid(16),
+                        userID: '',
+                        name: 'entityType',
+                        tenantName: 'Tenant2',
+                        endpointUrl: orionURL + '/v2/types'
+                      },
+                      function (err) {
+                        if (err) {
+                          console.log(err);
+                        }
+                      }
+                    );
+                  }
+                }
+              );
             }
           }
         );
