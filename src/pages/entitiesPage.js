@@ -78,7 +78,7 @@ export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, te
           }
         : { 'fiware-Service': GeTenantData('name') };
     axios
-      .get(env.ORION.replace('&orderBy=id', ',') + 'dateCreated,dateModified,*' + queryParameters, {
+      .get(env.ORION + '/v2/entities?attrs=dateCreated,dateModified,*' + queryParameters, {
         headers: headers
       })
       .then((response) => {
