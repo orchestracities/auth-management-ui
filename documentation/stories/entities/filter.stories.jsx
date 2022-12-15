@@ -8,7 +8,7 @@ export default {
   component: EntitiesFiltering,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
-    data: {
+    types: {
       control: false
     },
     services: {
@@ -72,11 +72,7 @@ const Template = (args) => <EntitiesFiltering {...args} />;
 
 export const AllFilters = Template.bind({});
 AllFilters.args = {
-  data: [
-    {
-      type: 'AirQualityObserved'
-    }
-  ],
   mapper: {},
-  services: []
+  services: [],
+  types: [{ type: 'a type' }]
 };

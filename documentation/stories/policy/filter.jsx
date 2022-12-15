@@ -16,7 +16,7 @@ const theme = createTheme({
   }
 });
 
-export const PoliciesFiltering = ({ data, access_modes, agentsTypes }) => {
+export const PoliciesFiltering = ({ data, access_modes, agentsTypes, services }) => {
   const [mode, setMode] = React.useState(null);
   const [agent, setAgent] = React.useState(null);
   const [resource, setResource] = React.useState(null);
@@ -61,6 +61,7 @@ export const PoliciesFiltering = ({ data, access_modes, agentsTypes }) => {
             access_modes={access_modes}
             agentsTypes={agentsTypes}
             mapper={filterMapper}
+            services={services}
           />
         </Grid>
       </BrowserRouter>
@@ -85,12 +86,17 @@ PoliciesFiltering.propTypes = {
   /**
    * The possibile values of the agents types displayed on the table
    */
-  agentsTypes: PropTypes.arrayOf(PropTypes.object)
+  agentsTypes: PropTypes.arrayOf(PropTypes.object),
+  /**
+   * The possibile values of the services displayed on the table
+   */
+  services: PropTypes.arrayOf(PropTypes.object)
 };
 
 PoliciesFiltering.defaultProps = {
   data: [],
   mapper: {},
   access_modes: [],
-  agentsTypes: []
+  agentsTypes: [],
+  services: []
 };

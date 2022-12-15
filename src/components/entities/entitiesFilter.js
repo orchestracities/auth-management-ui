@@ -1,18 +1,18 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
-import PathFilter from './filters/pathFilter';
+import PathFilter from '../shared/filters/pathFilter';
+import DateFilter from '../shared/filters/dateFilter';
 import TypeFilter from './filters/typeFilter';
-import DateFilter from './filters/dateFilter';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-export default function EntitiesFilters({ data, mapper, services }) {
+export default function EntitiesFilters({ mapper, services, types }) {
   const [status, setstatus] = React.useState(null);
   const getUniqueListBy = (arr, key) => {
     return [...new Map(arr.map((item) => [item[key], item])).values()];
   };
 
-  const type = getUniqueListBy(data, 'type');
+  const type = getUniqueListBy(types, 'type');
   type.map((thisElement) => delete thisElement.action);
   const fiware_service_path = getUniqueListBy(services, 'path');
   React.useEffect(() => {

@@ -25,6 +25,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Grow from '@mui/material/Grow';
+import dayjs from 'dayjs';
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -141,6 +142,12 @@ export default function EntitiesTable({ data }) {
       label: <Trans>entities.table.type</Trans>
     },
     {
+      id: 'modified',
+      numeric: false,
+      disablePadding: false,
+      label: <Trans>entities.table.modified</Trans>
+    },
+    {
       id: 'action',
       numeric: false,
       disablePadding: true,
@@ -148,7 +155,7 @@ export default function EntitiesTable({ data }) {
     }
   ];
 
-  const PoliciesTableHead = (props) => {
+  const EntitiesTableHead = (props) => {
     const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
     const createSortHandler = (property) => (event) => {
       onRequestSort(event, property);
@@ -163,9 +170,6 @@ export default function EntitiesTable({ data }) {
               indeterminate={numSelected > 0 && numSelected < rowCount}
               checked={rowCount > 0 && numSelected === rowCount}
               onChange={onSelectAllClick}
-              inputProps={{
-                'aria-label': 'select all desserts'
-              }}
             />
           </TableCell>
           {headCells.map((headCell) => (
@@ -194,7 +198,7 @@ export default function EntitiesTable({ data }) {
     );
   };
 
-  PoliciesTableHead.propTypes = {
+  EntitiesTableHead.propTypes = {
     numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
     onSelectAllClick: PropTypes.func.isRequired,
@@ -203,7 +207,7 @@ export default function EntitiesTable({ data }) {
     rowCount: PropTypes.number.isRequired
   };
 
-  const PoliciesTableToolbar = (props) => {
+  const EntitiesTableToolbar = (props) => {
     const { numSelected } = props;
 
     return (
@@ -218,7 +222,7 @@ export default function EntitiesTable({ data }) {
       >
         {numSelected > 0 ? (
           <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">
-            <Trans i18nKey="policies.table.selected" values={{ name: numSelected }} />
+            <Trans i18nKey="common.table.selected" values={{ name: numSelected }} />
           </Typography>
         ) : (
           ''
@@ -232,7 +236,7 @@ export default function EntitiesTable({ data }) {
           </Tooltip>
         ) : (
           <Trans
-            i18nKey="policies.table.total_plur"
+            i18nKey="common.table.total_plur"
             values={{
               name: stableSort(rows, getComparator(order, orderBy)).length
             }}
@@ -242,7 +246,7 @@ export default function EntitiesTable({ data }) {
     );
   };
 
-  PoliciesTableToolbar.propTypes = {
+  EntitiesTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired
   };
 
@@ -304,10 +308,10 @@ export default function EntitiesTable({ data }) {
     <>
       <Box sx={{ width: '100%' }}>
         <DinamicPaper sx={{ width: '100%', mb: 2, overflow: 'hidden' }} elevation={1} square={false}>
-          <PoliciesTableToolbar numSelected={selected.length} />
+          <EntitiesTableToolbar numSelected={selected.length} />
           <TableContainer>
             <Table aria-labelledby="tableTitle" sx={{ minWidth: 750 }} stickyHeader size={'small'}>
-              <PoliciesTableHead
+              <EntitiesTableHead
                 numSelected={selected.length}
                 order={order}
                 orderBy={orderBy}
@@ -349,6 +353,12 @@ export default function EntitiesTable({ data }) {
                         <TableCell padding="normal" align="left">
                           {row.type}
                         </TableCell>
+                        <TableCell padding="normal" align="left">
+                          {dayjs(Date(row.dateModified.value))
+                            .locale(Intl.NumberFormat().resolvedOptions().locale)
+                            .format('ddd DD MMM YYYY')}
+                        </TableCell>
+
                         <TableCell padding="normal" align="left" onClick={handlePropagation}>
                           {row.action}
                         </TableCell>

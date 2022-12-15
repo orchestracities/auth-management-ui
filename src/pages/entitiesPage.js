@@ -55,6 +55,18 @@ export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, te
       });
   };
 
+  //types
+  const [types, setTypes] = React.useState([]);
+  const getTypes = () => {
+    const headers = { 'fiware-Service': GeTenantData('name') };
+    axios
+      .get(env.ORION + '/v2/types?attrs=type', {
+        headers: headers
+      })
+      .then((response) => {
+        setTypes(response.data);
+      });
+  };
   const GeTenantData = (type) => {
     const tenantArray = tenantValues.filter((e) => e.id === thisTenant);
     if (type === 'name') {
@@ -74,7 +86,7 @@ export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, te
         ? {
             'fiware-Service': GeTenantData('name'),
             'fiware-ServicePath':
-              servicePath.path[servicePath.path.length - 1] === '/' ? servicePath.path : servicePath.path
+              servicePath.path[servicePath.path.length - 1] === '/' ? servicePath.path + '#' : servicePath.path + '/#'
           }
         : { 'fiware-Service': GeTenantData('name') };
     axios
@@ -84,6 +96,7 @@ export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, te
       .then((response) => {
         setEntities(response.data);
         getServices();
+        getTypes();
       })
       .catch((e) => {
         sendNotification({ msg: e.message, variant: 'error' });
@@ -117,7 +130,7 @@ export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, te
             smallDevice ? { width: document.getElementById('filterContainer').clientWidth, 'overflow-x': 'scroll' } : ''
           }
         >
-          <EntitiesFilters services={services} data={entities} mapper={filterMapper} />
+          <EntitiesFilters services={services} data={entities} mapper={filterMapper} types={types} />
         </Grid>
 
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>

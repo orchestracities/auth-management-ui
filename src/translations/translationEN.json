@@ -93,7 +93,8 @@
   },
   "entities":{
     "table": {
-     "type":"type"
+     "type":"Type",
+     "modified":"Modfied date"
     },
     "page":{
       "title":"Entities"
@@ -130,7 +131,9 @@
     "table": {
       "counterPlural": "{{data}}  Elements",
       "counterSingle": "{{data}}  Element",
-      "selected": "{{data}}  selected"
+      "total_sngl": "One element",
+      "total_plur": "Elements: {{name}}",
+      "selected": "{{name}} selected"
     }
   }
 }

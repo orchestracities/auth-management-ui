@@ -541,16 +541,14 @@ export default class App extends Component {
                       <Route
                         path="Entities"
                         element={
-                          <AuthorizedElement tokenDecoded={this.state.tokenData} iSuperAdmin={true}>
-                            <EntitiesPage
-                              token={this.props.accessToken}
-                              tokenData={this.state.tokenData}
-                              env={env}
-                              graphqlErrors={this.state.connectionIssue}
-                              thisTenant={this.state.thisTenant}
-                              tenantValues={this.state.tenants}
-                            />
-                          </AuthorizedElement>
+                          <EntitiesPage
+                            token={this.props.accessToken}
+                            tokenData={this.state.tokenData}
+                            env={env}
+                            graphqlErrors={this.state.connectionIssue}
+                            thisTenant={this.state.thisTenant}
+                            tenantValues={this.state.tenants}
+                          />
                         }
                       />
                     </Routes>

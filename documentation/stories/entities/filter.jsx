@@ -16,7 +16,7 @@ const theme = createTheme({
   }
 });
 
-export const EntitiesFiltering = ({ data, services }) => {
+export const EntitiesFiltering = ({ types, services }) => {
   //FILTER PART
   const [servicePath, setServicePath] = React.useState(null);
   const [type, setType] = React.useState(null);
@@ -40,7 +40,7 @@ export const EntitiesFiltering = ({ data, services }) => {
     <ThemeProvider theme={theme} id="filterContainer">
       <BrowserRouter>
         <Grid>
-          <EntitiesFilters id="filterContainer" data={data} services={services} mapper={filterMapper} />
+          <EntitiesFilters id="filterContainer" services={services} mapper={filterMapper} types={types} />
         </Grid>
       </BrowserRouter>
     </ThemeProvider>
@@ -49,21 +49,22 @@ export const EntitiesFiltering = ({ data, services }) => {
 
 EntitiesFiltering.propTypes = {
   /**
-   * The data that is going to be filtered
-   */
-  data: PropTypes.arrayOf(PropTypes.object),
-  /**
    * An Object map used to control and read every hook associated with a specific filter read above for more info
    */
   mapper: PropTypes.object,
   /**
    * The possibile values of the services displayed on the table
    */
-  services: PropTypes.arrayOf(PropTypes.object)
+  services: PropTypes.arrayOf(PropTypes.object),
+  /**
+   * The possibile values of the types displayed on the table
+   */
+  types: PropTypes.arrayOf(PropTypes.object)
 };
 
 EntitiesFiltering.defaultProps = {
   data: [],
   mapper: {},
-  services: []
+  services: [],
+  types: []
 };

@@ -2,14 +2,14 @@ import * as React from 'react';
 import Grid from '@mui/material/Grid';
 import ActorFilter from './filters/actorFilter';
 import ActorTypeFilter from './filters/actorTypeFilter';
-import PathFilter from './filters/pathFilter';
-import ResourceTypeFilter from './filters/typeFilter';
+import PathFilter from '../shared/filters/pathFilter';
+import ResourceTypeFilter from './filters/resourceFilter';
 import ModeFilter from './filters/modeFilter';
 import AcessToFilter from './filters/resourceFilter';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-export default function PolicyFilters({ data, access_modes, agentsTypes, mapper }) {
+export default function PolicyFilters({ data, access_modes, agentsTypes, mapper, services }) {
   const [status, setstatus] = React.useState(null);
   const getUniqueListBy = (arr, key) => {
     return [...new Map(arr.map((item) => [item[key], item])).values()];
@@ -49,8 +49,8 @@ export default function PolicyFilters({ data, access_modes, agentsTypes, mapper 
       { iri: 'oc-acl:ResourceTenantAgent', name: 'resource tenant agent' }
     ]
   ];
-  const fiware_service_path = getUniqueListBy(data, 'fiware_service_path');
-  const resource_type = getUniqueListBy(data, 'resource_type');
+  const fiware_service_path = getUniqueListBy(services, 'path');
+  const resource_type = getUniqueListBy(data, '');
   const access_to = getUniqueListBy(data, 'access_to');
   React.useEffect(() => {
     if (status === '') {

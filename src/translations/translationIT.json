@@ -93,7 +93,8 @@
   },
   "entities":{
     "table": {
-     "type":"Tipo"
+     "type":"Tipo",
+     "modified":"Data ultima modifica"
     },
     "page":{
       "title":"Entità"
@@ -130,7 +131,9 @@
     "table": {
       "counterPlural": "{{data}}  Elementi",
       "counterSingle": "{{data}}  Elemento",
-      "selected": "{{data}}  Selezionati"
+      "selected": "{{data}}  Selezionati",
+      "total_sngl": "Un elemento",
+      "total_plur": "Elementi disponibili: {{name}}"
     }
   }
 }

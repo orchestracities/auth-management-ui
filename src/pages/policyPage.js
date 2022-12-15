@@ -261,6 +261,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
               access_modes={access_modes}
               agentsTypes={agentsTypes}
               mapper={filterMapper}
+              services={services}
             />
           </Grid>
           <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
