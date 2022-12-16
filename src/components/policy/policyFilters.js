@@ -50,7 +50,7 @@ export default function PolicyFilters({ data, access_modes, agentsTypes, mapper,
     ]
   ];
   const fiware_service_path = getUniqueListBy(services, 'path');
-  const resource_type = getUniqueListBy(data, '');
+  const resource_type = getUniqueListBy(data, 'resource_type');
   const access_to = getUniqueListBy(data, 'access_to');
   React.useEffect(() => {
     if (status === '') {

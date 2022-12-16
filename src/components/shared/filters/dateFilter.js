@@ -105,6 +105,7 @@ export default function DateFilter({ status, setstatus, filterValue }) {
             <Grow in={open} style={{ transformOrigin: '0 0 0' }} {...(open ? { timeout: 500 } : {})}>
               <MobileDatePicker
                 id="dateInput"
+                showToolbar={false}
                 value={filterValue.value}
                 onChange={(newValue) => {
                   filterValue.set(newValue);
