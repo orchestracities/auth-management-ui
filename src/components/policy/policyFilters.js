@@ -3,7 +3,7 @@ import Grid from '@mui/material/Grid';
 import ActorFilter from './filters/actorFilter';
 import ActorTypeFilter from './filters/actorTypeFilter';
 import PathFilter from '../shared/filters/pathFilter';
-import ResourceTypeFilter from './filters/resourceFilter';
+import ResourceTypeFilter from './filters/resourceTypeFilter';
 import ModeFilter from './filters/modeFilter';
 import AcessToFilter from './filters/resourceFilter';
 import { useTheme } from '@mui/material/styles';

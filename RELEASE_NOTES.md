@@ -4,9 +4,9 @@
 
 ### New features
 
-- Get the entities from the provided url
-- Entities Filter with type/date/path
-- Display the entities inside a table
+- Get the entities from the provided url (#111)
+- Entities Filter with type/date/path (#112)
+- Display the entities inside a table (#113)
 
 ### Bug fixes
 

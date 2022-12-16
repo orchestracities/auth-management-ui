@@ -47,7 +47,7 @@ const StyledMenu = styled((props) => (
   }
 }));
 
-export default function PathFilter({ data, status, setstatus, filterValue }) {
+export default function ResourceTypeFilter({ data, status, setstatus, filterValue }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [target, setarget] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -62,7 +62,7 @@ export default function PathFilter({ data, status, setstatus, filterValue }) {
   };
 
   React.useEffect(() => {
-    if (status !== null && status === 'PathFilter') {
+    if (status !== null && status === 'ResourceTypeFilter') {
       setAnchorEl(target);
     } else {
       setAnchorEl(null);
@@ -73,19 +73,19 @@ export default function PathFilter({ data, status, setstatus, filterValue }) {
     <div style={{ height: 75 }}>
       <Grow in={!open} style={{ transformOrigin: '0 0 0' }} {...(!open ? { timeout: 500 } : {})}>
         <Button
-          id="PathFilter"
+          id="ResourceTypeFilter"
           aria-controls={open ? 'demo-customized-menu' : undefined}
           aria-haspopup="true"
-          aria-expanded={open ? 'true' : undefined}
           disabled={data.length <= 0}
+          aria-expanded={open ? 'true' : undefined}
           variant="outlined"
           onClick={handleClick}
         >
           {
             <Trans
-              i18nKey="policies.filters.path"
+              i18nKey="policies.filters.resource_type"
               values={{
-                name: filterValue.value !== null ? ': ' + filterValue.value.fiware_service_path : ''
+                name: filterValue.value !== null ? ': ' + filterValue.value.resource_type : ''
               }}
             />
           }
@@ -97,14 +97,14 @@ export default function PathFilter({ data, status, setstatus, filterValue }) {
             <Autocomplete
               id="multiple-limit-tags"
               options={data}
-              getOptionLabel={(option) => option.fiware_service_path}
+              getOptionLabel={(option) => option.resource_type}
               defaultValue={filterValue.value}
               renderInput={(params) => (
                 <TextField
                   {...params}
                   label={
                     <Trans
-                      i18nKey="policies.filters.path"
+                      i18nKey="policies.filters.resource_type"
                       values={{
                         name: ''
                       }}
@@ -113,7 +113,7 @@ export default function PathFilter({ data, status, setstatus, filterValue }) {
                 />
               )}
               onChange={(event, value) => filterValue.set(value)}
-              isOptionEqualToValue={(option, value) => option.fiware_service_path === value.fiware_service_path}
+              isOptionEqualToValue={(option, value) => option.resource_type === value.resource_type}
               sx={{ width: '100%', marginTop: '2%' }}
             />
           </Grow>

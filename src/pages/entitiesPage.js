@@ -11,11 +11,27 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import EntitiesFilters from '../components/entities/entitiesFilter';
 import EntitiesTable from '../components/entities/entitiesTable';
+import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
 import dayjs from 'dayjs';
 
 export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, tenantValues }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
-
+  const httpLink = createHttpLink({
+    uri: typeof env !== 'undefined' ? env.CONFIGURATION_API_URL : ''
+  });
+  const authLink = setContext((_, { headers }) => {
+    return {
+      headers: {
+        ...headers,
+        Authorization: `Bearer ${token}`
+      }
+    };
+  });
+  const client = new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache()
+  });
   const [msg, sendNotification] = useNotification();
   log.debug(msg);
 
@@ -40,6 +56,33 @@ export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, te
       value: date,
       set: setDate
     }
+  };
+
+  const getTheResourceURL = () => {
+    client
+      .query({
+        query: gql`
+          query getTenantResourceType($tenantName: String!) {
+            getTenantResourceType(tenantName: $tenantName) {
+              name
+              userID
+              tenantName
+              endpointUrl
+              ID
+            }
+          }
+        `,
+        variables: { tenantName: GeTenantData('name') }
+      })
+      .then((response) => {
+        let filtered = response.data.getTenantResourceType.filter((e) => e.name === 'entity');
+        filtered.length > 0
+          ? getEntitiesFromResource(filtered[0].endpointUrl.replace('&orderBy=id', '') + 'Created,dateModified,*')
+          : getEntitiesFromResource(env.ORION + '/v2/entities?attrs=dateCreated,dateModified,*');
+      })
+      .catch((e) => {
+        sendNotification({ msg: e.message + ' the config', variant: 'error' });
+      });
   };
 
   // services
@@ -76,7 +119,7 @@ export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, te
     }
   };
 
-  const getEntities = () => {
+  const getEntitiesFromResource = (resourceUrl) => {
     const queryParameters =
       (type !== null ? '&type=' + type.type : '') +
       (date !== null ? '&q=dateModified>=' + dayjs(date).toISOString() : '');
@@ -85,12 +128,16 @@ export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, te
       servicePath !== null
         ? {
             'fiware-Service': GeTenantData('name'),
+            //'Authorization': `Bearer ${token}`,
             'fiware-ServicePath':
               servicePath.path[servicePath.path.length - 1] === '/' ? servicePath.path + '#' : servicePath.path + '/#'
           }
-        : { 'fiware-Service': GeTenantData('name') };
+        : {
+            'fiware-Service': GeTenantData('name')
+            //'Authorization': `Bearer ${token}`,
+          };
     axios
-      .get(env.ORION + '/v2/entities?attrs=dateCreated,dateModified,*' + queryParameters, {
+      .get(resourceUrl + queryParameters, {
         headers: headers
       })
       .then((response) => {
@@ -104,7 +151,7 @@ export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, te
   };
 
   React.useEffect(() => {
-    thisTenant !== null ? getEntities() : '';
+    thisTenant !== null ? getTheResourceURL() : '';
   }, [thisTenant, servicePath, type, date]);
 
   const theme = useTheme();

@@ -26,6 +26,7 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Grow from '@mui/material/Grow';
 import dayjs from 'dayjs';
+import * as log from 'loglevel';
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -58,11 +59,12 @@ const DinamicPaper = styled(Paper)(({ theme }) => ({
   borderRadius: 10
 }));
 
-export default function EntitiesTable({ data }) {
+export default function EntitiesTable({ data, env }) {
+  typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
+
   // DELETE
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
-  console.log(openDeleteDialog);
-
+  log.debug(openDeleteDialog);
   const handleClickOpenDeleteDialog = () => {
     setOpenDeleteDialog(true);
   };
@@ -70,11 +72,11 @@ export default function EntitiesTable({ data }) {
   const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false);
   };
-  console.log(handleCloseDeleteDialog);
+  log.debug(handleCloseDeleteDialog);
   // EDIT
   const [open, setOpen] = React.useState(false);
   const [editData, setEditData] = React.useState({});
-  console.log(editData);
+  log.debug(editData);
   const handleClose = () => {
     setOpen(false);
   };
@@ -356,7 +358,7 @@ export default function EntitiesTable({ data }) {
                         <TableCell padding="normal" align="left">
                           {dayjs(Date(row.dateModified.value))
                             .locale(Intl.NumberFormat().resolvedOptions().locale)
-                            .format('ddd DD MMM YYYY')}
+                            .format('ddd DD MMM YYYY hh:mm')}
                         </TableCell>
 
                         <TableCell padding="normal" align="left" onClick={handlePropagation}>
