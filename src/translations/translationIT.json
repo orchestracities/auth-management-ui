@@ -94,7 +94,7 @@
   "entities":{
     "table": {
      "type":"Tipo",
-     "modified":"Data ultima modifica"
+     "modified":"Ultima modifica"
     },
     "page":{
       "title":"Entità"
