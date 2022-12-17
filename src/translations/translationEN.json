@@ -47,7 +47,7 @@
       "path": "Service path",
       "resource_type": "Resource Type",
       "actor": "Actor",
-      "mode": "Mode",
+      "mode": "Mode"
     },
     "filters": {
       "mode": "Mode{{name}}",
@@ -88,7 +88,7 @@
       "title":"Resource Type"
     }
   },
-  "entities":{
+  "entity":{
     "table": {
      "type":"Type",
      "modified":"Last modified on"

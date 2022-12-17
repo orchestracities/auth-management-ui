@@ -9,13 +9,13 @@ import { Trans } from 'react-i18next';
 import useNotification from '../components/shared/messages/alerts';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
-import EntitiesFilters from '../components/entities/entitiesFilter';
-import EntitiesTable from '../components/entities/entitiesTable';
+import EntityFilters from '../components/entity/entityFilter';
+import EntityTable from '../components/entity/entityTable';
 import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import dayjs from 'dayjs';
 
-export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, tenantValues, language }) {
+export default function EntityPage({ token, graphqlErrors, env, thisTenant, tenantValues, language }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
   const httpLink = createHttpLink({
     uri: typeof env !== 'undefined' ? env.CONFIGURATION_API_URL : ''
@@ -37,7 +37,7 @@ export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, te
 
   const [createOpen, setCreateOpen] = React.useState(false);
   const [entities, setEntities] = React.useState([]);
-  const mainTitle = <Trans>entities.page.title</Trans>;
+  const mainTitle = <Trans>entity.page.title</Trans>;
 
   //FILTER PART
   const [servicePath, setServicePath] = React.useState(null);
@@ -177,11 +177,11 @@ export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, te
             smallDevice ? { width: document.getElementById('filterContainer').clientWidth, 'overflow-x': 'scroll' } : ''
           }
         >
-          <EntitiesFilters services={services} data={entities} mapper={filterMapper} types={types} />
+          <EntityFilters services={services} data={entities} mapper={filterMapper} types={types} />
         </Grid>
 
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-          <EntitiesTable token={token} env={env} data={entities} language={language}></EntitiesTable>
+          <EntityTable token={token} env={env} data={entities} language={language}></EntityTable>
         </Grid>
       </Grid>
     </Box>

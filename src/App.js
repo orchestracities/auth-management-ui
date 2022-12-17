@@ -25,7 +25,7 @@ import TenantPage from './pages/tenantPage';
 import ServicePage from './pages/servicePage';
 import PolicyPage from './pages/policyPage';
 import ResourcePage from './pages/resourcePage';
-import EntitiesPage from './pages/entitiesPage';
+import EntityPage from './pages/entityPage';
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import UserMenu from './components/shared/userMenu';
@@ -363,7 +363,7 @@ export default class App extends Component {
     },
     { name: 'Service', route: '/Service', icon: <InboxIcon></InboxIcon>, withPermissions: false },
     { name: 'Policy', route: '/Policy', icon: <InboxIcon></InboxIcon>, withPermissions: false },
-    { name: 'Entities', route: '/Entities', icon: <InboxIcon></InboxIcon>, withPermissions: false },
+    { name: 'Entity', route: '/Entity', icon: <InboxIcon></InboxIcon>, withPermissions: false },
     { name: 'ResourceType', route: '/ResourceType', icon: <InboxIcon></InboxIcon>, withPermissions: true }
   ];
 
@@ -539,9 +539,9 @@ export default class App extends Component {
                         }
                       />
                       <Route
-                        path="Entities"
+                        path="Entity"
                         element={
-                          <EntitiesPage
+                          <EntityPage
                             token={this.props.accessToken}
                             tokenData={this.state.tokenData}
                             env={env}

@@ -6,7 +6,7 @@ import TypeFilter from './filters/typeFilter';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-export default function EntitiesFilters({ mapper, services, types }) {
+export default function EntityFilters({ mapper, services, types }) {
   const [status, setstatus] = React.useState(null);
   const getUniqueListBy = (arr, key) => {
     return [...new Map(arr.map((item) => [item[key], item])).values()];
