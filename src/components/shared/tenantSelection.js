@@ -20,10 +20,13 @@ const TenantSelect = styled(Select)(({ theme }) => ({
   },
 
   '& .MuiInputLabel': {
-    color: theme.palette.primary.contrastText
+    color: theme.palette.primary.contrastText,
+    fontSize: '10px'
   },
   '& .MuiSvgIcon-root': {
-    color: theme.palette.primary.contrastText
+    color: theme.palette.primary.contrastText,
+    fontSize: '1em',
+    minWidth: '30px'
   },
   '& :hover .MuiOutlinedInput-notchedOutline': {
     borderColor: theme.palette.primary.contrastText,
@@ -34,7 +37,8 @@ const TenantSelect = styled(Select)(({ theme }) => ({
     color: theme.palette.primary.contrastText
   },
   '& .MuiOutlinedInput-input': {
-    color: theme.palette.primary.contrastText
+    color: theme.palette.primary.contrastText,
+    padding: '8px 10px'
   },
   '& .MuiInputLabel-root': {
     color: theme.palette.primary.contrastText
@@ -81,7 +85,7 @@ export default function TenantSelection({ tenantValues, seTenant, currentValue }
     setTenantSelected(currentValue);
   }, [currentValue]);
   return (
-    <Box sx={{ minWidth: 230 }}>
+    <Box sx={{ minWidth: 180 }}>
       <FormControl fullWidth>
         <TenantLabel id="tenant">Tenant</TenantLabel>
         <TenantSelect

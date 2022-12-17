@@ -86,7 +86,7 @@ export default function HomePage({ tokenData, thisTenant, tenantValues, env }) {
   const color = tenantData && tenantData.props && tenantData.props.primaryColor ? tenantData.props.primaryColor : '';
 
   return (
-    <Box sx={{ marginBottom: 15 }}>
+    <Box>
       <MainTitle mainTitle={mainTitle}></MainTitle>
       <Grid container spacing={2}>
         {menu.map((item, key) => {

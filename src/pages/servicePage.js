@@ -71,7 +71,7 @@ export default function ServicePage({ getTenants, tenantValues, thisTenant, grap
 
   const mainTitle = <Trans>service.titles.page</Trans>;
   return (
-    <Box sx={{ marginBottom: 15 }}>
+    <Box>
       <MainTitle mainTitle={mainTitle}></MainTitle>
       {typeof thisTenant === 'undefined' || thisTenant === '' ? (
         ''

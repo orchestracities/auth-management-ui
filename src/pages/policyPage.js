@@ -216,7 +216,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
   const smallDevice = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <Box sx={{ marginBottom: 15 }}>
+    <Box>
       <MainTitle mainTitle={mainTitle}></MainTitle>
       {typeof thisTenant === 'undefined' || thisTenant === '' ? (
         ''

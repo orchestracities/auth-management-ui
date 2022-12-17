@@ -164,13 +164,13 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open'
 })(({ theme, open }) => ({
-  minHeight: '100px',
+  minHeight: '60px',
   transition: theme.transitions.create(['margin', 'width'], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen
   }),
   ...(open && {
-    minHeight: '100px',
+    minHeight: '60px',
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
@@ -179,7 +179,7 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 const CustomToolbar = styled(Toolbar)({
-  height: '100px',
+  height: '60px',
   borderRadius: 4
 });
 
@@ -550,7 +550,7 @@ export default class App extends Component {
                 <Divider />
               </SwipeableDrawer>
               {this.props.isAuthenticated ? (
-                <Main open={this.state.open}>
+                <Main open={this.state.open} sx={{ mt: 10 }}>
                   <Container maxWidth="xl">
                     <Grid item xs={12} sm={12} md={12} lg={12} xl={12} id="filterContainer"></Grid>
                   </Container>
