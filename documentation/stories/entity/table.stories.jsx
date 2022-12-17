@@ -32,14 +32,13 @@ export default {
 const Template = (args) => <EntityTypeTable {...args} />;
 
 export const ResourceDisplay = Template.bind({});
-const now = new Date();
 ResourceDisplay.args = {
   data: [
     {
       type: 'AirQualityObserved',
       id: 'urn:ngsi-ld:AirQualityObserved:myAirQuality',
       dateModified: {
-        value: now.toISOString()
+        value: '2022-12-17T18:10:58+00:00'
       }
     }
   ]
