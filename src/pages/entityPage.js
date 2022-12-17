@@ -58,7 +58,7 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
     }
   };
 
-  const getTheResourceURL = () => {
+  const getEntityURL = () => {
     client
       .query({
         query: gql`
@@ -88,6 +88,33 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
       });
   };
 
+  const getTypeURL = () => {
+    client
+      .query({
+        query: gql`
+          query getTenantResourceType($tenantName: String!) {
+            getTenantResourceType(tenantName: $tenantName) {
+              name
+              userID
+              tenantName
+              endpointUrl
+              ID
+            }
+          }
+        `,
+        variables: { tenantName: GeTenantData('name') }
+      })
+      .then((response) => {
+        let filtered = response.data.getTenantResourceType.filter((e) => e.name === 'type');
+        filtered.length > 0
+          ? getTypesFromResource(filtered[0].endpointUrl)
+          : getTypesFromResource(env.ORION + '/v2/types');
+      })
+      .catch((e) => {
+        sendNotification({ msg: e.message + ' the config', variant: 'error' });
+      });
+  };
+
   // services
   const [services, setServices] = React.useState([]);
   const getServices = () => {
@@ -103,10 +130,10 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
 
   //types
   const [types, setTypes] = React.useState([]);
-  const getTypes = () => {
+  const getTypesFromResource = (typeUrl) => {
     const headers = { 'fiware-Service': GeTenantData('name') };
     axios
-      .get(env.ORION + '/v2/types?attrs=type', {
+      .get(typeUrl, {
         headers: headers
       })
       .then((response) => {
@@ -122,7 +149,7 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
     }
   };
 
-  const getEntitiesFromResource = (resourceUrl) => {
+  const getEntitiesFromResource = (entityUrl) => {
     const queryParameters =
       (type !== null ? '&type=' + type.type : '') +
       (date !== null ? '&q=dateModified>=' + dayjs(date).toISOString() : '');
@@ -140,13 +167,13 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
             //'Authorization': `Bearer ${token}`,
           };
     axios
-      .get(resourceUrl + queryParameters, {
+      .get(entityUrl + queryParameters, {
         headers: headers
       })
       .then((response) => {
         setEntities(response.data);
         getServices();
-        getTypes();
+        // getTypes();
       })
       .catch((e) => {
         sendNotification({ msg: e.message, variant: 'error' });
@@ -154,7 +181,8 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
   };
 
   React.useEffect(() => {
-    thisTenant !== null ? getTheResourceURL() : '';
+    thisTenant !== null ? getEntityURL() : '';
+    thisTenant !== null ? getTypeURL() : '';
   }, [thisTenant, servicePath, type, date]);
 
   const theme = useTheme();
