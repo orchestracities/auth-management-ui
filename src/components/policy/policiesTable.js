@@ -268,7 +268,7 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
       >
         {numSelected > 0 ? (
           <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">
-            <Trans i18nKey="policies.table.selected" values={{ name: numSelected }} />
+            <Trans i18nKey="common.table.selected" values={{ name: numSelected }} />
           </Typography>
         ) : (
           ''
@@ -282,7 +282,7 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
           </Tooltip>
         ) : (
           <Trans
-            i18nKey="policies.table.total_plur"
+            i18nKey="common.table.total_plur"
             values={{
               name: stableSort(rows, getComparator(order, orderBy)).length
             }}

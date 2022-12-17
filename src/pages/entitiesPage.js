@@ -15,7 +15,7 @@ import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client
 import { setContext } from '@apollo/client/link/context';
 import dayjs from 'dayjs';
 
-export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, tenantValues }) {
+export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, tenantValues, language }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
   const httpLink = createHttpLink({
     uri: typeof env !== 'undefined' ? env.CONFIGURATION_API_URL : ''
@@ -181,7 +181,7 @@ export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, te
         </Grid>
 
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-          <EntitiesTable token={token} env={env} data={entities}></EntitiesTable>
+          <EntitiesTable token={token} env={env} data={entities} language={language}></EntitiesTable>
         </Grid>
       </Grid>
     </Box>

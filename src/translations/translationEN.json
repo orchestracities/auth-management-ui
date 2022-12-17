@@ -48,9 +48,6 @@
       "resource_type": "Resource Type",
       "actor": "Actor",
       "mode": "Mode",
-      "total_sngl": "One element",
-      "total_plur": "Elements: {{name}}",
-      "selected": "{{name}} selected"
     },
     "filters": {
       "mode": "Mode{{name}}",
@@ -94,7 +91,7 @@
   "entities":{
     "table": {
      "type":"Type",
-     "modified":"Last modify"
+     "modified":"Last modified on"
     },
     "page":{
       "title":"Entities"

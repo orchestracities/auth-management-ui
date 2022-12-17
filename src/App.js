@@ -548,6 +548,7 @@ export default class App extends Component {
                             graphqlErrors={this.state.connectionIssue}
                             thisTenant={this.state.thisTenant}
                             tenantValues={this.state.tenants}
+                            language={this.state.language}
                           />
                         }
                       />

@@ -59,7 +59,7 @@ const DinamicPaper = styled(Paper)(({ theme }) => ({
   borderRadius: 10
 }));
 
-export default function EntitiesTable({ data, env }) {
+export default function EntitiesTable({ data, env, language }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
 
   // DELETE
@@ -329,7 +329,6 @@ export default function EntitiesTable({ data, env }) {
                   .map((row, index) => {
                     const isItemSelected = isSelected(row.id);
                     const labelId = `enhanced-table-checkbox-${index}`;
-
                     return (
                       <TableRow
                         hover
@@ -356,9 +355,7 @@ export default function EntitiesTable({ data, env }) {
                           {row.type}
                         </TableCell>
                         <TableCell padding="normal" align="left">
-                          {dayjs(Date(row.dateModified.value))
-                            .locale(Intl.NumberFormat().resolvedOptions().locale)
-                            .format('ddd DD MMM YYYY hh:mm')}
+                          {dayjs(Date.parse(row.dateModified.value)).locale(language).format('llll')}
                         </TableCell>
 
                         <TableCell padding="normal" align="left" onClick={handlePropagation}>

@@ -131,7 +131,7 @@
     "table": {
       "counterPlural": "{{data}}  Elementi",
       "counterSingle": "{{data}}  Elemento",
-      "selected": "{{data}}  Selezionati",
+      "selected": "{{name}}  Selezionati",
       "total_sngl": "Un elemento",
       "total_plur": "Elementi disponibili: {{name}}"
     }

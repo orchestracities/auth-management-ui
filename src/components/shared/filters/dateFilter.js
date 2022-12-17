@@ -93,7 +93,7 @@ export default function DateFilter({ status, setstatus, filterValue }) {
           >
             <AccessTimeIcon onClick={() => handleClick} id="DateFilter" color="primary"></AccessTimeIcon>
             {filterValue.value !== null
-              ? ': ' +
+              ? ' ' +
                 dayjs(filterValue.value, 'MM-DD-YYYY', Intl.NumberFormat().resolvedOptions().locale).format(
                   'ddd DD MMM YYYY'
                 )
