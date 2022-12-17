@@ -77,8 +77,11 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
       .then((response) => {
         let filtered = response.data.getTenantResourceType.filter((e) => e.name === 'entity');
         filtered.length > 0
-          ? getEntitiesFromResource(filtered[0].endpointUrl.replace('&orderBy=id', '') + 'Created,dateModified,*')
-          : getEntitiesFromResource(env.ORION + '/v2/entities?attrs=dateCreated,dateModified,*');
+          ? getEntitiesFromResource(
+              filtered[0].endpointUrl.slice(0, filtered[0].endpointUrl.indexOf('?')) +
+                '?attrs=dateCreated,dateModified,*&options=count'
+            )
+          : getEntitiesFromResource(env.ORION + '/v2/entities?attrs=dateCreated,dateModified,*&options=count');
       })
       .catch((e) => {
         sendNotification({ msg: e.message + ' the config', variant: 'error' });
