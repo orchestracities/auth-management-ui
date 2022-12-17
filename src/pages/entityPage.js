@@ -9,13 +9,13 @@ import { Trans } from 'react-i18next';
 import useNotification from '../components/shared/messages/alerts';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
-import EntitiesFilters from '../components/entities/entitiesFilter';
-import EntitiesTable from '../components/entities/entitiesTable';
+import EntityFilters from '../components/entity/entityFilter';
+import EntityTable from '../components/entity/entityTable';
 import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import dayjs from 'dayjs';
 
-export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, tenantValues }) {
+export default function EntityPage({ token, graphqlErrors, env, thisTenant, tenantValues, language }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
   const httpLink = createHttpLink({
     uri: typeof env !== 'undefined' ? env.CONFIGURATION_API_URL : ''
@@ -37,7 +37,7 @@ export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, te
 
   const [createOpen, setCreateOpen] = React.useState(false);
   const [entities, setEntities] = React.useState([]);
-  const mainTitle = <Trans>entities.page.title</Trans>;
+  const mainTitle = <Trans>entity.page.title</Trans>;
 
   //FILTER PART
   const [servicePath, setServicePath] = React.useState(null);
@@ -58,7 +58,7 @@ export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, te
     }
   };
 
-  const getTheResourceURL = () => {
+  const getEntityURL = () => {
     client
       .query({
         query: gql`
@@ -77,8 +77,38 @@ export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, te
       .then((response) => {
         let filtered = response.data.getTenantResourceType.filter((e) => e.name === 'entity');
         filtered.length > 0
-          ? getEntitiesFromResource(filtered[0].endpointUrl.replace('&orderBy=id', '') + 'Created,dateModified,*')
-          : getEntitiesFromResource(env.ORION + '/v2/entities?attrs=dateCreated,dateModified,*');
+          ? getEntitiesFromResource(
+              filtered[0].endpointUrl.slice(0, filtered[0].endpointUrl.indexOf('?')) +
+                '?attrs=dateCreated,dateModified,*&options=count'
+            )
+          : getEntitiesFromResource(env.ORION + '/v2/entities?attrs=dateCreated,dateModified,*&options=count');
+      })
+      .catch((e) => {
+        sendNotification({ msg: e.message + ' the config', variant: 'error' });
+      });
+  };
+
+  const getTypeURL = () => {
+    client
+      .query({
+        query: gql`
+          query getTenantResourceType($tenantName: String!) {
+            getTenantResourceType(tenantName: $tenantName) {
+              name
+              userID
+              tenantName
+              endpointUrl
+              ID
+            }
+          }
+        `,
+        variables: { tenantName: GeTenantData('name') }
+      })
+      .then((response) => {
+        let filtered = response.data.getTenantResourceType.filter((e) => e.name === 'type');
+        filtered.length > 0
+          ? getTypesFromResource(filtered[0].endpointUrl)
+          : getTypesFromResource(env.ORION + '/v2/types');
       })
       .catch((e) => {
         sendNotification({ msg: e.message + ' the config', variant: 'error' });
@@ -100,10 +130,10 @@ export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, te
 
   //types
   const [types, setTypes] = React.useState([]);
-  const getTypes = () => {
+  const getTypesFromResource = (typeUrl) => {
     const headers = { 'fiware-Service': GeTenantData('name') };
     axios
-      .get(env.ORION + '/v2/types?attrs=type', {
+      .get(typeUrl, {
         headers: headers
       })
       .then((response) => {
@@ -119,7 +149,7 @@ export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, te
     }
   };
 
-  const getEntitiesFromResource = (resourceUrl) => {
+  const getEntitiesFromResource = (entityUrl) => {
     const queryParameters =
       (type !== null ? '&type=' + type.type : '') +
       (date !== null ? '&q=dateModified>=' + dayjs(date).toISOString() : '');
@@ -137,13 +167,12 @@ export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, te
             //'Authorization': `Bearer ${token}`,
           };
     axios
-      .get(resourceUrl + queryParameters, {
+      .get(entityUrl + queryParameters, {
         headers: headers
       })
       .then((response) => {
         setEntities(response.data);
         getServices();
-        getTypes();
       })
       .catch((e) => {
         sendNotification({ msg: e.message, variant: 'error' });
@@ -151,7 +180,8 @@ export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, te
   };
 
   React.useEffect(() => {
-    thisTenant !== null ? getTheResourceURL() : '';
+    thisTenant !== null ? getEntityURL() : '';
+    thisTenant !== null ? getTypeURL() : '';
   }, [thisTenant, servicePath, type, date]);
 
   const theme = useTheme();
@@ -177,11 +207,11 @@ export default function EntitiesPage({ token, graphqlErrors, env, thisTenant, te
             smallDevice ? { width: document.getElementById('filterContainer').clientWidth, 'overflow-x': 'scroll' } : ''
           }
         >
-          <EntitiesFilters services={services} data={entities} mapper={filterMapper} types={types} />
+          <EntityFilters services={services} data={entities} mapper={filterMapper} types={types} />
         </Grid>
 
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-          <EntitiesTable token={token} env={env} data={entities}></EntitiesTable>
+          <EntityTable token={token} env={env} data={entities} language={language}></EntityTable>
         </Grid>
       </Grid>
     </Box>

@@ -47,10 +47,7 @@
       "path": "Service path",
       "resource_type": "Resource Type",
       "actor": "Actor",
-      "mode": "Mode",
-      "total_sngl": "One element",
-      "total_plur": "Elements: {{name}}",
-      "selected": "{{name}} selected"
+      "mode": "Mode"
     },
     "filters": {
       "mode": "Mode{{name}}",
@@ -88,13 +85,13 @@
      "endpoint":"Endpoint Link"
     },
     "page":{
-      "title":"Resource Type"
+      "title":"Resource Types"
     }
   },
-  "entities":{
+  "entity":{
     "table": {
      "type":"Type",
-     "modified":"Last modify"
+     "modified":"Last modified on"
     },
     "page":{
       "title":"Entities"
@@ -102,6 +99,40 @@
     "filters": {
       "path": "service path{{name}}",
       "type": "Type<0>{{name}}</0>"
+    }
+  },
+  "menu": {
+    "home": {
+      "title": "Home",
+      "page_title": "Welcome!",
+      "description": "Sweet :)"
+    },
+    "data_management" : {
+      "title": "Data Management",
+      "description": "In this area you manage the platform data, for examples the ones in Context Broker."
+    },
+    "entity" : {
+      "title": "Entities"
+    },
+    "security" : {
+      "title": "Security",
+      "description": "In this area you can manage access control policies to resources. Powered by Anubis!"
+    },
+    "policy" : {
+      "title": "Policies"
+    },
+    "administration" : {
+      "title": "Administration",
+      "description": "In this area you can manage tenants, service paths, and resource types. With great power comes great responsibility!"
+    },
+    "service" : {
+      "title": "Services"
+    },
+    "tenant" : {
+      "title": "Tenants"
+    },
+    "resourcetype" : {
+      "title": "Resource Types"
     }
   },
   "common": {

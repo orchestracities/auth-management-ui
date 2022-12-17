@@ -59,7 +59,7 @@ const DinamicPaper = styled(Paper)(({ theme }) => ({
   borderRadius: 10
 }));
 
-export default function EntitiesTable({ data, env }) {
+export default function EntityTable({ data, env, language }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
 
   // DELETE
@@ -141,13 +141,13 @@ export default function EntitiesTable({ data, env }) {
       id: 'type',
       numeric: false,
       disablePadding: false,
-      label: <Trans>entities.table.type</Trans>
+      label: <Trans>entity.table.type</Trans>
     },
     {
       id: 'modified',
       numeric: false,
       disablePadding: false,
-      label: <Trans>entities.table.modified</Trans>
+      label: <Trans>entity.table.modified</Trans>
     },
     {
       id: 'action',
@@ -157,7 +157,7 @@ export default function EntitiesTable({ data, env }) {
     }
   ];
 
-  const EntitiesTableHead = (props) => {
+  const EntityTableHead = (props) => {
     const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
     const createSortHandler = (property) => (event) => {
       onRequestSort(event, property);
@@ -200,7 +200,7 @@ export default function EntitiesTable({ data, env }) {
     );
   };
 
-  EntitiesTableHead.propTypes = {
+  EntityTableHead.propTypes = {
     numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
     onSelectAllClick: PropTypes.func.isRequired,
@@ -209,7 +209,7 @@ export default function EntitiesTable({ data, env }) {
     rowCount: PropTypes.number.isRequired
   };
 
-  const EntitiesTableToolbar = (props) => {
+  const EntityTableToolbar = (props) => {
     const { numSelected } = props;
 
     return (
@@ -248,7 +248,7 @@ export default function EntitiesTable({ data, env }) {
     );
   };
 
-  EntitiesTableToolbar.propTypes = {
+  EntityTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired
   };
 
@@ -310,10 +310,10 @@ export default function EntitiesTable({ data, env }) {
     <>
       <Box sx={{ width: '100%' }}>
         <DinamicPaper sx={{ width: '100%', mb: 2, overflow: 'hidden' }} elevation={1} square={false}>
-          <EntitiesTableToolbar numSelected={selected.length} />
+          <EntityTableToolbar numSelected={selected.length} />
           <TableContainer>
             <Table aria-labelledby="tableTitle" sx={{ minWidth: 750 }} stickyHeader size={'small'}>
-              <EntitiesTableHead
+              <EntityTableHead
                 numSelected={selected.length}
                 order={order}
                 orderBy={orderBy}
@@ -329,7 +329,6 @@ export default function EntitiesTable({ data, env }) {
                   .map((row, index) => {
                     const isItemSelected = isSelected(row.id);
                     const labelId = `enhanced-table-checkbox-${index}`;
-
                     return (
                       <TableRow
                         hover
@@ -356,9 +355,7 @@ export default function EntitiesTable({ data, env }) {
                           {row.type}
                         </TableCell>
                         <TableCell padding="normal" align="left">
-                          {dayjs(Date(row.dateModified.value))
-                            .locale(Intl.NumberFormat().resolvedOptions().locale)
-                            .format('ddd DD MMM YYYY hh:mm')}
+                          {dayjs(Date.parse(row.dateModified.value)).locale(language).format('llll')}
                         </TableCell>
 
                         <TableCell padding="normal" align="left" onClick={handlePropagation}>

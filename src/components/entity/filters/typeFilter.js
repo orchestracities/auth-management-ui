@@ -83,7 +83,7 @@ export default function TypeFilter({ data, status, setstatus, filterValue }) {
         >
           {
             <Trans
-              i18nKey="entities.filters.type"
+              i18nKey="entity.filters.type"
               values={{
                 name: filterValue.value !== null ? ': ' + filterValue.value.type : ''
               }}
