@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import Grid from '@mui/material/Grid';
-import EntitiesTable from '../../../src/components/entities/entitiesTable';
+import EntityTable from '../../../src/components/entity/entityTable';
 import { BrowserRouter } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { orange } from '@mui/material/colors';
@@ -17,13 +17,13 @@ const theme = createTheme({
   }
 });
 
-export const EntitiesTypeTable = ({ data }) => {
+export const EntityTypeTable = ({ data }) => {
   return (
     <SnackbarProvider maxSnack={5}>
       <ThemeProvider theme={theme}>
         <BrowserRouter>
           <Grid>
-            <EntitiesTable data={data} />
+            <EntityTable data={data} language='en'/>
           </Grid>
         </BrowserRouter>
       </ThemeProvider>
@@ -31,13 +31,13 @@ export const EntitiesTypeTable = ({ data }) => {
   );
 };
 
-EntitiesTypeTable.propTypes = {
+EntityTypeTable.propTypes = {
   /**
    * the array of values that will be displayed
    */
   data: PropTypes.arrayOf(PropTypes.object)
 };
 
-EntitiesTypeTable.defaultProps = {
+EntityTypeTable.defaultProps = {
   data: []
 };
