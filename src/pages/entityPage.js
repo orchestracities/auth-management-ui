@@ -173,7 +173,6 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
       .then((response) => {
         setEntities(response.data);
         getServices();
-        // getTypes();
       })
       .catch((e) => {
         sendNotification({ msg: e.message, variant: 'error' });
