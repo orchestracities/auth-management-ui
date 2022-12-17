@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import Grid from '@mui/material/Grid';
-import EntitiesFilters from '../../../src/components/entities/entitiesFilter';
+import EntityFilters from '../../../src/components/entity/entityFilter';
 import { BrowserRouter } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { orange } from '@mui/material/colors';
@@ -16,7 +16,7 @@ const theme = createTheme({
   }
 });
 
-export const EntitiesFiltering = ({ types, services }) => {
+export const EntityFiltering = ({ types, services }) => {
   //FILTER PART
   const [servicePath, setServicePath] = React.useState(null);
   const [type, setType] = React.useState(null);
@@ -40,14 +40,14 @@ export const EntitiesFiltering = ({ types, services }) => {
     <ThemeProvider theme={theme} id="filterContainer">
       <BrowserRouter>
         <Grid>
-          <EntitiesFilters id="filterContainer" services={services} mapper={filterMapper} types={types} />
+          <EntityFilters id="filterContainer" services={services} mapper={filterMapper} types={types} />
         </Grid>
       </BrowserRouter>
     </ThemeProvider>
   );
 };
 
-EntitiesFiltering.propTypes = {
+EntityFiltering.propTypes = {
   /**
    * An Object map used to control and read every hook associated with a specific filter read above for more info
    */
@@ -62,7 +62,7 @@ EntitiesFiltering.propTypes = {
   types: PropTypes.arrayOf(PropTypes.object)
 };
 
-EntitiesFiltering.defaultProps = {
+EntityFiltering.defaultProps = {
   data: [],
   mapper: {},
   services: [],
