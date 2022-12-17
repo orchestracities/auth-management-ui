@@ -20,13 +20,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { visuallyHidden } from '@mui/utils';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
-import DeleteDialog from '../shared/messages/cardDelete';
-import PolicyForm from './policyForm';
 import { Trans } from 'react-i18next';
 import EditIcon from '@mui/icons-material/Edit';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Grow from '@mui/material/Grow';
+import dayjs from 'dayjs';
+import * as log from 'loglevel';
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -59,10 +59,12 @@ const DinamicPaper = styled(Paper)(({ theme }) => ({
   borderRadius: 10
 }));
 
-export default function PoliciesTable({ data, getData, access_modes, tenantName, agentsTypes, services, token, env }) {
+export default function EntityTable({ data, env, language }) {
+  typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
+
   // DELETE
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
-
+  log.debug(openDeleteDialog);
   const handleClickOpenDeleteDialog = () => {
     setOpenDeleteDialog(true);
   };
@@ -70,43 +72,15 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
   const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false);
   };
+  log.debug(handleCloseDeleteDialog);
   // EDIT
   const [open, setOpen] = React.useState(false);
   const [editData, setEditData] = React.useState({});
-
+  log.debug(editData);
   const handleClose = () => {
     setOpen(false);
   };
 
-  const agentToString = (agents) => {
-    const agentsNames = [
-      ...agentsTypes,
-      ...[
-        { iri: 'acl:AuthenticatedAgent', name: 'authenticated agent' },
-        { iri: 'foaf:Agent', name: 'anyone' },
-        { iri: 'oc-acl:ResourceTenantAgent', name: 'resource tenant agent' }
-      ]
-    ];
-    let agentString = '';
-    for (const thisAgent of agents) {
-      const thisAgentSplit = thisAgent.split(':').slice('2').join(':');
-      const foundAgent =
-        thisAgentSplit === ''
-          ? agentsNames.filter((e) => e.iri === thisAgent)
-          : agentsNames.filter((e) => e.iri === thisAgent.replace(':' + thisAgentSplit, ''));
-      agentString = agentString + foundAgent[0].name + (thisAgentSplit === '' ? ' ' : ' : ') + thisAgentSplit + '  ';
-    }
-    return <Typography variant="body2">{agentString}</Typography>;
-  };
-
-  const modeToString = (modes) => {
-    let modeString = '';
-    for (const mode of modes) {
-      const foundMode = access_modes.filter((e) => e.iri === mode);
-      modeString = modeString + foundMode[0].name + ' ';
-    }
-    return modeString;
-  };
   const handlePropagation = (e) => {
     e.stopPropagation();
   };
@@ -164,34 +138,16 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
       label: 'ID'
     },
     {
-      id: 'access_to',
+      id: 'type',
       numeric: false,
       disablePadding: false,
-      label: <Trans>policies.table.access</Trans>
+      label: <Trans>entity.table.type</Trans>
     },
     {
-      id: 'fiware_service_path',
+      id: 'modified',
       numeric: false,
       disablePadding: false,
-      label: <Trans>policies.table.path</Trans>
-    },
-    {
-      id: 'resource_type',
-      numeric: false,
-      disablePadding: false,
-      label: <Trans>policies.table.resource_type</Trans>
-    },
-    {
-      id: 'agent',
-      numeric: false,
-      disablePadding: false,
-      label: <Trans>policies.table.actor</Trans>
-    },
-    {
-      id: 'mode',
-      numeric: false,
-      disablePadding: false,
-      label: <Trans>policies.table.mode</Trans>
+      label: <Trans>entity.table.modified</Trans>
     },
     {
       id: 'action',
@@ -201,7 +157,7 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
     }
   ];
 
-  const PoliciesTableHead = (props) => {
+  const EntityTableHead = (props) => {
     const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
     const createSortHandler = (property) => (event) => {
       onRequestSort(event, property);
@@ -244,7 +200,7 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
     );
   };
 
-  PoliciesTableHead.propTypes = {
+  EntityTableHead.propTypes = {
     numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
     onSelectAllClick: PropTypes.func.isRequired,
@@ -253,7 +209,7 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
     rowCount: PropTypes.number.isRequired
   };
 
-  const PoliciesTableToolbar = (props) => {
+  const EntityTableToolbar = (props) => {
     const { numSelected } = props;
 
     return (
@@ -292,7 +248,7 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
     );
   };
 
-  PoliciesTableToolbar.propTypes = {
+  EntityTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired
   };
 
@@ -301,35 +257,6 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-  const fromIdToText = (policyIDs) => {
-    let textDisplay = '\n';
-    let foundPolicy;
-    for (const id of policyIDs) {
-      foundPolicy = data.filter((e) => e.id === id);
-      if (foundPolicy.length > 0) {
-        textDisplay = textDisplay + ' -- ' + foundPolicy[0].id + '\n';
-      }
-    }
-    return textDisplay;
-  };
-
-  const dataCreator = (policyIDs) => {
-    const arrayOfData = [];
-    for (const id of policyIDs) {
-      const foundPolicy = data.filter((e) => e.id === id);
-      if (foundPolicy.length > 0) {
-        const thisPolicy = foundPolicy[0];
-        arrayOfData.push({
-          id: thisPolicy.id,
-          access_to: thisPolicy.access_to,
-          fiware_service: thisPolicy.fiware_service,
-          fiware_service_path: thisPolicy.fiware_service_path
-        });
-      }
-    }
-    return arrayOfData;
-  };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -383,10 +310,10 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
     <>
       <Box sx={{ width: '100%' }}>
         <DinamicPaper sx={{ width: '100%', mb: 2, overflow: 'hidden' }} elevation={1} square={false}>
-          <PoliciesTableToolbar numSelected={selected.length} />
+          <EntityTableToolbar numSelected={selected.length} />
           <TableContainer>
             <Table aria-labelledby="tableTitle" sx={{ minWidth: 750 }} stickyHeader size={'small'}>
-              <PoliciesTableHead
+              <EntityTableHead
                 numSelected={selected.length}
                 order={order}
                 orderBy={orderBy}
@@ -402,7 +329,6 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
                   .map((row, index) => {
                     const isItemSelected = isSelected(row.id);
                     const labelId = `enhanced-table-checkbox-${index}`;
-
                     return (
                       <TableRow
                         hover
@@ -415,7 +341,7 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
                       >
                         <TableCell padding="checkbox">
                           <Checkbox
-                            color="primary"
+                            color="secondary"
                             checked={isItemSelected}
                             inputProps={{
                               'aria-labelledby': labelId
@@ -426,22 +352,12 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
                           {row.id}
                         </TableCell>
                         <TableCell padding="normal" align="left">
-                          {row.access_to}
+                          {row.type}
                         </TableCell>
                         <TableCell padding="normal" align="left">
-                          {row.fiware_service_path}
+                          {dayjs(Date.parse(row.dateModified.value)).locale(language).format('llll')}
                         </TableCell>
-                        <TableCell padding="normal" align="left">
-                          {row.resource_type}
-                        </TableCell>
-                        <TableCell padding="normal" align="left">
-                          <Typography noWrap gutterBottom sx={{ maxWidth: '70%' }}>
-                            {agentToString(row.agent)}
-                          </Typography>
-                        </TableCell>
-                        <TableCell padding="normal" align="left">
-                          {modeToString(row.mode)}
-                        </TableCell>
+
                         <TableCell padding="normal" align="left" onClick={handlePropagation}>
                           {row.action}
                         </TableCell>
@@ -481,34 +397,8 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
         aria-labelledby="edit"
         aria-describedby="edit"
       >
-        <PolicyForm
-          env={env}
-          tenantName={tenantName}
-          action="modify"
-          agentsTypes={agentsTypes}
-          services={services}
-          data={editData}
-          getServices={getData}
-          access_modes={access_modes}
-          title={<Trans i18nKey="policies.titles.edit" values={{ name: editData.id }} />}
-          close={handleClose}
-          token={token}
-        ></PolicyForm>
         <DialogActions></DialogActions>
       </DialogRounded>
-      <DeleteDialog
-        open={openDeleteDialog}
-        env={env}
-        token={token}
-        onClose={handleCloseDeleteDialog}
-        getData={getData}
-        data={{
-          dataValues: dataCreator(selected),
-          multiple: true,
-          selectedText: fromIdToText(selected),
-          setSelected
-        }}
-      />
     </>
   );
 }

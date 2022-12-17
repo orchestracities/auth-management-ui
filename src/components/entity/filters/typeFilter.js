@@ -47,7 +47,7 @@ const StyledMenu = styled((props) => (
   }
 }));
 
-export default function PathFilter({ data, status, setstatus, filterValue }) {
+export default function TypeFilter({ data, status, setstatus, filterValue }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [target, setarget] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -62,7 +62,7 @@ export default function PathFilter({ data, status, setstatus, filterValue }) {
   };
 
   React.useEffect(() => {
-    if (status !== null && status === 'PathFilter') {
+    if (status !== null && status === 'TypeFilter') {
       setAnchorEl(target);
     } else {
       setAnchorEl(null);
@@ -73,7 +73,7 @@ export default function PathFilter({ data, status, setstatus, filterValue }) {
     <div style={{ height: 75 }}>
       <Grow in={!open} style={{ transformOrigin: '0 0 0' }} {...(!open ? { timeout: 500 } : {})}>
         <Button
-          id="PathFilter"
+          id="TypeFilter"
           aria-controls={open ? 'demo-customized-menu' : undefined}
           aria-haspopup="true"
           aria-expanded={open ? 'true' : undefined}
@@ -83,9 +83,9 @@ export default function PathFilter({ data, status, setstatus, filterValue }) {
         >
           {
             <Trans
-              i18nKey="policies.filters.path"
+              i18nKey="entity.filters.type"
               values={{
-                name: filterValue.value !== null ? ': ' + filterValue.value.fiware_service_path : ''
+                name: filterValue.value !== null ? ': ' + filterValue.value.type : ''
               }}
             />
           }
@@ -97,23 +97,19 @@ export default function PathFilter({ data, status, setstatus, filterValue }) {
             <Autocomplete
               id="multiple-limit-tags"
               options={data}
-              getOptionLabel={(option) => option.fiware_service_path}
-              defaultValue={filterValue.value}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label={
-                    <Trans
-                      i18nKey="policies.filters.path"
-                      values={{
-                        name: ''
-                      }}
-                    />
-                  }
-                />
-              )}
-              onChange={(event, value) => filterValue.set(value)}
-              isOptionEqualToValue={(option, value) => option.fiware_service_path === value.fiware_service_path}
+              getOptionLabel={(option) => option.type}
+              defaultValue={
+                filterValue.value !== null
+                  ? {
+                      type: filterValue.value.type
+                    }
+                  : null
+              }
+              renderInput={(params) => <TextField {...params} label={'Type'} />}
+              onChange={(event, value) => {
+                filterValue.set(value);
+              }}
+              isOptionEqualToValue={(option, value) => option.type === value.type}
               sx={{ width: '100%', marginTop: '2%' }}
             />
           </Grow>

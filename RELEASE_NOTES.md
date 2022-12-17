@@ -4,6 +4,12 @@
 
 ### New features
 
+- Get the entities from the provided url (#111)
+- Entities Filter with type/date/path (#112)
+- Display the entities inside a table (#113)
+- Organize side bar menu and translate menu items (#126)
+- Basic home page with navigation info (#125)
+
 ### Bug fixes
 
 - Fix git action test failure (#121)

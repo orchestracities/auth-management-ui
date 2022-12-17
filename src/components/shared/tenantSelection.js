@@ -65,7 +65,7 @@ const TenantSelect = styled(Select)(({ theme }) => ({
 const TenantLabel = styled(InputLabel)(({ theme }) => ({
   color: theme.palette.primary.contrastText + ' !important'
 }));
-export default function TenantSelection({ tenantValues, seTenant, correntValue }) {
+export default function TenantSelection({ tenantValues, seTenant, currentValue }) {
   const listOfIcons = IconList();
   const [tenantSelected, setTenantSelected] = React.useState('');
   const iconMapper = (iconName) => {
@@ -78,8 +78,8 @@ export default function TenantSelection({ tenantValues, seTenant, correntValue }
   };
 
   React.useEffect(() => {
-    setTenantSelected(correntValue);
-  }, [correntValue]);
+    setTenantSelected(currentValue);
+  }, [currentValue]);
   return (
     <Box sx={{ minWidth: 230 }}>
       <FormControl fullWidth>

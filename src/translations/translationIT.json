@@ -23,7 +23,7 @@
   },
   "service": {
     "titles": {
-      "page": "Paths dei Servizi",
+      "page": "Percorsi dei Servizi",
       "new": "Nuovo Servizio",
       "edit": "Nuovo sotto-servizio",
       "noData": "Nessun dato disponibile"
@@ -37,7 +37,7 @@
   },
   "policies": {
     "titles": {
-      "page": "Policies",
+      "page": "Policy",
       "new": "Nuova Policy",
       "noData": "Nessun dato disponibile, per favore seleziona un Tenant",
       "edit": "Modifica {{name}}"
@@ -47,10 +47,7 @@
       "path": "Percorso dei servizi",
       "resource_type": "Tipologia risorse",
       "actor": "Utente",
-      "mode": "Modalità",
-      "total_sngl": "Un elemento",
-      "total_plur": "Elementi disponibili: {{name}}",
-      "selected": "{{name}} Selezionati"
+      "mode": "Modalità"
     },
     "filters": {
       "mode": "Modalità{{name}}",
@@ -61,7 +58,7 @@
       "actor": "Utente{{name}}"
     },
     "form": {
-      "servicePath": "Percorso dei servizi",
+      "servicePath": "Percorsi dei servizi",
       "resource": "Risorse",
       "resourceType": "Tipologia risorse",
       "mode": "Modalità",
@@ -88,7 +85,54 @@
      "endpoint":"Endpoint Link"
     },
     "page":{
-      "title":"Tipo Risorsa"
+      "title":"Tipi di Risorsa"
+    }
+  },
+  "entity":{
+    "table": {
+     "type":"Tipo",
+     "modified":"Ultima modifica"
+    },
+    "page":{
+      "title":"Entità"
+    },
+    "filters": {
+      "path": "Percorso servizi{{name}}",
+      "type": "Tipo<0>{{name}}</0>"
+    }
+  },
+  "menu": {
+    "home": {
+      "title": "Home",
+      "page_title": "Benveunuto!",
+      "description": "Easter Egg :)"
+    },
+    "data_management" : {
+      "title": "Gestione Dati",
+      "description": "In questa sezione gestisci i dati, per esempio le entità salvate nel Context Broker."
+    },
+    "entity" : {
+      "title": "Entità"
+    },
+    "security" : {
+      "title": "Sicurezza",
+      "description": "In questa sezione gestisci le policy di controllo di access alle risorse. Powered by Anubis!"
+    },
+    "policy" : {
+      "title": "Policy"
+    },
+    "administration" : {
+      "title": "Amministrazione",
+      "description": "In questa sezione puoi gestire tenant, percorsi dei servizi e tipi delle risorse. Buona Amministrazione!"
+    },
+    "service" : {
+      "title": "Servizi"
+    },
+    "tenant" : {
+      "title": "Tenant"
+    },
+    "resourcetype" : {
+      "title": "Tipo Risorse"
     }
   },
   "common": {
@@ -118,7 +162,9 @@
     "table": {
       "counterPlural": "{{data}}  Elementi",
       "counterSingle": "{{data}}  Elemento",
-      "selected": "{{data}}  Selezionati"
+      "selected": "{{name}}  Selezionati",
+      "total_sngl": "Un elemento",
+      "total_plur": "Elementi disponibili: {{name}}"
     }
   }
 }

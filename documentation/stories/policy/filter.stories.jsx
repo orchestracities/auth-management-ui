@@ -126,5 +126,6 @@ AllFilters.args = {
     { iri: 'acl:agentGroup', name: 'group' },
 
     { iri: 'acl:agentClass', name: 'class' }
-  ]
+  ],
+  services: []
 };

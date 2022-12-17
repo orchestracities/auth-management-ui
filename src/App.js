@@ -14,7 +14,6 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
 import TenantSelection from './components/shared/tenantSelection';
 import axios from 'axios';
 import { ApolloClient, InMemoryCache, from, gql, createHttpLink } from '@apollo/client';
@@ -25,6 +24,8 @@ import TenantPage from './pages/tenantPage';
 import ServicePage from './pages/servicePage';
 import PolicyPage from './pages/policyPage';
 import ResourcePage from './pages/resourcePage';
+import EntityPage from './pages/entityPage';
+import HomePage from './pages/homePage';
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import UserMenu from './components/shared/userMenu';
@@ -35,9 +36,114 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { Grid } from '@mui/material';
 import { Trans } from 'react-i18next';
 import { AuthorizedElement } from './loginComponents/checkRoles';
+import Collapse from '@mui/material/Collapse';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useTranslation } from 'react-i18next';
+import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
+
+import { menu } from './menu';
+import { hasChildren } from './utils';
 const env = getEnv();
 
 const drawerWidth = 240;
+
+const HtmlTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
+  ({ theme }) => ({
+    [`& .${tooltipClasses.arrow}`]: {
+      color: 'rgba(0, 0, 0, 0.87)',
+      '&::before': {
+        backgroundColor: '#f5f5f9',
+        border: '1px solid #dadde9'
+      }
+    },
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: '#f5f5f9',
+      color: 'rgba(0, 0, 0, 0.87)',
+      maxWidth: 220,
+      fontSize: theme.typography.pxToRem(12),
+      border: '1px solid #dadde9'
+    }
+  })
+);
+
+const MenuItem = ({ item, tokenData }) => {
+  const Component = hasChildren(item) ? MultiLevel : SingleLevel;
+  return <Component item={item} tokenData={tokenData} />;
+};
+
+const SingleLevel = ({ item, tokenData }) => {
+  const { t } = useTranslation();
+  return item.withPermissions === false ? (
+    <NavLink to={item.route}>
+      <HtmlTooltip title={t(item.description)} placement="right" arrow>
+        <ListItem button>
+          <ListItemIcon>{item.icon}</ListItemIcon>
+          <ListItemText primary={t(item.title)} />
+        </ListItem>
+      </HtmlTooltip>
+    </NavLink>
+  ) : (
+    <AuthorizedElement tokenDecoded={tokenData} iSuperAdmin={true}>
+      <NavLink to={item.route}>
+        <HtmlTooltip title={t(item.description)} placement="right" arrow>
+          <ListItem button>
+            <ListItemIcon>{item.icon}</ListItemIcon>
+            <ListItemText primary={t(item.title)} />
+          </ListItem>
+        </HtmlTooltip>
+      </NavLink>
+    </AuthorizedElement>
+  );
+};
+
+const MultiLevel = ({ item, tokenData }) => {
+  const { t } = useTranslation();
+  const { items: children } = item;
+  const [open, setOpen] = React.useState(false);
+
+  const handleClick = () => {
+    setOpen((prev) => !prev);
+  };
+
+  return item.withPermissions === false ? (
+    <React.Fragment>
+      <HtmlTooltip title={t(item.description)} placement="right" arrow>
+        <ListItem button onClick={handleClick}>
+          <ListItemIcon>{item.icon}</ListItemIcon>
+          <ListItemText primary={t(item.title)} />
+          {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+        </ListItem>
+      </HtmlTooltip>
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          {children.map((child, key) => (
+            <MenuItem key={key} item={child} tokenData={tokenData} />
+          ))}
+        </List>
+      </Collapse>
+    </React.Fragment>
+  ) : (
+    <AuthorizedElement tokenDecoded={tokenData} iSuperAdmin={true}>
+      <React.Fragment>
+        <HtmlTooltip title={t(item.description)} placement="right" arrow>
+          <ListItem button onClick={handleClick}>
+            <ListItemIcon>{item.icon}</ListItemIcon>
+            <ListItemText primary={t(item.title)} />
+            {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </ListItem>
+        </HtmlTooltip>
+        <Collapse in={open} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            {children.map((child, key) => (
+              <MenuItem key={key} item={child} tokenData={tokenData} />
+            ))}
+          </List>
+        </Collapse>
+      </React.Fragment>
+    </AuthorizedElement>
+  );
+};
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
   flexGrow: 1,
@@ -353,17 +459,6 @@ export default class App extends Component {
   constructor(props) {
     super(props);
   }
-  links = [
-    {
-      name: 'Tenant',
-      route: '/Tenant',
-      icon: <InboxIcon></InboxIcon>,
-      withPermissions: true
-    },
-    { name: 'Service', route: '/Service', icon: <InboxIcon></InboxIcon>, withPermissions: false },
-    { name: 'Policy', route: '/Policy', icon: <InboxIcon></InboxIcon>, withPermissions: false },
-    { name: 'ResourceType', route: '/ResourceType', icon: <InboxIcon></InboxIcon>, withPermissions: true }
-  ];
 
   componentDidMount() {
     if (!this.props.isAuthenticated) {
@@ -412,7 +507,7 @@ export default class App extends Component {
                     <TenantSelection
                       seTenant={this.state.seTenant}
                       tenantValues={this.state.tenants}
-                      correntValue={this.state.thisTenant}
+                      currentValue={this.state.thisTenant}
                     ></TenantSelection>
                   </div>
                   <div>
@@ -449,27 +544,9 @@ export default class App extends Component {
                   </IconButton>
                 </DrawerHeader>
                 <Divider />
-                <List>
-                  {this.links.map((thisItem, index) =>
-                    thisItem.withPermissions === false ? (
-                      <NavLink to={thisItem.route} key={index}>
-                        <ListItem button key={thisItem.name}>
-                          <ListItemIcon>{thisItem.icon}</ListItemIcon>
-                          <ListItemText primary={thisItem.name} />
-                        </ListItem>
-                      </NavLink>
-                    ) : (
-                      <AuthorizedElement tokenDecoded={this.state.tokenData} iSuperAdmin={true} key={index}>
-                        <NavLink to={thisItem.route} key={index}>
-                          <ListItem button key={thisItem.name}>
-                            <ListItemIcon>{thisItem.icon}</ListItemIcon>
-                            <ListItemText primary={thisItem.name} />
-                          </ListItem>
-                        </NavLink>
-                      </AuthorizedElement>
-                    )
-                  )}
-                </List>
+                {menu.map((item, key) => (
+                  <MenuItem key={key} item={item} tokenData={this.state.tokenData} />
+                ))}
                 <Divider />
               </SwipeableDrawer>
               {this.props.isAuthenticated ? (
@@ -479,6 +556,17 @@ export default class App extends Component {
                   </Container>
                   <Container maxWidth="xl">
                     <Routes>
+                      <Route
+                        path="/"
+                        element={
+                          <HomePage
+                            tokenData={this.state.tokenData}
+                            env={env}
+                            tenantValues={this.state.tenants}
+                            thisTenant={this.state.thisTenant}
+                          />
+                        }
+                      />
                       <Route
                         path="Tenant"
                         element={
@@ -495,7 +583,6 @@ export default class App extends Component {
                           </AuthorizedElement>
                         }
                       />
-
                       <Route
                         path="Service"
                         element={
@@ -534,6 +621,20 @@ export default class App extends Component {
                               tenantValues={this.state.tenants}
                             />
                           </AuthorizedElement>
+                        }
+                      />
+                      <Route
+                        path="Entity"
+                        element={
+                          <EntityPage
+                            token={this.props.accessToken}
+                            tokenData={this.state.tokenData}
+                            env={env}
+                            graphqlErrors={this.state.connectionIssue}
+                            thisTenant={this.state.thisTenant}
+                            tenantValues={this.state.tenants}
+                            language={this.state.language}
+                          />
                         }
                       />
                     </Routes>
