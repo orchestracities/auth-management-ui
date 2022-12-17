@@ -101,6 +101,40 @@
       "type": "Tipo<0>{{name}}</0>"
     }
   },
+  "menu": {
+    "home": {
+      "title": "Home",
+      "page_title": "Benveunuto!",
+      "description": "Easter Egg :)"
+    },
+    "data_management" : {
+      "title": "Gestione Dati",
+      "description": "In questa sezione gestisci i dati, per esempio le entità salvate nel Context Broker."
+    },
+    "entity" : {
+      "title": "Entità"
+    },
+    "security" : {
+      "title": "Sicurezza",
+      "description": "In questa sezione gestisci le policy di controllo di access alle risorse. Powered by Anubis!"
+    },
+    "policy" : {
+      "title": "Policy"
+    },
+    "administration" : {
+      "title": "Amministrazione",
+      "description": "In questa sezione puoi gestire tenant, percorsi dei servizi e tipi delle risorse. Buona Amministrazione!"
+    },
+    "service" : {
+      "title": "Servizi"
+    },
+    "tenant" : {
+      "title": "Tenant"
+    },
+    "resourcetype" : {
+      "title": "Tipo Risorse"
+    }
+  },
   "common": {
     "messages":{
       "sucessUpdate": "{{data}}  Aggiornato",
