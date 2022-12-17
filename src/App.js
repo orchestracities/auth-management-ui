@@ -67,15 +67,15 @@ const HtmlTooltip = styled(({ className, ...props }) => <Tooltip {...props} clas
   })
 );
 
-const MenuItem = ({ item, tokenData }) => {
+const MenuItem = ({ item, tokenData, onClick }) => {
   const Component = hasChildren(item) ? MultiLevel : SingleLevel;
-  return <Component item={item} tokenData={tokenData} />;
+  return <Component item={item} tokenData={tokenData} onClick={onClick} />;
 };
 
-const SingleLevel = ({ item, tokenData }) => {
+const SingleLevel = ({ item, tokenData, onClick }) => {
   const { t } = useTranslation();
   return item.withPermissions === false ? (
-    <NavLink to={item.route}>
+    <NavLink to={item.route} onClick={onClick}>
       <HtmlTooltip title={t(item.description)} placement="right" arrow>
         <ListItem button>
           <ListItemIcon>{item.icon}</ListItemIcon>
@@ -85,7 +85,7 @@ const SingleLevel = ({ item, tokenData }) => {
     </NavLink>
   ) : (
     <AuthorizedElement tokenDecoded={tokenData} iSuperAdmin={true}>
-      <NavLink to={item.route}>
+      <NavLink to={item.route} onClick={onClick}>
         <HtmlTooltip title={t(item.description)} placement="right" arrow>
           <ListItem button>
             <ListItemIcon>{item.icon}</ListItemIcon>
@@ -97,7 +97,7 @@ const SingleLevel = ({ item, tokenData }) => {
   );
 };
 
-const MultiLevel = ({ item, tokenData }) => {
+const MultiLevel = ({ item, tokenData, onClick }) => {
   const { t } = useTranslation();
   const { items: children } = item;
   const [open, setOpen] = React.useState(false);
@@ -118,7 +118,7 @@ const MultiLevel = ({ item, tokenData }) => {
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           {children.map((child, key) => (
-            <MenuItem key={key} item={child} tokenData={tokenData} />
+            <MenuItem key={key} item={child} tokenData={tokenData} onClick={onClick} />
           ))}
         </List>
       </Collapse>
@@ -136,7 +136,7 @@ const MultiLevel = ({ item, tokenData }) => {
         <Collapse in={open} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             {children.map((child, key) => (
-              <MenuItem key={key} item={child} tokenData={tokenData} />
+              <MenuItem key={key} item={child} tokenData={tokenData} onClick={onClick} />
             ))}
           </List>
         </Collapse>
@@ -545,7 +545,7 @@ export default class App extends Component {
                 </DrawerHeader>
                 <Divider />
                 {menu.map((item, key) => (
-                  <MenuItem key={key} item={item} tokenData={this.state.tokenData} />
+                  <MenuItem key={key} item={item} tokenData={this.state.tokenData} onClick={this.handleDrawerClose} />
                 ))}
                 <Divider />
               </SwipeableDrawer>
