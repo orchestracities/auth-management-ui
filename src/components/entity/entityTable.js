@@ -256,7 +256,7 @@ export default function EntityTable({ data, env, language }) {
   const [orderBy, setOrderBy] = React.useState('resource');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -377,7 +377,7 @@ export default function EntityTable({ data, env, language }) {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[10, 25]}
             component="div"
             count={rows.length}
             rowsPerPage={rowsPerPage}
