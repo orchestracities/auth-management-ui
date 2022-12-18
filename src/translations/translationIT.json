@@ -136,6 +136,7 @@
     }
   },
   "common": {
+    "invalidDate": "Data non valida",
     "messages":{
       "sucessUpdate": "{{data}}  Aggiornato",
       "sucessCreate": "Un nuovo elemento {{data}} è stato creato",

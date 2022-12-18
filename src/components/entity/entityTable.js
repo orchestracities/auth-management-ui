@@ -299,6 +299,14 @@ export default function EntityTable({ data, env, language }) {
     setPage(0);
   };
 
+  const printDate = (date) => {
+    try {
+      return dayjs(Date.parse(date)).locale(language).format('llll');
+    } catch (error) {
+      return <Trans>common.invalid_date</Trans>;
+    }
+  };
+
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -355,7 +363,7 @@ export default function EntityTable({ data, env, language }) {
                           {row.type}
                         </TableCell>
                         <TableCell padding="normal" align="left">
-                          {dayjs(Date.parse(row.dateModified.value)).locale(language).format('llll')}
+                          {printDate(row.dateModified.value)}
                         </TableCell>
 
                         <TableCell padding="normal" align="left" onClick={handlePropagation}>
