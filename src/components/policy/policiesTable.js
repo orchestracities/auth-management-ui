@@ -179,7 +179,7 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
       id: 'resource_type',
       numeric: false,
       disablePadding: false,
-      label: <Trans>policies.table.resource_type</Trans>
+      label: <Trans>policies.table.resourceType</Trans>
     },
     {
       id: 'agent',
@@ -282,7 +282,7 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
           </Tooltip>
         ) : (
           <Trans
-            i18nKey="common.table.total_plur"
+            i18nKey="common.table.totalPlural"
             values={{
               name: stableSort(rows, getComparator(order, orderBy)).length
             }}

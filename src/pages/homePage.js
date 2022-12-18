@@ -74,7 +74,7 @@ const LevelZero = ({ item, tokenData, tenantValues, thisTenant, color }) => {
 
 export default function HomePage({ tokenData, thisTenant, tenantValues, env }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
-  const mainTitle = <Trans>menu.home.page_title</Trans>;
+  const mainTitle = <Trans>menu.home.pageTitle</Trans>;
   const tenantFiltered = tenantValues.filter((e) => e.id === thisTenant);
   const tenantData = tenantFiltered[0];
   const color = tenantData && tenantData.props && tenantData.props.primaryColor ? tenantData.props.primaryColor : '';

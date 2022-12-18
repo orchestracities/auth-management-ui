@@ -45,7 +45,7 @@
     "table": {
       "access": "Risorse",
       "path": "Percorso dei servizi",
-      "resource_type": "Tipologia risorse",
+      "resourceType": "Tipologia risorse",
       "actor": "Utente",
       "mode": "Modalità"
     },
@@ -53,8 +53,8 @@
       "mode": "Modalità{{name}}",
       "resource": "Risorse{{name}}",
       "path": "Percorso servizi{{name}}",
-      "actor_type": "Tipologia Utente<0>{{name}}</0>",
-      "resource_type": "Tipologia Risorsa{{name}}",
+      "actorType": "Tipologia Utente<0>{{name}}</0>",
+      "resourceType": "Tipologia Risorsa{{name}}",
       "actor": "Utente{{name}}"
     },
     "form": {
@@ -104,10 +104,10 @@
   "menu": {
     "home": {
       "title": "Home",
-      "page_title": "Benvenuto!",
+      "pageTitle": "Benvenuto!",
       "description": "Easter Egg :)"
     },
-    "data_management" : {
+    "dataManagement" : {
       "title": "Gestione Dati",
       "description": "In questa sezione gestisci i dati, per esempio le entità salvate nel Context Broker."
     },
@@ -164,8 +164,8 @@
       "counterPlural": "{{data}}  Elementi",
       "counterSingle": "{{data}}  Elemento",
       "selected": "{{name}}  Selezionati",
-      "total_sngl": "Un elemento",
-      "total_plur": "Elementi disponibili: {{name}}"
+      "totalSingle": "Un elemento",
+      "totalPlural": "Elementi disponibili: {{name}}"
     }
   }
 }

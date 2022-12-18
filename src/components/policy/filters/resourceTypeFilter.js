@@ -83,7 +83,7 @@ export default function ResourceTypeFilter({ data, status, setstatus, filterValu
         >
           {
             <Trans
-              i18nKey="policies.filters.resource_type"
+              i18nKey="policies.filters.resourceType"
               values={{
                 name: filterValue.value !== null ? ': ' + filterValue.value.resource_type : ''
               }}
@@ -104,7 +104,7 @@ export default function ResourceTypeFilter({ data, status, setstatus, filterValu
                   {...params}
                   label={
                     <Trans
-                      i18nKey="policies.filters.resource_type"
+                      i18nKey="policies.filters.resourceType"
                       values={{
                         name: ''
                       }}

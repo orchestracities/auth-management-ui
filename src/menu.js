@@ -14,8 +14,8 @@ export const menu = [
   },
   {
     icon: <DatasetOutlinedIcon />,
-    title: 'menu.data_management.title',
-    description: 'menu.data_management.description',
+    title: 'menu.dataManagement.title',
+    description: 'menu.dataManagement.description',
     items: [
       {
         title: 'menu.entity.title',

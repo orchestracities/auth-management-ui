@@ -45,15 +45,15 @@
     "table": {
       "access": "Resource",
       "path": "Service path",
-      "resource_type": "Resource Type",
+      "resourceType": "Resource Type",
       "actor": "Actor",
       "mode": "Mode"
     },
     "filters": {
       "mode": "Mode{{name}}",
       "path": "service path{{name}}",
-      "actor_type": "Actor type<0>{{name}}</0>",
-      "resource_type": "Resource type{{name}}",
+      "actorType": "Actor type<0>{{name}}</0>",
+      "resourceType": "Resource type{{name}}",
       "actor": "Actor{{name}}",
       "resource": "Resource{{name}}"
     },
@@ -104,10 +104,10 @@
   "menu": {
     "home": {
       "title": "Home",
-      "page_title": "Welcome!",
+      "pageTitle": "Welcome!",
       "description": "Sweet :)"
     },
-    "data_management" : {
+    "dataManagement" : {
       "title": "Data Management",
       "description": "In this area you manage the platform data, for examples the ones in Context Broker."
     },
@@ -163,8 +163,8 @@
     "table": {
       "counterPlural": "{{data}}  Elements",
       "counterSingle": "{{data}}  Element",
-      "total_sngl": "One element",
-      "total_plur": "Elements: {{name}}",
+      "totalSingle": "One element",
+      "totalPlural": "Elements: {{name}}",
       "selected": "{{name}} selected"
     }
   }
