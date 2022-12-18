@@ -13,6 +13,7 @@
 ### Bug fixes
 
 - Fix git action test failure (#121)
+- Add missing delete tenant configuration on tenant delete (#123)
 
 ### Documentation
 

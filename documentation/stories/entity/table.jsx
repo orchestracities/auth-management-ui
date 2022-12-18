@@ -23,7 +23,7 @@ export const EntityTypeTable = ({ data }) => {
       <ThemeProvider theme={theme}>
         <BrowserRouter>
           <Grid>
-            <EntityTable data={data} language='en'/>
+            <EntityTable data={data} language="en" />
           </Grid>
         </BrowserRouter>
       </ThemeProvider>

@@ -6,6 +6,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { styled } from '@mui/material/styles';
+import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
 import axios from 'axios';
 import { Trans } from 'react-i18next';
 import useNotification from './alerts';
@@ -26,6 +28,24 @@ export default function DeleteDialog({ open, onClose, getData, data, env, token 
 
   const [msg, sendNotification] = useNotification();
   log.debug(msg);
+
+  const httpLink = createHttpLink({
+    uri: typeof env !== 'undefined' ? env.CONFIGURATION_API_URL : ''
+  });
+
+  const authLink = setContext((_, { headers }) => {
+    return {
+      headers: {
+        ...headers,
+        Authorization: `Bearer ${token}`
+      }
+    };
+  });
+
+  const client = new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache()
+  });
 
   const deleteMapper = (thisData) => {
     switch (true) {
@@ -53,6 +73,26 @@ export default function DeleteDialog({ open, onClose, getData, data, env, token 
       default:
         break;
     }
+  };
+
+  const deleteTenantConfiguration = (tenantName) => {
+    client
+      .mutate({
+        mutation: gql`
+          mutation removeTenantConfig($tenantName: String!) {
+            removeTenantConfig(tenantName: $tenantName) {
+              name
+              icon
+              primaryColor
+              secondaryColor
+            }
+          }
+        `,
+        variables: { tenantName: tenantName }
+      })
+      .catch((e) => {
+        sendNotification({ msg: e.message + ' the config', variant: 'error' });
+      });
   };
 
   const deletElement = () => {
@@ -98,6 +138,8 @@ export default function DeleteDialog({ open, onClose, getData, data, env, token 
       axios
         .delete(deleteMapper(data), header)
         .then(() => {
+          // delete tenant from graphql
+          deleteTenantConfiguration(data.name);
           onClose(false);
           getData();
           sendNotification({
@@ -113,7 +155,8 @@ export default function DeleteDialog({ open, onClose, getData, data, env, token 
           });
         })
         .catch((e) => {
-          e.response.data.detail.map((thisError) => sendNotification({ msg: thisError.msg, variant: 'error' }));
+          if (e.response.data)
+            e.response.data.detail.map((thisError) => sendNotification({ msg: thisError.msg, variant: 'error' }));
         });
     }
   };
