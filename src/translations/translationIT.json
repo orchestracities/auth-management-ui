@@ -116,7 +116,7 @@
     },
     "security" : {
       "title": "Sicurezza",
-      "description": "In questa sezione gestisci le policy di controllo di access alle risorse. Powered by Anubis!"
+      "description": "In questa sezione gestisci le policy di controllo di accesso alle risorse. Powered by Anubis!"
     },
     "policy" : {
       "title": "Policy"
