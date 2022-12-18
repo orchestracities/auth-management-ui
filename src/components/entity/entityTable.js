@@ -238,7 +238,7 @@ export default function EntityTable({ data, env, language }) {
           </Tooltip>
         ) : (
           <Trans
-            i18nKey="common.table.total_plur"
+            i18nKey="common.table.totalPlural"
             values={{
               name: stableSort(rows, getComparator(order, orderBy)).length
             }}
@@ -301,9 +301,10 @@ export default function EntityTable({ data, env, language }) {
 
   const printDate = (date) => {
     try {
-      return dayjs(Date.parse(date)).locale(language).format('llll');
+      const lang = typeof language === 'undefined' || language === '' ? 'en' : language;
+      return dayjs(Date.parse(date)).locale(lang).format('llll');
     } catch (error) {
-      return <Trans>common.invalid_date</Trans>;
+      return <Trans>common.invalidDate</Trans>;
     }
   };
 
