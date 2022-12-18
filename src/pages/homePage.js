@@ -18,20 +18,22 @@ import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { menu } from '../menu';
 
-const HomePageItem = ({ item, tokenData, color }) => {
-  return <LevelZero item={item} tokenData={tokenData} color={color} />;
+const HomePageItem = ({ item, tokenData, tenantValues, thisTenant, color }) => {
+  return (
+    <LevelZero item={item} tokenData={tokenData} tenantValues={tenantValues} thisTenant={thisTenant} color={color} />
+  );
 };
 
-const LevelOne = ({ item, tokenData }) => {
+const LevelOne = ({ item, tokenData, tenantValues, thisTenant }) => {
   const { t } = useTranslation();
-  return item.withPermissions === false ? (
-    <NavLink to={item.route}>
-      <ListItem button>
-        <ListItemText primary={t(item.title)} />
-      </ListItem>
-    </NavLink>
-  ) : (
-    <AuthorizedElement tokenDecoded={tokenData} iSuperAdmin={true}>
+  return (
+    <AuthorizedElement
+      tokenDecoded={tokenData}
+      tenantValues={tenantValues}
+      thisTenant={thisTenant}
+      roleNeeded={item.withRole}
+      iSuperAdmin={item.withSuperAdmin}
+    >
       <NavLink to={item.route}>
         <ListItem button>
           <ListItemText primary={t(item.title)} />
@@ -41,26 +43,18 @@ const LevelOne = ({ item, tokenData }) => {
   );
 };
 
-const LevelZero = ({ item, tokenData, color }) => {
+const LevelZero = ({ item, tokenData, tenantValues, thisTenant, color }) => {
   const { t } = useTranslation();
   const { items: children } = item;
 
-  return item.withPermissions === false ? (
-    <Card sx={{ minWidth: 275 }}>
-      <CardContent>
-        <CardHeader avatar={<Avatar sx={{ bgcolor: color }}>{item.icon}</Avatar>} title={t(item.title)} />
-        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          {t(item.description)}
-        </Typography>
-        <List component="div" disablePadding>
-          {children.map((child, key) => (
-            <LevelOne key={key} item={child} tokenData={tokenData} />
-          ))}
-        </List>
-      </CardContent>
-    </Card>
-  ) : (
-    <AuthorizedElement tokenDecoded={tokenData} iSuperAdmin={true}>
+  return (
+    <AuthorizedElement
+      tokenDecoded={tokenData}
+      tenantValues={tenantValues}
+      thisTenant={thisTenant}
+      roleNeeded={item.withRole}
+      iSuperAdmin={item.withSuperAdmin}
+    >
       <Card sx={{ minWidth: 275 }}>
         <CardContent>
           <CardHeader avatar={<Avatar sx={{ bgcolor: color }}>{item.icon}</Avatar>} title={t(item.title)} />
@@ -98,7 +92,14 @@ export default function HomePage({ tokenData, thisTenant, tenantValues, env }) {
               {...(key === key ? { timeout: key * 600 } : {})}
             >
               <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-                <HomePageItem key={key} item={item} tokenData={tokenData} color={color} />
+                <HomePageItem
+                  key={key}
+                  item={item}
+                  tokenData={tokenData}
+                  tenantValues={tenantValues}
+                  thisTenant={thisTenant}
+                  color={color}
+                />
               </Grid>
             </Grow>
           ) : (

@@ -67,24 +67,29 @@ const HtmlTooltip = styled(({ className, ...props }) => <Tooltip {...props} clas
   })
 );
 
-const MenuItem = ({ item, tokenData, onClick }) => {
+const MenuItem = ({ item, tokenData, onClick, tenantValues, thisTenant }) => {
   const Component = hasChildren(item) ? MultiLevel : SingleLevel;
-  return <Component item={item} tokenData={tokenData} onClick={onClick} />;
+  return (
+    <Component
+      item={item}
+      tokenData={tokenData}
+      onClick={onClick}
+      tenantValues={tenantValues}
+      thisTenant={thisTenant}
+    />
+  );
 };
 
-const SingleLevel = ({ item, tokenData, onClick }) => {
+const SingleLevel = ({ item, tokenData, onClick, tenantValues, thisTenant }) => {
   const { t } = useTranslation();
-  return item.withPermissions === false ? (
-    <NavLink to={item.route} onClick={onClick}>
-      <HtmlTooltip title={t(item.description)} placement="right" arrow>
-        <ListItem button>
-          <ListItemIcon>{item.icon}</ListItemIcon>
-          <ListItemText primary={t(item.title)} />
-        </ListItem>
-      </HtmlTooltip>
-    </NavLink>
-  ) : (
-    <AuthorizedElement tokenDecoded={tokenData} iSuperAdmin={true}>
+  return (
+    <AuthorizedElement
+      tokenDecoded={tokenData}
+      tenantValues={tenantValues}
+      thisTenant={thisTenant}
+      roleNeeded={item.withRole}
+      iSuperAdmin={item.withSuperAdmin}
+    >
       <NavLink to={item.route} onClick={onClick}>
         <HtmlTooltip title={t(item.description)} placement="right" arrow>
           <ListItem button>
@@ -97,7 +102,7 @@ const SingleLevel = ({ item, tokenData, onClick }) => {
   );
 };
 
-const MultiLevel = ({ item, tokenData, onClick }) => {
+const MultiLevel = ({ item, tokenData, onClick, tenantValues, thisTenant }) => {
   const { t } = useTranslation();
   const { items: children } = item;
   const [open, setOpen] = React.useState(false);
@@ -106,25 +111,14 @@ const MultiLevel = ({ item, tokenData, onClick }) => {
     setOpen((prev) => !prev);
   };
 
-  return item.withPermissions === false ? (
-    <React.Fragment>
-      <HtmlTooltip title={t(item.description)} placement="right" arrow>
-        <ListItem button onClick={handleClick}>
-          <ListItemIcon>{item.icon}</ListItemIcon>
-          <ListItemText primary={t(item.title)} />
-          {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-        </ListItem>
-      </HtmlTooltip>
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          {children.map((child, key) => (
-            <MenuItem key={key} item={child} tokenData={tokenData} onClick={onClick} />
-          ))}
-        </List>
-      </Collapse>
-    </React.Fragment>
-  ) : (
-    <AuthorizedElement tokenDecoded={tokenData} iSuperAdmin={true}>
+  return (
+    <AuthorizedElement
+      tokenDecoded={tokenData}
+      tenantValues={tenantValues}
+      thisTenant={thisTenant}
+      roleNeeded={item.withRole}
+      iSuperAdmin={item.withSuperAdmin}
+    >
       <React.Fragment>
         <HtmlTooltip title={t(item.description)} placement="right" arrow>
           <ListItem button onClick={handleClick}>
@@ -545,7 +539,14 @@ export default class App extends Component {
                 </DrawerHeader>
                 <Divider />
                 {menu.map((item, key) => (
-                  <MenuItem key={key} item={item} tokenData={this.state.tokenData} onClick={this.handleDrawerClose} />
+                  <MenuItem
+                    key={key}
+                    item={item}
+                    tokenData={this.state.tokenData}
+                    onClick={this.handleDrawerClose}
+                    tenantValues={this.state.tenants}
+                    thisTenant={this.state.thisTenant}
+                  />
                 ))}
                 <Divider />
               </SwipeableDrawer>
@@ -586,13 +587,21 @@ export default class App extends Component {
                       <Route
                         path="Service"
                         element={
-                          <ServicePage
-                            getTenants={this.state.getTenants}
-                            env={env}
+                          <AuthorizedElement
+                            tokenDecoded={this.state.tokenData}
                             tenantValues={this.state.tenants}
                             thisTenant={this.state.thisTenant}
-                            graphqlErrors={this.state.connectionIssue}
-                          />
+                            roleNeeded={'tenant-admin'}
+                            iSuperAdmin={true}
+                          >
+                            <ServicePage
+                              getTenants={this.state.getTenants}
+                              env={env}
+                              tenantValues={this.state.tenants}
+                              thisTenant={this.state.thisTenant}
+                              graphqlErrors={this.state.connectionIssue}
+                            />
+                          </AuthorizedElement>
                         }
                       />
                       <Route
@@ -611,7 +620,13 @@ export default class App extends Component {
                       <Route
                         path="ResourceType"
                         element={
-                          <AuthorizedElement tokenDecoded={this.state.tokenData} iSuperAdmin={true}>
+                          <AuthorizedElement
+                            tokenDecoded={this.state.tokenData}
+                            tenantValues={this.state.tenants}
+                            thisTenant={this.state.thisTenant}
+                            roleNeeded={'tenant-admin'}
+                            iSuperAdmin={true}
+                          >
                             <ResourcePage
                               token={this.props.accessToken}
                               tokenData={this.state.tokenData}
