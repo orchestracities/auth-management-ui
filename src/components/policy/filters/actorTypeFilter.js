@@ -83,7 +83,7 @@ export default function ActorTypeFilter({ data, status, setstatus, filterValue }
         >
           {
             <Trans
-              i18nKey="policies.filters.actor_type"
+              i18nKey="policies.filters.actorType"
               values={{
                 name: filterValue.value !== null ? ': ' + filterValue.value.name : ''
               }}
@@ -104,7 +104,7 @@ export default function ActorTypeFilter({ data, status, setstatus, filterValue }
                   {...params}
                   label={
                     <Trans
-                      i18nKey="policies.filters.actor_type"
+                      i18nKey="policies.filters.actorType"
                       values={{
                         name: ''
                       }}

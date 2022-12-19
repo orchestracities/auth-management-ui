@@ -187,7 +187,7 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
   const theme = useTheme();
   const smallDevice = useMediaQuery(theme.breakpoints.down('sm'));
   return (
-    <Box sx={{ marginBottom: 15 }}>
+    <Box>
       <MainTitle mainTitle={mainTitle}></MainTitle>
       <AddButton
         pageType={<div></div>}

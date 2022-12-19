@@ -9,10 +9,14 @@
 - Display the entities inside a table (#113)
 - Organize side bar menu and translate menu items (#126)
 - Basic home page with navigation info (#125)
+- Reduce size of some graphical elements (e.g. topbar)
+- Close side bar on navlink click (#132)
+- Implement access control to pages / menus based on role / group
 
 ### Bug fixes
 
 - Fix git action test failure (#121)
+- Fix misspelled translations
 - Add missing delete tenant configuration on tenant delete (#123)
 
 ### Documentation
