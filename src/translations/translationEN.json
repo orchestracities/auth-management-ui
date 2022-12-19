@@ -136,6 +136,8 @@
     }
   },
   "common": {
+    "notAuthorized" : "Not Authorized",
+    "goHomePage": "Go to the home page",
     "invalidDate": "Invalid date",
     "messages":{
       "sucessUpdate": "{{data}}  Updated",

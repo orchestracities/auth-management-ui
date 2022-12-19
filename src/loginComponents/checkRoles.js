@@ -1,4 +1,5 @@
 import React from 'react';
+import { Navigate } from 'react-router-dom';
 
 /*
 ***EXAMPLE***
@@ -31,6 +32,8 @@ export class AuthorizedElement extends React.Component {
       typeof this.props.iSuperAdmin === 'undefined'
     ) {
       return this.props.children;
+    } else if (this.props.redirect) {
+      <Navigate to="/403" replace={true} />;
     } else {
       return false;
     }

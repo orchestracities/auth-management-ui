@@ -12,6 +12,8 @@
 - Reduce size of some graphical elements (e.g. topbar)
 - Close side bar on navlink click (#132)
 - Implement access control to pages / menus based on role / group
+- Set-up logout link (#137)
+- Set-up link to profile (#137)
 
 ### Bug fixes
 
@@ -22,6 +24,8 @@
 ### Documentation
 
 ### Continuous Integration
+
+- Add basic UI test  based on cypress (#4)
 
 ### Technical debt
 

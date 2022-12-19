@@ -136,6 +136,8 @@
     }
   },
   "common": {
+    "notAuthorized" : "Non Autorizzato",
+    "goHomePage": "Torna alla home page",
     "invalidDate": "Data non valida",
     "messages":{
       "sucessUpdate": "{{data}}  Aggiornato",

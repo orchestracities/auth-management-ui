@@ -26,6 +26,7 @@ import PolicyPage from './pages/policyPage';
 import ResourcePage from './pages/resourcePage';
 import EntityPage from './pages/entityPage';
 import HomePage from './pages/homePage';
+import NotAuthorizedPage from './pages/403Page';
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import UserMenu from './components/shared/userMenu';
@@ -571,7 +572,7 @@ export default class App extends Component {
                       <Route
                         path="Tenant"
                         element={
-                          <AuthorizedElement tokenDecoded={this.state.tokenData} iSuperAdmin={true}>
+                          <AuthorizedElement tokenDecoded={this.state.tokenData} iSuperAdmin={true} redirect={true}>
                             <TenantPage
                               token={this.props.accessToken}
                               renewTokens={this.props.renewTokens}
@@ -593,6 +594,7 @@ export default class App extends Component {
                             thisTenant={this.state.thisTenant}
                             roleNeeded={'tenant-admin'}
                             iSuperAdmin={true}
+                            redirect={true}
                           >
                             <ServicePage
                               getTenants={this.state.getTenants}
@@ -626,6 +628,7 @@ export default class App extends Component {
                             thisTenant={this.state.thisTenant}
                             roleNeeded={'tenant-admin'}
                             iSuperAdmin={true}
+                            redirect={true}
                           >
                             <ResourcePage
                               token={this.props.accessToken}
@@ -652,6 +655,7 @@ export default class App extends Component {
                           />
                         }
                       />
+                      <Route path="403" element={<NotAuthorizedPage env={env} />} />
                     </Routes>
                   </Container>
                 </Main>
