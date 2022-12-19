@@ -1,4 +1,4 @@
-name: Graphql-tests
+name: tests
 'on':
   push:
   pull_request:
@@ -7,7 +7,7 @@ name: Graphql-tests
       - synchronize
       - reopened
 jobs:
-  test:
+  graphql:
     name: 'Node.js v${{ matrix.node }}'
     runs-on: ubuntu-latest
     strategy:
@@ -34,8 +34,38 @@ jobs:
       - name: populate DB
         run: node main/mongo/populateDB.js
         working-directory: configuration-api
-      - name: Run All Node.js Tests
+      - name: Run configuration api tests
         run: node main/advancedAuth.js & npm test
         working-directory: configuration-api
       - name: stop Docker
         run: ./stop.sh dev
+  cypress:
+    name: 'Node.js v${{ matrix.node }}'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node:
+          - 16
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '${{ matrix.node }}'
+      - uses: actions/checkout@v3
+      - name: 'Cache node_modules'
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-v${{ matrix.node }}-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-v${{ matrix.node }}-
+      - name: Setup Docker
+        run: ./start.sh silent
+      - name: Add hosts to /etc/hosts
+        run: |
+            sudo echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
+      - name: set-up environment
+        run: cp .env.docker .env
+      - name: Run cypress tests
+        run: npm run cypress:test
+      - name: stop Docker
+        run: ./stop.sh

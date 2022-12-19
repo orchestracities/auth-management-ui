@@ -26,7 +26,7 @@ import PolicyPage from './pages/policyPage';
 import ResourcePage from './pages/resourcePage';
 import EntityPage from './pages/entityPage';
 import HomePage from './pages/homePage';
-import NotAuthorizedPage from './pages/403Page';
+import ErrorPage from './pages/errorPage';
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import UserMenu from './components/shared/userMenu';
@@ -655,7 +655,8 @@ export default class App extends Component {
                           />
                         }
                       />
-                      <Route path="403" element={<NotAuthorizedPage env={env} />} />
+                      <Route path="403" element={<ErrorPage env={env} code="403" msg="common.notAuthorized" />} />
+                      <Route path="*" element={<ErrorPage env={env} code="404" msg="common.notFound" />} />
                     </Routes>
                   </Container>
                 </Main>

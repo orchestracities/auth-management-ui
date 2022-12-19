@@ -137,6 +137,7 @@
   },
   "common": {
     "notAuthorized" : "Not Authorized",
+    "notFound" : "Not Found",
     "goHomePage": "Go to the home page",
     "invalidDate": "Invalid date",
     "messages":{

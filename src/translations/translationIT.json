@@ -136,7 +136,8 @@
     }
   },
   "common": {
-    "notAuthorized" : "Non Autorizzato",
+    "notAuthorized" : "Non Autorizzata",
+    "notFound" : "Non Trovata",
     "goHomePage": "Torna alla home page",
     "invalidDate": "Data non valida",
     "messages":{

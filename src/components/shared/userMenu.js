@@ -11,6 +11,7 @@ import Logout from '@mui/icons-material/Logout';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
+import Divider from '@mui/material/Divider';
 import { styled } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import DialogContent from '@mui/material/DialogContent';
@@ -203,6 +204,7 @@ export default function UserMenu({ language, userData, token, lastTenantSelected
             </ListItemIcon>
             {userData.name}
           </MenuItem>
+          <Divider />
           <MenuItem onClick={settingsOpen}>
             <ListItemIcon>
               <Settings fontSize="small" />
