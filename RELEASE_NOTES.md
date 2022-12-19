@@ -17,6 +17,7 @@
 
 - Fix git action test failure (#121)
 - Fix misspelled translations
+- Add missing delete tenant configuration on tenant delete (#123)
 
 ### Documentation
 
