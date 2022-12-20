@@ -46,7 +46,9 @@
     "lint": "eslint --fix --ext .js,.jsx .",
     "prestart": "generate-env-getter js && prettier --write './**/*.{js,jsx}' --config .prettierrc.json",
     "pretest": "generate-env-getter js && prettier --write './**/*.{js,jsx}' --config .prettierrc.json",
-    "prettier": "prettier --write './**/*.{js,jsx}' --config .prettierrc.json"
+    "prettier": "prettier --write './**/*.{js,jsx}' --config .prettierrc.json",
+    "cypress:open": "cypress open",
+    "cypress:test": "cypress run"
   },
   "eslintConfig": {
     "extends": [
@@ -67,6 +69,8 @@
     ]
   },
   "devDependencies": {
+    "cypress": "^11.2.0",
+    "cypress-react-selector": "^3.0.0",
     "eslint": "^8.14.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",

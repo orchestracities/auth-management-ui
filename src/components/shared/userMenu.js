@@ -11,6 +11,7 @@ import Logout from '@mui/icons-material/Logout';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
+import Divider from '@mui/material/Divider';
 import { styled } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import DialogContent from '@mui/material/DialogContent';
@@ -26,6 +27,7 @@ import { onError } from '@apollo/client/link/error';
 import { setContext } from '@apollo/client/link/context';
 import useNotification from './messages/alerts';
 import * as log from 'loglevel';
+import { useOidc } from '@axa-fr/react-oidc';
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -46,7 +48,10 @@ export default function UserMenu({ language, userData, token, lastTenantSelected
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [settings, setOpenSettings] = React.useState(false);
   const [msg, sendNotification] = useNotification();
+
   log.debug(msg);
+
+  const { logout } = useOidc();
 
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -61,6 +66,10 @@ export default function UserMenu({ language, userData, token, lastTenantSelected
 
   const settingsClose = () => {
     setOpenSettings(false);
+  };
+
+  const openInNewTab = (url) => {
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   React.useEffect(() => {
@@ -188,13 +197,20 @@ export default function UserMenu({ language, userData, token, lastTenantSelected
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
+        <MenuItem onClick={() => openInNewTab(env.OIDC_ISSUER + '/account/')}>
+          <ListItemIcon>
+            <AccountCircle fontSize="small" />
+          </ListItemIcon>
+          {userData && userData.name ? userData.name : ''}
+        </MenuItem>
+        <Divider />
         <MenuItem onClick={settingsOpen}>
           <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon>
           <Trans>common.userSettings.title</Trans>
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={() => logout()}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>

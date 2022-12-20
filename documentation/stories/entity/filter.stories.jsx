@@ -27,9 +27,7 @@ export default {
           <Description>A set of filters to help the user</Description>
           <Subtitle>API Documentation:</Subtitle>
           <Description>The entity filters component is inside entity/entityFilters.js :</Description>
-          <Description>
-            The element should be rendered with the entityTable component inside the same page
-          </Description>
+          <Description>The element should be rendered with the entityTable component inside the same page</Description>
           <Description>
             To control every filter the component is using an object is composed by a property with the filter ID and
             two properties value for the hook value and set for the hook function

@@ -263,16 +263,6 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
             </Grid>
           )}
 
-          <Grid item xs={12}>
-            <TextField
-              id="Description"
-              label={<Trans>tenant.form.description</Trans>}
-              variant="outlined"
-              sx={{
-                width: '100%'
-              }}
-            />
-          </Grid>
           <Grid item lg={12} md={12} xs={12} container direction="column" justifyContent="center" alignItems="center">
             <IconPicker previusValue={iconName} setValue={setIconName} mode={action}></IconPicker>
           </Grid>

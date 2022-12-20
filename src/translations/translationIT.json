@@ -45,7 +45,7 @@
     "table": {
       "access": "Risorse",
       "path": "Percorso dei servizi",
-      "resource_type": "Tipologia risorse",
+      "resourceType": "Tipologia risorse",
       "actor": "Utente",
       "mode": "Modalità"
     },
@@ -53,8 +53,8 @@
       "mode": "Modalità{{name}}",
       "resource": "Risorse{{name}}",
       "path": "Percorso servizi{{name}}",
-      "actor_type": "Tipologia Utente<0>{{name}}</0>",
-      "resource_type": "Tipologia Risorsa{{name}}",
+      "actorType": "Tipologia Utente<0>{{name}}</0>",
+      "resourceType": "Tipologia Risorsa{{name}}",
       "actor": "Utente{{name}}"
     },
     "form": {
@@ -104,10 +104,10 @@
   "menu": {
     "home": {
       "title": "Home",
-      "page_title": "Benveunuto!",
+      "pageTitle": "Benvenuto!",
       "description": "Easter Egg :)"
     },
-    "data_management" : {
+    "dataManagement" : {
       "title": "Gestione Dati",
       "description": "In questa sezione gestisci i dati, per esempio le entità salvate nel Context Broker."
     },
@@ -116,7 +116,7 @@
     },
     "security" : {
       "title": "Sicurezza",
-      "description": "In questa sezione gestisci le policy di controllo di access alle risorse. Powered by Anubis!"
+      "description": "In questa sezione gestisci le policy di controllo di accesso alle risorse. Powered by Anubis!"
     },
     "policy" : {
       "title": "Policy"
@@ -136,6 +136,10 @@
     }
   },
   "common": {
+    "notAuthorized" : "Non Autorizzata",
+    "notFound" : "Non Trovata",
+    "goHomePage": "Torna alla home page",
+    "invalidDate": "Data non valida",
     "messages":{
       "sucessUpdate": "{{data}}  Aggiornato",
       "sucessCreate": "Un nuovo elemento {{data}} è stato creato",
@@ -163,8 +167,8 @@
       "counterPlural": "{{data}}  Elementi",
       "counterSingle": "{{data}}  Elemento",
       "selected": "{{name}}  Selezionati",
-      "total_sngl": "Un elemento",
-      "total_plur": "Elementi disponibili: {{name}}"
+      "totalSingle": "Un elemento",
+      "totalPlural": "Elementi disponibili: {{name}}"
     }
   }
 }

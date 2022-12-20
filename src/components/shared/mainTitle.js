@@ -7,25 +7,25 @@ const theme = createTheme();
 
 theme.typography.h3 = {
   [theme.breakpoints.up('xs')]: {
-    fontSize: '2.5rem'
+    fontSize: '1.5rem'
   },
   [theme.breakpoints.up('sm')]: {
-    fontSize: '2.5rem'
+    fontSize: '1.5rem'
   },
   [theme.breakpoints.up('md')]: {
-    fontSize: '3.2rem'
+    fontSize: '2.0rem'
   },
   [theme.breakpoints.up('lg')]: {
-    fontSize: '3.8rem'
+    fontSize: '2.2rem'
   },
   [theme.breakpoints.up('xl')]: {
-    fontSize: '4.2rem'
+    fontSize: '2.4rem'
   }
 };
 
 const CustomMainTitle = styled(Typography)({
-  marginTop: '40px',
-  marginBottom: '30px'
+  marginTop: '5px',
+  marginBottom: '15px'
 });
 
 export default function MainTitle({ mainTitle }) {

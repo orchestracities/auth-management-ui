@@ -179,7 +179,7 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
       id: 'resource_type',
       numeric: false,
       disablePadding: false,
-      label: <Trans>policies.table.resource_type</Trans>
+      label: <Trans>policies.table.resourceType</Trans>
     },
     {
       id: 'agent',
@@ -282,7 +282,7 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
           </Tooltip>
         ) : (
           <Trans
-            i18nKey="common.table.total_plur"
+            i18nKey="common.table.totalPlural"
             values={{
               name: stableSort(rows, getComparator(order, orderBy)).length
             }}
@@ -300,7 +300,7 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
   const [orderBy, setOrderBy] = React.useState('resource');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   const fromIdToText = (policyIDs) => {
     let textDisplay = '\n';
@@ -461,7 +461,7 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[10, 25]}
             component="div"
             count={rows.length}
             rowsPerPage={rowsPerPage}

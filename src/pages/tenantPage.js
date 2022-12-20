@@ -33,7 +33,7 @@ export default function TenantPage({
   };
 
   return (
-    <Box sx={{ marginBottom: 15 }}>
+    <Box>
       <MainTitle mainTitle={mainTitle}></MainTitle>
       <AddButton
         pageType={

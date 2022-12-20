@@ -76,7 +76,7 @@ export default function ResourcePage({ token, graphqlErrors, env, tokenData, thi
   }, [thisTenant]);
 
   return (
-    <Box sx={{ marginBottom: 15 }}>
+    <Box>
       <MainTitle mainTitle={mainTitle}></MainTitle>
       <AddButton
         pageType={

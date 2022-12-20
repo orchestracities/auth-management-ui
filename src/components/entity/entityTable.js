@@ -238,7 +238,7 @@ export default function EntityTable({ data, env, language }) {
           </Tooltip>
         ) : (
           <Trans
-            i18nKey="common.table.total_plur"
+            i18nKey="common.table.totalPlural"
             values={{
               name: stableSort(rows, getComparator(order, orderBy)).length
             }}
@@ -256,7 +256,7 @@ export default function EntityTable({ data, env, language }) {
   const [orderBy, setOrderBy] = React.useState('resource');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -297,6 +297,15 @@ export default function EntityTable({ data, env, language }) {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  };
+
+  const printDate = (date) => {
+    try {
+      const lang = typeof language === 'undefined' || language === '' ? 'en' : language;
+      return dayjs(Date.parse(date)).locale(lang).format('llll');
+    } catch (error) {
+      return <Trans>common.invalidDate</Trans>;
+    }
   };
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
@@ -355,7 +364,7 @@ export default function EntityTable({ data, env, language }) {
                           {row.type}
                         </TableCell>
                         <TableCell padding="normal" align="left">
-                          {dayjs(Date.parse(row.dateModified.value)).locale(language).format('llll')}
+                          {printDate(row.dateModified.value)}
                         </TableCell>
 
                         <TableCell padding="normal" align="left" onClick={handlePropagation}>
@@ -377,7 +386,7 @@ export default function EntityTable({ data, env, language }) {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[10, 25]}
             component="div"
             count={rows.length}
             rowsPerPage={rowsPerPage}

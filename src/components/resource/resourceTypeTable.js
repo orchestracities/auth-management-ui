@@ -232,7 +232,7 @@ export default function ResourceTable({ token, tokenData, env, resources, getThe
       >
         {numSelected > 0 ? (
           <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">
-            <Trans i18nKey="policies.table.selected" values={{ name: numSelected }} />
+            <Trans i18nKey="common.table.selected" values={{ name: numSelected }} />
           </Typography>
         ) : (
           ''

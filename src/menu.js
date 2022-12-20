@@ -10,19 +10,16 @@ export const menu = [
     title: 'menu.home.title',
     description: 'menu.home.description',
     route: '/',
-    withPermissions: false,
     items: []
   },
   {
     icon: <DatasetOutlinedIcon />,
-    title: 'menu.data_management.title',
-    description: 'menu.data_management.description',
-    withPermissions: false,
+    title: 'menu.dataManagement.title',
+    description: 'menu.dataManagement.description',
     items: [
       {
         title: 'menu.entity.title',
         route: '/Entity',
-        withPermissions: false,
         items: []
       }
     ]
@@ -31,12 +28,10 @@ export const menu = [
     icon: <SecurityOutlinedIcon />,
     title: 'menu.security.title',
     description: 'menu.security.description',
-    withPermissions: false,
     items: [
       {
         title: 'menu.policy.title',
         route: '/Policy',
-        withPermissions: false,
         items: []
       }
     ]
@@ -45,24 +40,27 @@ export const menu = [
     icon: <AdminPanelSettingsOutlinedIcon />,
     title: 'menu.administration.title',
     description: 'menu.administration.description',
-    withPermissions: true,
+    withRole: 'tenant-admin',
+    withSuperAdmin: true,
     items: [
       {
         title: 'menu.tenant.title',
         route: '/Tenant',
-        withPermissions: true,
+        withSuperAdmin: true,
         items: []
       },
       {
         title: 'menu.service.title',
         route: '/Service',
-        withPermissions: true,
+        withRole: 'tenant-admin',
+        withSuperAdmin: true,
         items: []
       },
       {
         title: 'menu.resourcetype.title',
         route: '/ResourceType',
-        withPermissions: true,
+        withRole: 'tenant-admin',
+        withSuperAdmin: true,
         items: []
       }
     ]
