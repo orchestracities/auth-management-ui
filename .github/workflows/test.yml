@@ -58,13 +58,13 @@ jobs:
           key: ${{ runner.os }}-node-v${{ matrix.node }}-${{ hashFiles('**/package.json') }}
           restore-keys: |
             ${{ runner.os }}-node-v${{ matrix.node }}-
-      - name: Setup Docker
-        run: ./start.sh silent
       - name: Add hosts to /etc/hosts
         run: |
             sudo echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
       - name: set-up environment
         run: cp .env.docker .env
+      - name: Setup Docker
+        run: ./start.sh silent
       - name: Run cypress tests
         run: npm run cypress:test
       - name: stop Docker
