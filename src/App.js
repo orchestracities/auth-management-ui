@@ -499,23 +499,27 @@ export default class App extends Component {
                   </IconButton>
                   <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}></Typography>
                   <div>
-                    <TenantSelection
-                      seTenant={this.state.seTenant}
-                      tenantValues={this.state.tenants}
-                      currentValue={this.state.thisTenant}
-                    ></TenantSelection>
+                    {this.props.isAuthenticated && (
+                      <TenantSelection
+                        seTenant={this.state.seTenant}
+                        tenantValues={this.state.tenants}
+                        currentValue={this.state.thisTenant}
+                      ></TenantSelection>
+                    )}
                   </div>
                   <div>
-                    <UserMenu
-                      env={env}
-                      token={this.props.accessToken}
-                      language={{
-                        language: this.state.language,
-                        setLanguage: this.state.setAppLanguage
-                      }}
-                      userData={this.props.idTokenPayload}
-                      lastTenantSelected={this.state.thisTenant}
-                    ></UserMenu>
+                    {this.props.isAuthenticated && (
+                      <UserMenu
+                        env={env}
+                        token={this.props.accessToken}
+                        language={{
+                          language: this.state.language,
+                          setLanguage: this.state.setAppLanguage
+                        }}
+                        userData={this.props.idTokenPayload}
+                        lastTenantSelected={this.state.thisTenant}
+                      ></UserMenu>
+                    )}
                   </div>
                 </CustomToolbar>
               </AppBar>

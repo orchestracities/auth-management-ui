@@ -8,7 +8,11 @@ describe('Test page access', () => {
     cy.wait(50).contains('Administration');
     cy.wait(50).contains('Tenants');
     cy.get('[href="/Tenant"] > .MuiButtonBase-root > .MuiListItemText-root > .MuiTypography-root').click();
-    cy.wait(50).get('[style="opacity: 1; transform: none; transform-origin: 0px 0px 0px; transition: opacity 0ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 0ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"] > .css-1jq2n4l > .MuiCardHeader-root > .MuiCardHeader-content > .MuiCardHeader-title').should('have.text', 'Tenant1');
+    cy.wait(50)
+      .get(
+        '[style="opacity: 1; transform: none; transform-origin: 0px 0px 0px; transition: opacity 0ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 0ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"] > .css-1jq2n4l > .MuiCardHeader-root > .MuiCardHeader-content > .MuiCardHeader-title'
+      )
+      .should('have.text', 'Tenant1');
     /* ==== End Cypress Studio ==== */
   });
   it('User1 cannot access Tenant page', () => {
@@ -25,7 +29,6 @@ describe('Test page access', () => {
 describe('Test Tenants', () => {
   //TODO
 });
-
 
 describe('Test Services', () => {
   //TODO
