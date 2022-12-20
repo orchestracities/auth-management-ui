@@ -16,7 +16,7 @@ wget https://raw.githubusercontent.com/orchestracities/keycloak-scripts/master/r
 cd ..
 
 echo "Increase keycloak session duration to 36000"
-sed -i .backup 's/1800/36000/' keycloak/realm-export.json
+sed 's/1800/36000/' keycloak/realm-export.json > keycloak/realm-export.json
 
 echo "Downloading opa-service config..."
 mkdir -p opa-service
