@@ -26,6 +26,7 @@ import PolicyPage from './pages/policyPage';
 import ResourcePage from './pages/resourcePage';
 import EntityPage from './pages/entityPage';
 import HomePage from './pages/homePage';
+import ErrorPage from './pages/errorPage';
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import UserMenu from './components/shared/userMenu';
@@ -498,23 +499,27 @@ export default class App extends Component {
                   </IconButton>
                   <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}></Typography>
                   <div>
-                    <TenantSelection
-                      seTenant={this.state.seTenant}
-                      tenantValues={this.state.tenants}
-                      currentValue={this.state.thisTenant}
-                    ></TenantSelection>
+                    {this.props.isAuthenticated && (
+                      <TenantSelection
+                        seTenant={this.state.seTenant}
+                        tenantValues={this.state.tenants}
+                        currentValue={this.state.thisTenant}
+                      ></TenantSelection>
+                    )}
                   </div>
                   <div>
-                    <UserMenu
-                      env={env}
-                      token={this.props.accessToken}
-                      language={{
-                        language: this.state.language,
-                        setLanguage: this.state.setAppLanguage
-                      }}
-                      userData={this.props.idTokenPayload}
-                      lastTenantSelected={this.state.thisTenant}
-                    ></UserMenu>
+                    {this.props.isAuthenticated && (
+                      <UserMenu
+                        env={env}
+                        token={this.props.accessToken}
+                        language={{
+                          language: this.state.language,
+                          setLanguage: this.state.setAppLanguage
+                        }}
+                        userData={this.props.idTokenPayload}
+                        lastTenantSelected={this.state.thisTenant}
+                      ></UserMenu>
+                    )}
                   </div>
                 </CustomToolbar>
               </AppBar>
@@ -571,7 +576,7 @@ export default class App extends Component {
                       <Route
                         path="Tenant"
                         element={
-                          <AuthorizedElement tokenDecoded={this.state.tokenData} iSuperAdmin={true}>
+                          <AuthorizedElement tokenDecoded={this.state.tokenData} iSuperAdmin={true} redirect={true}>
                             <TenantPage
                               token={this.props.accessToken}
                               renewTokens={this.props.renewTokens}
@@ -593,6 +598,7 @@ export default class App extends Component {
                             thisTenant={this.state.thisTenant}
                             roleNeeded={'tenant-admin'}
                             iSuperAdmin={true}
+                            redirect={true}
                           >
                             <ServicePage
                               getTenants={this.state.getTenants}
@@ -626,6 +632,7 @@ export default class App extends Component {
                             thisTenant={this.state.thisTenant}
                             roleNeeded={'tenant-admin'}
                             iSuperAdmin={true}
+                            redirect={true}
                           >
                             <ResourcePage
                               token={this.props.accessToken}
@@ -652,6 +659,8 @@ export default class App extends Component {
                           />
                         }
                       />
+                      <Route path="403" element={<ErrorPage env={env} code="403" msg="common.notAuthorized" />} />
+                      <Route path="*" element={<ErrorPage env={env} code="404" msg="common.notFound" />} />
                     </Routes>
                   </Container>
                 </Main>

@@ -62,7 +62,7 @@ services:
   management-ui:
     build:
       context: ./
-      dockerfile: ./Dockerfile
+      dockerfile: ./dockerfile
     volumes:
       - .env.docker:/usr/share/nginx/.env
     image: orchestracities/management-ui
@@ -74,7 +74,7 @@ services:
   configuration-api:
     build:
       context: ./configuration-api
-      dockerfile: ./Dockerfile
+      dockerfile: ./dockerfile
     env_file: .env
     image: orchestracities/configuration-api
     ports:

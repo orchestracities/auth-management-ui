@@ -15,6 +15,9 @@ wget https://github.com/orchestracities/keycloak-scripts/releases/download/v0.0.
 wget https://raw.githubusercontent.com/orchestracities/keycloak-scripts/master/realm-export-empty.json -O realm-export.json
 cd ..
 
+# echo "Increase keycloak session duration to 36000"
+# sed 's/1800/36000/' keycloak/realm-export.json > keycloak/realm-export.json
+
 echo "Downloading opa-service config..."
 mkdir -p opa-service
 cd opa-service
@@ -301,6 +304,48 @@ else
   exit 1
 fi
 
+echo ""
+
+echo "Adding Users"
+echo "==============================================================="
+
+export json=$( curl -sS --location --request POST 'http://localhost:8080/realms/default/protocol/openid-connect/token' \
+--header 'Host: keycloak:8080' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'username=admin@mail.com' \
+--data-urlencode 'password=admin' \
+--data-urlencode 'grant_type=password' \
+--data-urlencode 'client_id=configuration')
+
+export token=$( jq -r ".access_token" <<<"$json" )
+
+export groupsJson=$(curl -sS --location --request GET 'http://localhost:8080/admin/realms/default/groups?briefRepresentation=true' \
+  -H 'Host: keycloak:8080' \
+  -H 'Accept: application/json, text/plain, */*' \
+  -H "Authorization: Bearer $token")
+
+users=( "user1" "user2" )
+
+for u in "${users[@]}"; do
+  export userJson=$( curl -sS --location --request GET "http://localhost:8080/admin/realms/default/users?briefRepresentation=true&first=0&max=11&search=$u" \
+    -H 'Host: keycloak:8080' \
+    -H 'Accept: application/json, text/plain, */*' \
+    -H "Authorization: Bearer $token")
+  export uid=$(jq -c '.[] | .id' <<<"$userJson")
+  export uid=$(sed -e 's/^"//' -e 's/"$//' <<<$uid)
+  for gid in $(jq -c '.[] | .id' <<<"$groupsJson"); do
+      export gid=$(sed -e 's/^"//' -e 's/"$//' <<<$gid)
+      echo "adding user $uid to group $gid"
+      curl -sS --location --request PUT "http://localhost:8080/admin/realms/default/users/$uid/groups/$gid" \
+      -H 'Host: keycloak:8080' \
+      -H 'Accept: application/json, text/plain, */*' \
+      -H "Authorization: Bearer $token"
+  done
+
+done
+
+echo "==============================================================="
+
 if [[ $1 == "dev" ]]; then
     echo ""
     echo "Dev environment deployed"
@@ -325,9 +370,10 @@ else
       docker-compose down -v
       exit -1
     fi
-
     echo ""
     echo "Demo deployed!"
+fi
+if [[ $1 != 'silent' && $1 != 'dev' ]]; then
     echo "Your browser will open at: http://localhost:3000"
     echo "User: admin / Password: admin"
     if [ "$(uname)" == "Darwin" ]; then
