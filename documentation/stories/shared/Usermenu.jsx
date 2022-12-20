@@ -35,6 +35,6 @@ UsrMenu.propTypes = {
 
 UsrMenu.defaultProps = {
   language: { language: 'defaultBrowser', setLanguage: () => {} },
-  userData: {},
+  userData: { name: 'EasterEgg' },
   token: undefined
 };

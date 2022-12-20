@@ -38,6 +38,6 @@ export const Main = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Main.args = {
   language: { language: 'defaultBrowser', setLanguage: () => {} },
-  userData: {},
+  userData: { name: 'EasterEgg' },
   token: ''
 };
