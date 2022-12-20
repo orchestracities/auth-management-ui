@@ -65,6 +65,8 @@ jobs:
         run: cp .env.docker .env
       - name: Setup Docker
         run: ./start.sh silent
+      - name: Install Dependencies
+        run: npm install
       - name: Run cypress tests
         run: npm run cypress:test
       - name: stop Docker
