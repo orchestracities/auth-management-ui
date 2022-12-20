@@ -15,7 +15,7 @@ describe('Test page access', () => {
       .should('have.text', 'Tenant1');
     /* ==== End Cypress Studio ==== */
   });
-  it('User1 cannot access Tenant page', () => {
+  it('User1 cannot access Admin pages', () => {
     cy.login('user1@mail.com', 'user1');
     cy.waitForReact(2000, '#root');
     cy.visit('http://localhost:3000');
@@ -23,6 +23,17 @@ describe('Test page access', () => {
     cy.wait(500).contains('Data Management');
     cy.visit('http://localhost:3000/Tenant');
     cy.wait(500).contains('403');
+    cy.visit('http://localhost:3000/Service');
+    cy.wait(500).contains('403');
+    cy.visit('http://localhost:3000/ResourceType');
+    cy.wait(500).contains('403');
+  });
+  it('Not existing pages causes 404', () => {
+    cy.login('admin@mail.com', 'admin');
+    cy.waitForReact(2000, '#root');
+    cy.visit('http://localhost:3000/myPage');
+    cy.wait(500).contains('404');
+    /* ==== End Cypress Studio ==== */
   });
 });
 
