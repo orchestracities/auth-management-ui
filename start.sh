@@ -373,7 +373,7 @@ else
     echo ""
     echo "Demo deployed!"
 fi
-if [[ $1 != 'silent' ]]; then
+if [[ $1 != 'silent' && $1 != 'dev' ]]; then
     echo "Your browser will open at: http://localhost:3000"
     echo "User: admin / Password: admin"
     if [ "$(uname)" == "Darwin" ]; then
