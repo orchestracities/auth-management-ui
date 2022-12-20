@@ -40,7 +40,7 @@ jobs:
       - name: stop Docker
         run: ./stop.sh dev
   cypress:
-    name: cypress tests - Node.js v${{ matrix.node }}'
+    name: 'cypress tests - Node.js v${{ matrix.node }}'
     runs-on: ubuntu-latest
     strategy:
       matrix:
