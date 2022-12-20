@@ -8,7 +8,7 @@ name: tests
       - reopened
 jobs:
   graphql:
-    name: 'Node.js v${{ matrix.node }}'
+    name: 'graphql tests - Node.js v${{ matrix.node }}'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -40,7 +40,7 @@ jobs:
       - name: stop Docker
         run: ./stop.sh dev
   cypress:
-    name: 'Node.js v${{ matrix.node }}'
+    name: cypress tests - Node.js v${{ matrix.node }}'
     runs-on: ubuntu-latest
     strategy:
       matrix:
