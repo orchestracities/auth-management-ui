@@ -44,7 +44,7 @@ import { useTranslation } from 'react-i18next';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 
 import { menu } from './menu';
-import { hasChildren } from './utils';
+import { hasChildren, openInNewTab } from './utils';
 const env = getEnv();
 
 const drawerWidth = 240;
@@ -185,6 +185,16 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
   justifyContent: 'flex-end'
+}));
+
+const DrawerFooter = styled('div')(({ theme }) => ({
+  display: 'flex',
+  position: 'fixed',
+  bottom: 0,
+  height: '1.8rem',
+  alignItems: 'center',
+  padding: theme.spacing(0, 1),
+  justifyContent: 'center'
 }));
 
 export default class App extends Component {
@@ -554,6 +564,14 @@ export default class App extends Component {
                   />
                 ))}
                 <Divider />
+                <DrawerFooter>
+                  <Typography
+                    sx={{ fontSize: '0.6rem' }}
+                    onClick={() => openInNewTab('https://www.martel-innovate.com')}
+                  >
+                    &#169; Orchestra Cities - Powered by Martel Innovate
+                  </Typography>
+                </DrawerFooter>
               </SwipeableDrawer>
               {this.props.isAuthenticated ? (
                 <Main open={this.state.open} sx={{ mt: 10 }}>

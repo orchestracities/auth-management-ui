@@ -28,6 +28,7 @@ import { setContext } from '@apollo/client/link/context';
 import useNotification from './messages/alerts';
 import * as log from 'loglevel';
 import { useOidc } from '@axa-fr/react-oidc';
+import { openInNewTab } from '../../utils';
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -66,10 +67,6 @@ export default function UserMenu({ language, userData, token, lastTenantSelected
 
   const settingsClose = () => {
     setOpenSettings(false);
-  };
-
-  const openInNewTab = (url) => {
-    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   React.useEffect(() => {

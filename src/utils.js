@@ -15,3 +15,7 @@ export function hasChildren(item) {
 
   return true;
 }
+
+export function openInNewTab(url) {
+  window.open(url, '_blank', 'noopener,noreferrer');
+}
