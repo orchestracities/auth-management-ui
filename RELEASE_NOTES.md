@@ -4,7 +4,6 @@
 
 ### New features
 
-
 ### Bug fixes
 
 ### Documentation
