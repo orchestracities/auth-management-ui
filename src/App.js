@@ -529,6 +529,7 @@ export default class App extends Component {
               <SwipeableDrawer
                 sx={{
                   flexShrink: 0,
+                  zIndex: 500000,
                   '& .MuiDrawer-paper': {
                     width: drawerWidth,
                     boxSizing: 'border-box'
