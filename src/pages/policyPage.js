@@ -67,7 +67,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
     let datAccumulator = [];
     for (const service of servicesResponse) {
       axios
-        .get((typeof env !== 'undefined' ? env.ANUBIS_API_URL : '') + 'v1/policies', {
+        .get((typeof env !== 'undefined' ? env.ANUBIS_API_URL : '') + 'v1/policies' + '/?limit=-1', {
           headers: {
             'fiware-service': GeTenantData('name'),
             'fiware-servicepath': service.path,
@@ -94,7 +94,6 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
   const [policiesFiltered, setPoliciesFiltered] = React.useState([]);
   const getPoliciesFiltered = (servicesResponse) => {
     const queryParameters =
-      '/?' +
       (mode !== null ? '&mode=' + mode.iri : '') +
       (resource !== null ? '&resource=' + resource.access_to : '') +
       (agent !== null ? '&agent=' + agent.iri : '') +
@@ -103,7 +102,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
     let datAccumulator = [];
     for (const service of servicesResponse) {
       axios
-        .get((typeof env !== 'undefined' ? env.ANUBIS_API_URL : '') + 'v1/policies' + queryParameters, {
+        .get((typeof env !== 'undefined' ? env.ANUBIS_API_URL : '') + 'v1/policies' + '/?limit=-1' + queryParameters, {
           headers: {
             'fiware-service': GeTenantData('name'),
             'fiware-servicepath': policyFilter !== null ? policyFilter.fiware_service_path : service.path,
