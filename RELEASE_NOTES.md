@@ -8,6 +8,7 @@
 
 - Fixing the counter on the cards (#141)
 - Fixing the Tenants not displayed if the initial config is not loaded (#138)
+- Fixing documentation on filters (#131)
 
 ### Documentation
 
