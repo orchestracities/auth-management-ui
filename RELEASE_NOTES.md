@@ -6,6 +6,8 @@
 
 ### Bug fixes
 
+- Fixing the counter on the cards
+
 ### Documentation
 
 ### Continuous Integration

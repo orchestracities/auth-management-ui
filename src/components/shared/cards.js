@@ -100,6 +100,7 @@ export default function DashboardCard({ pageType, data, getData, seTenant, color
           env={env}
           setOpen={setSubpathOpen}
           tenantName_id={tenantName_id}
+          key={'serviceCounter' + tenantName_id}
           status={subpathOpen}
           data={layout.props.action !== 'Sub-service-creation' ? data.service_paths : allPaths}
           masterTitle={layout.props.action !== 'Sub-service-creation' ? data.name : data.path}
@@ -111,6 +112,7 @@ export default function DashboardCard({ pageType, data, getData, seTenant, color
         ) : (
           <PoliciesChildren
             env={env}
+            key={'policiesCounter' + data.id}
             color={avatarColor}
             tenantId={data.id}
             tenantName={data.name}
