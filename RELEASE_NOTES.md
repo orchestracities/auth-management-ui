@@ -6,7 +6,8 @@
 
 ### Bug fixes
 
-- Fixing the counter on the cards
+- Fixing the counter on the cards (#141)
+- Fixing the Tenants not displayed if the initial config is not loaded (#138)
 
 ### Documentation
 
