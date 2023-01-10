@@ -29,6 +29,7 @@ const StyledMenu = styled((props) => (
         ? 950
         : document.getElementById('filterContainer').clientWidth,
     top: '7rem !important',
+    background: '#fff0f000',
     color: theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
     boxShadow: 'none !important',
     '& .MuiMenu-list': {
