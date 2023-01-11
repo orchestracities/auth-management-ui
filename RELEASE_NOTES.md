@@ -9,7 +9,7 @@
 - Fixing the counter on the cards (#141)
 - Fixing the Tenants not displayed if the initial config is not loaded (#138)
 - Fixing documentation on filters (#131)
-- Workaround on the policy 100 elements limitation (waiting for a proper pagination on APIs)
+- Workaround on 100 policies limitation (waiting for a pagination on APIs)
 - Fixing filter position and z-index
 
 ### Documentation
