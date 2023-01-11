@@ -18,7 +18,6 @@ const Config = connection.model('TenantConfig', TenantConfig);
 
 async function get(data) {
   const tenants = await Config.find({ name: { $in: data } });
-  console.log(tenants);
   if (tenants.length >= data.length) {
     return await tenants;
   } else {

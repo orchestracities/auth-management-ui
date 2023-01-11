@@ -66,6 +66,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
   const getPolicies = (servicesResponse) => {
     let datAccumulator = [];
     for (const service of servicesResponse) {
+      //for now /?limit=-1 is a workarount to get more than 100 entries before a proper pagination implementation on Anubis APIs
       axios
         .get((typeof env !== 'undefined' ? env.ANUBIS_API_URL : '') + 'v1/policies' + '/?limit=-1', {
           headers: {
@@ -101,6 +102,8 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
       (agentType !== null ? '&agent_type=' + agentType.iri : '');
     let datAccumulator = [];
     for (const service of servicesResponse) {
+      //for now /?limit=-1 is a workarount to get more than 100 entries before a proper pagination implementation on Anubis APIs
+
       axios
         .get((typeof env !== 'undefined' ? env.ANUBIS_API_URL : '') + 'v1/policies' + '/?limit=-1' + queryParameters, {
           headers: {
