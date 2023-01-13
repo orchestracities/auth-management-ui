@@ -13,6 +13,7 @@ import EntityFilters from '../components/entity/entityFilter';
 import EntityTable from '../components/entity/entityTable';
 import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
+import EntityForm from '../components/entity/entityForm';
 import dayjs from 'dayjs';
 
 export default function EntityPage({ token, graphqlErrors, env, thisTenant, tenantValues, language }) {
@@ -38,7 +39,7 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
   const [createOpen, setCreateOpen] = React.useState(false);
   const [entities, setEntities] = React.useState([]);
   const mainTitle = <Trans>entity.page.title</Trans>;
-
+  const [entityEndpoint, setEntityEndpoint] = React.useState(null);
   //FILTER PART
   const [servicePath, setServicePath] = React.useState(null);
   const [type, setType] = React.useState(null);
@@ -131,6 +132,7 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
   //types
   const [types, setTypes] = React.useState([]);
   const getTypesFromResource = (typeUrl) => {
+    setEntityEndpoint(typeUrl);
     const headers = { 'fiware-Service': GeTenantData('name') };
     axios
       .get(typeUrl, {
@@ -190,7 +192,20 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
     <Box>
       <MainTitle mainTitle={mainTitle}></MainTitle>
       <AddButton
-        pageType={<div></div>}
+        pageType={
+          <EntityForm
+            title={'Title'}
+            close={setCreateOpen}
+            action={'create'}
+            token={token}
+            env={env}
+            GeTenantData={GeTenantData}
+            getTheEntities={getEntityURL}
+            entityEndpoint={entityEndpoint}
+            types={types}
+            services={services}
+          />
+        }
         setOpen={setCreateOpen}
         status={createOpen}
         graphqlErrors={graphqlErrors}
@@ -211,7 +226,17 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
         </Grid>
 
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-          <EntityTable token={token} env={env} data={entities} language={language}></EntityTable>
+          <EntityTable
+            token={token}
+            env={env}
+            data={entities}
+            language={language}
+            GeTenantData={GeTenantData}
+            getTheEntities={getEntityURL}
+            entityEndpoint={entityEndpoint}
+            types={types}
+            services={services}
+          ></EntityTable>
         </Grid>
       </Grid>
     </Box>

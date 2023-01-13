@@ -99,7 +99,15 @@
     "filters": {
       "path": "service path{{name}}",
       "type": "Type<0>{{name}}</0>"
-    }
+    },
+    "form":{
+      "servicePath":"Service path",
+      "type":"Type"
+      },
+       "titles": {
+        "new": "New entity",
+        "edit": "Modify entity: <0>{{name}}</0>"
+      }
   },
   "menu": {
     "home": {

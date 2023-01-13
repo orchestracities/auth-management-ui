@@ -99,6 +99,14 @@
     "filters": {
       "path": "Percorso servizi{{name}}",
       "type": "Tipo<0>{{name}}</0>"
+    },
+    "form":{
+    "servicePath":"Percorsi dei servizi",
+    "type":"Tipologia"
+    },
+     "titles": {
+      "new": "Nuova entità",
+      "edit": "Modifica entità: <0>{{name}}</0>"
     }
   },
   "menu": {
