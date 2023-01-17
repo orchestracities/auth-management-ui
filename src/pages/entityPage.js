@@ -132,7 +132,7 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
   //types
   const [types, setTypes] = React.useState([]);
   const getTypesFromResource = (typeUrl) => {
-    setEntityEndpoint(typeUrl);
+    
     const headers = { 'fiware-Service': GeTenantData('name') };
     axios
       .get(typeUrl, {
@@ -175,6 +175,7 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
       .then((response) => {
         setEntities(response.data);
         getServices();
+        setEntityEndpoint(entityUrl);
       })
       .catch((e) => {
         sendNotification({ msg: e.message, variant: 'error' });
