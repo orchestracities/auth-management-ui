@@ -20,7 +20,7 @@ const Resource = connection.model('ResourceType', ResourceType);
 
 async function getResource(data) {
   const resourceTypes = await Resource.find({ tenantName: data.tenantName });
-  return await resourceTypes;
+  return resourceTypes;
 }
 
 async function deleteResource(data) {
