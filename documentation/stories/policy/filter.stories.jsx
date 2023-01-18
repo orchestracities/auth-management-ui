@@ -127,5 +127,5 @@ AllFilters.args = {
 
     { iri: 'acl:agentClass', name: 'class' }
   ],
-  services: []
+  services: [{ path: '/' }, { path: '/another' }]
 };
