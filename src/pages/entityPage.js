@@ -132,7 +132,6 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
   //types
   const [types, setTypes] = React.useState([]);
   const getTypesFromResource = (typeUrl) => {
-    
     const headers = { 'fiware-Service': GeTenantData('name') };
     axios
       .get(typeUrl, {
@@ -183,9 +182,16 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
   };
 
   React.useEffect(() => {
+    setEntities([]);
     thisTenant !== null ? getEntityURL() : '';
     thisTenant !== null ? getTypeURL() : '';
   }, [thisTenant, servicePath, type, date]);
+
+  React.useEffect(() => {
+    setServicePath(null);
+    setType(null);
+    setDate(null);
+  }, [thisTenant]);
 
   const theme = useTheme();
   const smallDevice = useMediaQuery(theme.breakpoints.down('sm'));

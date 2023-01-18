@@ -51,29 +51,28 @@ const CustomSwitch = styled(Switch)(({ theme }) => ({
       top: '50%',
       transform: 'translateY(-50%)',
       width: 16,
-      height: 16,
+      height: 16
     },
     '&:before': {
       backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
-        theme.palette.getContrastText(theme.palette.primary.main),
+        theme.palette.getContrastText(theme.palette.primary.main)
       )}" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>')`,
-      left: 12,
+      left: 12
     },
     '&:after': {
       backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
-        theme.palette.getContrastText(theme.palette.primary.main),
+        theme.palette.getContrastText(theme.palette.primary.main)
       )}" d="M19,13H5V11H19V13Z" /></svg>')`,
-      right: 12,
-    },
+      right: 12
+    }
   },
   '& .MuiSwitch-thumb': {
     boxShadow: 'none',
     width: 16,
     height: 16,
-    margin: 2,
-  },
+    margin: 2
+  }
 }));
-
 
 export default function EntityForm({
   title,
@@ -122,7 +121,7 @@ export default function EntityForm({
   const handleClose = () => {
     close(false);
   };
-  const rowTypes = ["Number", "DateTime", "Boolean", "Text"]
+  const rowTypes = ['Number', 'DateTime', 'Boolean', 'Text'];
   const [service, setService] = React.useState('');
   const [type, setType] = React.useState('');
   const [name, setName] = React.useState('');
@@ -148,14 +147,14 @@ export default function EntityForm({
   React.useEffect(() => {
     createAttributesMap();
   }, []);
-const addEntities=()=>{
-  setAttributesMap([...[{ name: '', type: '', value: '' }], ...attributesMap]);
-}
-const removeEntities=(index)=>{
-  const newArray = attributesMap;
+  const addEntities = () => {
+    setAttributesMap([...[{ name: '', type: 'Number', value: '' }], ...attributesMap]);
+  };
+  const removeEntities = (index) => {
+    const newArray = attributesMap;
     newArray.splice(index, 1);
     setAttributesMap([...[], ...newArray]);
-}
+  };
   const handleAttributeName = (value, index) => {
     const newArray = attributesMap;
     newArray[Number(index)].name = value;
@@ -171,100 +170,118 @@ const removeEntities=(index)=>{
     e.stopPropagation();
   };
   const attributeTypeForm = (attribute, index) => {
-    switch (attribute.type !== "" && typeof attribute.type !== "undefined" && attribute.type !== null) {
+    switch (attribute.type !== '' && typeof attribute.type !== 'undefined' && attribute.type !== null) {
       case attribute.type === 'Number':
-        return (<Grid item xs={12}>
-          <TextField
-            id={'Number' + index}
-            label="Number"
-            variant="outlined"
-            key={'Number' + index}
-            value={attribute.value}
-            type="number"
-            onChange={(event) => {
-              const newArray = attributesMap;
-              newArray[Number(index)].value = event.target.value;
-              setAttributesMap([...[], ...newArray]);
-            }}
-            sx={{
-              width: '100%'
-            }}
-          />
-        </Grid>);
-      case attribute.type === 'DateTime':
-        return (<Grid item xs={12}>
-          <Grid container direction="row" justifyContent="center" alignItems="center" spacing={0}>
-            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={Intl.NumberFormat().resolvedOptions().locale}>
-
-              <MobileDatePicker
-                id={'dateInput' + index}
-                key={'dateInput' + index}
-                showToolbar={false}
-                value={(typeof attribute.value !== "object") ? new Date() : attribute.value}
-                onChange={(newValue) => {
-                  const newArray = attributesMap;
-                  newArray[Number(index)].value = Number(newValue);
-                  setAttributesMap([...[], ...newArray]);
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="start" onClick={handlePropagation}>
-                          <ClearIcon
-                            onClick={() => {
-                              const newArray = attributesMap;
-                              newArray[Number(index)].value = null;
-                              setAttributesMap([...[], ...newArray]);
-                            }}
-                            sx={{ '&:hover': { cursor: 'pointer' } }}
-                          />
-                        </InputAdornment>
-                      )
-                    }}
-                  />
-                )}
-                sx={{ width: '100%' }}
-              />
-            </LocalizationProvider>
-          </Grid>
-        </Grid>);
-      case attribute.type === 'Boolean':
-        return (<Grid item xs={12}>
-          <Grid container direction="row" justifyContent="center" alignItems="center" spacing={0}>
-            <FormControlLabel
-              key={"switch" + index}
-              id={"switch" + index}
-              control={<CustomSwitch defaultChecked onChange={(event) => {
+        return (
+          <Grid item xs={12}>
+            <TextField
+              id={'Number' + index}
+              label="Number"
+              variant="outlined"
+              key={'Number' + index}
+              value={attribute.value}
+              type="number"
+              onChange={(event) => {
                 const newArray = attributesMap;
-                newArray[Number(index)].value = event.target.checked;
+                newArray[Number(index)].value = Number(event.target.value);
                 setAttributesMap([...[], ...newArray]);
-              }} />}
+              }}
+              error={errorCases(attribute.value)}
+              sx={{
+                width: '100%'
+              }}
             />
           </Grid>
-        </Grid>);
+        );
+      case attribute.type === 'DateTime':
+        return (
+          <Grid item xs={12}>
+            <Grid container direction="row" justifyContent="center" alignItems="center" spacing={0}>
+              <LocalizationProvider
+                dateAdapter={AdapterDayjs}
+                adapterLocale={Intl.NumberFormat().resolvedOptions().locale}
+              >
+                <MobileDatePicker
+                  id={'dateInput' + index}
+                  key={'dateInput' + index}
+                  showToolbar={false}
+                  value={typeof attribute.value !== 'object' ? new Date() : attribute.value}
+                  onChange={(newValue) => {
+                    const newArray = attributesMap;
+                    newArray[Number(index)].value = Number(newValue);
+                    setAttributesMap([...[], ...newArray]);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="start" onClick={handlePropagation}>
+                            <ClearIcon
+                              onClick={() => {
+                                const newArray = attributesMap;
+                                newArray[Number(index)].value = null;
+                                setAttributesMap([...[], ...newArray]);
+                              }}
+                              sx={{ '&:hover': { cursor: 'pointer' } }}
+                            />
+                          </InputAdornment>
+                        )
+                      }}
+                      error={errorCases(attribute.value)}
+                    />
+                  )}
+                  sx={{ width: '100%' }}
+                />
+              </LocalizationProvider>
+            </Grid>
+          </Grid>
+        );
+      case attribute.type === 'Boolean':
+        return (
+          <Grid item xs={12}>
+            <Grid container direction="row" justifyContent="center" alignItems="center" spacing={0}>
+              <FormControlLabel
+                key={'switch' + index}
+                id={'switch' + index}
+                control={
+                  <CustomSwitch
+                    defaultChecked
+                    onChange={(event) => {
+                      const newArray = attributesMap;
+                      newArray[Number(index)].value = event.target.checked;
+                      setAttributesMap([...[], ...newArray]);
+                    }}
+                  />
+                }
+              />
+            </Grid>
+          </Grid>
+        );
       case attribute.type === 'Text':
-        return (<Grid item xs={12}>
-          <TextField
-            id="Text"
-            label="Text"
-            variant="outlined"
-            value={attribute.value}
-            onChange={(event) => {
-              const newArray = attributesMap;
-              newArray[Number(index)].value = event.target.value;
-              setAttributesMap([...[], ...newArray]);
-            }}
-            sx={{
-              width: '100%'
-            }}
-          />
-        </Grid>);
+        return (
+          <Grid item xs={12}>
+            <TextField
+              id="Text"
+              label="Text"
+              variant="outlined"
+              value={attribute.value}
+              onChange={(event) => {
+                const newArray = attributesMap;
+                newArray[Number(index)].value = event.target.value;
+                setAttributesMap([...[], ...newArray]);
+              }}
+              sx={{
+                width: '100%'
+              }}
+              error={errorCases(attribute.value)}
+            />
+          </Grid>
+        );
       default:
         return <></>;
     }
-  }
+  };
   const handleType = (event) => {
     setType(event.target.value);
   };
@@ -273,83 +290,108 @@ const removeEntities=(index)=>{
     setService(event.target.value);
   };
 
-  const nameCases = () => {
-    switch (true) {
-      case name === '':
-        return 'The name is mandatory';
-      case name.indexOf(' ') >= 0:
-        return 'The name should be without spaces';
-      default:
-        return false;
-    }
-  };
+  const dataRicreator = () => {
+    const newArray = attributesMap;
+    let config = {
 
-  const linkCases = () => {
-    switch (true) {
-      case endpoint === '':
-        return 'The url is mandatory';
-      case endpoint.indexOf(' ') >= 0:
-        return 'The url should be without spaces';
-      case !isURL(endpoint, { host_whitelist: ['localhost'] }):
-        return 'The url should be valid';
-      default:
-        return false;
+    };
+    let valid = [];
+    for (let i = 0; i < attributesMap.length; i++) {
+      if (
+        !(
+          newArray[i].name === '' ||
+          newArray[i].type === '' ||
+          newArray[i].value === '' ||
+          newArray[i].value === null ||
+          typeof newArray[i].value === 'undefined'
+        )
+      ) {
+        config[newArray[i].name] = { type: newArray[i].type, value: newArray[i].value };
+        valid.push(newArray[i]);
+      }
     }
+    setAttributesMap([...[], ...valid]);
+    return config;
   };
 
   const handleSave = () => {
-    if (true) {
-      const headers =
-        service !== ''
-          ? {
+    const headers =
+      service !== ''
+        ? {
             'fiware-Service': GeTenantData('name'),
             //'Authorization': `Bearer ${token}`,
-            'fiware-ServicePath': service[service.length - 1] === '/' ? service + '#' : service + '/#'
+            'fiware-ServicePath': service
           }
-          : {
+        : {
             'fiware-Service': GeTenantData('name')
             //'Authorization': `Bearer ${token}`,
           };
-      switch (action) {
-        case 'create':
-          axios
-            .post(
-              entityEndpoint,
-              {
-                id: 'urn:ngsi-ld:AirQualityObserved:Tenant2',
-                type: 'AirQualityObserved',
-                temperature: {
-                  type: 'Number',
-                  value: 12.2,
-                  metadata: {}
-                }
-              },
-              {
-                headers: headers
-              }
-            )
-            .then((response) => {
-              console.log(response);
-            })
-            .catch((e) => {
-              sendNotification({ msg: e.message, variant: 'error' });
+    switch (action) {
+      case 'create':
+        axios
+          .post(
+            entityEndpoint,
+            {
+              id: 'urn:ngsi-ld:' + type + ':' + GeTenantData('name'),
+              type: type
+            },
+            {
+              headers: headers
+            }
+          )
+          .then(() => {
+            getTheEntities();
+            close(false);
+            sendNotification({
+              msg: (
+                <Trans
+                  i18nKey="common.messages.sucessCreate"
+                  values={{
+                    data: 'Entity'
+                  }}
+                />
+              ),
+              variant: 'success'
             });
-          break;
-        case 'modify':
-          break;
-        default:
-          break;
-      }
+          })
+          .catch((e) => {
+            sendNotification({ msg: e.message, variant: 'error' });
+            setError(e);
+          });
+        break;
+      case 'modify':
+        axios
+          .patch(entityEndpoint.split('?')[0]+"/"+data.id+"/attrs", dataRicreator(), {
+            headers: headers
+          })
+          .then(() => {
+            getTheEntities();
+            close(false);
+            sendNotification({
+              msg: (
+                <Trans
+                  i18nKey="common.messages.sucessUpdate"
+                  values={{
+                    data: data.id
+                  }}
+                />
+              ),
+              variant: 'success'
+            });
+          })
+          .catch((e) => {
+            sendNotification({ msg: e.message, variant: 'error' });
+            setError(e);
+          });
+        break;
+      default:
+        break;
     }
   };
   const errorCases = (value) => {
     if (error !== null) {
       switch (true) {
-        case value === '' || typeof value === 'undefined' || value === null:
-          return true;
-        case value.length === 0:
-          return true;
-        case value === 'specific' && (agentsMap.length === 0 || agentsMap[0].type === null || agentsMap[0].name === ''):
+        case value === '':
           return true;
         default:
           return false;
@@ -361,12 +403,8 @@ const removeEntities=(index)=>{
   const errorText = (value) => {
     if (error !== null) {
       switch (true) {
-        case value === '' || typeof value === 'undefined' || value === null:
+        case value === '':
           return <Trans>common.errors.mandatory</Trans>;
-        case value.length === 0:
-          return <Trans>common.errors.mandatory</Trans>;
-        case value === 'specific' && (agentsMap.length === 0 || agentsMap[0].type === null || agentsMap[0].name === ''):
-          return <Trans>common.errors.userMap</Trans>;
         default:
           return false;
       }
@@ -407,11 +445,10 @@ const removeEntities=(index)=>{
               </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth>
-                  <InputLabel id={'service'} error={errorCases(service.path)}>
+                  <InputLabel id={'service'} error={errorCases(service)}>
                     <Trans>entity.form.servicePath</Trans>
                   </InputLabel>
                   <Select
-                    color="secondary"
                     labelId={'service'}
                     id={'service'}
                     key={'service'}
@@ -419,8 +456,8 @@ const removeEntities=(index)=>{
                     variant="outlined"
                     onChange={handleService}
                     label={<Trans>entity.form.servicePath</Trans>}
-                    input={<OutlinedInput label="Service" />}
-                    error={errorCases(service.path)}
+                    input={<OutlinedInput  label={<Trans>entity.form.servicePath</Trans>} />}
+                    error={errorCases(service)}
                   >
                     {services.map((service) => (
                       <MenuItem key={service.path} value={service.path}>
@@ -428,16 +465,16 @@ const removeEntities=(index)=>{
                       </MenuItem>
                     ))}
                   </Select>
-                  <FormHelperText error={errorCases(service.path)}>{errorText(service.path)}</FormHelperText>
+                  <FormHelperText error={errorCases(service)}>{errorText(service)}</FormHelperText>
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth>
-                  <InputLabel id={'types'} error={errorCases(type.type)}>
+                  <InputLabel id={'types'} error={errorCases(type)}>
                     <Trans>entity.form.type</Trans>
                   </InputLabel>
                   <Select
-                    color="secondary"
+                    color="primary"
                     labelId={'types'}
                     id={'types'}
                     key={'types'}
@@ -445,8 +482,8 @@ const removeEntities=(index)=>{
                     variant="outlined"
                     onChange={handleType}
                     label={<Trans>entity.form.type</Trans>}
-                    input={<OutlinedInput label="Types" />}
-                    error={errorCases(type.type)}
+                    input={<OutlinedInput label={<Trans>entity.form.type</Trans>} />}
+                    error={errorCases(type)}
                   >
                     {types.map((thisType) => (
                       <MenuItem key={thisType.type} value={thisType.type}>
@@ -454,14 +491,14 @@ const removeEntities=(index)=>{
                       </MenuItem>
                     ))}
                   </Select>
-                  <FormHelperText error={errorCases(type.type)}>{errorText(type.type)}</FormHelperText>
+                  <FormHelperText error={errorCases(type)}>{errorText(type)}</FormHelperText>
                 </FormControl>
               </Grid>
             </>
           ) : (
             <>
               {attributesMap.map((attribute, i) => (
-                  <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+                <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
                   <Grid container spacing={12} direction="row" justifyContent="center" alignItems="center">
                     <Grid item xs={10} sm={10} md={10} lg={10} xl={10}>
                       <Grid container spacing={2}>
@@ -478,6 +515,7 @@ const removeEntities=(index)=>{
                             sx={{
                               width: '100%'
                             }}
+                            error={errorCases(attribute.name)}
                           />
                         </Grid>
                         <Grid item xs={12}>
@@ -512,12 +550,7 @@ const removeEntities=(index)=>{
                       </Grid>
                     </Grid>
                     <Grid item xs={1} sm={1} md={1} lg={1} xl={1}>
-                      <Grid
-                        container
-                        direction="row"
-                        justifyContent="center"
-                        alignItems="center"
-                      >
+                      <Grid container direction="row" justifyContent="center" alignItems="center">
                         <Tooltip title={<Trans>common.deleteTooltip</Trans>}>
                           <IconButton
                             aria-label="delete"
@@ -532,22 +565,22 @@ const removeEntities=(index)=>{
                       </Grid>
                     </Grid>
                   </Grid>
-                   </Grid>
+                </Grid>
               ))}
               <Grid item xs={12}>
-                  {' '}
-                  <Grid container direction="row" justifyContent="center" alignItems="center" spacing={0}>
-                    <Button
-                      variant="outlined"
-                      startIcon={<AddIcon />}
-                      onClick={() => {
-                        addEntities();
-                      }}
-                    >
-                      New Entity
-                    </Button>
-                  </Grid>
+                {' '}
+                <Grid container direction="row" justifyContent="center" alignItems="center" spacing={1}>
+                  <Button
+                    variant="outlined"
+                    startIcon={<AddIcon />}
+                    onClick={() => {
+                      addEntities();
+                    }}
+                  >
+                    New Attribute
+                  </Button>
                 </Grid>
+              </Grid>
             </>
           )}
         </Grid>
