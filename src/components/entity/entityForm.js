@@ -123,9 +123,8 @@ export default function EntityForm({
   };
   const rowTypes = ['Number', 'DateTime', 'Boolean', 'Text'];
   const [service, setService] = React.useState('');
+  const [id, setId] = React.useState('');
   const [type, setType] = React.useState('');
-  const [name, setName] = React.useState('');
-  const [endpoint, setEndpoint] = React.useState('');
   const [attributesMap, setAttributesMap] = React.useState([]);
   const createAttributesMap = () => {
     if (action !== 'create') {
@@ -299,7 +298,7 @@ export default function EntityForm({
     for (let i = 0; i < attributesMap.length; i++) {
       if (
         !(
-          newArray[i].name === '' ||
+          attributeNameHelper(newArray[i].name) !==newArray[i].name.length + "/" + 245||
           newArray[i].type === '' ||
           newArray[i].value === '' ||
           newArray[i].value === null ||
@@ -318,50 +317,52 @@ export default function EntityForm({
     const headers =
       service !== ''
         ? {
-            'fiware-Service': GeTenantData('name'),
-            //'Authorization': `Bearer ${token}`,
-            'fiware-ServicePath': service
-          }
+          'fiware-Service': GeTenantData('name'),
+          //'Authorization': `Bearer ${token}`,
+          'fiware-ServicePath': service
+        }
         : {
-            'fiware-Service': GeTenantData('name')
-            //'Authorization': `Bearer ${token}`,
-          };
+          'fiware-Service': GeTenantData('name')
+          //'Authorization': `Bearer ${token}`,
+        };
     switch (action) {
       case 'create':
-        axios
-          .post(
-            entityEndpoint,
-            {
-              id: 'urn:ngsi-ld:' + type + ':' + GeTenantData('name'),
-              type: type
-            },
-            {
-              headers: headers
-            }
-          )
-          .then(() => {
-            getTheEntities();
-            close(false);
-            sendNotification({
-              msg: (
-                <Trans
-                  i18nKey="common.messages.sucessCreate"
-                  values={{
-                    data: 'Entity'
-                  }}
-                />
-              ),
-              variant: 'success'
+        if ((!error) && (typeof [service,id,type].find(element => element === '') === undefined)) {
+          axios
+            .post(
+              entityEndpoint,
+              {
+                id: 'urn:ngsi-ld:' + id,
+                type: type
+              },
+              {
+                headers: headers
+              }
+            )
+            .then(() => {
+              getTheEntities();
+              close(false);
+              sendNotification({
+                msg: (
+                  <Trans
+                    i18nKey="common.messages.sucessCreate"
+                    values={{
+                      data: 'Entity'
+                    }}
+                  />
+                ),
+                variant: 'success'
+              });
+            })
+            .catch((e) => {
+              sendNotification({ msg: e.message, variant: 'error' });
+              setError(e);
             });
-          })
-          .catch((e) => {
-            sendNotification({ msg: e.message, variant: 'error' });
-            setError(e);
-          });
+        }
         break;
       case 'modify':
         axios
-          .patch(entityEndpoint.split('?')[0]+"/"+data.id+"/attrs", dataRicreator(), {
+          .patch(entityEndpoint.split('?')[0] + "/" + data.id + "/attrs", dataRicreator(), {
             headers: headers
           })
           .then(() => {
@@ -412,6 +413,39 @@ export default function EntityForm({
       return false;
     }
   };
+
+  const idHelper = () => {
+    switch (true) {
+      case id === '':
+        return <Trans>common.errors.mandatory</Trans>;
+      case id.length > 245:
+        setError(true);
+        return "String too long"
+      case !/^[a-zA-Z0-9._-]+$/.test(id):
+        return "The string contains charts that are not allowed"
+      case id.includes("urn:nsgi-ld:"):
+        setError(true);
+        return "urn:nsgi-ld: has already been included"
+      default:
+        return id.length + "/" + 256
+    }
+  }
+
+  const attributeNameHelper = (value) => {
+    switch (true) {
+      case value === '':
+        return <Trans>common.errors.mandatory</Trans>;
+      case !isNaN(Number(value[0])):
+        return "FirstChar should not be a Number";
+      case value.length > 245:
+        setError(true);
+        return "String too long"
+      case !/^[a-zA-Z0-9.-]+$/.test(value):
+        return "The string contains charts that are not allowed"
+      default:
+        return value.length + "/" + 256
+    }
+  }
   return (
     <div>
       <CustomDialogTitle>
@@ -436,8 +470,16 @@ export default function EntityForm({
                   id="ID"
                   label="ID"
                   variant="outlined"
-                  value={'urn:ngsi-ld:' + type + ':' + GeTenantData('name')}
-                  disabled
+                  value={id}
+                  onChange={(event) => {
+                    setId(event.target.value);
+                  }}
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">urn:nsgi-ld:</InputAdornment>,
+                  }
+                  }
+                  helperText={idHelper()}
+                  error={errorCases(id) || (id.length > 245 || !/^[a-zA-Z0-9._-]+$/.test(id))}
                   sx={{
                     width: '100%'
                   }}
@@ -456,7 +498,7 @@ export default function EntityForm({
                     variant="outlined"
                     onChange={handleService}
                     label={<Trans>entity.form.servicePath</Trans>}
-                    input={<OutlinedInput  label={<Trans>entity.form.servicePath</Trans>} />}
+                    input={<OutlinedInput label={<Trans>entity.form.servicePath</Trans>} />}
                     error={errorCases(service)}
                   >
                     {services.map((service) => (
@@ -512,10 +554,12 @@ export default function EntityForm({
                             onChange={(event) => {
                               handleAttributeName(event.target.value, i);
                             }}
+                            
                             sx={{
                               width: '100%'
                             }}
-                            error={errorCases(attribute.name)}
+                            helperText={attributeNameHelper(attribute.name)}
+                            error={errorCases(attribute.name) || attribute.name.length > 245 || !/^[a-zA-Z0-9.-]+$/.test(attribute.name)||!isNaN(Number(attribute.name))}
                           />
                         </Grid>
                         <Grid item xs={12}>
