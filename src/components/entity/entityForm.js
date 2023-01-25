@@ -21,20 +21,20 @@ import { setContext } from '@apollo/client/link/context';
 import useNotification from '../shared/messages/alerts';
 import { Trans } from 'react-i18next';
 import * as log from 'loglevel';
-import isURL from 'validator/lib/isURL';
 import axios from 'axios';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import InputAdornment from '@mui/material/InputAdornment';
 import 'dayjs/locale/en';
 import 'dayjs/locale/it';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ClearIcon from '@mui/icons-material/Clear';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import Tooltip from '@mui/material/Tooltip';
 import AddIcon from '@mui/icons-material/Add';
-
+import JsonEdit from './jsonEditor';
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
   background: 'white',
@@ -121,7 +121,7 @@ export default function EntityForm({
   const handleClose = () => {
     close(false);
   };
-  const rowTypes = ['Number', 'DateTime', 'Boolean', 'Text'];
+  const rowTypes = ['Number', 'DateTime', 'Boolean', 'Text', 'StructuredValue'];
   const [service, setService] = React.useState('');
   const [id, setId] = React.useState('');
   const [type, setType] = React.useState('');
@@ -195,19 +195,18 @@ export default function EntityForm({
       case attribute.type === 'DateTime':
         return (
           <Grid item xs={12}>
-            <Grid container direction="row" justifyContent="center" alignItems="center" spacing={0}>
               <LocalizationProvider
                 dateAdapter={AdapterDayjs}
                 adapterLocale={Intl.NumberFormat().resolvedOptions().locale}
               >
-                <MobileDatePicker
+                <MobileDateTimePicker
                   id={'dateInput' + index}
                   key={'dateInput' + index}
                   showToolbar={false}
-                  value={typeof attribute.value !== 'object' ? new Date() : attribute.value}
+                  value={attribute.value === '' ? new Date() : attribute.value}
                   onChange={(newValue) => {
                     const newArray = attributesMap;
-                    newArray[Number(index)].value = Number(newValue);
+                    newArray[Number(index)].value = newValue;
                     setAttributesMap([...[], ...newArray]);
                   }}
                   renderInput={(params) => (
@@ -215,8 +214,9 @@ export default function EntityForm({
                       {...params}
                       InputProps={{
                         endAdornment: (
-                          <InputAdornment position="start" onClick={handlePropagation}>
+                          <InputAdornment position="end" onClick={handlePropagation}>
                             <ClearIcon
+                            color="secondary"
                               onClick={() => {
                                 const newArray = attributesMap;
                                 newArray[Number(index)].value = null;
@@ -225,15 +225,22 @@ export default function EntityForm({
                               sx={{ '&:hover': { cursor: 'pointer' } }}
                             />
                           </InputAdornment>
+                        ),
+                        startAdornment: (
+                          <InputAdornment position="start" >
+                          <AccessTimeIcon
+                          color="secondary"></AccessTimeIcon>
+                          </InputAdornment>
                         )
                       }}
                       error={errorCases(attribute.value)}
+                      sx={{
+                        width: '100%'
+                      }}
                     />
                   )}
-                  sx={{ width: '100%' }}
                 />
               </LocalizationProvider>
-            </Grid>
           </Grid>
         );
       case attribute.type === 'Boolean':
@@ -277,6 +284,16 @@ export default function EntityForm({
             />
           </Grid>
         );
+      case attribute.type === 'StructuredValue':
+        return <Grid item xs={12}>         
+           
+         <JsonEdit
+         attribute={attribute}
+         attributesMap={attributesMap}
+         setAttributesMap={setAttributesMap}
+         index={index}
+         ></JsonEdit>
+        </Grid>;
       default:
         return <></>;
     }
@@ -291,14 +308,12 @@ export default function EntityForm({
 
   const dataRicreator = () => {
     const newArray = attributesMap;
-    let config = {
-
-    };
+    let config = {};
     let valid = [];
     for (let i = 0; i < attributesMap.length; i++) {
       if (
         !(
-          attributeNameHelper(newArray[i].name) !==newArray[i].name.length + "/" + 245||
+          attributeNameHelper(newArray[i].name) !== newArray[i].name.length + '/' + 256 ||
           newArray[i].type === '' ||
           newArray[i].value === '' ||
           newArray[i].value === null ||
@@ -317,17 +332,17 @@ export default function EntityForm({
     const headers =
       service !== ''
         ? {
-          'fiware-Service': GeTenantData('name'),
-          //'Authorization': `Bearer ${token}`,
-          'fiware-ServicePath': service
-        }
+            'fiware-Service': GeTenantData('name'),
+            //'Authorization': `Bearer ${token}`,
+            'fiware-ServicePath': service
+          }
         : {
-          'fiware-Service': GeTenantData('name')
-          //'Authorization': `Bearer ${token}`,
-        };
+            'fiware-Service': GeTenantData('name')
+            //'Authorization': `Bearer ${token}`,
+          };
     switch (action) {
       case 'create':
-        if ((!error) && (typeof [service,id,type].find(element => element === '') === undefined)) {
+        if (!error && typeof [service, id, type].find((element) => element === '') === undefined) {
           axios
             .post(
               entityEndpoint,
@@ -362,7 +377,7 @@ export default function EntityForm({
         break;
       case 'modify':
         axios
-          .patch(entityEndpoint.split('?')[0] + "/" + data.id + "/attrs", dataRicreator(), {
+          .put(entityEndpoint.split('?')[0] + '/' + data.id + '/attrs', dataRicreator(), {
             headers: headers
           })
           .then(() => {
@@ -420,32 +435,32 @@ export default function EntityForm({
         return <Trans>common.errors.mandatory</Trans>;
       case id.length > 245:
         setError(true);
-        return "String too long"
+        return 'String too long';
       case !/^[a-zA-Z0-9._-]+$/.test(id):
-        return "The string contains charts that are not allowed"
-      case id.includes("urn:nsgi-ld:"):
+        return 'The string contains charts that are not allowed';
+      case id.includes('urn:nsgi-ld:'):
         setError(true);
-        return "urn:nsgi-ld: has already been included"
+        return 'urn:nsgi-ld: has already been included';
       default:
-        return id.length + "/" + 256
+        return id.length + '/' + 256;
     }
-  }
+  };
 
   const attributeNameHelper = (value) => {
     switch (true) {
       case value === '':
         return <Trans>common.errors.mandatory</Trans>;
       case !isNaN(Number(value[0])):
-        return "FirstChar should not be a Number";
-      case value.length > 245:
+        return 'FirstChar should not be a Number';
+      case value.length > 256:
         setError(true);
-        return "String too long"
-      case !/^[a-zA-Z0-9.-]+$/.test(value):
-        return "The string contains charts that are not allowed"
+        return 'String too long';
+      case !/^[a-zA-Z0-9-]+$/.test(value):
+        return 'The string contains charts that are not allowed';
       default:
-        return value.length + "/" + 256
+        return value.length + '/' + 256;
     }
-  }
+  };
   return (
     <div>
       <CustomDialogTitle>
@@ -475,11 +490,10 @@ export default function EntityForm({
                     setId(event.target.value);
                   }}
                   InputProps={{
-                    startAdornment: <InputAdornment position="start">urn:nsgi-ld:</InputAdornment>,
-                  }
-                  }
+                    startAdornment: <InputAdornment position="start">urn:nsgi-ld:</InputAdornment>
+                  }}
                   helperText={idHelper()}
-                  error={errorCases(id) || (id.length > 245 || !/^[a-zA-Z0-9._-]+$/.test(id))}
+                  error={errorCases(id) || id.length > 245 || !/^[a-zA-Z0-9._-]+$/.test(id)}
                   sx={{
                     width: '100%'
                   }}
@@ -554,12 +568,16 @@ export default function EntityForm({
                             onChange={(event) => {
                               handleAttributeName(event.target.value, i);
                             }}
-                            
                             sx={{
                               width: '100%'
                             }}
                             helperText={attributeNameHelper(attribute.name)}
-                            error={errorCases(attribute.name) || attribute.name.length > 245 || !/^[a-zA-Z0-9.-]+$/.test(attribute.name)||!isNaN(Number(attribute.name))}
+                            error={
+                              errorCases(attribute.name) ||
+                              attribute.name.length > 245 ||
+                              !/^[a-zA-Z0-9-]+$/.test(attribute.name) ||
+                              !isNaN(Number(attribute.name[0]))
+                            }
                           />
                         </Grid>
                         <Grid item xs={12}>
@@ -611,7 +629,7 @@ export default function EntityForm({
                   </Grid>
                 </Grid>
               ))}
-              <Grid item xs={12}>
+              <Grid item xs={11}>
                 {' '}
                 <Grid container direction="row" justifyContent="center" alignItems="center" spacing={1}>
                   <Button

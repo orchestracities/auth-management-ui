@@ -83,6 +83,7 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
                 '?attrs=dateCreated,dateModified,*&options=count'
             )
           : getEntitiesFromResource(env.ORION + '/v2/entities?attrs=dateCreated,dateModified,*&options=count');
+        getTypeURL();
       })
       .catch((e) => {
         sendNotification({ msg: e.message + ' the config', variant: 'error' });
