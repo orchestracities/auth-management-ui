@@ -35,6 +35,8 @@ import Switch from '@mui/material/Switch';
 import Tooltip from '@mui/material/Tooltip';
 import AddIcon from '@mui/icons-material/Add';
 import JsonEdit from './jsonEditor';
+import MapEdit from './map/mapEditor';
+
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
   background: 'white',
@@ -121,7 +123,7 @@ export default function EntityForm({
   const handleClose = () => {
     close(false);
   };
-  const rowTypes = ['Number', 'DateTime', 'Boolean', 'Text', 'StructuredValue'];
+  const rowTypes = ['Number', 'DateTime', 'Boolean', 'Text', 'StructuredValue', 'GeoJSON'];
   const [service, setService] = React.useState('');
   const [id, setId] = React.useState('');
   const [type, setType] = React.useState('');
@@ -195,52 +197,51 @@ export default function EntityForm({
       case attribute.type === 'DateTime':
         return (
           <Grid item xs={12}>
-              <LocalizationProvider
-                dateAdapter={AdapterDayjs}
-                adapterLocale={Intl.NumberFormat().resolvedOptions().locale}
-              >
-                <MobileDateTimePicker
-                  id={'dateInput' + index}
-                  key={'dateInput' + index}
-                  showToolbar={false}
-                  value={attribute.value === '' ? new Date() : attribute.value}
-                  onChange={(newValue) => {
-                    const newArray = attributesMap;
-                    newArray[Number(index)].value = newValue;
-                    setAttributesMap([...[], ...newArray]);
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end" onClick={handlePropagation}>
-                            <ClearIcon
+            <LocalizationProvider
+              dateAdapter={AdapterDayjs}
+              adapterLocale={Intl.NumberFormat().resolvedOptions().locale}
+            >
+              <MobileDateTimePicker
+                id={'dateInput' + index}
+                key={'dateInput' + index}
+                showToolbar={false}
+                value={attribute.value === '' ? new Date() : attribute.value}
+                onChange={(newValue) => {
+                  const newArray = attributesMap;
+                  newArray[Number(index)].value = newValue;
+                  setAttributesMap([...[], ...newArray]);
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end" onClick={handlePropagation}>
+                          <ClearIcon
                             color="secondary"
-                              onClick={() => {
-                                const newArray = attributesMap;
-                                newArray[Number(index)].value = null;
-                                setAttributesMap([...[], ...newArray]);
-                              }}
-                              sx={{ '&:hover': { cursor: 'pointer' } }}
-                            />
-                          </InputAdornment>
-                        ),
-                        startAdornment: (
-                          <InputAdornment position="start" >
-                          <AccessTimeIcon
-                          color="secondary"></AccessTimeIcon>
-                          </InputAdornment>
-                        )
-                      }}
-                      error={errorCases(attribute.value)}
-                      sx={{
-                        width: '100%'
-                      }}
-                    />
-                  )}
-                />
-              </LocalizationProvider>
+                            onClick={() => {
+                              const newArray = attributesMap;
+                              newArray[Number(index)].value = null;
+                              setAttributesMap([...[], ...newArray]);
+                            }}
+                            sx={{ '&:hover': { cursor: 'pointer' } }}
+                          />
+                        </InputAdornment>
+                      ),
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <AccessTimeIcon color="secondary"></AccessTimeIcon>
+                        </InputAdornment>
+                      )
+                    }}
+                    error={errorCases(attribute.value)}
+                    sx={{
+                      width: '100%'
+                    }}
+                  />
+                )}
+              />
+            </LocalizationProvider>
           </Grid>
         );
       case attribute.type === 'Boolean':
@@ -285,15 +286,22 @@ export default function EntityForm({
           </Grid>
         );
       case attribute.type === 'StructuredValue':
-        return <Grid item xs={12}>         
-           
-         <JsonEdit
-         attribute={attribute}
-         attributesMap={attributesMap}
-         setAttributesMap={setAttributesMap}
-         index={index}
-         ></JsonEdit>
-        </Grid>;
+        return (
+          <Grid item xs={12}>
+            <JsonEdit
+              attribute={attribute}
+              attributesMap={attributesMap}
+              setAttributesMap={setAttributesMap}
+              index={index}
+            ></JsonEdit>
+          </Grid>
+        );
+      case attribute.type === 'GeoJSON':
+        return (
+          <Grid item xs={12}>
+            <MapEdit env={env}></MapEdit>
+          </Grid>
+        );
       default:
         return <></>;
     }

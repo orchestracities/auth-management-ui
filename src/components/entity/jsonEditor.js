@@ -21,17 +21,17 @@ const DialogRounded = styled(Dialog)(() => ({
   }
 }));
 const CustomDialogTitle = styled(AppBar)({
-    position: 'relative',
-    background: 'white',
-    boxShadow: 'none'
-  });
+  position: 'relative',
+  background: 'white',
+  boxShadow: 'none'
+});
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Grow direction="up" ref={ref} {...props} />;
 });
 
-export default function JsonEdit({attribute,attributesMap,setAttributesMap,index}) {
-    const [open, setOpen] = React.useState(false);
+export default function JsonEdit({ attribute, attributesMap, setAttributesMap, index }) {
+  const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const handleClickOpen = () => {
@@ -44,18 +44,18 @@ export default function JsonEdit({attribute,attributesMap,setAttributesMap,index
 
   return (
     <>
-        <Grid container direction="row" justifyContent="center" alignItems="center" spacing={1}>
+      <Grid container direction="row" justifyContent="center" alignItems="center" spacing={1}>
         <Button
-                    variant="outlined"
-                    color="secondary"
-                    startIcon={<AutoFixNormalIcon />}
-                    onClick={() => {
-                        handleClickOpen();
-                    }}
-                  >
-                   { "Edit JSON of: "+ attribute.name }
-                  </Button>
-                  </Grid>
+          variant="outlined"
+          color="secondary"
+          startIcon={<AutoFixNormalIcon />}
+          onClick={() => {
+            handleClickOpen();
+          }}
+        >
+          {'Edit JSON of: ' + attribute.name}
+        </Button>
+      </Grid>
       <DialogRounded
         TransitionComponent={Transition}
         open={open}
@@ -64,24 +64,23 @@ export default function JsonEdit({attribute,attributesMap,setAttributesMap,index
         fullWidth={true}
         onClose={handleClose}
       >
-          <CustomDialogTitle>
-        <Toolbar>
-          <IconButton edge="start" onClick={handleClose} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-        </Toolbar>
-
-      </CustomDialogTitle>
-      <DialogContent sx={{ minHeight: '400px' }}>
-         <JsonEditor
-         key={index}
-           value={attribute.value}
-           onChange={(value) => {
-            const newArray = attributesMap;
-            newArray[Number(index)].value = value;
-            setAttributesMap([...[], ...newArray]);
-          }}
-        />
+        <CustomDialogTitle>
+          <Toolbar>
+            <IconButton edge="start" onClick={handleClose} aria-label="close">
+              <CloseIcon />
+            </IconButton>
+          </Toolbar>
+        </CustomDialogTitle>
+        <DialogContent sx={{ minHeight: '400px' }}>
+          <JsonEditor
+            key={index}
+            value={attribute.value}
+            onChange={(value) => {
+              const newArray = attributesMap;
+              newArray[Number(index)].value = value;
+              setAttributesMap([...[], ...newArray]);
+            }}
+          />
         </DialogContent>
         <DialogActions></DialogActions>
       </DialogRounded>
