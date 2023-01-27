@@ -115,7 +115,6 @@ export default function EntityForm({
   };
   //errorLog
   const attributeNames = getAttributesNames(types);
-  console.log(attributeNames);
   const [error, setError] = React.useState(null);
   const [msg, sendNotification] = useNotification();
   log.debug(msg);
@@ -299,7 +298,13 @@ export default function EntityForm({
       case attribute.type === 'GeoJSON':
         return (
           <Grid item xs={12}>
-            <MapEdit env={env}></MapEdit>
+            <MapEdit
+              env={env}
+              attribute={attribute}
+              attributesMap={attributesMap}
+              setAttributesMap={setAttributesMap}
+              index={index}
+            ></MapEdit>
           </Grid>
         );
       default:
