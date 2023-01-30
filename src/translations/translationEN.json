@@ -12,10 +12,10 @@
       "icon": "Icon",
       "primaryColor": "Primary Color: ",
       "secondaryColor": "Secondary Color: ",
-      "fileCancel":"cancel",
-      "fileSubmit":"submit",
-      "fileIstructions":"Drag or click here!",
-      "addImage":"Add Image"
+      "fileCancel": "cancel",
+      "fileSubmit": "submit",
+      "fileIstructions": "Drag or click here!",
+      "addImage": "Add Image"
     },
     "tooltip": {
       "editIcon": "Edit"
@@ -31,8 +31,8 @@
     "tooltip": {
       "editIcon": "New Sub-service"
     },
-    "form":{
-     "parentPath":"Parent Path" 
+    "form": {
+      "parentPath": "Parent Path"
     }
   },
   "policies": {
@@ -59,7 +59,7 @@
     },
     "form": {
       "servicePath": "Service path",
-      "defaultActor":"Other values",
+      "defaultActor": "Other values",
       "resource": "Resource",
       "resourceType": "Resource type",
       "mode": "Mode",
@@ -74,40 +74,53 @@
       "mainTitle": "Main data"
     }
   },
-  "resourceType":{
-    "form":{
-      "resourceName":"Resource Type",
-      "endpoint":"Endpoint"
+  "resourceType": {
+    "form": {
+      "resourceName": "Resource Type",
+      "endpoint": "Endpoint"
     },
     "table": {
-     "name":"name",
-     "author":"Created By",
-     "endpoint":"Endpoint Link"
+      "name": "name",
+      "author": "Created By",
+      "endpoint": "Endpoint Link"
     },
-    "page":{
-      "title":"Resource Types"
+    "page": {
+      "title": "Resource Types"
     }
   },
-  "entity":{
+  "entity": {
     "table": {
-     "type":"Type",
-     "modified":"Last modified on"
+      "type": "Type",
+      "modified": "Last modified on"
     },
-    "page":{
-      "title":"Entities"
+    "page": {
+      "title": "Entities"
     },
     "filters": {
       "path": "service path{{name}}",
       "type": "Type<0>{{name}}</0>"
     },
-    "form":{
-      "servicePath":"Service path",
-      "type":"Type"
-      },
-       "titles": {
-        "new": "New entity",
-        "edit": "Modify entity: <0>{{name}}</0>"
+    "form": {
+      "servicePath": "Service path",
+      "type": "Type",
+      "name":"Name",
+      "add":"New Attribute",
+      "editJSON":"Edit <0>{{name}}</0> JSON",
+      "editMAP":"Edit <0>{{name}}</0> location",
+      "geoJSONerror":"Geo-Json format not valid!",
+      "selectType": {
+        "number": "Number",
+        "date": "DateTime",
+        "bool": "Boolean",
+        "text": "Text",
+        "json": "JSON",
+        "map": "Geo:Json"
       }
+    },
+    "titles": {
+      "new": "New entity",
+      "edit": "Modify entity: <0>{{name}}</0>"
+    }
   },
   "menu": {
     "home": {
@@ -115,44 +128,44 @@
       "pageTitle": "Welcome!",
       "description": "Sweet :)"
     },
-    "dataManagement" : {
+    "dataManagement": {
       "title": "Data Management",
       "description": "In this area you manage the platform data, for examples the ones in Context Broker."
     },
-    "entity" : {
+    "entity": {
       "title": "Entities"
     },
-    "security" : {
+    "security": {
       "title": "Security",
       "description": "In this area you can manage access control policies to resources. Powered by Anubis!"
     },
-    "policy" : {
+    "policy": {
       "title": "Policies"
     },
-    "administration" : {
+    "administration": {
       "title": "Administration",
       "description": "In this area you can manage tenants, service paths, and resource types. With great power comes great responsibility!"
     },
-    "service" : {
+    "service": {
       "title": "Services"
     },
-    "tenant" : {
+    "tenant": {
       "title": "Tenants"
     },
-    "resourcetype" : {
+    "resourcetype": {
       "title": "Resource Types"
     }
   },
   "common": {
-    "notAuthorized" : "Not Authorized",
-    "notFound" : "Not Found",
+    "notAuthorized": "Not Authorized",
+    "notFound": "Not Found",
     "goHomePage": "Go to the home page",
     "invalidDate": "Invalid date",
-    "messages":{
+    "messages": {
       "sucessUpdate": "{{data}}  Updated",
       "sucessCreate": " A {{data}} has been created",
       "sucessDelete": "{{data}} has been destroyed",
-      "graphqlOff":"Preferences cannot be stored since configuration api is not reacheable"
+      "graphqlOff": "Preferences cannot be stored since configuration api is not reacheable"
     },
     "deleteTooltip": "Delete",
     "deleteText": "Are you really sure about deleting:",
@@ -162,9 +175,9 @@
     "userPopup": {
       "settings": "settings"
     },
-    "errors":{
-      "mandatory":"Mandatory field",
-      "userMap":"You must at least map one user"
+    "errors": {
+      "mandatory": "Mandatory field",
+      "userMap": "You must at least map one user"
     },
     "userSettings": {
       "title": "Settings",

@@ -16,8 +16,6 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import { InputLabel } from '@mui/material';
 import Select from '@mui/material/Select';
 import FormHelperText from '@mui/material/FormHelperText';
-import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client';
-import { setContext } from '@apollo/client/link/context';
 import useNotification from '../shared/messages/alerts';
 import { Trans } from 'react-i18next';
 import * as log from 'loglevel';
@@ -80,7 +78,6 @@ export default function EntityForm({
   title,
   close,
   action,
-  token,
   env,
   data,
   getTheEntities,
@@ -91,21 +88,6 @@ export default function EntityForm({
 }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
 
-  const httpLink = createHttpLink({
-    uri: typeof env !== 'undefined' ? env.CONFIGURATION_API_URL : ''
-  });
-  const authLink = setContext((_, { headers }) => {
-    return {
-      headers: {
-        ...headers,
-        Authorization: `Bearer ${token}`
-      }
-    };
-  });
-  const client = new ApolloClient({
-    link: authLink.concat(httpLink),
-    cache: new InMemoryCache()
-  });
   const getAttributesNames = (types) => {
     let map = [];
     for (let type of types) {
@@ -122,7 +104,14 @@ export default function EntityForm({
   const handleClose = () => {
     close(false);
   };
-  const rowTypes = ['Number', 'DateTime', 'Boolean', 'Text', 'StructuredValue', 'GeoJSON'];
+  const rowTypes = [
+    { text: <Trans>entity.form.selectType.number</Trans>, id: 'Number' },
+    { text: <Trans>entity.form.selectType.date</Trans>, id: 'DateTime' },
+    { text: <Trans>entity.form.selectType.bool</Trans>, id: 'Boolean' },
+    { text: <Trans>entity.form.selectType.text</Trans>, id: 'Text' },
+    { text: <Trans>entity.form.selectType.json</Trans>, id: 'StructuredValue' },
+    { text: <Trans>entity.form.selectType.map</Trans>, id: 'geo:json' }
+  ];
   const [service, setService] = React.useState('');
   const [id, setId] = React.useState('');
   const [type, setType] = React.useState('');
@@ -176,7 +165,6 @@ export default function EntityForm({
           <Grid item xs={12}>
             <TextField
               id={'Number' + index}
-              label="Number"
               variant="outlined"
               key={'Number' + index}
               value={attribute.value}
@@ -269,7 +257,6 @@ export default function EntityForm({
           <Grid item xs={12}>
             <TextField
               id="Text"
-              label="Text"
               variant="outlined"
               value={attribute.value}
               onChange={(event) => {
@@ -295,7 +282,7 @@ export default function EntityForm({
             ></JsonEdit>
           </Grid>
         );
-      case attribute.type === 'GeoJSON':
+      case attribute.type === 'geo:json':
         return (
           <Grid item xs={12}>
             <MapEdit
@@ -355,7 +342,7 @@ export default function EntityForm({
           };
     switch (action) {
       case 'create':
-        if (!error && typeof [service, id, type].find((element) => element === '') === undefined) {
+        if (!error && [service, id, type].find((element) => element === '') === undefined) {
           axios
             .post(
               entityEndpoint,
@@ -567,14 +554,14 @@ export default function EntityForm({
           ) : (
             <>
               {attributesMap.map((attribute, i) => (
-                <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+                <Grid item xs={12} sm={12} md={12} lg={12} xl={12} key={i}>
                   <Grid container spacing={12} direction="row" justifyContent="center" alignItems="center">
                     <Grid item xs={10} sm={10} md={10} lg={10} xl={10}>
                       <Grid container spacing={2}>
                         <Grid item xs={12}>
                           <TextField
                             id={'name' + i}
-                            label="Name"
+                            label={<Trans>entity.form.name</Trans>}
                             variant="outlined"
                             key={'name' + i}
                             value={attribute.name}
@@ -613,8 +600,8 @@ export default function EntityForm({
                               error={errorCases(type.type)}
                             >
                               {rowTypes.map((thisType) => (
-                                <MenuItem key={thisType} value={thisType}>
-                                  {thisType}
+                                <MenuItem key={thisType.id} value={thisType.id}>
+                                  {thisType.text}
                                 </MenuItem>
                               ))}
                             </Select>
@@ -652,7 +639,7 @@ export default function EntityForm({
                       addEntities();
                     }}
                   >
-                    New Attribute
+                    <Trans>entity.form.add</Trans>
                   </Button>
                 </Grid>
               </Grid>

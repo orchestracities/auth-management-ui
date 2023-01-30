@@ -27,7 +27,7 @@ import Box from '@mui/material/Box';
 import { JsonEditor } from 'jsoneditor-react';
 import { valid } from 'geojson-validation';
 import Alert from '@mui/material/Alert';
-
+import { Trans } from 'react-i18next';
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
     borderRadius: 15
@@ -77,14 +77,92 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function MapEdit({ env, attribute, attributesMap, setAttributesMap, index }) {
   const [open, setOpen] = React.useState(false);
-  const [geoJSON, setGeoJSON] = React.useState(attribute.value);
+  const loadJSON = (data) => {
+    if (typeof data.length !== 'undefined' && data !== '') {
+      let loaded = {
+        type: 'FeatureCollection'
+      };
+      for (const [i, v] of data.entries()) {
+        loaded[i.toString()] = [
+          {
+            type: 'Feature',
+            id: i,
+            properties: {
+              Code: '',
+              Name: ''
+            },
+            geometry: v
+          }
+        ];
+      }
+      return loaded;
+    } else {
+      return {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            id: 0,
+            properties: {
+              Code: '',
+              Name: ''
+            },
+            geometry: data
+          }
+        ]
+      };
+    }
+  };
+  const [geoJSON, setGeoJSON] = React.useState(loadJSON(attribute.value));
+
+  const compressJSON = (data) => {
+    const properties = Object.getOwnPropertyNames(data);
+    let jsonCompressed = [];
+    for (const entry of properties) {
+      if (typeof data[entry] === 'object') {
+        if (typeof data[entry].length !== 'undefined') {
+          for (let newEntry of data[entry]) {
+            typeof newEntry.geometry !== 'undefined' ? jsonCompressed.push(newEntry.geometry) : '';
+          }
+        } else {
+          typeof data[entry].geometry !== 'undefined' ? jsonCompressed.push(data[entry].geometry) : '';
+        }
+      }
+    }
+    return jsonCompressed;
+  };
   const [tabValue, setTabValue] = React.useState(0);
-  const [value, setValue] = React.useState(null);
-  const [mapCordinate, setMapCordinate] = React.useState([47.373878, 8.545094]);
+  const [locationValue, setLocationValue] = React.useState(null);
+  const returnCordinates = () => {
+    switch (true) {
+      //for a geoJSON that is not valid
+      case !valid(geoJSON):
+        return [47.373878, 8.545094];
+      //for a missed or default value
+      case attribute.value === '':
+        return [47.373878, 8.545094];
+      //for a JSON that has multiple features but only one coordinate
+      case typeof attribute.value.length !== 'undefined' && typeof attribute.value[0].coordinates[0] === 'number':
+        return attribute.value[0].coordinates;
+      //for a JSON that has multiple features and multiple coordinates
+      case typeof attribute.value.length !== 'undefined' && typeof attribute.value[0].coordinates !== 'number':
+        return attribute.value[0].coordinates[0];
+      //for a JSON that has a single feature and only one coordinate
+      case typeof attribute.value.length === 'undefined' && typeof attribute.value.coordinates[0] === 'number':
+        return attribute.value.coordinates;
+      //for a JSON that has a single feature but multiple coordinates
+      case typeof attribute.value.length === 'undefined' && typeof attribute.value.coordinates !== 'number':
+        return attribute.value.coordinates[0];
+      //default
+      default:
+        return [47.373878, 8.545094];
+    }
+  };
+  const [mapCordinate, setMapCordinate] = React.useState(returnCordinates());
 
   React.useEffect(() => {
-    if (value !== null) {
-      geocodeByAddress(value.label)
+    if (locationValue !== null) {
+      geocodeByAddress(locationValue.label)
         .then((results) => getLatLng(results[0]))
         .then(({ lat, lng }) => {
           setMapCordinate([lat, lng]);
@@ -93,7 +171,7 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
             features: [
               {
                 type: 'Feature',
-                id: 1,
+                id: 0,
                 properties: {
                   Code: '',
                   Name: ''
@@ -105,12 +183,15 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
               }
             ]
           });
+          const newArray = attributesMap;
+          newArray[Number(index)].value = {
+            type: 'Point',
+            coordinates: [lat, lng]
+          };
+          valid(geoJSON) ? setAttributesMap([...[], ...newArray]) : '';
         });
     }
-  }, [value]);
-  React.useEffect(() => {
-    console.log(mapCordinate);
-  }, [mapCordinate]);
+  }, [locationValue]);
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -137,7 +218,7 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
           }
         })
       : '';
-    value !== null ? L.marker(mapCordinate, { icon }).addTo(map) : '';
+    locationValue !== null ? L.marker(mapCordinate, { icon }).addTo(map) : '';
     map.setView(center, zoom);
     return null;
   };
@@ -152,7 +233,12 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
             handleClickOpen();
           }}
         >
-          {'Edit Location of: '}
+          <Trans
+            i18nKey="entity.form.editMAP"
+            values={{
+              name: attribute.name
+            }}
+          />
         </Button>
       </Grid>
       <DialogRounded
@@ -184,13 +270,13 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
                   <GooglePlacesAutocomplete
                     apiKey={env.GOOGLE_MAPS}
                     selectProps={{
-                      value,
-                      onChange: setValue
+                      locationValue,
+                      onChange: setLocationValue
                     }}
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <MapContainer center={mapCordinate} zoom={18} style={{ height: '50vh', zIndex: 0 }}>
+                  <MapContainer zoom={18} style={{ height: '50vh', zIndex: 0 }}>
                     <TileLayer
                       attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -200,18 +286,24 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
                     <MapConsumer>
                       {(map) => {
                         map.on('click', function (e) {
-                          setValue(null);
+                          setLocationValue(null);
                           map.eachLayer((layer) => {
                             if (typeof layer['_latlng'] !== 'undefined') layer.remove();
                           });
                           const { lat, lng } = e.latlng;
                           L.marker([lat, lng], { icon }).addTo(map);
+
+                          const newArray = attributesMap;
+                          newArray[Number(index)].value = {
+                            type: 'Point',
+                            coordinates: [lat, lng]
+                          };
                           setGeoJSON({
                             type: 'FeatureCollection',
                             features: [
                               {
                                 type: 'Feature',
-                                id: 1,
+                                id: 0,
                                 properties: {
                                   Code: '',
                                   Name: ''
@@ -223,6 +315,7 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
                               }
                             ]
                           });
+                          valid(geoJSON) ? setAttributesMap([...[], ...newArray]) : '';
                         });
                         return null;
                       }}
@@ -240,9 +333,10 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
                     value={geoJSON}
                     onChange={(value) => {
                       const newArray = attributesMap;
-                      newArray[Number(index)].value = value;
+                      const newData = compressJSON(value);
+                      newArray[Number(index)].value = newData;
                       setGeoJSON(value);
-                      setAttributesMap([...[], ...newArray]);
+                      valid(geoJSON) ? setAttributesMap([...[], ...newArray]) : '';
                     }}
                   />
                   {!valid(geoJSON) ? (
@@ -258,7 +352,7 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
                       }}
                       icon={false}
                     >
-                      The GEO-JSON is not valid
+                      <Trans>entity.form.geoJSONerror</Trans>
                     </Alert>
                   ) : (
                     ''

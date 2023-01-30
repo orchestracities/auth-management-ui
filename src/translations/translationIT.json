@@ -102,7 +102,20 @@
     },
     "form":{
     "servicePath":"Percorsi dei servizi",
-    "type":"Tipologia"
+    "type":"Tipologia",
+     "add":"Nuovo Attributo",
+       "editJSON":"Modifica il JSON di: <0>{{name}}</0>",
+      "editMAP":"Modifica la posizione di: <0>{{name}}</0>",
+       "geoJSONerror":"Formato Geo-Json non valido!",
+    "name":"Nome",
+     "selectType": {
+      "number": "Numero",
+      "date": "Data",
+      "bool": "Boleano",
+      "text": "Testo",
+      "json": "JSON",
+      "map": "Geo:Json"
+    }
     },
      "titles": {
       "new": "Nuova entità",
