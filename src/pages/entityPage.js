@@ -202,7 +202,7 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
       <AddButton
         pageType={
           <EntityForm
-            title={'Title'}
+            title={<Trans>entity.form.new</Trans>}
             close={setCreateOpen}
             action={'create'}
             token={token}

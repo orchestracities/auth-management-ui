@@ -15,6 +15,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 import Grid from '@mui/material/Grid';
 import { Trans } from 'react-i18next';
+import Typography from '@mui/material/Typography';
+
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
     borderRadius: 15
@@ -48,17 +50,20 @@ export default function JsonEdit({ attribute, attributesMap, setAttributesMap, i
         <Button
           variant="outlined"
           color="secondary"
+          sx={{ marginLeft: '10px' }}
           startIcon={<AutoFixNormalIcon />}
           onClick={() => {
             handleClickOpen();
           }}
         >
-          <Trans
-            i18nKey="entity.form.editJSON"
-            values={{
-              name: attribute.name
-            }}
-          />
+          <Typography noWrap gutterBottom component="div">
+            <Trans
+              i18nKey="entity.form.editJSON"
+              values={{
+                name: attribute.name
+              }}
+            />
+          </Typography>
         </Button>
       </Grid>
       <DialogRounded

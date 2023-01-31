@@ -101,6 +101,8 @@
       "type": "Type<0>{{name}}</0>"
     },
     "form": {
+      "new": "New entity",
+      "edit": "Edit {{name}}",
       "servicePath": "Service path",
       "type": "Type",
       "name":"Name",

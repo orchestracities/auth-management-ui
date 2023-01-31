@@ -101,6 +101,8 @@
       "type": "Tipo<0>{{name}}</0>"
     },
     "form":{
+       "new": "Nuova entità",
+      "edit": "Edit {{name}}",
     "servicePath":"Percorsi dei servizi",
     "type":"Tipologia",
      "add":"Nuovo Attributo",

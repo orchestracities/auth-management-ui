@@ -34,6 +34,8 @@ import Tooltip from '@mui/material/Tooltip';
 import AddIcon from '@mui/icons-material/Add';
 import JsonEdit from './jsonEditor';
 import MapEdit from './map/mapEditor';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -461,6 +463,9 @@ export default function EntityForm({
         return value.length + '/' + 256;
     }
   };
+  const theme = useTheme();
+  const isResponsive = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <div>
       <CustomDialogTitle>
@@ -468,11 +473,11 @@ export default function EntityForm({
           <IconButton edge="start" onClick={handleClose} aria-label="close">
             <CloseIcon />
           </IconButton>
-          <Typography sx={{ ml: 2, flex: 1, color: 'black' }} variant="h6" component="div">
+          <Typography sx={{ ml: 2, flex: 1, color: 'black' }} noWrap gutterBottom variant="h6" component="div">
             {title}
           </Typography>
           <Button autoFocus color="secondary" onClick={handleSave}>
-            save
+            <Trans>common.saveButton</Trans>
           </Button>
         </Toolbar>
       </CustomDialogTitle>
@@ -554,10 +559,16 @@ export default function EntityForm({
           ) : (
             <>
               {attributesMap.map((attribute, i) => (
-                <Grid item xs={12} sm={12} md={12} lg={12} xl={12} key={i}>
-                  <Grid container spacing={12} direction="row" justifyContent="center" alignItems="center">
-                    <Grid item xs={10} sm={10} md={10} lg={10} xl={10}>
-                      <Grid container spacing={2}>
+                <Grid item xs={12} sm={12} md={12} lg={12} xl={12} key={i} sx={{ marginTop: 5 }}>
+                  <Grid
+                    container
+                    spacing={isResponsive ? 1 : 3}
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <Grid item xs={9} sm={9} md={10} lg={10} xl={10}>
+                      <Grid container spacing={3}>
                         <Grid item xs={12}>
                           <TextField
                             id={'name' + i}
@@ -611,8 +622,14 @@ export default function EntityForm({
                         {attributeTypeForm(attribute, i)}
                       </Grid>
                     </Grid>
-                    <Grid item xs={1} sm={1} md={1} lg={1} xl={1}>
-                      <Grid container direction="row" justifyContent="center" alignItems="center">
+                    <Grid item xs={3} sm={3} md={1} lg={1} xl={1}>
+                      <Grid
+                        container
+                        direction="row"
+                        justifyContent="center"
+                        alignItems="center"
+                        spacing={isResponsive ? 1 : 2}
+                      >
                         <Tooltip title={<Trans>common.deleteTooltip</Trans>}>
                           <IconButton
                             aria-label="delete"
@@ -631,9 +648,17 @@ export default function EntityForm({
               ))}
               <Grid item xs={11}>
                 {' '}
-                <Grid container direction="row" justifyContent="center" alignItems="center" spacing={1}>
+                <Grid
+                  sx={{ marginTop: 5 }}
+                  container
+                  direction="row"
+                  justifyContent="center"
+                  alignItems="center"
+                  spacing={1}
+                >
                   <Button
-                    variant="outlined"
+                    variant="contained"
+                    color="primary"
                     startIcon={<AddIcon />}
                     onClick={() => {
                       addEntities();

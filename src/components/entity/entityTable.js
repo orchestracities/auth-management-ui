@@ -418,7 +418,14 @@ export default function EntityTable({
         aria-describedby="edit"
       >
         <EntityForm
-          title={'Title'}
+          title={
+            <Trans
+              i18nKey="entity.form.edit"
+              values={{
+                name: editData.id
+              }}
+            />
+          }
           close={handleClose}
           action={'modify'}
           token={token}

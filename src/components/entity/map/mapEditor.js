@@ -8,7 +8,7 @@ import DialogContent from '@mui/material/DialogContent';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Grow from '@mui/material/Grow';
-import AutoFixNormalIcon from '@mui/icons-material/AutoFixNormal';
+import AddLocationIcon from '@mui/icons-material/AddLocation';
 import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
@@ -222,23 +222,29 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
     map.setView(center, zoom);
     return null;
   };
+
+  const isResponsive = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <>
       <Grid container direction="row" justifyContent="center" alignItems="center" spacing={1}>
         <Button
           variant="outlined"
           color="secondary"
-          startIcon={<AutoFixNormalIcon />}
+          sx={{ marginLeft: '10px' }}
+          startIcon={<AddLocationIcon />}
           onClick={() => {
             handleClickOpen();
           }}
         >
-          <Trans
-            i18nKey="entity.form.editMAP"
-            values={{
-              name: attribute.name
-            }}
-          />
+          <Typography noWrap gutterBottom component="div">
+            <Trans
+              i18nKey="entity.form.editMAP"
+              values={{
+                name: attribute.name
+              }}
+            />
+          </Typography>
         </Button>
       </Grid>
       <DialogRounded
@@ -265,7 +271,7 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
               </Tabs>
             </Box>
             <TabPanel value={tabValue} index={0}>
-              <Grid container spacing={3}>
+              <Grid container spacing={isResponsive ? 1 : 3}>
                 <Grid item xs={12}>
                   <GooglePlacesAutocomplete
                     apiKey={env.GOOGLE_MAPS}
@@ -325,7 +331,7 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
               </Grid>{' '}
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
-              <Grid container spacing={3}>
+              <Grid container spacing={isResponsive ? 1 : 3}>
                 <Grid item xs={12}>
                   <JsonEditor
                     htmlElementProps={{ style: { height: '300px' } }}
