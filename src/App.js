@@ -432,7 +432,10 @@ export default class App extends Component {
                   this.state.seTenant(result.data.getUserPreferences[0].lastTenantSelected);
                 });
               this.setState({
-                tenants: this.state.preferencesMapper(result.data.listTenants, userTenants)
+                tenants: this.state.preferencesMapper(
+                  result.data.listTenants !== null ? result.data.listTenants : [],
+                  userTenants
+                )
               });
               this.state.seTenant(this.state.thisTenant);
             });
@@ -526,6 +529,7 @@ export default class App extends Component {
               <SwipeableDrawer
                 sx={{
                   flexShrink: 0,
+                  zIndex: 500000,
                   '& .MuiDrawer-paper': {
                     width: drawerWidth,
                     boxSizing: 'border-box'

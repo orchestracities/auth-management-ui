@@ -71,6 +71,6 @@ const Template = (args) => <EntityFiltering {...args} />;
 export const AllFilters = Template.bind({});
 AllFilters.args = {
   mapper: {},
-  services: [],
+  services: [{ path: '/' }, { path: '/another' }],
   types: [{ type: 'a type' }]
 };
