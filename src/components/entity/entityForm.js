@@ -164,7 +164,7 @@ export default function EntityForm({
     switch (attribute.type !== '' && typeof attribute.type !== 'undefined' && attribute.type !== null) {
       case attribute.type === 'Number':
         return (
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
             <TextField
               id={'Number' + index}
               variant="outlined"
@@ -185,7 +185,7 @@ export default function EntityForm({
         );
       case attribute.type === 'DateTime':
         return (
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
             <LocalizationProvider
               dateAdapter={AdapterDayjs}
               adapterLocale={Intl.NumberFormat().resolvedOptions().locale}
@@ -235,7 +235,7 @@ export default function EntityForm({
         );
       case attribute.type === 'Boolean':
         return (
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
             <Grid container direction="row" justifyContent="center" alignItems="center" spacing={0}>
               <FormControlLabel
                 key={'switch' + index}
@@ -256,7 +256,7 @@ export default function EntityForm({
         );
       case attribute.type === 'Text':
         return (
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
             <TextField
               id="Text"
               variant="outlined"
@@ -275,7 +275,7 @@ export default function EntityForm({
         );
       case attribute.type === 'StructuredValue':
         return (
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
             <JsonEdit
               attribute={attribute}
               attributesMap={attributesMap}
@@ -286,7 +286,7 @@ export default function EntityForm({
         );
       case attribute.type === 'geo:json':
         return (
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
             <MapEdit
               env={env}
               attribute={attribute}
@@ -567,9 +567,9 @@ export default function EntityForm({
                     justifyContent="center"
                     alignItems="center"
                   >
-                    <Grid item xs={9} sm={9} md={10} lg={10} xl={10}>
+                    <Grid item xs={9} sm={9} md={11} lg={11} xl={11}>
                       <Grid container spacing={3}>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} sm={12} md={5} lg={5} xl={5}>
                           <TextField
                             id={'name' + i}
                             label={<Trans>entity.form.name</Trans>}
@@ -591,7 +591,7 @@ export default function EntityForm({
                             }
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} sm={12} md={3} lg={3} xl={3}>
                           <FormControl fullWidth>
                             <InputLabel id={'rowType' + i} error={errorCases(type.type)}>
                               <Trans>entity.form.type</Trans>
@@ -646,19 +646,13 @@ export default function EntityForm({
                   </Grid>
                 </Grid>
               ))}
-              <Grid item xs={11}>
+              <Grid item xs={isResponsive ? 9 : 10}>
                 {' '}
-                <Grid
-                  sx={{ marginTop: 5 }}
-                  container
-                  direction="row"
-                  justifyContent="center"
-                  alignItems="center"
-                  spacing={1}
-                >
+                <Grid sx={{ marginTop: 5 }} container direction="row" justifyContent="center" alignItems="center">
                   <Button
-                    variant="contained"
+                    variant="outlined"
                     color="primary"
+                    sx={isResponsive ? { width: '100%' } : {}}
                     startIcon={<AddIcon />}
                     onClick={() => {
                       addEntities();

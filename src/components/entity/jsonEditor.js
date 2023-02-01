@@ -10,12 +10,13 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import Grow from '@mui/material/Grow';
 import { JsonEditor } from 'jsoneditor-react';
 import AutoFixNormalIcon from '@mui/icons-material/AutoFixNormal';
-import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 import Grid from '@mui/material/Grid';
 import { Trans } from 'react-i18next';
-import Typography from '@mui/material/Typography';
+import isJSON from 'validator/lib/isJSON';
+import Tooltip from '@mui/material/Tooltip';
+import Alert from '@mui/material/Alert';
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -27,6 +28,16 @@ const CustomDialogTitle = styled(AppBar)({
   background: 'white',
   boxShadow: 'none'
 });
+
+const JSONEditButton = styled(IconButton)(({ theme }) => ({
+  borderRadius: 15,
+  marginTop: 15,
+  background: theme.palette.secondary.main,
+  color: 'white',
+  '&:hover': {
+    background: theme.palette.secondary.main
+  }
+}));
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Grow direction="up" ref={ref} {...props} />;
@@ -47,24 +58,20 @@ export default function JsonEdit({ attribute, attributesMap, setAttributesMap, i
   return (
     <>
       <Grid container direction="row" justifyContent="center" alignItems="center" spacing={1}>
-        <Button
-          variant="outlined"
-          color="secondary"
-          sx={{ marginLeft: '10px' }}
-          startIcon={<AutoFixNormalIcon />}
-          onClick={() => {
-            handleClickOpen();
-          }}
-        >
-          <Typography noWrap gutterBottom component="div">
+        <Tooltip
+          title={
             <Trans
               i18nKey="entity.form.editJSON"
               values={{
                 name: attribute.name
               }}
             />
-          </Typography>
-        </Button>
+          }
+        >
+          <JSONEditButton aria-label="EditMap" size="large" onClick={handleClickOpen}>
+            <AutoFixNormalIcon fontSize="medium" />
+          </JSONEditButton>
+        </Tooltip>
       </Grid>
       <DialogRounded
         TransitionComponent={Transition}
@@ -91,6 +98,24 @@ export default function JsonEdit({ attribute, attributesMap, setAttributesMap, i
               setAttributesMap([...[], ...newArray]);
             }}
           />
+          {!isJSON(attribute.value) ? (
+            <Alert
+              variant="filled"
+              severity="info"
+              sx={{
+                bottom: '0px',
+                width: '100%',
+                padding: '0.5px 30px',
+                fontSize: '0.75rem',
+                zIndex: 1201
+              }}
+              icon={false}
+            >
+              <Trans>entity.form.JSONerror</Trans>
+            </Alert>
+          ) : (
+            ''
+          )}
         </DialogContent>
         <DialogActions></DialogActions>
       </DialogRounded>

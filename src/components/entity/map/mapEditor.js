@@ -28,6 +28,8 @@ import { JsonEditor } from 'jsoneditor-react';
 import { valid } from 'geojson-validation';
 import Alert from '@mui/material/Alert';
 import { Trans } from 'react-i18next';
+import Tooltip from '@mui/material/Tooltip';
+import HistoryIcon from '@mui/icons-material/History';
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
     borderRadius: 15
@@ -38,6 +40,17 @@ const CustomDialogTitle = styled(AppBar)({
   background: 'white',
   boxShadow: 'none'
 });
+
+const MapEditButton = styled(IconButton)(({ theme }) => ({
+  borderRadius: 15,
+  marginTop: 15,
+  background: theme.palette.secondary.main,
+  color: 'white',
+  '&:hover': {
+    background: theme.palette.secondary.main
+  }
+}));
+
 const TabPanel = (props) => {
   const { children, value, index, ...other } = props;
 
@@ -78,42 +91,22 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function MapEdit({ env, attribute, attributesMap, setAttributesMap, index }) {
   const [open, setOpen] = React.useState(false);
   const loadJSON = (data) => {
-    if (typeof data.length !== 'undefined' && data !== '') {
-      let loaded = {
-        type: 'FeatureCollection'
-      };
-      for (const [i, v] of data.entries()) {
-        loaded[i.toString()] = [
-          {
-            type: 'Feature',
-            id: i,
-            properties: {
-              Code: '',
-              Name: ''
-            },
-            geometry: v
-          }
-        ];
-      }
-      return loaded;
-    } else {
-      return {
-        type: 'FeatureCollection',
-        features: [
-          {
-            type: 'Feature',
-            id: 0,
-            properties: {
-              Code: '',
-              Name: ''
-            },
-            geometry: data
-          }
-        ]
-      };
-    }
+    return {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          id: 0,
+          properties: {
+            Code: '',
+            Name: ''
+          },
+          geometry: data
+        }
+      ]
+    };
   };
-  const [geoJSON, setGeoJSON] = React.useState(loadJSON(attribute.value));
+  const [geoJSON, setGeoJSON] = React.useState(attribute.value);
 
   const compressJSON = (data) => {
     const properties = Object.getOwnPropertyNames(data);
@@ -129,14 +122,14 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
         }
       }
     }
-    return jsonCompressed;
+    return jsonCompressed[0];
   };
   const [tabValue, setTabValue] = React.useState(0);
   const [locationValue, setLocationValue] = React.useState(null);
   const returnCordinates = () => {
     switch (true) {
       //for a geoJSON that is not valid
-      case !valid(geoJSON):
+      case !valid(loadJSON(geoJSON)):
         return [47.373878, 8.545094];
       //for a missed or default value
       case attribute.value === '':
@@ -159,6 +152,7 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
     }
   };
   const [mapCordinate, setMapCordinate] = React.useState(returnCordinates());
+  const [key, setKey] = React.useState(returnCordinates());
 
   React.useEffect(() => {
     if (locationValue !== null) {
@@ -166,29 +160,25 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
         .then((results) => getLatLng(results[0]))
         .then(({ lat, lng }) => {
           setMapCordinate([lat, lng]);
-          setGeoJSON({
-            type: 'FeatureCollection',
-            features: [
-              {
-                type: 'Feature',
-                id: 0,
-                properties: {
-                  Code: '',
-                  Name: ''
-                },
-                geometry: {
-                  type: 'Point',
-                  coordinates: [lat, lng]
+          setGeoJSON(
+            compressJSON({
+              type: 'FeatureCollection',
+              features: [
+                {
+                  type: 'Feature',
+                  id: 0,
+                  properties: {
+                    Code: '',
+                    Name: ''
+                  },
+                  geometry: {
+                    type: 'Point',
+                    coordinates: [lat, lng]
+                  }
                 }
-              }
-            ]
-          });
-          const newArray = attributesMap;
-          newArray[Number(index)].value = {
-            type: 'Point',
-            coordinates: [lat, lng]
-          };
-          valid(geoJSON) ? setAttributesMap([...[], ...newArray]) : '';
+              ]
+            })
+          );
         });
     }
   }, [locationValue]);
@@ -207,10 +197,10 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
   const handleClose = () => {
     setOpen(false);
   };
-  const ChangeView = ({ center, zoom }) => {
+  const ChangeView = ({ center }) => {
     const map = useMap();
-    valid(geoJSON)
-      ? new L.GeoJSON(geoJSON, {
+    valid(loadJSON(geoJSON))
+      ? new L.GeoJSON(loadJSON(geoJSON), {
           pointToLayer: (latlng) => {
             return L.marker(latlng.geometry.coordinates, {
               icon: icon
@@ -219,33 +209,43 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
         })
       : '';
     locationValue !== null ? L.marker(mapCordinate, { icon }).addTo(map) : '';
-    map.setView(center, zoom);
+    map.setView(center);
     return null;
   };
 
   const isResponsive = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const saveTheData = () => {
+    const newArray = attributesMap;
+    const newData = compressJSON(loadJSON(geoJSON));
+    newArray[Number(index)].value = newData;
+    valid(loadJSON(geoJSON)) ? setAttributesMap([...[], ...newArray]) : '';
+    handleClose();
+  };
+
+  const goBack = () => {
+    setLocationValue(null);
+    setGeoJSON({ ...{}, ...attribute.value });
+    setMapCordinate(returnCordinates());
+    setKey(key + 1);
+  };
   return (
     <>
       <Grid container direction="row" justifyContent="center" alignItems="center" spacing={1}>
-        <Button
-          variant="outlined"
-          color="secondary"
-          sx={{ marginLeft: '10px' }}
-          startIcon={<AddLocationIcon />}
-          onClick={() => {
-            handleClickOpen();
-          }}
-        >
-          <Typography noWrap gutterBottom component="div">
+        <Tooltip
+          title={
             <Trans
               i18nKey="entity.form.editMAP"
               values={{
                 name: attribute.name
               }}
             />
-          </Typography>
-        </Button>
+          }
+        >
+          <MapEditButton aria-label="EditMap" size="large" onClick={handleClickOpen}>
+            <AddLocationIcon fontSize="medium" />
+          </MapEditButton>
+        </Tooltip>
       </Grid>
       <DialogRounded
         TransitionComponent={Transition}
@@ -260,6 +260,13 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
             <IconButton edge="start" onClick={handleClose} aria-label="close">
               <CloseIcon />
             </IconButton>
+            <Typography sx={{ ml: 2, flex: 1, color: 'black' }} noWrap gutterBottom variant="h6" component="div">
+              {attribute.name}
+            </Typography>
+
+            <Button autoFocus color="secondary" onClick={saveTheData}>
+              <Trans>common.saveButton</Trans>
+            </Button>
           </Toolbar>
         </CustomDialogTitle>
         <DialogContent sx={{ minHeight: '400px' }}>
@@ -272,7 +279,7 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
             </Box>
             <TabPanel value={tabValue} index={0}>
               <Grid container spacing={isResponsive ? 1 : 3}>
-                <Grid item xs={12}>
+                <Grid item xs={10}>
                   <GooglePlacesAutocomplete
                     apiKey={env.GOOGLE_MAPS}
                     selectProps={{
@@ -281,14 +288,21 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
                     }}
                   />
                 </Grid>
+                <Grid item xs={2}>
+                  <Tooltip title={<Trans i18nKey="entity.form.restore" />}>
+                    <IconButton edge="end" color="info" onClick={goBack} aria-label="close">
+                      <HistoryIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
                 <Grid item xs={12}>
-                  <MapContainer zoom={18} style={{ height: '50vh', zIndex: 0 }}>
+                  <MapContainer zoom={18} style={{ height: '50vh', zIndex: 0 }} key={key}>
                     <TileLayer
                       attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
-                    <ChangeView center={mapCordinate} zoom={18} />
-                    {valid(geoJSON) ? <GeoJSON key="ID" data={geoJSON} /> : ''}
+                    <ChangeView center={mapCordinate} />
+                    {valid(loadJSON(geoJSON)) ? <GeoJSON key="ID" data={geoJSON} /> : ''}
                     <MapConsumer>
                       {(map) => {
                         map.on('click', function (e) {
@@ -299,29 +313,25 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
                           const { lat, lng } = e.latlng;
                           L.marker([lat, lng], { icon }).addTo(map);
 
-                          const newArray = attributesMap;
-                          newArray[Number(index)].value = {
-                            type: 'Point',
-                            coordinates: [lat, lng]
-                          };
-                          setGeoJSON({
-                            type: 'FeatureCollection',
-                            features: [
-                              {
-                                type: 'Feature',
-                                id: 0,
-                                properties: {
-                                  Code: '',
-                                  Name: ''
-                                },
-                                geometry: {
-                                  type: 'Point',
-                                  coordinates: [lat, lng]
+                          setGeoJSON(
+                            compressJSON({
+                              type: 'FeatureCollection',
+                              features: [
+                                {
+                                  type: 'Feature',
+                                  id: 0,
+                                  properties: {
+                                    Code: '',
+                                    Name: ''
+                                  },
+                                  geometry: {
+                                    type: 'Point',
+                                    coordinates: [lat, lng]
+                                  }
                                 }
-                              }
-                            ]
-                          });
-                          valid(geoJSON) ? setAttributesMap([...[], ...newArray]) : '';
+                              ]
+                            })
+                          );
                         });
                         return null;
                       }}
@@ -338,14 +348,10 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
                     key={index}
                     value={geoJSON}
                     onChange={(value) => {
-                      const newArray = attributesMap;
-                      const newData = compressJSON(value);
-                      newArray[Number(index)].value = newData;
                       setGeoJSON(value);
-                      valid(geoJSON) ? setAttributesMap([...[], ...newArray]) : '';
                     }}
                   />
-                  {!valid(geoJSON) ? (
+                  {!valid(loadJSON(geoJSON)) ? (
                     <Alert
                       variant="filled"
                       severity="info"

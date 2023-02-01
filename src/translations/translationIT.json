@@ -109,7 +109,9 @@
        "editJSON":"Modifica il JSON di: <0>{{name}}</0>",
       "editMAP":"Modifica la posizione di: <0>{{name}}</0>",
        "geoJSONerror":"Formato Geo-Json non valido!",
+       "JSONerror":"JSON noN valido!",
     "name":"Nome",
+      "restore":"Ripristina valori",
      "selectType": {
       "number": "Numero",
       "date": "Data",

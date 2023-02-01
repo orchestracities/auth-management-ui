@@ -106,10 +106,12 @@
       "servicePath": "Service path",
       "type": "Type",
       "name":"Name",
+      "restore":"Restore Default",
       "add":"New Attribute",
       "editJSON":"Edit <0>{{name}}</0> JSON",
       "editMAP":"Edit <0>{{name}}</0> location",
       "geoJSONerror":"Geo-Json format not valid!",
+      "JSONerror":"JSON not valid!",
       "selectType": {
         "number": "Number",
         "date": "DateTime",
