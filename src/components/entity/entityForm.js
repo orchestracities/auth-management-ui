@@ -18,7 +18,6 @@ import Select from '@mui/material/Select';
 import FormHelperText from '@mui/material/FormHelperText';
 import useNotification from '../shared/messages/alerts';
 import { Trans } from 'react-i18next';
-import * as log from 'loglevel';
 import axios from 'axios';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -88,8 +87,6 @@ export default function EntityForm({
   GeTenantData,
   entityEndpoint
 }) {
-  typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
-
   const getAttributesNames = (types) => {
     let map = [];
     for (let type of types) {
@@ -101,7 +98,6 @@ export default function EntityForm({
   const attributeNames = getAttributesNames(types);
   const [error, setError] = React.useState(null);
   const [msg, sendNotification] = useNotification();
-  log.debug(msg);
 
   const handleClose = () => {
     close(false);
