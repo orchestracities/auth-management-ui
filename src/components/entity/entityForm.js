@@ -463,7 +463,7 @@ export default function EntityForm({
   const isResponsive = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <div>
+    <div key={msg}>
       <CustomDialogTitle>
         <Toolbar>
           <IconButton edge="start" onClick={handleClose} aria-label="close">
