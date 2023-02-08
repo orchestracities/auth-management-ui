@@ -8,36 +8,36 @@ export default {
   component: Form,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
-    title:{
-      control:false
+    title: {
+      control: false
     },
-    close:{
-      control:false
+    close: {
+      control: false
     },
-    action:{
-      control:false
+    action: {
+      control: false
     },
-    env:{
-      control:false
+    env: {
+      control: false
     },
-    data:{
-      control:false
+    data: {
+      control: false
     },
-    getTheEntities:{
-      control:false
+    getTheEntities: {
+      control: false
     },
-    types:{
-      control:false
+    types: {
+      control: false
     },
-    services:{
-      control:false
+    services: {
+      control: false
     },
-    GeTenantData:{
-      control:false
+    GeTenantData: {
+      control: false
     },
-    entityEndpoint:{
-      control:false
-    },
+    entityEndpoint: {
+      control: false
+    }
   },
   parameters: {
     docs: {
@@ -47,8 +47,8 @@ export default {
           <Subtitle>Description:</Subtitle>
           <Description>The form for the entity creaton </Description>
           <Description>
-           The form is splitted between the creation and the modification, it changed based on the parameter passed to the component, the modify forum has the geoJSON in in for that take a look on the section 
-
+            The form is splitted between the creation and the modification, it changed based on the parameter passed to
+            the component, the modify forum has the geoJSON in in for that take a look on the section
           </Description>
           <Subtitle>API Documentation:</Subtitle>
           <Description>The entity Map edit component is inside entity/entityform.js :</Description>

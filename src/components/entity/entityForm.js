@@ -35,6 +35,8 @@ import JsonEdit from './jsonEditor';
 import MapEdit from './map/mapEditor';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
+import Autocomplete from '@mui/material/Autocomplete';
+import Chip from '@mui/material/Chip';
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -112,7 +114,22 @@ export default function EntityForm({
   ];
   const [service, setService] = React.useState('');
   const [id, setId] = React.useState('');
-  const [type, setType] = React.useState('');
+  //Type
+  const [type, setType] = React.useState([]);
+  const [limitTheNumberOfValues, setLimitTheNumberOfValues] = React.useState(action === 'create' ? false : true);
+  const handleTypes = (event, value) => {
+    switch (true) {
+      case value.length === 1 && type.length === 0:
+        setType(value);
+        setLimitTheNumberOfValues(true);
+        break;
+      case value.length === 0 && type.length === 1:
+        setType(value);
+        setLimitTheNumberOfValues(false);
+        break;
+    }
+  };
+
   const [attributesMap, setAttributesMap] = React.useState([]);
   const createAttributesMap = () => {
     if (action !== 'create') {
@@ -296,9 +313,6 @@ export default function EntityForm({
         return <></>;
     }
   };
-  const handleType = (event) => {
-    setType(event.target.value);
-  };
 
   const handleService = (event) => {
     setService(event.target.value);
@@ -340,13 +354,13 @@ export default function EntityForm({
           };
     switch (action) {
       case 'create':
-        if (!error && [service, id, type].find((element) => element === '') === undefined) {
+        if (!error && [service, id, type[0]].find((element) => element === '') === undefined) {
           axios
             .post(
               entityEndpoint,
               {
                 id: 'urn:ngsi-ld:' + id,
-                type: type
+                type: type[0]
               },
               {
                 headers: headers
@@ -527,28 +541,29 @@ export default function EntityForm({
               </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth>
-                  <InputLabel id={'types'} error={errorCases(type)}>
-                    <Trans>entity.form.type</Trans>
-                  </InputLabel>
-                  <Select
-                    color="primary"
-                    labelId={'types'}
+                  <InputLabel id={'types'} error={errorCases(type[0])}></InputLabel>
+                  <Autocomplete
+                    multiple
                     id={'types'}
                     key={'types'}
-                    value={type.type}
-                    variant="outlined"
-                    onChange={handleType}
-                    label={<Trans>entity.form.type</Trans>}
-                    input={<OutlinedInput label={<Trans>entity.form.type</Trans>} />}
-                    error={errorCases(type)}
-                  >
-                    {types.map((thisType) => (
-                      <MenuItem key={thisType.type} value={thisType.type}>
-                        {thisType.type}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <FormHelperText error={errorCases(type)}>{errorText(type)}</FormHelperText>
+                    color="primary"
+                    options={types.map((option) => option.type)}
+                    fullWidth={true}
+                    freeSolo={!limitTheNumberOfValues}
+                    getOptionDisabled={() => (limitTheNumberOfValues ? true : false)}
+                    defaultValue={[]}
+                    error={errorCases(type[0])}
+                    onChange={(event, value) => handleTypes(event, value)}
+                    renderTags={(value, getTagProps) =>
+                      value.map((option, index) => (
+                        <Chip variant="outlined" key={index} label={option} {...getTagProps({ index })} />
+                      ))
+                    }
+                    renderInput={(params) => (
+                      <TextField {...params} variant="outlined" label={<Trans>entity.form.type</Trans>} />
+                    )}
+                  />
+                  <FormHelperText error={errorCases(type[0])}>{errorText(type[0])}</FormHelperText>
                 </FormControl>
               </Grid>
             </>
