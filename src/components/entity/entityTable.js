@@ -27,6 +27,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import Grow from '@mui/material/Grow';
 import dayjs from 'dayjs';
 import * as log from 'loglevel';
+import EntityForm from './entityForm';
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -59,7 +60,17 @@ const DinamicPaper = styled(Paper)(({ theme }) => ({
   borderRadius: 10
 }));
 
-export default function EntityTable({ data, env, language }) {
+export default function EntityTable({
+  data,
+  env,
+  token,
+  language,
+  getTheEntities,
+  entityEndpoint,
+  types,
+  GeTenantData,
+  services
+}) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
 
   // DELETE
@@ -76,7 +87,7 @@ export default function EntityTable({ data, env, language }) {
   // EDIT
   const [open, setOpen] = React.useState(false);
   const [editData, setEditData] = React.useState({});
-  log.debug(editData);
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -406,6 +417,26 @@ export default function EntityTable({ data, env, language }) {
         aria-labelledby="edit"
         aria-describedby="edit"
       >
+        <EntityForm
+          title={
+            <Trans
+              i18nKey="entity.form.edit"
+              values={{
+                name: editData.id
+              }}
+            />
+          }
+          close={handleClose}
+          action={'modify'}
+          token={token}
+          env={env}
+          data={editData}
+          GeTenantData={GeTenantData}
+          getTheEntities={getTheEntities}
+          entityEndpoint={entityEndpoint}
+          types={types}
+          services={services}
+        />
         <DialogActions></DialogActions>
       </DialogRounded>
     </>

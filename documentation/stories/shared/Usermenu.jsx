@@ -3,6 +3,7 @@ import UserMenu from '../../../src/components/shared/userMenu';
 import Grid from '@mui/material/Grid';
 import React from 'react';
 import { SnackbarProvider } from 'notistack';
+import '../../../src/i18n';
 
 /**
  * Primary UI component for user interaction
@@ -34,7 +35,7 @@ UsrMenu.propTypes = {
 };
 
 UsrMenu.defaultProps = {
-  language: { language: 'defaultBrowser', setLanguage: () => {} },
+  language: { language: 'en', setLanguage: () => {} },
   userData: { name: 'EasterEgg' },
   token: undefined
 };
