@@ -17,6 +17,7 @@ export const envNames = [
   'LOG_LEVEL',
   'KEYCLOACK_ADMIN',
   'ORION',
+  'GOOGLE_MAPS',
   'TITLE',
   'DESCRIPTION'
 ];

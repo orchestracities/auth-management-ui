@@ -27,6 +27,8 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import Grow from '@mui/material/Grow';
 import dayjs from 'dayjs';
 import * as log from 'loglevel';
+import DeleteDialog from '../shared/messages/cardDelete';
+
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -315,6 +317,19 @@ export default function EntityTable({ data, env, language }) {
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const fromIdToText = (entititiesSelected) => {
+    let textDisplay = '\n';
+    let foundEntity;
+    for (const id of entititiesSelected) {
+      foundEntity = data.filter((e) => e.id === id);
+      if (foundEntity.length > 0) {
+        textDisplay = textDisplay + ' -- ' + foundEntity[0].id + '\n';
+      }
+    }
+    return textDisplay;
+  };
+
   return (
     <>
       <Box sx={{ width: '100%' }}>
@@ -408,6 +423,19 @@ export default function EntityTable({ data, env, language }) {
       >
         <DialogActions></DialogActions>
       </DialogRounded>
+      <DeleteDialog
+        open={openDeleteDialog}
+        env={env}
+        token={token}
+        onClose={handleCloseDeleteDialog}
+        getData={getData}
+        data={{
+          dataValues: dataCreator(selected),
+          multiple: true,
+          selectedText: fromIdToText(selected),
+          setSelected
+        }}
+      />
     </>
   );
 }
