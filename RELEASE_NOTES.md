@@ -7,6 +7,7 @@
 - Form for the entity creation (#114)
 - Form for the creation of attributes related to a entity (#114)
 - Entity id validation (#148)
+- Delete multiple entities (#115)
 
 ### Bug fixes
 
