@@ -118,7 +118,7 @@ import serviceImage from './images/service.png';
 
 # How to Document the components
 
-<Subtitle>Introduction</Subtitle>
+## Introduction
 
 The documentation of components inside the App is done with
 [StoryBook](https://storybook.js.org/).
@@ -126,7 +126,7 @@ The documentation of components inside the App is done with
 StoryBook use a combination of jsx components and mdx pages to create a visual
 section and a textual one.
 
-<Subtitle>Where i need to start</Subtitle>
+## Where i need to start
 
 Inside the main folder you can find the **documentation folder**.
 Inside it you can see the stories.
@@ -134,7 +134,7 @@ Inside it you can see the stories.
 A story is a page inside the documentation, they are organized in the same way
 of the components (`shared`,`tenant`,`policy`,`service`).
 
-<Subtitle>How to create a story</Subtitle>
+## How to create a story
 
 To create a story you need to create two files inside the correct folder:
 one is the **component** and the other one is the **story**.
@@ -147,7 +147,7 @@ for example the extension of the file **must** be `.jsx` and the story file
 The result are two separate files: `componentName.jsx` and
 `componentName.stories.jsx`.
 
-<Subtitle>The component</Subtitle>
+## The component
 
 Inside the component file, we declare as a functional
 component the element that we want to document, this component will be
@@ -194,7 +194,7 @@ SimpleTitle.defaultProps = {
                         `}
                     />
 
-<Subtitle>The component stories</Subtitle>
+## The component stories
 
 To generate a **correct documentation page**, inside the stories file, we are
 going to declare the textual explanation about the component and the variation 

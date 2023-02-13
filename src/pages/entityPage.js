@@ -13,6 +13,7 @@ import EntityFilters from '../components/entity/entityFilter';
 import EntityTable from '../components/entity/entityTable';
 import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
+import EntityForm from '../components/entity/entityForm';
 import dayjs from 'dayjs';
 
 export default function EntityPage({ token, graphqlErrors, env, thisTenant, tenantValues, language }) {
@@ -38,7 +39,7 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
   const [createOpen, setCreateOpen] = React.useState(false);
   const [entities, setEntities] = React.useState([]);
   const mainTitle = <Trans>entity.page.title</Trans>;
-
+  const [entityEndpoint, setEntityEndpoint] = React.useState(null);
   //FILTER PART
   const [servicePath, setServicePath] = React.useState(null);
   const [type, setType] = React.useState(null);
@@ -82,6 +83,7 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
                 '?attrs=dateCreated,dateModified,*&options=count'
             )
           : getEntitiesFromResource(env.ORION + '/v2/entities?attrs=dateCreated,dateModified,*&options=count');
+        getTypeURL();
       })
       .catch((e) => {
         sendNotification({ msg: e.message + ' the config', variant: 'error' });
@@ -173,6 +175,7 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
       .then((response) => {
         setEntities(response.data);
         getServices();
+        setEntityEndpoint(entityUrl);
       })
       .catch((e) => {
         sendNotification({ msg: e.message, variant: 'error' });
@@ -180,9 +183,16 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
   };
 
   React.useEffect(() => {
+    setEntities([]);
     thisTenant !== null ? getEntityURL() : '';
     thisTenant !== null ? getTypeURL() : '';
   }, [thisTenant, servicePath, type, date]);
+
+  React.useEffect(() => {
+    setServicePath(null);
+    setType(null);
+    setDate(null);
+  }, [thisTenant]);
 
   const theme = useTheme();
   const smallDevice = useMediaQuery(theme.breakpoints.down('sm'));
@@ -190,7 +200,20 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
     <Box>
       <MainTitle mainTitle={mainTitle}></MainTitle>
       <AddButton
-        pageType={<div></div>}
+        pageType={
+          <EntityForm
+            title={<Trans>entity.form.new</Trans>}
+            close={setCreateOpen}
+            action={'create'}
+            token={token}
+            env={env}
+            GeTenantData={GeTenantData}
+            getTheEntities={getEntityURL}
+            entityEndpoint={entityEndpoint}
+            types={types}
+            services={services}
+          />
+        }
         setOpen={setCreateOpen}
         status={createOpen}
         graphqlErrors={graphqlErrors}
@@ -211,7 +234,17 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
         </Grid>
 
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-          <EntityTable token={token} env={env} data={entities} language={language}></EntityTable>
+          <EntityTable
+            token={token}
+            env={env}
+            data={entities}
+            language={language}
+            GeTenantData={GeTenantData}
+            getTheEntities={getEntityURL}
+            entityEndpoint={entityEndpoint}
+            types={types}
+            services={services}
+          ></EntityTable>
         </Grid>
       </Grid>
     </Box>

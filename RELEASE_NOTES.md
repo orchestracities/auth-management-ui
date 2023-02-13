@@ -4,6 +4,10 @@
 
 ### New features
 
+- Form for the entity creation (#114)
+- Form for the creation of attributes related to a entity (#114)
+- Entity id validation (#148)
+
 ### Bug fixes
 
 - Fixing the counter on the cards (#141)

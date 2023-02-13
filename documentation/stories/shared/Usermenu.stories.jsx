@@ -37,7 +37,7 @@ const Template = (args) => <UsrMenu {...args} />;
 export const Main = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Main.args = {
-  language: { language: 'defaultBrowser', setLanguage: () => {} },
+  language: { language: 'en', setLanguage: () => {} },
   userData: { name: 'EasterEgg' },
   token: ''
 };

@@ -123,6 +123,7 @@ and the Configuration API:
 - `REACT_APP_LOG_LEVEL`:the console level (trace,debug,info,warn,error,silent)
 - `REACT_APP_KEYCLOACK_ADMIN`: the endpoint to retrive realm data
 - `REACT_APP_ORION`: the endpoint of Orion Context Broker (NSGI V2 currently)
+- `REACT_APP_GOOGLE_MAPS`:The API key of google's Map
 - `MONGO_DB`: the MongoDB endpoint of the Configuration API and by
   [populateDB.js](configuration-api/main/mongo/populateDB.js)
   to populate the Configuration API backend with example data
