@@ -340,6 +340,23 @@ export default function EntityTable({
     return textDisplay;
   };
 
+  const dataCreator = (entitiesIDs) => {
+    const arrayOfData = [];
+    for (const id of entitiesIDs) {
+      const foundEntity = data.filter((e) => e.id === id);
+      if (foundEntity.length > 0) {
+        const thisEntity = foundEntity[0];
+        arrayOfData.push({
+          id: thisEntity.id,
+          type: thisEntity.type,
+          entityEndpoint: entityEndpoint,
+          tenant: GeTenantData('name')
+        });
+      }
+    }
+    return arrayOfData;
+  };
+
   return (
     <>
       <Box sx={{ width: '100%' }}>
@@ -458,7 +475,7 @@ export default function EntityTable({
         env={env}
         token={token}
         onClose={handleCloseDeleteDialog}
-        getData={getData}
+        getData={getTheEntities}
         data={{
           dataValues: dataCreator(selected),
           multiple: true,

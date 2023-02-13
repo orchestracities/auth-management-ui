@@ -47,7 +47,7 @@ export default function DeleteDialog({ open, onClose, getData, data, env, token 
     cache: new InMemoryCache()
   });
 
-  const deleteMapper = (thisData) => {
+  const urlMapper = (thisData) => {
     switch (true) {
       case typeof thisData.name !== 'undefined':
         return anubisURL + 'v1/tenants/' + thisData.id;
@@ -55,8 +55,32 @@ export default function DeleteDialog({ open, onClose, getData, data, env, token 
         return anubisURL + 'v1/tenants/' + thisData.tenant_id + '/service_paths/' + thisData.id;
       case typeof thisData.access_to !== 'undefined':
         return anubisURL + 'v1/policies/' + thisData.id;
+      case typeof thisData.type !== 'undefined':
+        return thisData.entityEndpoint.split('?')[0] + '/' + thisData.id;
       default:
         break;
+    }
+  };
+  const propertyMapper = (thisData) => {
+    switch (true) {
+      case typeof thisData.type !== 'undefined':
+        return {
+          headers: {
+            'fiware-Service': thisData.tenant
+          }
+        };
+      case typeof thisData.access_to !== 'undefined':
+        return {
+          headers: {
+            policy_id: thisData.id,
+            'fiware-service': thisData.fiware_service,
+            'fiware-servicepath': thisData.fiware_service_path
+          }
+        };
+      default:
+        return {
+          headers: {}
+        };
     }
   };
 
@@ -99,20 +123,7 @@ export default function DeleteDialog({ open, onClose, getData, data, env, token 
     if (typeof data.multiple !== 'undefined') {
       for (const thisData of data.dataValues) {
         axios
-          .delete(
-            deleteMapper(thisData),
-            typeof thisData.access_to !== 'undefined'
-              ? {
-                  headers: {
-                    policy_id: thisData.id,
-                    'fiware-service': thisData.fiware_service,
-                    'fiware-servicepath': thisData.fiware_service_path
-                  }
-                }
-              : {
-                  headers: {}
-                }
-          )
+          .delete(urlMapper(thisData), propertyMapper(thisData))
           .then(() => {
             getData();
             sendNotification({
@@ -136,7 +147,7 @@ export default function DeleteDialog({ open, onClose, getData, data, env, token 
     } else {
       let header = typeof data.name !== 'undefined' ? { headers: { authorization: `Bearer ${token}` } } : {};
       axios
-        .delete(deleteMapper(data), header)
+        .delete(urlMapper(data), header)
         .then(() => {
           // delete tenant from graphql
           deleteTenantConfiguration(data.name);
