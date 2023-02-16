@@ -1,6 +1,6 @@
 {
   "name": "auth-management-ui-documentation",
-  "version": "0.8.0-dev",
+  "version": "0.8.0",
   "description": "",
   "main": "index.js",
   "scripts": {

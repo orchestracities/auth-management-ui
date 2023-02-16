@@ -1,6 +1,6 @@
 # Auth Management UI Release Notes
 
-## 0.8-dev
+## 0.8
 
 ### New features
 
