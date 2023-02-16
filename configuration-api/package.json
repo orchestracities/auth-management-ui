@@ -1,6 +1,6 @@
 {
   "name": "auth-management-ui-configuration-api",
-  "version": "0.8.0-dev",
+  "version": "0.8",
   "keywords": [
     "graphql",
     "apollo",
