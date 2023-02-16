@@ -27,7 +27,7 @@
     "logops": "^2.1.2",
     "mongoose": "^6.2.11",
     "passport": "^0.6.0",
-    "passport-jwt": "^4.0.0",
+    "passport-jwt": "^4.0.1",
     "uid": "^2.0.1"
   },
   "devDependencies": {
