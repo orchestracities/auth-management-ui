@@ -59,6 +59,15 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
     }
   };
 
+  //TABLE PART
+  const [page, setPage] = React.useState(0);
+  const [entitiesLenght, setEntitiesLenght] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(1);
+  const pageMaxNumber = 2;
+  React.useEffect(() => {
+    thisTenant !== null ? getEntityURL() : '';
+  }, [page, rowsPerPage]);
+
   const getEntityURL = () => {
     client
       .query({
@@ -80,9 +89,20 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
         filtered.length > 0
           ? getEntitiesFromResource(
               filtered[0].endpointUrl.slice(0, filtered[0].endpointUrl.indexOf('?')) +
-                '?attrs=dateCreated,dateModified,*&options=count'
+                '?attrs=dateCreated,dateModified,*&offset=' +
+                page * (rowsPerPage === pageMaxNumber ? pageMaxNumber : pageMaxNumber - rowsPerPage) +
+                '&limit=' +
+                rowsPerPage +
+                '&options=count'
             )
-          : getEntitiesFromResource(env.ORION + '/v2/entities?attrs=dateCreated,dateModified,*&options=count');
+          : getEntitiesFromResource(
+              env.ORION +
+                '/v2/entities?attrs=dateCreated,dateModified,*&offset=' +
+                page * (rowsPerPage === pageMaxNumber ? pageMaxNumber : pageMaxNumber - rowsPerPage) +
+                '&limit=' +
+                rowsPerPage +
+                '&options=count'
+            );
         getTypeURL();
       })
       .catch((e) => {
@@ -173,6 +193,7 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
         headers: headers
       })
       .then((response) => {
+        setEntitiesLenght(response.headers['fiware-total-count']);
         setEntities(response.data);
         getServices();
         setEntityEndpoint(entityUrl);
@@ -235,6 +256,11 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
 
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
           <EntityTable
+            page={page}
+            setPage={setPage}
+            rowsPerPage={rowsPerPage}
+            setRowsPerPage={setRowsPerPage}
+            entitiesLenght={entitiesLenght}
             token={token}
             env={env}
             data={entities}
