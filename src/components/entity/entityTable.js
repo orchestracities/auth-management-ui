@@ -404,7 +404,7 @@ export default function EntityTable({
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[10, 25,50]}
+            rowsPerPageOptions={[10, 25, 50]}
             component="div"
             count={entitiesLenght}
             rowsPerPage={rowsPerPage}
