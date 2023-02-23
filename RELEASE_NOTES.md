@@ -4,6 +4,8 @@
 
 ### New features
 
+- Entities Paginations (#113)
+
 ### Bug fixes
 
 ### Documentation

@@ -70,13 +70,16 @@ export default function EntityTable({
   entityEndpoint,
   types,
   GeTenantData,
-  services
+  services,
+  page,
+  setPage,
+  rowsPerPage,
+  setRowsPerPage,
+  entitiesLenght
 }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
-
   // DELETE
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
-  log.debug(openDeleteDialog);
   const handleClickOpenDeleteDialog = () => {
     setOpenDeleteDialog(true);
   };
@@ -84,7 +87,6 @@ export default function EntityTable({
   const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false);
   };
-  log.debug(handleCloseDeleteDialog);
   // EDIT
   const [open, setOpen] = React.useState(false);
   const [editData, setEditData] = React.useState({});
@@ -112,6 +114,7 @@ export default function EntityTable({
     );
     return data;
   };
+
   const rows = addEdit(data);
 
   function descendingComparator(a, b, orderBy) {
@@ -128,18 +131,6 @@ export default function EntityTable({
     return order === 'desc'
       ? (a, b) => descendingComparator(a, b, orderBy)
       : (a, b) => -descendingComparator(a, b, orderBy);
-  }
-
-  function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-      const order = comparator(a[0], b[0]);
-      if (order !== 0) {
-        return order;
-      }
-      return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
   }
 
   const headCells = [
@@ -252,7 +243,7 @@ export default function EntityTable({
           <Trans
             i18nKey="common.table.totalPlural"
             values={{
-              name: stableSort(rows, getComparator(order, orderBy)).length
+              name: entitiesLenght
             }}
           />
         )}
@@ -267,8 +258,6 @@ export default function EntityTable({
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('resource');
   const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -322,9 +311,6 @@ export default function EntityTable({
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
-  // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -373,10 +359,9 @@ export default function EntityTable({
                 rowCount={rows.length}
               />
               <TableBody>
-                {/* if you don't need to support IE11, you can replace the `stableSort` call with:
-                 rows.slice().sort(getComparator(order, orderBy)) */}
-                {stableSort(rows, getComparator(order, orderBy))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                {rows
+                  .slice(0, page * rowsPerPage + rowsPerPage)
+                  .sort(getComparator(order, orderBy))
                   .map((row, index) => {
                     const isItemSelected = isSelected(row.id);
                     const labelId = `enhanced-table-checkbox-${index}`;
@@ -415,22 +400,13 @@ export default function EntityTable({
                       </TableRow>
                     );
                   })}
-                {emptyRows > 0 && (
-                  <TableRow
-                    style={{
-                      height: 53 * emptyRows
-                    }}
-                  >
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                )}
               </TableBody>
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[10, 25]}
+            rowsPerPageOptions={[10, 25, 50]}
             component="div"
-            count={rows.length}
+            count={entitiesLenght}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
