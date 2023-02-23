@@ -62,8 +62,12 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
   //TABLE PART
   const [page, setPage] = React.useState(0);
   const [entitiesLenght, setEntitiesLenght] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const pageMaxNumber = 50;
+  const [rowsPerPage, setRowsPerPage] = React.useState(
+    typeof env === 'undefined' ? 10 : Number(env.TABLE_DEFAULT_DATA_AMOUNT)
+  );
+  const pageMaxNumber = Math.max(
+    ...(typeof env === 'undefined' ? [10, 25, 50] : JSON.parse(env.TABLE_PAGINATION_OPTIONS))
+  );
   React.useEffect(() => {
     thisTenant !== null ? getEntityURL() : '';
   }, [page, rowsPerPage]);

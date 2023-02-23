@@ -18,6 +18,8 @@ export const envNames = [
   'KEYCLOACK_ADMIN',
   'ORION',
   'GOOGLE_MAPS',
+  'TABLE_PAGINATION_OPTIONS',
+  'TABLE_DEFAULT_DATA_AMOUNT',
   'TITLE',
   'DESCRIPTION'
 ];

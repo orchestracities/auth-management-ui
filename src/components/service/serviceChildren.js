@@ -263,7 +263,9 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(
+    typeof env === 'undefined' ? 10 : Number(env.TABLE_DEFAULT_DATA_AMOUNT)
+  );
 
   const fromIdToText = (servicesIDs) => {
     let textDisplay = '\n';
@@ -479,7 +481,9 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
                     </Table>
                   </TableContainer>
                   <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
+                    rowsPerPageOptions={
+                      typeof env === 'undefined' ? [10, 25, 50] : JSON.parse(env.TABLE_PAGINATION_OPTIONS)
+                    }
                     component="div"
                     count={rows.length}
                     rowsPerPage={rowsPerPage}

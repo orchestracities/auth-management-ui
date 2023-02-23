@@ -5,6 +5,7 @@
 ### New features
 
 - Entities Paginations (#113)
+- Table pagination && elements configurable by env
 
 ### Bug fixes
 
