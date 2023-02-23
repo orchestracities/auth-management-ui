@@ -37,6 +37,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ServiceForm from './serviceForm';
 import Tooltip from '@mui/material/Tooltip';
 import * as log from 'loglevel';
+import * as tableApi from '../../componentsApi/tableApi';
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -263,9 +264,7 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(
-    typeof env === 'undefined' ? 10 : Number(env.TABLE_DEFAULT_DATA_AMOUNT)
-  );
+  const [rowsPerPage, setRowsPerPage] = React.useState(tableApi.getRowsPerPage(env));
 
   const fromIdToText = (servicesIDs) => {
     let textDisplay = '\n';
@@ -481,9 +480,7 @@ export default function ServiceChildren({ masterTitle, setOpen, status, data, ge
                     </Table>
                   </TableContainer>
                   <TablePagination
-                    rowsPerPageOptions={
-                      typeof env === 'undefined' ? [10, 25, 50] : JSON.parse(env.TABLE_PAGINATION_OPTIONS)
-                    }
+                    rowsPerPageOptions={tableApi.getTablePageOptions(env)}
                     component="div"
                     count={rows.length}
                     rowsPerPage={rowsPerPage}

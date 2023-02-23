@@ -15,6 +15,7 @@ import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client
 import { setContext } from '@apollo/client/link/context';
 import EntityForm from '../components/entity/entityForm';
 import dayjs from 'dayjs';
+import * as tableApi from '../componentsApi/tableApi';
 
 export default function EntityPage({ token, graphqlErrors, env, thisTenant, tenantValues, language }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
@@ -62,12 +63,8 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
   //TABLE PART
   const [page, setPage] = React.useState(0);
   const [entitiesLenght, setEntitiesLenght] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(
-    typeof env === 'undefined' ? 10 : Number(env.TABLE_DEFAULT_DATA_AMOUNT)
-  );
-  const pageMaxNumber = Math.max(
-    ...(typeof env === 'undefined' ? [10, 25, 50] : JSON.parse(env.TABLE_PAGINATION_OPTIONS))
-  );
+  const [rowsPerPage, setRowsPerPage] = React.useState(tableApi.getRowsPerPage(env));
+  const pageMaxNumber = tableApi.getTableMax(env);
   React.useEffect(() => {
     thisTenant !== null ? getEntityURL() : '';
   }, [page, rowsPerPage]);
