@@ -27,6 +27,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Grow from '@mui/material/Grow';
+import * as tableApi from '../../componentsApi/tableApi';
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -300,7 +301,7 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
   const [orderBy, setOrderBy] = React.useState('resource');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(tableApi.getRowsPerPage(env));
 
   const fromIdToText = (policyIDs) => {
     let textDisplay = '\n';
@@ -461,7 +462,7 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[10, 25]}
+            rowsPerPageOptions={tableApi.getTablePageOptions(env)}
             component="div"
             count={rows.length}
             rowsPerPage={rowsPerPage}

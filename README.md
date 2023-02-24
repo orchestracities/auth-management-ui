@@ -124,6 +124,8 @@ and the Configuration API:
 - `REACT_APP_KEYCLOACK_ADMIN`: the endpoint to retrive realm data
 - `REACT_APP_ORION`: the endpoint of Orion Context Broker (NSGI V2 currently)
 - `REACT_APP_GOOGLE_MAPS`:The API key of google's Map
+- `REACT_APP_TABLE_PAGINATION_OPTIONS`: Options of rows inside the table
+- `REACT_APP_TABLE_DEFAULT_DATA_AMOUNT`: Default displayed rows inside a table
 - `MONGO_DB`: the MongoDB endpoint of the Configuration API and by
   [populateDB.js](configuration-api/main/mongo/populateDB.js)
   to populate the Configuration API backend with example data

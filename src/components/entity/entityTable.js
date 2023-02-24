@@ -29,6 +29,7 @@ import dayjs from 'dayjs';
 import * as log from 'loglevel';
 import DeleteDialog from '../shared/messages/cardDelete';
 import EntityForm from './entityForm';
+import * as tableApi from '../../componentsApi/tableApi';
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -404,7 +405,7 @@ export default function EntityTable({
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[10, 25, 50]}
+            rowsPerPageOptions={tableApi.getTablePageOptions(env)}
             component="div"
             count={entitiesLenght}
             rowsPerPage={rowsPerPage}
