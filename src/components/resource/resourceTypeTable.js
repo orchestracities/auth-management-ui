@@ -22,8 +22,22 @@ import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client
 import { setContext } from '@apollo/client/link/context';
 import useNotification from '../shared/messages/alerts';
 import { Trans } from 'react-i18next';
+import TablePagination from '@mui/material/TablePagination';
+import * as tableApi from '../../componentsApi/tableApi';
 
-export default function ResourceTable({ token, tokenData, env, resources, getTheResources, GeTenantData }) {
+export default function ResourceTable({
+  token,
+  tokenData,
+  env,
+  resources,
+  getTheResources,
+  GeTenantData,
+  page,
+  setPage,
+  rowsPerPage,
+  setRowsPerPage,
+  resourceTypeLenght
+}) {
   const httpLink = createHttpLink({
     uri: typeof env !== 'undefined' ? env.CONFIGURATION_API_URL : ''
   });
@@ -81,6 +95,14 @@ export default function ResourceTable({ token, tokenData, env, resources, getThe
     }
 
     setSelected(newSelected);
+  };
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
@@ -245,7 +267,12 @@ export default function ResourceTable({ token, tokenData, env, resources, getThe
             </IconButton>
           </Tooltip>
         ) : (
-          ''
+          <Trans
+            i18nKey="common.table.totalPlural"
+            values={{
+              name: resourceTypeLenght
+            }}
+          />
         )}
       </Toolbar>
     );
@@ -312,6 +339,15 @@ export default function ResourceTable({ token, tokenData, env, resources, getThe
             </TableBody>
           </Table>
         </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={tableApi.getTablePageOptions(env)}
+          component="div"
+          count={resourceTypeLenght}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </DinamicPaper>
     </Box>
   );

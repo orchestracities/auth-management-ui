@@ -39,16 +39,17 @@ describe('GraphQL-Query', function () {
 
   const getTenantResourceType = {
     query: `
-    query getTenantResourceType($tenantName: String!) {
-      getTenantResourceType(tenantName: $tenantName) {
-        name
-        userID
-        tenantName
-        endpointUrl
-        ID
-      }
-    }`,
-    variables: { tenantName: 'Tenant1' }
+    query getTenantResourceType($tenantName: String!,$skip: Int! ,$limit:Int!) {
+      getTenantResourceType(tenantName: $tenantName,skip: $skip ,limit:$limit) {
+        data {  name
+          userID
+          tenantName
+          endpointUrl
+          ID}
+          count
+        }
+      }`,
+    variables: { tenantName: 'Tenant1', skip: 0, limit: 10 }
   };
 
   it('Returns tenant properties', (done) => {
@@ -111,11 +112,11 @@ describe('GraphQL-Query', function () {
           .end((err, res) => {
             if (err) return done(err);
             if (res.body.data.length > 0) {
-              expect(res.body.data.getTenantResourceType[0]).to.have.own.property('name');
-              expect(res.body.data.getTenantResourceType[0]).to.have.own.property('userID');
-              expect(res.body.data.getTenantResourceType[0]).to.have.own.property('tenantName');
-              expect(res.body.data.getTenantResourceType[0]).to.have.own.property('resourceID');
-              expect(res.body.data.getTenantResourceType[0]).to.have.own.property('endpointUrl');
+              expect(res.body.data.getTenantResourceType.data[0]).to.have.own.property('name');
+              expect(res.body.data.getTenantResourceType.data[0]).to.have.own.property('userID');
+              expect(res.body.data.getTenantResourceType.data[0]).to.have.own.property('tenantName');
+              expect(res.body.data.getTenantResourceType.data[0]).to.have.own.property('resourceID');
+              expect(res.body.data.getTenantResourceType.data[0]).to.have.own.property('endpointUrl');
             }
             done();
           });

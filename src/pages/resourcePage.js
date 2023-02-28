@@ -11,6 +11,7 @@ import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client
 import { setContext } from '@apollo/client/link/context';
 import useNotification from '../components/shared/messages/alerts';
 import { Trans } from 'react-i18next';
+import * as tableApi from '../componentsApi/tableApi';
 
 export default function ResourcePage({ token, graphqlErrors, env, tokenData, thisTenant, tenantValues }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
@@ -46,25 +47,41 @@ export default function ResourcePage({ token, graphqlErrors, env, tokenData, thi
       return tenantArray[0].id;
     }
   };
+  //TABLE PART
+  const [page, setPage] = React.useState(0);
+  const [resourceTypeLenght, setResourceTypeLenght] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(tableApi.getRowsPerPage(env));
+  const pageMaxNumber = tableApi.getTableMax(env);
+  React.useEffect(() => {
+    thisTenant !== null ? getTheResources() : '';
+  }, [page, rowsPerPage]);
 
   const getTheResources = () => {
     client
       .query({
         query: gql`
-          query getTenantResourceType($tenantName: String!) {
-            getTenantResourceType(tenantName: $tenantName) {
-              name
-              userID
-              tenantName
-              endpointUrl
-              ID
+          query getTenantResourceType($tenantName: String!, $skip: Int!, $limit: Int!) {
+            getTenantResourceType(tenantName: $tenantName, skip: $skip, limit: $limit) {
+              data {
+                name
+                userID
+                tenantName
+                endpointUrl
+                ID
+              }
+              count
             }
           }
         `,
-        variables: { tenantName: GeTenantData('name') }
+        variables: {
+          tenantName: GeTenantData('name'),
+          skip: page * (rowsPerPage === pageMaxNumber ? pageMaxNumber : rowsPerPage),
+          limit: rowsPerPage
+        }
       })
       .then((data) => {
-        setResources(data.data.getTenantResourceType);
+        setResources(data.data.getTenantResourceType.data);
+        setResourceTypeLenght(data.data.getTenantResourceType.count);
       })
       .catch((e) => {
         sendNotification({ msg: e.message + ' the config', variant: 'error' });
@@ -101,6 +118,11 @@ export default function ResourcePage({ token, graphqlErrors, env, tokenData, thi
 
           <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
             <ResourceTable
+              page={page}
+              setPage={setPage}
+              rowsPerPage={rowsPerPage}
+              setRowsPerPage={setRowsPerPage}
+              resourceTypeLenght={resourceTypeLenght}
               token={token}
               tokenData={tokenData}
               env={env}

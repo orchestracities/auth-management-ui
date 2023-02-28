@@ -37,10 +37,15 @@ const typeDefs = gql`
     endpointUrl: String!
   }
 
+  type resourcePagination {
+    data: [ResourceType]
+    count: Int!
+  }
+
   type Query {
     listTenants(tenantNames: [String]!): [TenantConfiguration]
     getUserPreferences(userName: String!): [UserPreferencies]
-    getTenantResourceType(tenantName: String!): [ResourceType]
+    getTenantResourceType(tenantName: String!, skip: Int!, limit: Int!): resourcePagination
   }
   type Mutation {
     newResourceType(name: String!, userID: String!, tenantName: String!, endpointUrl: String!): [ResourceType]
