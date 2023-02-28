@@ -19,6 +19,27 @@ export default {
     },
     agentsTypes: {
       control: false
+    },
+    env: {
+      control: false
+    },
+    token: {
+      control: false
+    },
+    page: {
+      control: false
+    },
+    setPage: {
+      control: false
+    },
+    rowsPerPage: {
+      control: false
+    },
+    setRowsPerPage: {
+      control: false
+    },
+    entitiesLenght: {
+      control: false
     }
   },
   parameters: {
@@ -81,5 +102,12 @@ Table.args = {
 
     { iri: 'acl:agentClass', name: 'class' }
   ],
-  getData: () => {}
+  getData: () => {},
+  env: undefined,
+  token: '',
+  page: 0,
+  setPage: () => {},
+  rowsPerPage: 10,
+  setRowsPerPage: () => {},
+  policiesLenght: 2
 };

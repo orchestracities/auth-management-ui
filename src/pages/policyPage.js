@@ -13,6 +13,7 @@ import Box from '@mui/material/Box';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import * as log from 'loglevel';
+import * as tableApi from '../componentsApi/tableApi';
 
 export default function PolicyPage({ getTenants, tenantValues, thisTenant, graphqlErrors, token, env }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
@@ -27,6 +28,15 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
   const [open, setOpen] = React.useState(false);
   const [msg, sendNotification] = useNotification();
   log.debug(msg);
+
+  //TABLE PART
+  const [page, setPage] = React.useState(0);
+  const [policiesLenght, setPoliciesLenght] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(tableApi.getRowsPerPage(env));
+  const pageMaxNumber = tableApi.getTableMax(env);
+  React.useEffect(() => {
+    thisTenant !== null ? getServices() : '';
+  }, [page, rowsPerPage]);
 
   const GeTenantData = (type) => {
     const tenantArray = tenantValues.filter((e) => e.id === thisTenant);
@@ -66,15 +76,22 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
   const getPolicies = (servicesResponse) => {
     let datAccumulator = [];
     for (const service of servicesResponse) {
-      //for now /?limit=-1 is a workarount to get more than 100 entries before a proper pagination implementation on Anubis APIs
       axios
-        .get((typeof env !== 'undefined' ? env.ANUBIS_API_URL : '') + 'v1/policies' + '/?limit=-1', {
-          headers: {
-            'fiware-service': GeTenantData('name'),
-            'fiware-servicepath': service.path,
-            authorization: `Bearer ${token}`
+        .get(
+          (typeof env !== 'undefined' ? env.ANUBIS_API_URL : '') +
+            'v1/policies' +
+            '/?skip=' +
+            page * (rowsPerPage === pageMaxNumber ? pageMaxNumber : rowsPerPage) +
+            '&limit=' +
+            rowsPerPage,
+          {
+            headers: {
+              'fiware-service': GeTenantData('name'),
+              'fiware-servicepath': service.path,
+              authorization: `Bearer ${token}`
+            }
           }
-        })
+        )
         .then((response) => {
           response.data.forEach((e) => (e.fiware_service = GeTenantData('name')));
           response.data.forEach((e) => (e.fiware_service_path = service.path));
@@ -102,23 +119,32 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
       (agentType !== null ? '&agent_type=' + agentType.iri : '');
     let datAccumulator = [];
     for (const service of servicesResponse) {
-      //for now /?limit=-1 is a workarount to get more than 100 entries before a proper pagination implementation on Anubis APIs
-
       axios
-        .get((typeof env !== 'undefined' ? env.ANUBIS_API_URL : '') + 'v1/policies' + '/?limit=-1' + queryParameters, {
-          headers: {
-            'fiware-service': GeTenantData('name'),
-            'fiware-servicepath': policyFilter !== null ? policyFilter.fiware_service_path : service.path,
-            authorization: `Bearer ${token}`
+        .get(
+          (typeof env !== 'undefined' ? env.ANUBIS_API_URL : '') +
+            'v1/policies' +
+            '/?skip=' +
+            page * (rowsPerPage === pageMaxNumber ? pageMaxNumber : rowsPerPage) +
+            '&limit=' +
+            rowsPerPage +
+            queryParameters,
+          {
+            headers: {
+              'fiware-service': GeTenantData('name'),
+              'fiware-servicepath': policyFilter !== null ? policyFilter.fiware_service_path : service.path,
+              authorization: `Bearer ${token}`
+            }
           }
-        })
+        )
         .then((response) => {
           if (policyFilter === null) {
+            setPoliciesLenght(response.headers['counter']);
             response.data.forEach((e) => (e.fiware_service = GeTenantData('name')));
             response.data.forEach((e) => (e.fiware_service_path = service.path));
             datAccumulator = [...datAccumulator, ...response.data];
             setPoliciesFiltered(datAccumulator);
           } else {
+            setPoliciesLenght(response.headers['counter']);
             response.data.forEach((e) => (e.fiware_service = GeTenantData('name')));
             response.data.forEach((e) => (e.fiware_service_path = policyFilter.fiware_service_path));
             setPoliciesFiltered(response.data);
@@ -268,6 +294,11 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
           </Grid>
           <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
             <PolicyTable
+              page={page}
+              setPage={setPage}
+              rowsPerPage={rowsPerPage}
+              setRowsPerPage={setRowsPerPage}
+              policiesLenght={policiesLenght}
               tenantName={GeTenantData}
               services={services}
               data={policiesFiltered}

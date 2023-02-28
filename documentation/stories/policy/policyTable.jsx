@@ -17,7 +17,12 @@ const theme = createTheme({
   }
 });
 
-export const PolicyDataInTable = ({ data, getData, access_modes, agentsTypes }) => {
+export const PolicyDataInTable = ({  env,
+  token,data, getData, access_modes, agentsTypes, page,
+  setPage,
+  rowsPerPage,
+  setRowsPerPage,
+  policiesLenght }) => {
   return (
     <SnackbarProvider maxSnack={5}>
       <ThemeProvider theme={theme}>
@@ -25,9 +30,16 @@ export const PolicyDataInTable = ({ data, getData, access_modes, agentsTypes }) 
           <Grid>
             <PolicyTable
               data={data}
+              env={env}
+              token={token}
               getData={getData}
               access_modes={access_modes}
               agentsTypes={agentsTypes}
+              page={page}
+              setPage={setPage}
+              rowsPerPage={rowsPerPage}
+              setRowsPerPage={setRowsPerPage}
+              policiesLenght={policiesLenght}
             ></PolicyTable>
           </Grid>
         </BrowserRouter>
@@ -49,16 +61,50 @@ PolicyDataInTable.propTypes = {
    * The possibile values of the access modes displayed on the table
    */
   access_modes: PropTypes.arrayOf(PropTypes.object),
-
+  /**
+   * the object that is containing the env variables
+   */
+  env: PropTypes.object,
+  /**
+   * the session token
+   */
+  token: PropTypes.string,
   /**
    * The possibile values of the agents types displayed on the table
    */
-  agentsTypes: PropTypes.arrayOf(PropTypes.object)
+  agentsTypes: PropTypes.arrayOf(PropTypes.object),
+   /**
+   * the hook value for the table page
+   */
+   page: PropTypes.number,
+   /**
+    * the hook function to change the table page
+    */
+   setPage: PropTypes.func,
+   /**
+    * the hook value for the number of elements inside a table page
+    */
+   rowsPerPage: PropTypes.number,
+   /**
+    * the hook function to change the number of elements inside a table page
+    */
+   setRowsPerPage: PropTypes.func,
+   /**
+    * the number of entities inside the DB
+    */
+   policiesLenght: PropTypes.number
 };
 
 PolicyDataInTable.defaultProps = {
   data: [],
   getData: () => {},
   access_modes: [],
-  agentsTypes: []
+  agentsTypes: [],
+  env: undefined,
+  token: '',
+  page: 0,
+  setPage: () => {},
+  rowsPerPage: 10,
+  setRowsPerPage: () => {},
+  policiesLenght: 0
 };
