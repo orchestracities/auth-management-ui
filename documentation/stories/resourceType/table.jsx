@@ -17,13 +17,22 @@ const theme = createTheme({
   }
 });
 
-export const ResourceTypeTable = ({ token, tokenData, env, resources, getTheResources, GeTenantData }) => {
+export const ResourceTypeTable = ({ token, tokenData, env, resources, getTheResources, GeTenantData,page,
+  setPage,
+  rowsPerPage,
+  setRowsPerPage,
+  resourceTypeLength }) => {
   return (
     <SnackbarProvider maxSnack={5}>
       <ThemeProvider theme={theme}>
         <BrowserRouter>
           <Grid>
             <ResourceTable
+            page={page}
+            setPage={setPage}
+            rowsPerPage={rowsPerPage}
+            setRowsPerPage={setRowsPerPage}
+            resourceTypeLength={resourceTypeLength}
               token={token}
               tokenData={tokenData}
               env={env}
@@ -83,7 +92,7 @@ ResourceTypeTable.propTypes = {
   /**
    * the number of entities inside the DB
    */
-  entitiesLenght: PropTypes.number
+  resourceTypeLength: PropTypes.number
 };
 
 ResourceTypeTable.defaultProps = {
@@ -97,5 +106,5 @@ ResourceTypeTable.defaultProps = {
   setPage: () => {},
   rowsPerPage: 10,
   setRowsPerPage: () => {},
-  entitiesLenght: 0
+  resourceTypeLength: 0
 };

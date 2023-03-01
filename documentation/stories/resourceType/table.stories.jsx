@@ -32,7 +32,7 @@ export default {
     setRowsPerPage: {
       control: false
     },
-    entitiesLenght: {
+    resourceTypeLength: {
       control: false
     }
   },
@@ -80,5 +80,5 @@ ResourceDisplay.args = {
   setPage: () => {},
   rowsPerPage: 10,
   setRowsPerPage: () => {},
-  entitiesLenght: 1
+  resourceTypeLength: 1
 };

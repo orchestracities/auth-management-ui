@@ -49,7 +49,7 @@ export default function ResourcePage({ token, graphqlErrors, env, tokenData, thi
   };
   //TABLE PART
   const [page, setPage] = React.useState(0);
-  const [resourceTypeLenght, setResourceTypeLenght] = React.useState(0);
+  const [resourceTypeLength, setResourceTypeLength] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(tableApi.getRowsPerPage(env));
   const pageMaxNumber = tableApi.getTableMax(env);
   React.useEffect(() => {
@@ -81,7 +81,7 @@ export default function ResourcePage({ token, graphqlErrors, env, tokenData, thi
       })
       .then((data) => {
         setResources(data.data.getTenantResourceType.data);
-        setResourceTypeLenght(data.data.getTenantResourceType.count);
+        setResourceTypeLength(data.data.getTenantResourceType.count);
       })
       .catch((e) => {
         sendNotification({ msg: e.message + ' the config', variant: 'error' });
@@ -122,7 +122,7 @@ export default function ResourcePage({ token, graphqlErrors, env, tokenData, thi
               setPage={setPage}
               rowsPerPage={rowsPerPage}
               setRowsPerPage={setRowsPerPage}
-              resourceTypeLenght={resourceTypeLenght}
+              resourceTypeLength={resourceTypeLength}
               token={token}
               tokenData={tokenData}
               env={env}

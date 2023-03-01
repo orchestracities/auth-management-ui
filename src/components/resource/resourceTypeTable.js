@@ -36,7 +36,7 @@ export default function ResourceTable({
   setPage,
   rowsPerPage,
   setRowsPerPage,
-  resourceTypeLenght
+  resourceTypeLength
 }) {
   const httpLink = createHttpLink({
     uri: typeof env !== 'undefined' ? env.CONFIGURATION_API_URL : ''
@@ -270,7 +270,7 @@ export default function ResourceTable({
           <Trans
             i18nKey="common.table.totalPlural"
             values={{
-              name: resourceTypeLenght
+              name: resourceTypeLength
             }}
           />
         )}
@@ -342,7 +342,7 @@ export default function ResourceTable({
         <TablePagination
           rowsPerPageOptions={tableApi.getTablePageOptions(env)}
           component="div"
-          count={resourceTypeLenght}
+          count={resourceTypeLength}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
