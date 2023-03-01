@@ -31,7 +31,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
 
   //TABLE PART
   const [page, setPage] = React.useState(0);
-  const [policiesLenght, setPoliciesLenght] = React.useState(0);
+  const [policiesLength, setPoliciesLenght] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(tableApi.getRowsPerPage(env));
   const pageMaxNumber = tableApi.getTableMax(env);
   React.useEffect(() => {
@@ -298,7 +298,7 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
               setPage={setPage}
               rowsPerPage={rowsPerPage}
               setRowsPerPage={setRowsPerPage}
-              policiesLenght={policiesLenght}
+              policiesLength={policiesLength}
               tenantName={GeTenantData}
               services={services}
               data={policiesFiltered}

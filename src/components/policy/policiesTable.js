@@ -73,7 +73,7 @@ export default function PoliciesTable({
   setPage,
   rowsPerPage,
   setRowsPerPage,
-  policiesLenght
+  policiesLength
 }) {
   // DELETE
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
@@ -287,7 +287,7 @@ export default function PoliciesTable({
           <Trans
             i18nKey="common.table.totalPlural"
             values={{
-              name: policiesLenght
+              name: policiesLength
             }}
           />
         )}
@@ -390,7 +390,7 @@ export default function PoliciesTable({
                 orderBy={orderBy}
                 onSelectAllClick={handleSelectAllClick}
                 onRequestSort={handleRequestSort}
-                rowCount={policiesLenght}
+                rowCount={policiesLength}
               />
               <TableBody>
                 {rows
@@ -451,7 +451,7 @@ export default function PoliciesTable({
           <TablePagination
             rowsPerPageOptions={tableApi.getTablePageOptions(env)}
             component="div"
-            count={policiesLenght}
+            count={policiesLength}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

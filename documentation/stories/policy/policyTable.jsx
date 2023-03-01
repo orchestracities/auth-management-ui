@@ -22,7 +22,7 @@ export const PolicyDataInTable = ({  env,
   setPage,
   rowsPerPage,
   setRowsPerPage,
-  policiesLenght }) => {
+  policiesLength }) => {
   return (
     <SnackbarProvider maxSnack={5}>
       <ThemeProvider theme={theme}>
@@ -39,7 +39,7 @@ export const PolicyDataInTable = ({  env,
               setPage={setPage}
               rowsPerPage={rowsPerPage}
               setRowsPerPage={setRowsPerPage}
-              policiesLenght={policiesLenght}
+              policiesLength={policiesLength}
             ></PolicyTable>
           </Grid>
         </BrowserRouter>
@@ -92,7 +92,7 @@ PolicyDataInTable.propTypes = {
    /**
     * the number of policies inside the DB
     */
-   policiesLenght: PropTypes.number
+   policiesLength: PropTypes.number
 };
 
 PolicyDataInTable.defaultProps = {
@@ -106,5 +106,5 @@ PolicyDataInTable.defaultProps = {
   setPage: () => {},
   rowsPerPage: 10,
   setRowsPerPage: () => {},
-  policiesLenght: 0
+  policiesLength: 0
 };
