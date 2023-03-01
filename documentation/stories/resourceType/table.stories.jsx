@@ -19,6 +19,21 @@ export default {
     },
     getTheResources: {
       control: false
+    },
+    page: {
+      control: false
+    },
+    setPage: {
+      control: false
+    },
+    rowsPerPage: {
+      control: false
+    },
+    setRowsPerPage: {
+      control: false
+    },
+    entitiesLenght: {
+      control: false
     }
   },
   parameters: {
@@ -55,22 +70,15 @@ ResourceDisplay.args = {
     }
   ],
   token: '',
-  env: {
-    ANUBIS_API_URL: 'http://localhost:8085/',
-    CONFIGURATION_API_URL: 'http://localhost:4000/configuration',
-    DESCRIPTION: 'A Management UI for Anubis',
-    IMAGE_SIZE: '20',
-    KEYCLOACK_ADMIN: 'http://localhost:8080/admin/realms/default',
-    LOG_LEVEL: 'debug',
-    OIDC_CLIENT: 'configuration',
-    OIDC_ISSUER: 'http://localhost:8080/realms/default',
-    OIDC_SCOPE: 'openid profile email',
-    TITLE: 'Anubis',
-    URI: 'http://localhost:3000/'
-  },
+  env: undefined,
   tokenData: {},
   getTheResources: () => {},
   GeTenantData: () => {
     return 'name';
-  }
+  },
+  page: 0,
+  setPage: () => {},
+  rowsPerPage: 10,
+  setRowsPerPage: () => {},
+  entitiesLenght: 1
 };

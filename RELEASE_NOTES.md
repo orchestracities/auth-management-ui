@@ -6,6 +6,7 @@
 
 - Entities Paginations (#113)
 - Table pagination && elements configurable by env
+- Resource type pagination (#109)
 
 ### Bug fixes
 
