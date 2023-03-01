@@ -60,7 +60,21 @@ const DinamicPaper = styled(Paper)(({ theme }) => ({
   borderRadius: 10
 }));
 
-export default function PoliciesTable({ data, getData, access_modes, tenantName, agentsTypes, services, token, env }) {
+export default function PoliciesTable({
+  data,
+  getData,
+  access_modes,
+  tenantName,
+  agentsTypes,
+  services,
+  token,
+  env,
+  page,
+  setPage,
+  rowsPerPage,
+  setRowsPerPage,
+  policiesLength
+}) {
   // DELETE
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
 
@@ -143,18 +157,6 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
     return order === 'desc'
       ? (a, b) => descendingComparator(a, b, orderBy)
       : (a, b) => -descendingComparator(a, b, orderBy);
-  }
-
-  function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-      const order = comparator(a[0], b[0]);
-      if (order !== 0) {
-        return order;
-      }
-      return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
   }
 
   const headCells = [
@@ -285,7 +287,7 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
           <Trans
             i18nKey="common.table.totalPlural"
             values={{
-              name: stableSort(rows, getComparator(order, orderBy)).length
+              name: policiesLength
             }}
           />
         )}
@@ -300,8 +302,6 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('resource');
   const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(tableApi.getRowsPerPage(env));
 
   const fromIdToText = (policyIDs) => {
     let textDisplay = '\n';
@@ -375,9 +375,6 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
-  // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   return (
@@ -393,13 +390,12 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
                 orderBy={orderBy}
                 onSelectAllClick={handleSelectAllClick}
                 onRequestSort={handleRequestSort}
-                rowCount={rows.length}
+                rowCount={policiesLength}
               />
               <TableBody>
-                {/* if you don't need to support IE11, you can replace the `stableSort` call with:
-                 rows.slice().sort(getComparator(order, orderBy)) */}
-                {stableSort(rows, getComparator(order, orderBy))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                {rows
+                  .slice(0, page * rowsPerPage + rowsPerPage)
+                  .sort(getComparator(order, orderBy))
                   .map((row, index) => {
                     const isItemSelected = isSelected(row.id);
                     const labelId = `enhanced-table-checkbox-${index}`;
@@ -449,22 +445,13 @@ export default function PoliciesTable({ data, getData, access_modes, tenantName,
                       </TableRow>
                     );
                   })}
-                {emptyRows > 0 && (
-                  <TableRow
-                    style={{
-                      height: 53 * emptyRows
-                    }}
-                  >
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                )}
               </TableBody>
             </Table>
           </TableContainer>
           <TablePagination
             rowsPerPageOptions={tableApi.getTablePageOptions(env)}
             component="div"
-            count={rows.length}
+            count={policiesLength}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

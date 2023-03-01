@@ -94,7 +94,7 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
           ? getEntitiesFromResource(
               filtered[0].endpointUrl.slice(0, filtered[0].endpointUrl.indexOf('?')) +
                 '?attrs=dateCreated,dateModified,*&offset=' +
-                page * (rowsPerPage === pageMaxNumber ? pageMaxNumber : pageMaxNumber - rowsPerPage) +
+                page * (rowsPerPage === pageMaxNumber ? pageMaxNumber : rowsPerPage) +
                 '&limit=' +
                 rowsPerPage +
                 '&options=count'
@@ -102,7 +102,7 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
           : getEntitiesFromResource(
               env.ORION +
                 '/v2/entities?attrs=dateCreated,dateModified,*&offset=' +
-                page * (rowsPerPage === pageMaxNumber ? pageMaxNumber : pageMaxNumber - rowsPerPage) +
+                page * (rowsPerPage === pageMaxNumber ? pageMaxNumber : rowsPerPage) +
                 '&limit=' +
                 rowsPerPage +
                 '&options=count'
