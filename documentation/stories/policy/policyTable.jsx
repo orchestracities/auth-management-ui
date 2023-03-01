@@ -90,7 +90,7 @@ PolicyDataInTable.propTypes = {
     */
    setRowsPerPage: PropTypes.func,
    /**
-    * the number of entities inside the DB
+    * the number of policies inside the DB
     */
    policiesLenght: PropTypes.number
 };
