@@ -17,13 +17,22 @@ const theme = createTheme({
   }
 });
 
-export const ResourceTypeTable = ({ token, tokenData, env, resources, getTheResources, GeTenantData }) => {
+export const ResourceTypeTable = ({ token, tokenData, env, resources, getTheResources, GeTenantData,page,
+  setPage,
+  rowsPerPage,
+  setRowsPerPage,
+  resourceTypeLength }) => {
   return (
     <SnackbarProvider maxSnack={5}>
       <ThemeProvider theme={theme}>
         <BrowserRouter>
           <Grid>
             <ResourceTable
+            page={page}
+            setPage={setPage}
+            rowsPerPage={rowsPerPage}
+            setRowsPerPage={setRowsPerPage}
+            resourceTypeLength={resourceTypeLength}
               token={token}
               tokenData={tokenData}
               env={env}
@@ -63,14 +72,39 @@ ResourceTypeTable.propTypes = {
   /**
    * The function to return the name or the ID of the tenant
    */
-  GeTenantData: PropTypes.func
+  GeTenantData: PropTypes.func,
+  /**
+   * the hook value for the table page
+   */
+  page: PropTypes.number,
+  /**
+   * the hook function to change the table page
+   */
+  setPage: PropTypes.func,
+  /**
+   * the hook value for the number of elements inside a table page
+   */
+  rowsPerPage: PropTypes.number,
+  /**
+   * the hook function to change the number of elements inside a table page
+   */
+  setRowsPerPage: PropTypes.func,
+  /**
+   * the number of entities inside the DB
+   */
+  resourceTypeLength: PropTypes.number
 };
 
 ResourceTypeTable.defaultProps = {
   token: '',
   tokenData: {},
-  env: {},
+  env: undefined,
   resources: [],
   getTheResources: undefined,
-  GeTenantData: undefined
+  GeTenantData: undefined,
+  page: 0,
+  setPage: () => {},
+  rowsPerPage: 10,
+  setRowsPerPage: () => {},
+  resourceTypeLength: 0
 };

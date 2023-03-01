@@ -368,20 +368,25 @@ export default function PolicyForm({
     client
       .query({
         query: gql`
-          query getTenantResourceType($tenantName: String!) {
-            getTenantResourceType(tenantName: $tenantName) {
-              name
-              userID
-              tenantName
-              endpointUrl
-              ID
+          query getTenantResourceType($tenantName: String!, $skip: Int!, $limit: Int!) {
+            getTenantResourceType(tenantName: $tenantName, skip: $skip, limit: $limit) {
+              data {
+                name
+                userID
+                tenantName
+                endpointUrl
+                ID
+              }
+              count
             }
           }
         `,
-        variables: { tenantName: tenantName('name') }
+        variables: { tenantName: tenantName('name'), skip: resources.length, limit: 100 }
       })
       .then((response) => {
-        setResources(response.data.getTenantResourceType);
+        resources.length < response.data.getTenantResourceType.count
+          ? setResources([...resources, ...response.data.getTenantResourceType.data])
+          : '';
       })
       .catch((e) => {
         sendNotification({ msg: e.message + ' the config', variant: 'error' });

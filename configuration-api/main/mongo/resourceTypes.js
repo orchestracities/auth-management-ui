@@ -19,8 +19,14 @@ const ResourceType = new mongoose.Schema({
 const Resource = connection.model('ResourceType', ResourceType);
 
 async function getResource(data) {
-  const resourceTypes = await Resource.find({ tenantName: data.tenantName });
-  return resourceTypes;
+  const resourceTypes = await Resource.find({ tenantName: data.tenantName })
+    .sort({ update_at: -1 })
+    .skip(typeof data.skip !== 'undefined' ? Number(data.skip) : 0)
+    .limit(typeof data.limit !== 'undefined' ? Number(data.limit) : 0);
+
+  const count = await Resource.countDocuments({ tenantName: data.tenantName });
+
+  return { data: resourceTypes, count: count };
 }
 
 async function deleteResource(data) {
@@ -47,7 +53,7 @@ async function newResource(data) {
       endpointUrl: data.endpointUrl
     };
     await Resource.create(arrayOfData);
-    return await getResource(data);
+    return await Resource.find({ tenantName: data.tenantName });
   } else {
     throw new ApolloError(data.name + 'already exist on this Tenant');
   }
