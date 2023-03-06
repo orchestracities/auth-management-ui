@@ -118,18 +118,18 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
     client
       .query({
         query: gql`
-        query getTenantResourceType($tenantName: String!, $skip: Int!, $limit: Int!) {
-          getTenantResourceType(tenantName: $tenantName, skip: $skip, limit: $limit) {
-            data {
-              name
-              userID
-              tenantName
-              endpointUrl
-              ID
+          query getTenantResourceType($tenantName: String!, $skip: Int!, $limit: Int!) {
+            getTenantResourceType(tenantName: $tenantName, skip: $skip, limit: $limit) {
+              data {
+                name
+                userID
+                tenantName
+                endpointUrl
+                ID
+              }
+              count
             }
-            count
           }
-        }
         `,
         variables: { tenantName: GeTenantData('name'), skip: 0, limit: 0 }
       })
