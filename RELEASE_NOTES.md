@@ -11,6 +11,8 @@
 
 ### Bug fixes
 
+- Resource types on entities page
+
 ### Documentation
 
 ### Continuous Integration

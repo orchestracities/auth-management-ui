@@ -17,12 +17,19 @@ const theme = createTheme({
   }
 });
 
-export const PolicyDataInTable = ({  env,
-  token,data, getData, access_modes, agentsTypes, page,
+export const PolicyDataInTable = ({
+  env,
+  token,
+  data,
+  getData,
+  access_modes,
+  agentsTypes,
+  page,
   setPage,
   rowsPerPage,
   setRowsPerPage,
-  policiesLength }) => {
+  policiesLength
+}) => {
   return (
     <SnackbarProvider maxSnack={5}>
       <ThemeProvider theme={theme}>
@@ -73,26 +80,26 @@ PolicyDataInTable.propTypes = {
    * The possibile values of the agents types displayed on the table
    */
   agentsTypes: PropTypes.arrayOf(PropTypes.object),
-   /**
+  /**
    * the hook value for the table page
    */
-   page: PropTypes.number,
-   /**
-    * the hook function to change the table page
-    */
-   setPage: PropTypes.func,
-   /**
-    * the hook value for the number of elements inside a table page
-    */
-   rowsPerPage: PropTypes.number,
-   /**
-    * the hook function to change the number of elements inside a table page
-    */
-   setRowsPerPage: PropTypes.func,
-   /**
-    * the number of policies inside the DB
-    */
-   policiesLength: PropTypes.number
+  page: PropTypes.number,
+  /**
+   * the hook function to change the table page
+   */
+  setPage: PropTypes.func,
+  /**
+   * the hook value for the number of elements inside a table page
+   */
+  rowsPerPage: PropTypes.number,
+  /**
+   * the hook function to change the number of elements inside a table page
+   */
+  setRowsPerPage: PropTypes.func,
+  /**
+   * the number of policies inside the DB
+   */
+  policiesLength: PropTypes.number
 };
 
 PolicyDataInTable.defaultProps = {
