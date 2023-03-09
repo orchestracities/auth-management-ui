@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 const config = require('../config');
 const connection = mongoose.createConnection(config.getConfig().mongo_db);
 const logContext = { op: 'configuration-api.advancedAuth' };
-const { ApolloError } = require('apollo-server-errors');
-const { uid } = require('uid');
+const { GraphQLError } = require('graphql');
+const { uid } = require('uid/secure');
 
 const ResourceType = new mongoose.Schema({
   ID: {
@@ -55,7 +55,7 @@ async function newResource(data) {
     await Resource.create(arrayOfData);
     return await Resource.find({ tenantName: data.tenantName });
   } else {
-    throw new ApolloError(data.name + 'already exist on this Tenant');
+    throw new GraphQLError(data.name + 'already exist on this Tenant');
   }
 }
 
