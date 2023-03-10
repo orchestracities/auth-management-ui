@@ -8,6 +8,7 @@
 - Table pagination && elements configurable by env
 - Resource type pagination (#109)
 - Policies Paginations (#127)
+- Update apollo library to v4 (#136)
 
 ### Bug fixes
 
@@ -30,8 +31,7 @@
 
 ### Bug fixes
 
-- Fixing the counter on the cards (#141)
-- Fixing the Tenants not displayed if the initial config is not loaded (#138)
+- Fixing the counter on the cards (#141)- Fixing the Tenants not displayed if the initial config is not loaded (#138)
 - Fixing documentation on filters (#131)
 - Workaround on 100 policies limitation (waiting for a pagination on APIs)
 - Fixing filter position and z-index
