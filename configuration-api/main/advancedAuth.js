@@ -242,7 +242,7 @@ async function startServer() {
       if (req.info) throw new GraphQLError(req.info);
       if (!req.user)
         throw new GraphQLError('You must be logged in', {
-          extensions: { code: 'UNAUTHENTICATED', myCustomExtensions }
+          extensions: { code: 'UNAUTHENTICATED'}
         });
       return {
         auth: req.user
