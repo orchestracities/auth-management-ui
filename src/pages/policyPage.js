@@ -64,11 +64,9 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
       })
       .catch((e) => {
         getTenants();
-        if (e.response) {
-          e.response.data.detail.map((thisError) => sendNotification({ msg: thisError.msg, variant: 'error' }));
-        } else {
-          sendNotification({ msg: e.message + ': cannot reach policy managenent api', variant: 'error' });
-        }
+        e.response
+          ? e.response.data.detail.map((thisError) => sendNotification({ msg: thisError.msg, variant: 'error' }))
+          : sendNotification({ msg: e.message + ': cannot reach policy managenent api', variant: 'error' });
       });
   };
   // policies
@@ -99,11 +97,9 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
           setPolicies(datAccumulator);
         })
         .catch((e) => {
-          if (e.response) {
-            e.response.data.detail.map((thisError) => sendNotification({ msg: thisError.msg, variant: 'error' }));
-          } else {
-            sendNotification({ msg: e.message + ': cannot reach policy managenent api', variant: 'error' });
-          }
+          e.response
+            ? e.response.data.detail.map((thisError) => sendNotification({ msg: thisError.msg, variant: 'error' }))
+            : sendNotification({ msg: e.message + ': cannot reach policy managenent api', variant: 'error' });
         });
     }
     log.debug(policies);
