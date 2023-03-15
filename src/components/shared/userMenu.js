@@ -51,7 +51,7 @@ export default function UserMenu({ language, userData, token, lastTenantSelected
 
   log.debug(msg);
 
-  const { logout } = useOidc();
+  const { logout } = typeof env === 'undefined' ? '' : useOidc();
 
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
