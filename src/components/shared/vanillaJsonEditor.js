@@ -1,13 +1,11 @@
 import { JSONEditor } from 'vanilla-jsoneditor';
-import { useEffect, useRef } from 'react';
+import * as React from 'react';
 
 export default function SvelteJSONEditor(props) {
-  const refContainer = useRef(null);
-  const refEditor = useRef(null);
+  const refContainer = React.useRef(null);
+  const refEditor = React.useRef(null);
 
-  useEffect(() => {
-    // create editor
-    console.log('create editor', refContainer.current);
+  React.useEffect(() => {
     refEditor.current = new JSONEditor({
       target: refContainer.current,
       props: {}
@@ -24,9 +22,8 @@ export default function SvelteJSONEditor(props) {
   }, []);
 
   // update props
-  useEffect(() => {
+  React.useEffect(() => {
     if (refEditor.current) {
-      console.log('update props', props);
       refEditor.current.updateProps(props);
     }
   }, [props]);
