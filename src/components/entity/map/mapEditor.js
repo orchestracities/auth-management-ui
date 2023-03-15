@@ -15,7 +15,7 @@ import IconButton from '@mui/material/IconButton';
 import Grid from '@mui/material/Grid';
 import { geocodeByAddress, getLatLng } from 'react-google-places-autocomplete';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
-import { MapContainer, TileLayer, useMap, MapConsumer, GeoJSON } from 'react-leaflet';
+import { MapContainer, TileLayer, useMap, GeoJSON,useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import icon from './constants';
@@ -229,6 +229,7 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
     setMapCordinate(returnCordinates());
     setKey(key + 1);
   };
+  
   return (
     <>
       <Grid container direction="row" justifyContent="center" alignItems="center" spacing={1}>
@@ -296,46 +297,45 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
                   </Tooltip>
                 </Grid>
                 <Grid item xs={12}>
-                  <MapContainer zoom={18} style={{ height: '50vh', zIndex: 0 }} key={key}>
+                  <MapContainer zoom={18} center={mapCordinate} style={{ height: '50vh', zIndex: 0 }} key={key} scrollWheelZoom={true}
+                   whenReady={(map) => {
+                    map.target.on('click', function (e) {
+                      setLocationValue(null);
+                      map.target.eachLayer((layer) => {
+                        if (typeof layer['_latlng'] !== 'undefined') layer.remove();
+                      });
+                      const { lat, lng } = e.latlng;
+                      L.marker([lat, lng], { icon }).addTo(map.target);
+                      setGeoJSON(
+                        compressJSON({
+                          type: 'FeatureCollection',
+                          features: [
+                            {
+                              type: 'Feature',
+                              id: 0,
+                              properties: {
+                                Code: '',
+                                Name: ''
+                              },
+                              geometry: {
+                                type: 'Point',
+                                coordinates: [lat, lng]
+                              }
+                            }
+                          ]
+                        })
+                      );
+                    });
+                    return null;
+                  }}
+                  >
                     <TileLayer
                       attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
                     <ChangeView center={mapCordinate} />
                     {valid(loadJSON(geoJSON)) ? <GeoJSON key="ID" data={geoJSON} /> : ''}
-                    <MapConsumer>
-                      {(map) => {
-                        map.on('click', function (e) {
-                          setLocationValue(null);
-                          map.eachLayer((layer) => {
-                            if (typeof layer['_latlng'] !== 'undefined') layer.remove();
-                          });
-                          const { lat, lng } = e.latlng;
-                          L.marker([lat, lng], { icon }).addTo(map);
-
-                          setGeoJSON(
-                            compressJSON({
-                              type: 'FeatureCollection',
-                              features: [
-                                {
-                                  type: 'Feature',
-                                  id: 0,
-                                  properties: {
-                                    Code: '',
-                                    Name: ''
-                                  },
-                                  geometry: {
-                                    type: 'Point',
-                                    coordinates: [lat, lng]
-                                  }
-                                }
-                              ]
-                            })
-                          );
-                        });
-                        return null;
-                      }}
-                    </MapConsumer>
+                   
                   </MapContainer>
                 </Grid>
               </Grid>{' '}
