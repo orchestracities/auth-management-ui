@@ -102,7 +102,6 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
             : sendNotification({ msg: e.message + ': cannot reach policy managenent api', variant: 'error' });
         });
     }
-    log.debug(policies);
   };
   // policiesFiltered
   const [policiesFiltered, setPoliciesFiltered] = React.useState([]);

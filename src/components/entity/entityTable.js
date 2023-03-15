@@ -30,10 +30,19 @@ import * as log from 'loglevel';
 import DeleteDialog from '../shared/messages/cardDelete';
 import EntityForm from './entityForm';
 import * as tableApi from '../../componentsApi/tableApi';
-import SecurityIcon from '@mui/icons-material/Security';
+import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
 import useNotification from '../shared/messages/alerts';
 import PolicyTable from '../policy/policiesTable';
+import PoliciesOnEntity from './policyDisplay';
+import DialogContent from '@mui/material/DialogContent';
+import AppBar from '@mui/material/AppBar';
+
+const CustomDialogTitle = styled(AppBar)({
+  position: 'relative',
+  background: 'white',
+  boxShadow: 'none'
+});
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -76,7 +85,6 @@ export default function EntityTable({
   types,
   GeTenantData,
   services,
-  getServices,
   page,
   setPage,
   rowsPerPage,
@@ -88,6 +96,7 @@ export default function EntityTable({
   const [msg, sendNotification] = useNotification();
   console.log(msg);
   //POLICIES TABLE PART
+  const [modalTitle, setModalTitle] = React.useState('');
   const [pagePolicies, setPagePolicies] = React.useState(0);
   const [policiesLength, setPoliciesLenght] = React.useState(0);
   const [rowsPerPagePolicies, setRowsPerPagePolicies] = React.useState(tableApi.getRowsPerPage(env));
@@ -122,8 +131,15 @@ export default function EntityTable({
     openPoliciesView === false ? setEntityPolicies([]) : '';
   }, [openPoliciesView]);
 
-  const getPoliciesFiltered = (services, ID) => {
-    const queryParameters = ID !== null ? '&resource=' + ID : '';
+  const getPoliciesFiltered = (ID) => {
+    const queryParameters =
+      typeof ID === 'undefined'
+        ? modalTitle !== null
+          ? '&resource=' + modalTitle
+          : ''
+        : ID !== null
+        ? '&resource=' + ID
+        : '';
     for (const service of services) {
       axios
         .get(
@@ -145,6 +161,8 @@ export default function EntityTable({
         )
         .then((response) => {
           setPoliciesLenght(response.headers['counter']);
+          response.data.forEach((e) => (e.fiware_service = GeTenantData('name')));
+          response.data.forEach((e) => (e.fiware_service_path = service.path));
           setEntityPolicies(response.data);
           setOpenPoliciesView(true);
         })
@@ -161,7 +179,8 @@ export default function EntityTable({
   };
 
   const handlePolicies = (data) => {
-    getPoliciesFiltered(services, data.id);
+    setModalTitle(data.id);
+    getPoliciesFiltered(data.id);
   };
 
   const handlePropagation = (e) => {
@@ -204,7 +223,7 @@ export default function EntityTable({
 
   const addInteractions = (data) => {
     data.map(
-      (thisElement) =>
+      async (thisElement) =>
         (thisElement.action = (
           <>
             <IconButton
@@ -215,14 +234,14 @@ export default function EntityTable({
             >
               <EditIcon />
             </IconButton>
-            <IconButton
-              aria-label="seePolicies"
-              color="secondary"
-              key={'policies' + thisElement.id}
-              onClick={() => handlePolicies(thisElement)}
-            >
-              <SecurityIcon />
-            </IconButton>
+            <PoliciesOnEntity
+              entityPolicies={entityPolicies}
+              env={env}
+              token={token}
+              GeTenantData={GeTenantData}
+              thisEntity={thisElement}
+              handlePolicies={handlePolicies}
+            />
           </>
         ))
     );
@@ -570,21 +589,34 @@ export default function EntityTable({
         aria-labelledby="edit"
         aria-describedby="edit"
       >
-        <PolicyTable
-          page={pagePolicies}
-          setPage={setPagePolicies}
-          rowsPerPage={rowsPerPagePolicies}
-          setRowsPerPage={setRowsPerPagePolicies}
-          policiesLength={policiesLength}
-          data={entityPolicies}
-          getData={getServices}
-          tenantName={GeTenantData}
-          token={token}
-          env={env}
-          services={services}
-          access_modes={access_modes}
-          agentsTypes={agentsTypes}
-        ></PolicyTable>
+        <CustomDialogTitle>
+          <Toolbar>
+            <IconButton edge="start" onClick={handleClosePolicies} aria-label="close">
+              <CloseIcon />
+            </IconButton>
+            <Typography sx={{ ml: 2, flex: 1, color: 'black' }} noWrap gutterBottom variant="h6" component="div">
+              {modalTitle}
+            </Typography>
+          </Toolbar>
+        </CustomDialogTitle>
+        <DialogContent sx={{ minHeight: '400px' }}>
+          <PolicyTable
+            mode={'display'}
+            page={pagePolicies}
+            setPage={setPagePolicies}
+            rowsPerPage={rowsPerPagePolicies}
+            setRowsPerPage={setRowsPerPagePolicies}
+            policiesLength={policiesLength}
+            data={entityPolicies}
+            getData={getPoliciesFiltered}
+            tenantName={GeTenantData}
+            token={token}
+            env={env}
+            services={services}
+            access_modes={access_modes}
+            agentsTypes={agentsTypes}
+          />
+        </DialogContent>
         <DialogActions></DialogActions>
       </DialogRounded>
       <DeleteDialog

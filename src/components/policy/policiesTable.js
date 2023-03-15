@@ -73,7 +73,8 @@ export default function PoliciesTable({
   setPage,
   rowsPerPage,
   setRowsPerPage,
-  policiesLength
+  policiesLength,
+  mode
 }) {
   // DELETE
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
@@ -133,11 +134,19 @@ export default function PoliciesTable({
   const addEdit = (data) => {
     data.map(
       (thisElement) =>
-        (thisElement.action = (
-          <IconButton aria-label="edit" color="secondary" key={thisElement.id} onClick={() => handleData(thisElement)}>
-            <EditIcon />
-          </IconButton>
-        ))
+        (thisElement.action =
+          mode !== 'display' ? (
+            <IconButton
+              aria-label="edit"
+              color="secondary"
+              key={thisElement.id}
+              onClick={() => handleData(thisElement)}
+            >
+              <EditIcon />
+            </IconButton>
+          ) : (
+            ''
+          ))
     );
     return data;
   };
