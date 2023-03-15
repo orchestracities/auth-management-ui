@@ -18,6 +18,11 @@
 
 ### Continuous Integration
 
+- Update React to v18.2
+- Update all the libraries to the latest version
+- Replace the json editor with new library
+- Rewrite the map component to mach leafleat v4
+
 ### Technical debt
 
 ## 0.8

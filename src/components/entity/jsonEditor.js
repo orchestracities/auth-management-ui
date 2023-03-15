@@ -8,7 +8,7 @@ import DialogContent from '@mui/material/DialogContent';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Grow from '@mui/material/Grow';
-import { JsonEditor } from 'jsoneditor-react';
+import VanillaJSONEditor from '../shared/vanillaJsonEditor';
 import AutoFixNormalIcon from '@mui/icons-material/AutoFixNormal';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
@@ -45,6 +45,30 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function JsonEdit({ attribute, attributesMap, setAttributesMap, index }) {
   const [open, setOpen] = React.useState(false);
+  const [content, setContent] = React.useState(
+    attribute.value !== ''
+      ? {
+          json: attribute.value,
+          text: undefined
+        }
+      : {
+          json: {
+            greeting: 'Hello World',
+            color: '#ff3e00',
+            ok: true,
+            values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+          },
+          text: undefined
+        }
+  );
+  React.useEffect(() => {
+    const newArray = attributesMap;
+    typeof content.json !== 'undefined' &&
+    isJSON(typeof content.json !== 'undefined' ? JSON.stringify(content.json) : '')
+      ? (newArray[Number(index)].value = content.json)
+      : '';
+    setAttributesMap([...[], ...newArray]);
+  }, [content]);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const handleClickOpen = () => {
@@ -89,16 +113,8 @@ export default function JsonEdit({ attribute, attributesMap, setAttributesMap, i
           </Toolbar>
         </CustomDialogTitle>
         <DialogContent sx={{ minHeight: '400px' }}>
-          <JsonEditor
-            key={index}
-            value={attribute.value}
-            onChange={(value) => {
-              const newArray = attributesMap;
-              newArray[Number(index)].value = value;
-              setAttributesMap([...[], ...newArray]);
-            }}
-          />
-          {!isJSON(attribute.value) ? (
+          <VanillaJSONEditor content={content} readOnly={false} onChange={setContent} />
+          {!isJSON(typeof content.json !== 'undefined' ? JSON.stringify(content.json) : content.text) ? (
             <Alert
               variant="filled"
               severity="info"

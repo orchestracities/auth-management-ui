@@ -15,7 +15,7 @@ import IconButton from '@mui/material/IconButton';
 import Grid from '@mui/material/Grid';
 import { geocodeByAddress, getLatLng } from 'react-google-places-autocomplete';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
-import { MapContainer, TileLayer, useMap, GeoJSON,useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, useMap, GeoJSON } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import icon from './constants';
@@ -24,7 +24,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { JsonEditor } from 'jsoneditor-react';
+import VanillaJSONEditor from '../../shared/vanillaJsonEditor';
 import { valid } from 'geojson-validation';
 import Alert from '@mui/material/Alert';
 import { Trans } from 'react-i18next';
@@ -106,7 +106,7 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
       ]
     };
   };
-  const [geoJSON, setGeoJSON] = React.useState(attribute.value);
+  const [geoJSON, setGeoJSON] = React.useState({ json: attribute.value });
 
   const compressJSON = (data) => {
     const properties = Object.getOwnPropertyNames(data);
@@ -160,8 +160,8 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
         .then((results) => getLatLng(results[0]))
         .then(({ lat, lng }) => {
           setMapCordinate([lat, lng]);
-          setGeoJSON(
-            compressJSON({
+          setGeoJSON({
+            json: compressJSON({
               type: 'FeatureCollection',
               features: [
                 {
@@ -178,7 +178,7 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
                 }
               ]
             })
-          );
+          });
         });
     }
   }, [locationValue]);
@@ -199,8 +199,8 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
   };
   const ChangeView = ({ center }) => {
     const map = useMap();
-    valid(loadJSON(geoJSON))
-      ? new L.GeoJSON(loadJSON(geoJSON), {
+    valid(loadJSON(geoJSON.json))
+      ? new L.GeoJSON(loadJSON(geoJSON.json), {
           pointToLayer: (latlng) => {
             return L.marker(latlng.geometry.coordinates, {
               icon: icon
@@ -217,19 +217,19 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
 
   const saveTheData = () => {
     const newArray = attributesMap;
-    const newData = compressJSON(loadJSON(geoJSON));
+    const newData = compressJSON(loadJSON(geoJSON.json));
     newArray[Number(index)].value = newData;
-    valid(loadJSON(geoJSON)) ? setAttributesMap([...[], ...newArray]) : '';
+    valid(loadJSON(geoJSON.json)) ? setAttributesMap([...[], ...newArray]) : '';
     handleClose();
   };
 
   const goBack = () => {
     setLocationValue(null);
-    setGeoJSON({ ...{}, ...attribute.value });
+    setGeoJSON({ json: { ...{}, ...attribute.value } });
     setMapCordinate(returnCordinates());
     setKey(key + 1);
   };
-  
+
   return (
     <>
       <Grid container direction="row" justifyContent="center" alignItems="center" spacing={1}>
@@ -297,45 +297,49 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
                   </Tooltip>
                 </Grid>
                 <Grid item xs={12}>
-                  <MapContainer zoom={18} center={mapCordinate} style={{ height: '50vh', zIndex: 0 }} key={key} scrollWheelZoom={true}
-                   whenReady={(map) => {
-                    map.target.on('click', function (e) {
-                      setLocationValue(null);
-                      map.target.eachLayer((layer) => {
-                        if (typeof layer['_latlng'] !== 'undefined') layer.remove();
-                      });
-                      const { lat, lng } = e.latlng;
-                      L.marker([lat, lng], { icon }).addTo(map.target);
-                      setGeoJSON(
-                        compressJSON({
-                          type: 'FeatureCollection',
-                          features: [
-                            {
-                              type: 'Feature',
-                              id: 0,
-                              properties: {
-                                Code: '',
-                                Name: ''
-                              },
-                              geometry: {
-                                type: 'Point',
-                                coordinates: [lat, lng]
+                  <MapContainer
+                    zoom={18}
+                    center={mapCordinate}
+                    style={{ height: '50vh', zIndex: 0 }}
+                    key={key}
+                    scrollWheelZoom={true}
+                    whenReady={(map) => {
+                      map.target.on('click', function (e) {
+                        setLocationValue(null);
+                        map.target.eachLayer((layer) => {
+                          if (typeof layer['_latlng'] !== 'undefined') layer.remove();
+                        });
+                        const { lat, lng } = e.latlng;
+                        L.marker([lat, lng], { icon }).addTo(map.target);
+                        setGeoJSON({
+                          json: compressJSON({
+                            type: 'FeatureCollection',
+                            features: [
+                              {
+                                type: 'Feature',
+                                id: 0,
+                                properties: {
+                                  Code: '',
+                                  Name: ''
+                                },
+                                geometry: {
+                                  type: 'Point',
+                                  coordinates: [lat, lng]
+                                }
                               }
-                            }
-                          ]
-                        })
-                      );
-                    });
-                    return null;
-                  }}
+                            ]
+                          })
+                        });
+                      });
+                      return null;
+                    }}
                   >
                     <TileLayer
                       attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
                     <ChangeView center={mapCordinate} />
-                    {valid(loadJSON(geoJSON)) ? <GeoJSON key="ID" data={geoJSON} /> : ''}
-                   
+                    {valid(loadJSON(geoJSON.json)) ? <GeoJSON key="ID" data={geoJSON.json} /> : ''}
                   </MapContainer>
                 </Grid>
               </Grid>{' '}
@@ -343,15 +347,15 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
             <TabPanel value={tabValue} index={1}>
               <Grid container spacing={isResponsive ? 1 : 3}>
                 <Grid item xs={12}>
-                  <JsonEditor
-                    htmlElementProps={{ style: { height: '300px' } }}
+                  <VanillaJSONEditor
                     key={index}
-                    value={geoJSON}
+                    content={geoJSON}
+                    readOnly={false}
                     onChange={(value) => {
                       setGeoJSON(value);
                     }}
                   />
-                  {!valid(loadJSON(geoJSON)) ? (
+                  {!valid(loadJSON(geoJSON.json)) ? (
                     <Alert
                       variant="filled"
                       severity="info"
