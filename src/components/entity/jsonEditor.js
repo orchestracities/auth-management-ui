@@ -52,20 +52,17 @@ export default function JsonEdit({ attribute, attributesMap, setAttributesMap, i
           text: undefined
         }
       : {
-          json: {
-            greeting: 'Hello World',
-            color: '#ff3e00',
-            ok: true,
-            values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
-          },
+          json: {},
           text: undefined
         }
   );
   React.useEffect(() => {
     const newArray = attributesMap;
-    typeof content.json !== 'undefined' &&
-    isJSON(typeof content.json !== 'undefined' ? JSON.stringify(content.json) : '')
-      ? (newArray[Number(index)].value = content.json)
+    (typeof content.json !== 'undefined' || typeof content.text !== 'undefined') &&
+    isJSON(typeof content.json !== 'undefined' ? JSON.stringify(content.json) : content.text)
+      ? typeof content.json !== 'undefined'
+        ? (newArray[Number(index)].value = content.json)
+        : (newArray[Number(index)].value = content.text)
       : '';
     setAttributesMap([...[], ...newArray]);
   }, [content]);

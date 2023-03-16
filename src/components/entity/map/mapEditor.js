@@ -106,7 +106,7 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
       ]
     };
   };
-  const [geoJSON, setGeoJSON] = React.useState({ json: attribute.value });
+  const [geoJSON, setGeoJSON] = React.useState({ json: attribute.value, text: undefined });
 
   const compressJSON = (data) => {
     const properties = Object.getOwnPropertyNames(data);
@@ -129,7 +129,7 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
   const returnCordinates = () => {
     switch (true) {
       //for a geoJSON that is not valid
-      case !valid(loadJSON(geoJSON)):
+      case !valid(loadJSON(typeof geoJSON.json !== 'undefined' ? geoJSON.json : geoJSON.text)):
         return [47.373878, 8.545094];
       //for a missed or default value
       case attribute.value === '':
@@ -199,8 +199,8 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
   };
   const ChangeView = ({ center }) => {
     const map = useMap();
-    valid(loadJSON(geoJSON.json))
-      ? new L.GeoJSON(loadJSON(geoJSON.json), {
+    valid(loadJSON(typeof geoJSON.json !== 'undefined' ? geoJSON.json : geoJSON.text))
+      ? new L.GeoJSON(loadJSON(typeof geoJSON.json !== 'undefined' ? geoJSON.json : geoJSON.text), {
           pointToLayer: (latlng) => {
             return L.marker(latlng.geometry.coordinates, {
               icon: icon
@@ -217,9 +217,11 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
 
   const saveTheData = () => {
     const newArray = attributesMap;
-    const newData = compressJSON(loadJSON(geoJSON.json));
+    const newData = compressJSON(loadJSON(typeof geoJSON.json !== 'undefined' ? geoJSON.json : geoJSON.text));
     newArray[Number(index)].value = newData;
-    valid(loadJSON(geoJSON.json)) ? setAttributesMap([...[], ...newArray]) : '';
+    valid(loadJSON(typeof geoJSON.json !== 'undefined' ? geoJSON.json : geoJSON.text))
+      ? setAttributesMap([...[], ...newArray])
+      : '';
     handleClose();
   };
 
@@ -265,7 +267,12 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
               {attribute.name}
             </Typography>
 
-            <Button autoFocus color="secondary" onClick={saveTheData}>
+            <Button
+              autoFocus
+              color="secondary"
+              onClick={saveTheData}
+              disabled={!valid(loadJSON(typeof geoJSON.json !== 'undefined' ? geoJSON.json : geoJSON.text))}
+            >
               <Trans>common.saveButton</Trans>
             </Button>
           </Toolbar>
@@ -339,7 +346,11 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
                     <ChangeView center={mapCordinate} />
-                    {valid(loadJSON(geoJSON.json)) ? <GeoJSON key="ID" data={geoJSON.json} /> : ''}
+                    {valid(loadJSON(typeof geoJSON.json !== 'undefined' ? geoJSON.json : geoJSON.text)) ? (
+                      <GeoJSON key="ID" data={geoJSON.json} />
+                    ) : (
+                      ''
+                    )}
                   </MapContainer>
                 </Grid>
               </Grid>{' '}
@@ -355,7 +366,7 @@ export default function MapEdit({ env, attribute, attributesMap, setAttributesMa
                       setGeoJSON(value);
                     }}
                   />
-                  {!valid(loadJSON(geoJSON.json)) ? (
+                  {!valid(loadJSON(typeof geoJSON.json !== 'undefined' ? geoJSON.json : geoJSON.text)) ? (
                     <Alert
                       variant="filled"
                       severity="info"
