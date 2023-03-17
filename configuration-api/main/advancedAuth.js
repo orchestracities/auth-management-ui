@@ -1,8 +1,11 @@
 const express = require('express');
 const cors = require('cors');
 const passport = require('passport');
-const { ApolloServer, gql } = require('apollo-server-express');
-const { ApolloError, AuthenticationError } = require('apollo-server-errors');
+const { ApolloServer } = require('@apollo/server');
+const { startStandaloneServer } = require('@apollo/server/standalone');
+const { expressMiddleware } = require('@apollo/server/express4');
+const { gql } = require('graphql-tag');
+const { GraphQLError } = require('graphql');
 const app = express();
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
@@ -84,7 +87,7 @@ const resolvers = {
         return await get(args.tenantNames);
       } catch (err) {
         config.getLogger().error(logContext, err);
-        throw new ApolloError({ data: { reason: err.message } });
+        throw new GraphQLError({ data: { reason: err.message } });
       }
     },
     getUserPreferences: async (object, args, context, info) => {
@@ -93,7 +96,7 @@ const resolvers = {
         return await getUserPref(args.userName);
       } catch (err) {
         config.getLogger().error(logContext, err);
-        throw new ApolloError({ data: { reason: err.message } });
+        throw new GraphQLError({ data: { reason: err.message } });
       }
     },
     getTenantResourceType: async (object, args, context, info) => {
@@ -102,7 +105,7 @@ const resolvers = {
         return await getResource(args);
       } catch (err) {
         config.getLogger().error(logContext, err);
-        throw new ApolloError({ data: { reason: err.message } });
+        throw new GraphQLError({ data: { reason: err.message } });
       }
     }
   },
@@ -113,7 +116,7 @@ const resolvers = {
         return await [updateUserPref(args)];
       } catch (err) {
         config.getLogger().error(logContext, err);
-        throw new ApolloError({ data: { reason: err.message } });
+        throw new GraphQLError({ data: { reason: err.message } });
       }
     },
     getTenantConfig: async (object, args, context, info) => {
@@ -122,7 +125,7 @@ const resolvers = {
         return await [add(args)];
       } catch (err) {
         config.getLogger().error(logContext, err);
-        throw new ApolloError({ data: { reason: err.message } });
+        throw new GraphQLError({ data: { reason: err.message } });
       }
     },
     modifyTenantConfig: async (object, args, context, info) => {
@@ -131,7 +134,7 @@ const resolvers = {
         return [await update(args)];
       } catch (err) {
         config.getLogger().error(logContext, err);
-        throw new ApolloError({ data: { reason: err.message } });
+        throw new GraphQLError({ data: { reason: err.message } });
       }
     },
     removeTenantConfig: async (object, args, context, info) => {
@@ -140,7 +143,7 @@ const resolvers = {
         return await deleteTenant(args);
       } catch (err) {
         config.getLogger().error(logContext, err);
-        throw new ApolloError({ data: { reason: err.message } });
+        throw new GraphQLError({ data: { reason: err.message } });
       }
     },
     newResourceType: async (object, args, context, info) => {
@@ -149,7 +152,7 @@ const resolvers = {
         return await newResource(args);
       } catch (err) {
         config.getLogger().error(logContext, err);
-        throw new ApolloError(err.message);
+        throw new GraphQLError(err.message);
       }
     },
     deleteResourceType: async (object, args, context, info) => {
@@ -158,7 +161,7 @@ const resolvers = {
         return await deleteResource(args);
       } catch (err) {
         config.getLogger().error(logContext, err);
-        throw new ApolloError(err.message);
+        throw new GraphQLError(err.message);
       }
     },
     updateThisResource: async (object, args, context, info) => {
@@ -167,7 +170,7 @@ const resolvers = {
         return await updateResource(args);
       } catch (err) {
         config.getLogger().error(logContext, err);
-        throw new ApolloError(err.message);
+        throw new GraphQLError(err.message);
       }
     }
   }
@@ -236,19 +239,19 @@ async function startServer() {
     resolvers,
     csrfPrevention: true,
     context: ({ req }) => {
-      if (req.info) throw new AuthenticationError(req.info);
-      if (!req.user) throw new AuthenticationError('you must be logged in');
+      if (req.info) throw new GraphQLError(req.info);
+      if (!req.user)
+        throw new GraphQLError('You must be logged in', {
+          extensions: { code: 'UNAUTHENTICATED' }
+        });
       return {
         auth: req.user
       };
     }
   });
-  await apolloServer.start();
-  apolloServer.applyMiddleware({ app, path: '/configuration' });
-  const port = config.getConfig().port;
-  app.listen({ port }, () =>
-    config.getLogger().info(logContext, '🚀 Server ready at http://localhost:%s%s', port, apolloServer.graphqlPath)
-  );
+
+  await startStandaloneServer(apolloServer);
+  app.use('/configuration', cors(), expressMiddleware(apolloServer));
 }
 
 startServer();
