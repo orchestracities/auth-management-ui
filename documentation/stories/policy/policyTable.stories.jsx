@@ -109,5 +109,6 @@ Table.args = {
   setPage: () => {},
   rowsPerPage: 10,
   setRowsPerPage: () => {},
-  policiesLength: 2
+  policiesLength: 2,
+  action: 'modify'
 };
