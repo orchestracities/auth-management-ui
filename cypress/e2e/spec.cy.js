@@ -1,7 +1,7 @@
 describe('Test page access', () => {
   it('Admin can access admin pages', () => {
     cy.login('admin@mail.com', 'admin');
-    cy.waitForReact(2000, '#root');
+    cy.waitForReact(2000, '#test');
     cy.visit('http://localhost:3000');
     cy.wait(50).contains('Security');
     cy.wait(50).contains('Data Management');
@@ -17,7 +17,7 @@ describe('Test page access', () => {
   });
   it('User1 cannot access Admin pages', () => {
     cy.login('user1@mail.com', 'user1');
-    cy.waitForReact(2000, '#root');
+    cy.waitForReact(2000, '#test');
     cy.visit('http://localhost:3000');
     cy.wait(500).contains('Security');
     cy.wait(500).contains('Data Management');
@@ -30,7 +30,7 @@ describe('Test page access', () => {
   });
   it('Not existing pages causes 404', () => {
     cy.login('admin@mail.com', 'admin');
-    cy.waitForReact(2000, '#root');
+    cy.waitForReact(2000, '#test');
     cy.visit('http://localhost:3000/myPage');
     cy.wait(500).contains('404');
     /* ==== End Cypress Studio ==== */
@@ -58,7 +58,7 @@ describe('Test Toolbar', () => {
     cy.login('admin@mail.com', 'admin');
     /* ==== Generated with Cypress Studio ==== */
     cy.visit('http://localhost:3000');
-    cy.waitForReact(2000, '#root');
+    cy.waitForReact(2000, '#test');
     //TODO
     /* ==== End Cypress Studio ==== */
   });
@@ -66,7 +66,7 @@ describe('Test Toolbar', () => {
     cy.login('user1@mail.com', 'user1');
     /* ==== Generated with Cypress Studio ==== */
     cy.visit('http://localhost:3000');
-    cy.waitForReact(2000, '#root');
+    cy.waitForReact(2000, '#test');
     //TODO
     /* ==== End Cypress Studio ==== */
   });
