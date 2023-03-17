@@ -277,6 +277,8 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
             entityEndpoint={entityEndpoint}
             types={types}
             services={services}
+            getServices={getServices}
+            thisTenant={thisTenant}
           ></EntityTable>
         </Grid>
       </Grid>

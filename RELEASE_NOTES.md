@@ -9,6 +9,7 @@
 - Resource type pagination (#109)
 - Policies Paginations (#127)
 - Update apollo library to v4 (#136)
+- Policy display on entity table (#118)
 
 ### Bug fixes
 

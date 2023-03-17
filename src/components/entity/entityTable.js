@@ -30,6 +30,19 @@ import * as log from 'loglevel';
 import DeleteDialog from '../shared/messages/cardDelete';
 import EntityForm from './entityForm';
 import * as tableApi from '../../componentsApi/tableApi';
+import CloseIcon from '@mui/icons-material/Close';
+import axios from 'axios';
+import useNotification from '../shared/messages/alerts';
+import PolicyTable from '../policy/policiesTable';
+import PoliciesOnEntity from './policyDisplay';
+import DialogContent from '@mui/material/DialogContent';
+import AppBar from '@mui/material/AppBar';
+
+const CustomDialogTitle = styled(AppBar)({
+  position: 'relative',
+  background: 'white',
+  boxShadow: 'none'
+});
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -76,9 +89,19 @@ export default function EntityTable({
   setPage,
   rowsPerPage,
   setRowsPerPage,
-  entitiesLenght
+  entitiesLenght,
+  thisTenant
 }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
+  const [msg, sendNotification] = useNotification();
+  console.log(msg);
+  //POLICIES TABLE PART
+  const [modalTitle, setModalTitle] = React.useState('');
+  const [pagePolicies, setPagePolicies] = React.useState(0);
+  const [policiesLength, setPoliciesLenght] = React.useState(0);
+  const [rowsPerPagePolicies, setRowsPerPagePolicies] = React.useState(tableApi.getRowsPerPage(env));
+  const pagePoliciesMaxNumber = tableApi.getTableMax(env);
+
   // DELETE
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const handleClickOpenDeleteDialog = () => {
@@ -89,34 +112,143 @@ export default function EntityTable({
     setOpenDeleteDialog(false);
   };
   // EDIT
-  const [open, setOpen] = React.useState(false);
+  const [openEdit, setOpenEdit] = React.useState(false);
   const [editData, setEditData] = React.useState({});
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleCloseEdit = () => {
+    setOpenEdit(false);
+  };
+
+  const handleEdit = (data) => {
+    setOpenEdit(true);
+    setEditData(data);
+  };
+
+  // POLICIES
+  const [openPoliciesView, setOpenPoliciesView] = React.useState(false);
+  const [entityPolicies, setEntityPolicies] = React.useState([]);
+  React.useEffect(() => {
+    openPoliciesView === false ? setEntityPolicies([]) : '';
+  }, [openPoliciesView]);
+
+  const getPoliciesFiltered = (ID) => {
+    const queryParameters =
+      typeof ID === 'undefined'
+        ? modalTitle !== null
+          ? '&resource=' + modalTitle
+          : ''
+        : ID !== null
+        ? '&resource=' + ID
+        : '';
+    for (const service of services) {
+      axios
+        .get(
+          (typeof env !== 'undefined' ? env.ANUBIS_API_URL : '') +
+            'v1/policies' +
+            '/?skip=' +
+            pagePolicies *
+              (rowsPerPagePolicies === pagePoliciesMaxNumber ? pagePoliciesMaxNumber : rowsPerPagePolicies) +
+            '&limit=' +
+            rowsPerPagePolicies +
+            queryParameters,
+          {
+            headers: {
+              'fiware-service': GeTenantData('name'),
+              'fiware-servicepath': service.path,
+              authorization: `Bearer ${token}`
+            }
+          }
+        )
+        .then((response) => {
+          setPoliciesLenght(response.headers['counter']);
+          response.data.forEach((e) => (e.fiware_service = GeTenantData('name')));
+          response.data.forEach((e) => (e.fiware_service_path = service.path));
+          setEntityPolicies(response.data);
+          setOpenPoliciesView(true);
+        })
+        .catch((e) => {
+          e.response
+            ? e.response.data.detail.map((thisError) => sendNotification({ msg: thisError.msg, variant: 'error' }))
+            : sendNotification({ msg: e.message + ': cannot reach policy managenent api', variant: 'error' });
+        });
+    }
+  };
+
+  const handleClosePolicies = () => {
+    setOpenPoliciesView(false);
+  };
+
+  const handlePolicies = (data) => {
+    setModalTitle(data.id);
+    getPoliciesFiltered(data.id);
   };
 
   const handlePropagation = (e) => {
     e.stopPropagation();
   };
 
-  const handleData = (data) => {
-    setOpen(true);
-    setEditData(data);
-  };
-  const addEdit = (data) => {
+  const [access_modes, setAccess_modes] = React.useState([]);
+
+  React.useEffect(() => {
+    if (!(thisTenant === null || typeof thisTenant === 'undefined')) {
+      axios
+        .get((typeof env !== 'undefined' ? env.ANUBIS_API_URL : '') + 'v1/policies/access-modes', {
+          headers: {
+            authorization: `Bearer ${token}`
+          }
+        })
+        .then((response) => setAccess_modes(response.data))
+        .catch((err) =>
+          sendNotification({ msg: err.message + ': cannot reach policy managenent api', variant: 'error' })
+        );
+    }
+  }, [thisTenant]);
+
+  const [agentsTypes, setagentsTypes] = React.useState([]);
+
+  React.useEffect(() => {
+    if (!(thisTenant === null || typeof thisTenant === 'undefined')) {
+      axios
+        .get((typeof env !== 'undefined' ? env.ANUBIS_API_URL : '') + 'v1/policies/agent-types', {
+          headers: {
+            authorization: `Bearer ${token}`
+          }
+        })
+        .then((response) => setagentsTypes(response.data))
+        .catch((err) =>
+          sendNotification({ msg: err.message + ': cannot reach policy managenent api', variant: 'error' })
+        );
+    }
+  }, [thisTenant]);
+
+  const addInteractions = (data) => {
     data.map(
-      (thisElement) =>
+      async (thisElement) =>
         (thisElement.action = (
-          <IconButton aria-label="edit" color="secondary" key={thisElement.id} onClick={() => handleData(thisElement)}>
-            <EditIcon />
-          </IconButton>
+          <>
+            <IconButton
+              aria-label="edit"
+              color="secondary"
+              key={'edit' + thisElement.id}
+              onClick={() => handleEdit(thisElement)}
+            >
+              <EditIcon />
+            </IconButton>
+            <PoliciesOnEntity
+              entityPolicies={entityPolicies}
+              env={env}
+              token={token}
+              GeTenantData={GeTenantData}
+              thisEntity={thisElement}
+              handlePolicies={handlePolicies}
+            />
+          </>
         ))
     );
     return data;
   };
 
-  const rows = addEdit(data);
+  const rows = addInteractions(data);
 
   function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -416,12 +548,12 @@ export default function EntityTable({
         </DinamicPaper>
       </Box>
       <DialogRounded
-        open={open}
+        open={openEdit}
         fullWidth={true}
         maxWidth={'xl'}
         TransitionComponent={Transition}
         fullScreen={fullScreen}
-        onClose={handleClose}
+        onClose={handleCloseEdit}
         aria-labelledby="edit"
         aria-describedby="edit"
       >
@@ -434,7 +566,7 @@ export default function EntityTable({
               }}
             />
           }
-          close={handleClose}
+          close={handleCloseEdit}
           action={'modify'}
           token={token}
           env={env}
@@ -445,6 +577,46 @@ export default function EntityTable({
           types={types}
           services={services}
         />
+        <DialogActions></DialogActions>
+      </DialogRounded>
+      <DialogRounded
+        open={openPoliciesView}
+        fullWidth={true}
+        maxWidth={'xl'}
+        TransitionComponent={Transition}
+        fullScreen={fullScreen}
+        onClose={handleClosePolicies}
+        aria-labelledby="edit"
+        aria-describedby="edit"
+      >
+        <CustomDialogTitle>
+          <Toolbar>
+            <IconButton edge="start" onClick={handleClosePolicies} aria-label="close">
+              <CloseIcon />
+            </IconButton>
+            <Typography sx={{ ml: 2, flex: 1, color: 'black' }} noWrap gutterBottom variant="h6" component="div">
+              {modalTitle}
+            </Typography>
+          </Toolbar>
+        </CustomDialogTitle>
+        <DialogContent sx={{ minHeight: '400px' }}>
+          <PolicyTable
+            mode={'display'}
+            page={pagePolicies}
+            setPage={setPagePolicies}
+            rowsPerPage={rowsPerPagePolicies}
+            setRowsPerPage={setRowsPerPagePolicies}
+            policiesLength={policiesLength}
+            data={entityPolicies}
+            getData={getPoliciesFiltered}
+            tenantName={GeTenantData}
+            token={token}
+            env={env}
+            services={services}
+            access_modes={access_modes}
+            agentsTypes={agentsTypes}
+          />
+        </DialogContent>
         <DialogActions></DialogActions>
       </DialogRounded>
       <DeleteDialog

@@ -99,11 +99,16 @@ PolicyDataInTable.propTypes = {
   /**
    * the number of policies inside the DB
    */
-  policiesLength: PropTypes.number
+  policiesLength: PropTypes.number,
+  /**
+   * The table mode when is displayed
+   */
+  action: PropTypes.oneOf(['display', 'modify'])
 };
 
 PolicyDataInTable.defaultProps = {
   data: [],
+  action: 'modify',
   getData: () => {},
   access_modes: [],
   agentsTypes: [],

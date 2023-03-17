@@ -57,7 +57,9 @@ export default {
         <>
           <Title>Entities Table:</Title>
           <Subtitle>Description:</Subtitle>
-          <Description>This table will display the data stored inside the entities</Description>
+          <Description>
+            This table will display the data stored inside the entities and the policies linked to the them if avaitable
+          </Description>
           <Subtitle>API Documentation:</Subtitle>
           <Description>The Entities Table component is inside entity/entityTable.js :</Description>
           <Description>
