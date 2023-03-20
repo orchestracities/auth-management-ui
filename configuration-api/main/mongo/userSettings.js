@@ -1,7 +1,13 @@
 const mongoose = require('mongoose');
 
 const config = require('../config');
-const connection = mongoose.createConnection(config.getConfig().mongo_db);
+const connection = mongoose.createConnection(config.getConfig().mongo_db,{
+  "auth": {
+    "authSource": "my_mongo"
+  },
+  "user": "admin",
+  "pass": "admin"
+});
 const logContext = { op: 'configuration-api.advancedAuth' };
 const userSettings = new mongoose.Schema({
   userName: {

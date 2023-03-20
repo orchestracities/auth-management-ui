@@ -3,7 +3,7 @@ const { uid } = require('uid/secure');
 
 //require('dotenv').config({ path: '../.env' });
 
-const connection = mongoose.createConnection(process.env.MONGO_DB || 'mongodb://localhost:27017/graphql');
+const connection = mongoose.createConnection('mongodb://root:example@mongo:27017/');
 const orionURL = process.env.REACT_APP_ORION || 'http://localhost:1026';
 
 const TenantConfig = new mongoose.Schema({
