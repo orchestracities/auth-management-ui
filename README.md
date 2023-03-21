@@ -77,7 +77,7 @@ $ start.sh
 ```
 
 The default user/password are admin@mail.com/admin for the app.
-And root/example for mongo.
+root/example for mongo (a change needs a new config for start.sh and fiware).
 
 ## Installation
 
