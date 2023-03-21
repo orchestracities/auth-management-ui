@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { uid } = require('uid/secure');
-require('dotenv').config({ path: '../.env' });
+require('dotenv').config({ path: '../../.env' });
 const connection = mongoose.createConnection(process.env.MONGO_DB ||'mongodb://root:example@localhost:27017/admin');
 const orionURL = process.env.REACT_APP_ORION || 'http://localhost:1026';
 
