@@ -76,7 +76,8 @@ and Keycloak, run the following script:
 $ start.sh
 ```
 
-The default user/password are admin@mail.com/admin for the app and root example for mongo.
+The default user/password are admin@mail.com/admin for the app.
+And root/example for mongo.
 
 ## Installation
 
@@ -89,7 +90,7 @@ The Auth Management UI depends on:
 - The Configuration API, an [Apollo GraphQL](https://www.apollographql.com/)
   based API available as a [docker container](https://hub.docker.com/r/orchestracities/management-configuration-api)
   (see [configuration-api](configuration-api)).
-- [MongoDB](https://www.mongodb.com/), used as backend of the Configuration API the password for mongo can be changed inside the docker compose, the default ones are root for user and example for password.
+- [MongoDB](https://www.mongodb.com/), used as backend of the Configuration API.
 
 An example [docker compose](docker-compose.yaml) is provided in this repository
 that deploy all the dependencies. A complete deployment including policy
