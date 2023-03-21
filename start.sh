@@ -352,7 +352,7 @@ if [[ $1 == "dev" ]]; then
 else
     echo ""
     echo "Populate mongo db ..."
-    docker run --name populatedb --env MONGO_DB="mongodb://mongo:27017/graphql" --network=auth-management-ui_envoymesh orchestracities/configuration-api node main/mongo/populateDB.js
+    docker run --name populatedb --env MONGO_DB="mongodb://root:example@mongo:27017/admin" --network=auth-management-ui_envoymesh orchestracities/configuration-api node main/mongo/populateDB.js
     docker rm -f populatedb
 
     wait=0

@@ -37,7 +37,7 @@ function loadConfig() {
   if (process.env.MONGO_DB) {
     newConfig.mongo_db = process.env.MONGO_DB;
   } else {
-    newConfig.mongo_db = 'mongodb://localhost:27017/graphql';
+    newConfig.mongo_db = 'mongodb://root:example@localhost:27017/admin';
   }
   if (process.env.JWKS_URL) {
     newConfig.jwks_url = process.env.JWKS_URL;

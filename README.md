@@ -76,7 +76,8 @@ and Keycloak, run the following script:
 $ start.sh
 ```
 
-The default user/password are admin/admin
+The default user/password are admin@mail.com/admin for the app.
+root/example for mongo (a change needs a new config for start.sh and fiware).
 
 ## Installation
 
@@ -126,7 +127,7 @@ and the Configuration API:
 - `REACT_APP_GOOGLE_MAPS`:The API key of google's Map
 - `REACT_APP_TABLE_PAGINATION_OPTIONS`: Options of rows inside the table
 - `REACT_APP_TABLE_DEFAULT_DATA_AMOUNT`: Default displayed rows inside a table
-- `MONGO_DB`: the MongoDB endpoint of the Configuration API and by
+- `MONGO_DB`: the MongoDB endpoint of the Config API with authorization
   [populateDB.js](configuration-api/main/mongo/populateDB.js)
   to populate the Configuration API backend with example data
   (e.g. `mongodb://mongo:27017/graphql`) - you may need to configure different
