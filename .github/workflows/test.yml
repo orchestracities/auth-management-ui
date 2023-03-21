@@ -64,7 +64,7 @@ jobs:
       - name: set-up environment
         run: cp .env.docker .env
       - name: Setup Docker
-        run: ./start.sh
+        run: ./start.sh silent
       - name: Install Dependencies
         run: npm install
       - name: Run cypress tests
