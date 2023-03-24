@@ -57,7 +57,7 @@ export default function UserMenu({ language, userData, token, lastTenantSelected
         sendNotification({ msg: `NetworkError: cannot reach configuration api"`, variant: 'error' });
       }
     }),
-    createHttpLink({ uri: env.CONFIGURATION_API_URL })
+    createHttpLink({ uri: typeof env === 'undefined' ? '' : env.CONFIGURATION_API_URL })
   ]);
 
   const authLink = setContext((_, { headers }) => {
