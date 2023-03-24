@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -7,6 +6,7 @@ import './i18n';
 import { OidcProvider } from '@axa-fr/react-oidc';
 import { useOidc, useOidcIdToken, useOidcAccessToken } from '@axa-fr/react-oidc';
 import { getEnv } from './env';
+import { createRoot } from 'react-dom/client';
 
 const env = getEnv();
 
@@ -32,15 +32,15 @@ function LoginMockup() {
     />
   );
 }
+const domNode = document.getElementById('root');
+const root = createRoot(domNode);
 
-ReactDOM.render(
-  <OidcProvider configuration={configuration}>
-    <React.StrictMode>
-      <LoginMockup></LoginMockup>
-    </React.StrictMode>
-  </OidcProvider>,
-  document.getElementById('root')
-);
+root.render(  <OidcProvider configuration={configuration}>
+  <React.StrictMode>
+    <LoginMockup></LoginMockup>
+  </React.StrictMode>
+</OidcProvider>);
+
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

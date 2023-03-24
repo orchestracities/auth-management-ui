@@ -258,25 +258,54 @@ export default class App extends Component {
       });
       const client = new ApolloClient({
         link: authLink.concat(httpLink),
-        cache: new InMemoryCache()
+        cache: new InMemoryCache(
+     { addTypename: false}
+    )
       });
       if (newValue !== null) {
-        client.mutate({
-          mutation: gql`
-            mutation modifyUserPreferences($userName: String!, $language: String!, $lastTenantSelected: String) {
-              modifyUserPreferences(userName: $userName, language: $language, lastTenantSelected: $lastTenantSelected) {
+        client
+        .query({
+          query: gql`
+            query getUserPreferences($userName: String!) {
+              getUserPreferences(userName: $userName) {
                 userName
                 language
                 lastTenantSelected
+                welcomeText {
+                  language
+                  text
+                }
               }
             }
           `,
           variables: {
             userName: this.props.idTokenPayload.sub,
+            state: this.state
+          }
+        })
+        .then((result) => {
+        client.mutate({
+          mutation: gql`
+          mutation modifyUserPreferences($userName: String!, $language: String!, $lastTenantSelected: String, $welcomeText:[WelcomeText]) {
+            modifyUserPreferences(userName: $userName, language: $language, lastTenantSelected: $lastTenantSelected, welcomeText:$welcomeText) {
+              userName
+              language
+              lastTenantSelected
+              welcomeText {
+                language
+                text
+              }
+            }
+          }
+          `,
+          variables: {
+            userName: this.props.idTokenPayload.sub,
             language: this.state.language,
-            lastTenantSelected: newValue
+            lastTenantSelected: newValue,
+            welcomeText: result.data.getUserPreferences[0].welcomeText
           }
         });
+      });
       }
       this.setState({ thisTenant: tenantFiltered.length === 0 ? (newValue = this.state.tenants[0].id) : newValue });
       this.state.catchColor(newValue);
@@ -386,7 +415,9 @@ export default class App extends Component {
 
           const client = new ApolloClient({
             link: from([errorLink, authLink.concat(httpLink)]),
-            cache: new InMemoryCache()
+            cache: new InMemoryCache(
+     { addTypename: false}
+    )
           });
 
           client
@@ -419,6 +450,10 @@ export default class App extends Component {
                         userName
                         language
                         lastTenantSelected
+                        welcomeText {
+                          language
+                          text
+                        }
                       }
                     }
                   `,
@@ -574,6 +609,9 @@ export default class App extends Component {
                             env={env}
                             tenantValues={this.state.tenants}
                             thisTenant={this.state.thisTenant}
+                            userData={this.props.idTokenPayload}
+                            language={this.state.language}
+                            token={this.props.accessToken}
                           />
                         }
                       />

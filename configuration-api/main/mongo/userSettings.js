@@ -9,8 +9,15 @@ const userSettings = new mongoose.Schema({
     unique: true
   },
   language: String,
-  lastTenantSelected: String
+  lastTenantSelected: String,
+  welcomeText: [
+    {
+      language: String,
+      text: String
+    }
+  ]
 });
+
 
 const Settings = connection.model('userSettings', userSettings);
 
@@ -31,7 +38,8 @@ async function updateUserPref(data) {
     const update = {
       userName: data.userName,
       language: data.language,
-      lastTenantSelected: data.lastTenantSelected
+      lastTenantSelected: data.lastTenantSelected,
+      welcomeText:data.welcomeText
     };
     const thisTenant = await Settings.findOneAndUpdate(filter, update);
     return await thisTenant;
@@ -44,12 +52,19 @@ async function updateUserPref(data) {
 async function addUserPref(data) {
   const arrayOfData = {
     userName: data,
-    language: 'defaultBrowser',
-    lastTenantSelected: null
+    language: 'en',
+    lastTenantSelected: null,
+    welcomeText: [{
+      language: 'en',
+      text: "Welcome!"
+    },
+    {
+      language: 'it',
+      text: "Benvenuto!"
+    }]
   };
-
-  const thisUser = await Settings.create(arrayOfData);
-  return await thisUser;
+  await Settings.create(arrayOfData);
+  return await getUserPref(data);
 }
 
 module.exports = {

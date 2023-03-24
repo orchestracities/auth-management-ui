@@ -66,7 +66,9 @@ export default function PolicyForm({
   });
   const client = new ApolloClient({
     link: authLink.concat(httpLink),
-    cache: new InMemoryCache()
+    cache: new InMemoryCache(
+     { addTypename: false}
+    )
   });
   const anubisURL = typeof env !== 'undefined' ? env.ANUBIS_API_URL : '';
   log.debug(msg);

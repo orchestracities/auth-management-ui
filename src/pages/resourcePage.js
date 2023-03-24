@@ -29,7 +29,9 @@ export default function ResourcePage({ token, graphqlErrors, env, tokenData, thi
   });
   const client = new ApolloClient({
     link: authLink.concat(httpLink),
-    cache: new InMemoryCache()
+    cache: new InMemoryCache(
+     { addTypename: false}
+    )
   });
 
   const [msg, sendNotification] = useNotification();

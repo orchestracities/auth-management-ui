@@ -74,7 +74,9 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
 
   const client = new ApolloClient({
     link: authLink.concat(httpLink),
-    cache: new InMemoryCache()
+    cache: new InMemoryCache(
+     { addTypename: false}
+    )
   });
 
   React.useEffect(async () => {

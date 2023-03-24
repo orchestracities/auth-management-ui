@@ -17,6 +17,8 @@ import { AuthorizedElement } from '../loginComponents/checkRoles';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { menu } from '../menu';
+import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
 
 const HomePageItem = ({ item, tokenData, tenantValues, thisTenant, color }) => {
   return (
@@ -72,13 +74,56 @@ const LevelZero = ({ item, tokenData, tenantValues, thisTenant, color }) => {
   );
 };
 
-export default function HomePage({ tokenData, thisTenant, tenantValues, env }) {
+export default function HomePage({ tokenData, thisTenant, tenantValues, env, userData,language,token }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
-  const mainTitle = <Trans>menu.home.pageTitle</Trans>;
+  const httpLink = createHttpLink({
+    uri: typeof env !== 'undefined' ? env.CONFIGURATION_API_URL : ''
+  });
+  const authLink = setContext((_, { headers }) => {
+    return {
+      headers: {
+        ...headers,
+        Authorization: `Bearer ${token}`
+      }
+    };
+  });
+  const client = new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache(
+     { addTypename: false}
+    )
+  });
+  const [mainTitle, setMainTitle] = React.useState("");
   const tenantFiltered = tenantValues.filter((e) => e.id === thisTenant);
   const tenantData = tenantFiltered[0];
   const color = tenantData && tenantData.props && tenantData.props.primaryColor ? tenantData.props.primaryColor : '';
-
+  React.useEffect(() => {
+    client
+                .query({
+                  query: gql`
+                    query getUserPreferences($userName: String!) {
+                      getUserPreferences(userName: $userName) {
+                        userName
+                        language
+                        lastTenantSelected
+                        welcomeText {
+                          language
+                          text
+                        }
+                      }
+                    }
+                  `,
+                  variables: {
+                    userName: userData.sub,
+                  }
+                })
+                .then((result) => {
+                  console.log(result.data.getUserPreferences[0].language)
+                  let filtered = [];
+                  filtered = result.data.getUserPreferences[0].welcomeText.filter((e) => e.language === result.data.getUserPreferences[0].language);
+                 setMainTitle(filtered[0].text)
+                });
+  }, [language]);
   return (
     <Box>
       <MainTitle mainTitle={mainTitle}></MainTitle>

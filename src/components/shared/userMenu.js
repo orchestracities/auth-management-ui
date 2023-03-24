@@ -28,6 +28,7 @@ import { setContext } from '@apollo/client/link/context';
 import useNotification from './messages/alerts';
 import * as log from 'loglevel';
 import { useOidc } from '@axa-fr/react-oidc';
+import TextField from '@mui/material/TextField';
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -43,12 +44,44 @@ const CustomDialogTitle = styled(AppBar)({
 
 export default function UserMenu({ language, userData, token, lastTenantSelected, env }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
+  const httpLink = ApolloLink.from([
+    onError(({ graphQLErrors, networkError }) => {
+      if (graphQLErrors)
+        graphQLErrors.map(({ message, locations, path }) => {
+          sendNotification({
+            msg: `GraphQLError: ${message}, Location: ${locations}, Path: ${path}`,
+            variant: 'error'
+          });
+        });
+      if (networkError) {
+        sendNotification({ msg: `NetworkError: cannot reach configuration api"`, variant: 'error' });
+      }
+    }),
+    createHttpLink({ uri: env.CONFIGURATION_API_URL })
+  ]);
 
+  const authLink = setContext((_, { headers }) => {
+    return {
+      headers: {
+        ...headers,
+        Authorization: `Bearer ${token}`
+      }
+    };
+  });
+
+  const client = new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache(
+     { addTypename: false}
+    )
+  });
   const { i18n } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [settings, setOpenSettings] = React.useState(false);
   const [msg, sendNotification] = useNotification();
-
+  const [languageSelect, setLanguageSelect] = React.useState("");
+  const [welcomeTextObj, setWelcomeTextObj] = React.useState([]);
+  const [welcomeText, setWelcomeText] = React.useState("");
   log.debug(msg);
 
   const { logout } = typeof env === 'undefined' ? '' : useOidc();
@@ -73,77 +106,79 @@ export default function UserMenu({ language, userData, token, lastTenantSelected
   };
 
   React.useEffect(() => {
-    i18n.changeLanguage(language.language);
+    getHomeMessage(language.language)
+    setLanguageSelect(language.language)
   }, [language]);
 
-  const handleLanguagePreference = (newValue) => {
-    language.setLanguage(newValue);
-    newValue === 'defaultBrowser'
+  React.useEffect(() => {
+    languageSelect === 'defaultBrowser'
       ? i18n.changeLanguage(Intl.NumberFormat().resolvedOptions().locale)
-      : i18n.changeLanguage(newValue);
-    const httpLink = ApolloLink.from([
-      onError(({ graphQLErrors, networkError }) => {
-        if (graphQLErrors)
-          graphQLErrors.map(({ message, locations, path }) => {
-            sendNotification({
-              msg: `GraphQLError: ${message}, Location: ${locations}, Path: ${path}`,
-              variant: 'error'
-            });
-          });
-        if (networkError) {
-          sendNotification({ msg: `NetworkError: cannot reach configuration api"`, variant: 'error' });
-        }
-      }),
-      createHttpLink({ uri: env.CONFIGURATION_API_URL })
-    ]);
-
-    const authLink = setContext((_, { headers }) => {
-      return {
-        headers: {
-          ...headers,
-          Authorization: `Bearer ${token}`
-        }
-      };
-    });
-
-    const client = new ApolloClient({
-      link: authLink.concat(httpLink),
-      cache: new InMemoryCache()
-    });
+      : i18n.changeLanguage(languageSelect);
+  
     if (lastTenantSelected !== null) {
       client
         .mutate({
           mutation: gql`
-            mutation modifyUserPreferences($userName: String!, $language: String!, $lastTenantSelected: String) {
-              modifyUserPreferences(userName: $userName, language: $language, lastTenantSelected: $lastTenantSelected) {
-                userName
-                language
-                lastTenantSelected
-              }
+        mutation modifyUserPreferences($userName: String!, $language: String!, $lastTenantSelected: String, $welcomeText:[WelcomeText]) {
+          modifyUserPreferences(userName: $userName, language: $language, lastTenantSelected: $lastTenantSelected, welcomeText:$welcomeText) {
+            userName
+            language
+            lastTenantSelected
+            welcomeText {
+              language
+              text
             }
-          `,
+          }
+        }
+        `,
           variables: {
             userName: userData.sub,
-            language: newValue,
-            lastTenantSelected: lastTenantSelected
+            language: languageSelect === 'defaultBrowser'
+            ? Intl.NumberFormat().resolvedOptions().locale
+            : languageSelect,
+            lastTenantSelected: lastTenantSelected,
+            welcomeText:  welcomeTextObj
           }
         })
         .then((result) => {
-          log.debug(result);
-          sendNotification({
-            msg: (
-              <Trans
-                i18nKey="common.messages.sucessUpdate"
-                values={{
-                  data: 'User Preference'
-                }}
-              />
-            ),
-            variant: 'success'
-          });
+          language.setLanguage(languageSelect);
         });
     }
-  };
+
+  }, [languageSelect, welcomeText,welcomeTextObj]);
+
+
+  React.useEffect(() => {
+    client
+      .query({
+        query: gql`
+      query getUserPreferences($userName: String!) {
+        getUserPreferences(userName: $userName) {
+          userName
+          language
+          lastTenantSelected
+          welcomeText {
+            language
+            text
+          }
+        }
+      }
+    `,
+        variables: {
+          userName: userData.sub,
+        }
+      })
+      .then((result) => {
+        setWelcomeTextObj(result.data.getUserPreferences[0].welcomeText)
+      });
+  }, []);
+
+
+  const getHomeMessage = (language) => {
+    let filtered = [];
+    filtered = welcomeTextObj.filter((e) => e.language === language);
+    setWelcomeText((language === "" || language === "defaultBrowser") ? "" : filtered[0].text);
+  }
 
   return (
     <React.Fragment>
@@ -248,9 +283,9 @@ export default function UserMenu({ language, userData, token, lastTenantSelected
                   id="language-select"
                   variant="outlined"
                   onChange={(event) => {
-                    handleLanguagePreference(event.target.value);
+                    setLanguageSelect(event.target.value);
                   }}
-                  value={language.language === '' ? 'defaultBrowser' : language.language}
+                  value={languageSelect}
                   label={<Trans>common.userSettings.language</Trans>}
                 >
                   <MenuItem value={'defaultBrowser'}>Default</MenuItem>
@@ -259,6 +294,26 @@ export default function UserMenu({ language, userData, token, lastTenantSelected
                 </Select>
               </FormControl>
             </Grid>
+            {(language.language === "" || language.language === "defaultBrowser") ? "" : <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                label={language.language + " Home"}
+                value={welcomeText}
+                onChange={(event) => {
+                  setWelcomeText(event.target.value)
+                  let newWelcomeTextObj = [...welcomeTextObj];
+                  if (!(languageSelect === "" || languageSelect === "defaultBrowser" ||event.target.value==="")) {
+                    let arrayIndex = welcomeTextObj.findIndex((e) => e.language === languageSelect);
+                    newWelcomeTextObj[arrayIndex] = {language:languageSelect,text:event.target.value};
+                    setWelcomeTextObj([...[],...newWelcomeTextObj]);
+                  }
+                }}
+                sx={{
+                  width: '100%'
+                }}
+              />
+            </Grid>}
+
           </Grid>
         </DialogContent>
         <DialogActions></DialogActions>

@@ -40,7 +40,9 @@ export default function ResourceForm({ title, close, action, token, tokenData, e
   });
   const client = new ApolloClient({
     link: authLink.concat(httpLink),
-    cache: new InMemoryCache()
+    cache: new InMemoryCache(
+     { addTypename: false}
+    )
   });
 
   const [msg, sendNotification] = useNotification();
