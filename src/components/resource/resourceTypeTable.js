@@ -51,9 +51,7 @@ export default function ResourceTable({
   });
   const client = new ApolloClient({
     link: authLink.concat(httpLink),
-    cache: new InMemoryCache(
-     { addTypename: false}
-    )
+    cache: new InMemoryCache({ addTypename: false })
   });
 
   const [msg, sendNotification] = useNotification();

@@ -91,14 +91,21 @@ describe('GraphQL-Mutations', function () {
       }
     }
   `,
-    variables: { userName: '5c67b251-6f63-46f3-b3b0-085e1f7040b2', language: 'default', lastTenantSelected: 'test', welcomeText:[{
-      language: 'en',
-      text: "Welcome!"
-    },
-    {
-      language: 'it',
-      text: "Benvenuto!"
-    }] }
+    variables: {
+      userName: '5c67b251-6f63-46f3-b3b0-085e1f7040b2',
+      language: 'default',
+      lastTenantSelected: 'test',
+      welcomeText: [
+        {
+          language: 'en',
+          text: 'Welcome!'
+        },
+        {
+          language: 'it',
+          text: 'Benvenuto!'
+        }
+      ]
+    }
   };
 
   const newResourceType = {

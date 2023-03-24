@@ -19,9 +19,6 @@ const { get, update, add, deleteTenant } = require('./mongo/tenantsQueries');
 const { getUserPref, updateUserPref } = require('./mongo/userSettings');
 const { getResource, deleteResource, newResource, updateResource } = require('./mongo/resourceTypes');
 const typeDefs = gql`
-
-
-
   type TenantConfiguration {
     name: String!
     icon: String!
@@ -33,7 +30,7 @@ const typeDefs = gql`
     userName: String!
     language: String!
     lastTenantSelected: String
-    welcomeText:[MainMessage]
+    welcomeText: [MainMessage]
   }
 
   type ResourceType {
@@ -51,12 +48,12 @@ const typeDefs = gql`
 
   input WelcomeText {
     language: String!
-      text: String!
+    text: String!
   }
 
   type MainMessage {
     language: String!
-      text: String!
+    text: String!
   }
 
   type Query {
@@ -74,7 +71,12 @@ const typeDefs = gql`
       endpointUrl: String!
       id: String!
     ): [ResourceType]
-    modifyUserPreferences(userName: String!, language: String!, lastTenantSelected: String, welcomeText:[WelcomeText]): [UserPreferencies]
+    modifyUserPreferences(
+      userName: String!
+      language: String!
+      lastTenantSelected: String
+      welcomeText: [WelcomeText]
+    ): [UserPreferencies]
     getTenantConfig(
       name: String!
       icon: String!

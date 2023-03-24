@@ -35,12 +35,13 @@ function LoginMockup() {
 const domNode = document.getElementById('root');
 const root = createRoot(domNode);
 
-root.render(  <OidcProvider configuration={configuration}>
-  <React.StrictMode>
-    <LoginMockup></LoginMockup>
-  </React.StrictMode>
-</OidcProvider>);
-
+root.render(
+  <OidcProvider configuration={configuration}>
+    <React.StrictMode>
+      <LoginMockup></LoginMockup>
+    </React.StrictMode>
+  </OidcProvider>
+);
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

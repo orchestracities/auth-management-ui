@@ -71,17 +71,15 @@ export default function UserMenu({ language, userData, token, lastTenantSelected
 
   const client = new ApolloClient({
     link: authLink.concat(httpLink),
-    cache: new InMemoryCache(
-     { addTypename: false}
-    )
+    cache: new InMemoryCache({ addTypename: false })
   });
   const { i18n } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [settings, setOpenSettings] = React.useState(false);
   const [msg, sendNotification] = useNotification();
-  const [languageSelect, setLanguageSelect] = React.useState("");
+  const [languageSelect, setLanguageSelect] = React.useState('');
   const [welcomeTextObj, setWelcomeTextObj] = React.useState([]);
-  const [welcomeText, setWelcomeText] = React.useState("");
+  const [welcomeText, setWelcomeText] = React.useState('');
   log.debug(msg);
 
   const { logout } = typeof env === 'undefined' ? '' : useOidc();
@@ -106,79 +104,87 @@ export default function UserMenu({ language, userData, token, lastTenantSelected
   };
 
   React.useEffect(() => {
-    getHomeMessage(language.language)
-    setLanguageSelect(language.language)
+    getHomeMessage(language.language);
+    setLanguageSelect(language.language);
   }, [language]);
 
   React.useEffect(() => {
     languageSelect === 'defaultBrowser'
       ? i18n.changeLanguage(Intl.NumberFormat().resolvedOptions().locale)
       : i18n.changeLanguage(languageSelect);
-  
+
     if (lastTenantSelected !== null) {
       client
         .mutate({
           mutation: gql`
-        mutation modifyUserPreferences($userName: String!, $language: String!, $lastTenantSelected: String, $welcomeText:[WelcomeText]) {
-          modifyUserPreferences(userName: $userName, language: $language, lastTenantSelected: $lastTenantSelected, welcomeText:$welcomeText) {
-            userName
-            language
-            lastTenantSelected
-            welcomeText {
-              language
-              text
+            mutation modifyUserPreferences(
+              $userName: String!
+              $language: String!
+              $lastTenantSelected: String
+              $welcomeText: [WelcomeText]
+            ) {
+              modifyUserPreferences(
+                userName: $userName
+                language: $language
+                lastTenantSelected: $lastTenantSelected
+                welcomeText: $welcomeText
+              ) {
+                userName
+                language
+                lastTenantSelected
+                welcomeText {
+                  language
+                  text
+                }
+              }
             }
-          }
-        }
-        `,
+          `,
           variables: {
             userName: userData.sub,
-            language: languageSelect === 'defaultBrowser'
-            ? Intl.NumberFormat().resolvedOptions().locale
-            : languageSelect,
+            language:
+              languageSelect === 'defaultBrowser' ? Intl.NumberFormat().resolvedOptions().locale : languageSelect,
             lastTenantSelected: lastTenantSelected,
-            welcomeText:  welcomeTextObj
+            welcomeText: welcomeTextObj
           }
         })
-        .then((result) => {
+        .then(() => {
           language.setLanguage(languageSelect);
+
+          language.setHomeTitle(welcomeText);
         });
     }
-
-  }, [languageSelect, welcomeText,welcomeTextObj]);
-
+  }, [languageSelect, welcomeText, welcomeTextObj]);
 
   React.useEffect(() => {
     client
       .query({
         query: gql`
-      query getUserPreferences($userName: String!) {
-        getUserPreferences(userName: $userName) {
-          userName
-          language
-          lastTenantSelected
-          welcomeText {
-            language
-            text
+          query getUserPreferences($userName: String!) {
+            getUserPreferences(userName: $userName) {
+              userName
+              language
+              lastTenantSelected
+              welcomeText {
+                language
+                text
+              }
+            }
           }
-        }
-      }
-    `,
+        `,
         variables: {
-          userName: userData.sub,
+          userName: userData.sub
         }
       })
       .then((result) => {
-        setWelcomeTextObj(result.data.getUserPreferences[0].welcomeText)
+        setWelcomeTextObj(result.data.getUserPreferences[0].welcomeText);
       });
   }, []);
-
 
   const getHomeMessage = (language) => {
     let filtered = [];
     filtered = welcomeTextObj.filter((e) => e.language === language);
-    setWelcomeText((language === "" || language === "defaultBrowser") ? "" : filtered[0].text);
-  }
+    setWelcomeText(language === '' || language === 'defaultBrowser' ? '' : filtered[0].text);
+  };
 
   return (
     <React.Fragment>
@@ -294,26 +300,29 @@ export default function UserMenu({ language, userData, token, lastTenantSelected
                 </Select>
               </FormControl>
             </Grid>
-            {(language.language === "" || language.language === "defaultBrowser") ? "" : <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                label={language.language + " Home"}
-                value={welcomeText}
-                onChange={(event) => {
-                  setWelcomeText(event.target.value)
-                  let newWelcomeTextObj = [...welcomeTextObj];
-                  if (!(languageSelect === "" || languageSelect === "defaultBrowser" ||event.target.value==="")) {
-                    let arrayIndex = welcomeTextObj.findIndex((e) => e.language === languageSelect);
-                    newWelcomeTextObj[arrayIndex] = {language:languageSelect,text:event.target.value};
-                    setWelcomeTextObj([...[],...newWelcomeTextObj]);
-                  }
-                }}
-                sx={{
-                  width: '100%'
-                }}
-              />
-            </Grid>}
-
+            {language.language === '' || language.language === 'defaultBrowser' ? (
+              ''
+            ) : (
+              <Grid item xs={12}>
+                <TextField
+                  variant="outlined"
+                  label={language.language + ' Home'}
+                  value={welcomeText}
+                  onChange={(event) => {
+                    setWelcomeText(event.target.value);
+                    let newWelcomeTextObj = [...welcomeTextObj];
+                    if (!(languageSelect === '' || languageSelect === 'defaultBrowser' || event.target.value === '')) {
+                      let arrayIndex = welcomeTextObj.findIndex((e) => e.language === languageSelect);
+                      newWelcomeTextObj[arrayIndex] = { language: languageSelect, text: event.target.value };
+                      setWelcomeTextObj([...[], ...newWelcomeTextObj]);
+                    }
+                  }}
+                  sx={{
+                    width: '100%'
+                  }}
+                />
+              </Grid>
+            )}
           </Grid>
         </DialogContent>
         <DialogActions></DialogActions>
