@@ -41,5 +41,6 @@ Main.args = {
   userData: { name: 'EasterEgg' },
   token: '',
   env: undefined,
-  lastTenantSelected: 'Tenant1'
+  lastTenantSelected: 'Tenant1',
+  tokenDecoded: {}
 };

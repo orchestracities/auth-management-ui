@@ -45,7 +45,11 @@ UsrMenu.propTypes = {
   /**
    * the object that is containing the env variables
    */
-  env: PropTypes.object
+  env: PropTypes.object,
+  /**
+   * the object conteined inside the token
+   */
+  tokenDecoded: PropTypes.object
 };
 
 UsrMenu.defaultProps = {
@@ -53,5 +57,6 @@ UsrMenu.defaultProps = {
   userData: { name: 'EasterEgg' },
   token: undefined,
   env: undefined,
-  lastTenantSelected: 'Tenant1'
+  lastTenantSelected: 'Tenant1',
+  tokenDecoded: {}
 };

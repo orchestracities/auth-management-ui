@@ -29,6 +29,7 @@ import useNotification from './messages/alerts';
 import * as log from 'loglevel';
 import { useOidc } from '@axa-fr/react-oidc';
 import TextField from '@mui/material/TextField';
+import { AuthorizedElement } from '../../loginComponents/checkRoles';
 
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
@@ -42,7 +43,7 @@ const CustomDialogTitle = styled(AppBar)({
   boxShadow: 'none'
 });
 
-export default function UserMenu({ language, userData, token, lastTenantSelected, env }) {
+export default function UserMenu({ language, userData, token, lastTenantSelected, env, tokenDecoded }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
   const httpLink = ApolloLink.from([
     onError(({ graphQLErrors, networkError }) => {
@@ -300,29 +301,33 @@ export default function UserMenu({ language, userData, token, lastTenantSelected
                 </Select>
               </FormControl>
             </Grid>
-            {language.language === '' || language.language === 'defaultBrowser' ? (
-              ''
-            ) : (
-              <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  label={language.language + ' Home'}
-                  value={welcomeText}
-                  onChange={(event) => {
-                    setWelcomeText(event.target.value);
-                    let newWelcomeTextObj = [...welcomeTextObj];
-                    if (!(languageSelect === '' || languageSelect === 'defaultBrowser' || event.target.value === '')) {
-                      let arrayIndex = welcomeTextObj.findIndex((e) => e.language === languageSelect);
-                      newWelcomeTextObj[arrayIndex] = { language: languageSelect, text: event.target.value };
-                      setWelcomeTextObj([...[], ...newWelcomeTextObj]);
-                    }
-                  }}
-                  sx={{
-                    width: '100%'
-                  }}
-                />
-              </Grid>
-            )}
+            <AuthorizedElement tokenDecoded={tokenDecoded} iSuperAdmin={true} redirect={false}>
+              {language.language === '' || language.language === 'defaultBrowser' ? (
+                ''
+              ) : (
+                <Grid item xs={12}>
+                  <TextField
+                    variant="outlined"
+                    label={language.language + ' Home'}
+                    value={welcomeText}
+                    onChange={(event) => {
+                      setWelcomeText(event.target.value);
+                      let newWelcomeTextObj = [...welcomeTextObj];
+                      if (
+                        !(languageSelect === '' || languageSelect === 'defaultBrowser' || event.target.value === '')
+                      ) {
+                        let arrayIndex = welcomeTextObj.findIndex((e) => e.language === languageSelect);
+                        newWelcomeTextObj[arrayIndex] = { language: languageSelect, text: event.target.value };
+                        setWelcomeTextObj([...[], ...newWelcomeTextObj]);
+                      }
+                    }}
+                    sx={{
+                      width: '100%'
+                    }}
+                  />
+                </Grid>
+              )}
+            </AuthorizedElement>
           </Grid>
         </DialogContent>
         <DialogActions></DialogActions>

@@ -319,7 +319,12 @@ export default class App extends Component {
             });
           });
       }
-      this.setState({ thisTenant: tenantFiltered.length === 0 ? (newValue = this.state.tenants[0].id) : newValue });
+      this.setState({
+        thisTenant:
+          tenantFiltered.length === 0 && this.state.tenants.length > 0
+            ? (newValue = this.state.tenants[0].id)
+            : newValue
+      });
       this.state.catchColor(newValue);
     },
     preferencesMapper: (data, userTenants) => {
@@ -567,6 +572,7 @@ export default class App extends Component {
                         }}
                         userData={this.props.idTokenPayload}
                         lastTenantSelected={this.state.thisTenant}
+                        tokenDecoded={this.state.tokenData}
                       ></UserMenu>
                     )}
                   </div>
