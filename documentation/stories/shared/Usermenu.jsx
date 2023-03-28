@@ -9,11 +9,17 @@ import '../../../src/i18n';
  * Primary UI component for user interaction
  */
 
-export const UsrMenu = ({ language, userData, token }) => {
+export const UsrMenu = ({ language, userData, token, env, lastTenantSelected }) => {
   return (
     <SnackbarProvider maxSnack={5}>
       <Grid>
-        <UserMenu token={token} language={language} userData={userData}></UserMenu>
+        <UserMenu
+          token={token}
+          language={language}
+          userData={userData}
+          env={env}
+          lastTenantSelected={lastTenantSelected}
+        ></UserMenu>
       </Grid>
     </SnackbarProvider>
   );
@@ -31,11 +37,26 @@ UsrMenu.propTypes = {
   /**
    * The authentication Token
    */
-  token: PropTypes.string
+  token: PropTypes.string,
+  /**
+   * The tenant selected by the user
+   */
+  lastTenantSelected: PropTypes.string,
+  /**
+   * the object that is containing the env variables
+   */
+  env: PropTypes.object,
+  /**
+   * the object conteined inside the token
+   */
+  tokenDecoded: PropTypes.object
 };
 
 UsrMenu.defaultProps = {
   language: { language: 'en', setLanguage: () => {} },
   userData: { name: 'EasterEgg' },
-  token: undefined
+  token: undefined,
+  env: undefined,
+  lastTenantSelected: 'Tenant1',
+  tokenDecoded: {}
 };

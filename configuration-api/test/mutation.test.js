@@ -79,15 +79,33 @@ describe('GraphQL-Mutations', function () {
 
   const modifyUserPreferences = {
     query: `
-    mutation modifyUserPreferences($userName: String!, $language: String!, $lastTenantSelected: String) {
-      modifyUserPreferences(userName: $userName, language: $language, lastTenantSelected: $lastTenantSelected) {
+    mutation modifyUserPreferences($userName: String!, $language: String!, $lastTenantSelected: String, $welcomeText:[WelcomeText]) {
+      modifyUserPreferences(userName: $userName, language: $language, lastTenantSelected: $lastTenantSelected, welcomeText:$welcomeText) {
         userName
         language
         lastTenantSelected
+        welcomeText {
+          language
+          text
+        }
       }
     }
   `,
-    variables: { userName: '5c67b251-6f63-46f3-b3b0-085e1f7040b2', language: 'default', lastTenantSelected: 'test' }
+    variables: {
+      userName: '5c67b251-6f63-46f3-b3b0-085e1f7040b2',
+      language: 'default',
+      lastTenantSelected: 'test',
+      welcomeText: [
+        {
+          language: 'en',
+          text: 'Welcome!'
+        },
+        {
+          language: 'it',
+          text: 'Benvenuto!'
+        }
+      ]
+    }
   };
 
   const newResourceType = {
@@ -238,6 +256,7 @@ describe('GraphQL-Mutations', function () {
             expect(res.body.data.modifyUserPreferences[0]).to.have.own.property('userName');
             expect(res.body.data.modifyUserPreferences[0]).to.have.own.property('language');
             expect(res.body.data.modifyUserPreferences[0]).to.have.own.property('lastTenantSelected');
+            expect(res.body.data.modifyUserPreferences[0]).to.have.own.property('welcomeText');
             done();
           });
       });

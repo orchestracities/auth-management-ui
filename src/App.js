@@ -197,6 +197,10 @@ export default class App extends Component {
     tokenData: [],
     groups: [],
     language: '',
+    homeTitle: '',
+    setHomeTitle: (newTitle) => {
+      this.setState({ homeTitle: newTitle });
+    },
     setAppLanguage: (newLanguagePreference) => {
       this.setState({ language: newLanguagePreference });
       if (this.state.connectionIssue !== false) {
@@ -258,27 +262,69 @@ export default class App extends Component {
       });
       const client = new ApolloClient({
         link: authLink.concat(httpLink),
-        cache: new InMemoryCache()
+        cache: new InMemoryCache({ addTypename: false })
       });
       if (newValue !== null) {
-        client.mutate({
-          mutation: gql`
-            mutation modifyUserPreferences($userName: String!, $language: String!, $lastTenantSelected: String) {
-              modifyUserPreferences(userName: $userName, language: $language, lastTenantSelected: $lastTenantSelected) {
-                userName
-                language
-                lastTenantSelected
+        client
+          .query({
+            query: gql`
+              query getUserPreferences($userName: String!) {
+                getUserPreferences(userName: $userName) {
+                  userName
+                  language
+                  lastTenantSelected
+                  welcomeText {
+                    language
+                    text
+                  }
+                }
               }
+            `,
+            variables: {
+              userName: this.props.idTokenPayload.sub,
+              state: this.state
             }
-          `,
-          variables: {
-            userName: this.props.idTokenPayload.sub,
-            language: this.state.language,
-            lastTenantSelected: newValue
-          }
-        });
+          })
+          .then((result) => {
+            client.mutate({
+              mutation: gql`
+                mutation modifyUserPreferences(
+                  $userName: String!
+                  $language: String!
+                  $lastTenantSelected: String
+                  $welcomeText: [WelcomeText]
+                ) {
+                  modifyUserPreferences(
+                    userName: $userName
+                    language: $language
+                    lastTenantSelected: $lastTenantSelected
+                    welcomeText: $welcomeText
+                  ) {
+                    userName
+                    language
+                    lastTenantSelected
+                    welcomeText {
+                      language
+                      text
+                    }
+                  }
+                }
+              `,
+              variables: {
+                userName: this.props.idTokenPayload.sub,
+                language: this.state.language,
+                lastTenantSelected: newValue,
+                welcomeText: result.data.getUserPreferences[0].welcomeText
+              }
+            });
+          });
       }
-      this.setState({ thisTenant: tenantFiltered.length === 0 ? (newValue = this.state.tenants[0].id) : newValue });
+      this.setState({
+        thisTenant:
+          tenantFiltered.length === 0 && this.state.tenants.length > 0
+            ? (newValue = this.state.tenants[0].id)
+            : newValue
+      });
       this.state.catchColor(newValue);
     },
     preferencesMapper: (data, userTenants) => {
@@ -386,7 +432,7 @@ export default class App extends Component {
 
           const client = new ApolloClient({
             link: from([errorLink, authLink.concat(httpLink)]),
-            cache: new InMemoryCache()
+            cache: new InMemoryCache({ addTypename: false })
           });
 
           client
@@ -419,6 +465,10 @@ export default class App extends Component {
                         userName
                         language
                         lastTenantSelected
+                        welcomeText {
+                          language
+                          text
+                        }
                       }
                     }
                   `,
@@ -517,10 +567,12 @@ export default class App extends Component {
                         token={this.props.accessToken}
                         language={{
                           language: this.state.language,
-                          setLanguage: this.state.setAppLanguage
+                          setLanguage: this.state.setAppLanguage,
+                          setHomeTitle: this.state.setHomeTitle
                         }}
                         userData={this.props.idTokenPayload}
                         lastTenantSelected={this.state.thisTenant}
+                        tokenDecoded={this.state.tokenData}
                       ></UserMenu>
                     )}
                   </div>
@@ -574,6 +626,10 @@ export default class App extends Component {
                             env={env}
                             tenantValues={this.state.tenants}
                             thisTenant={this.state.thisTenant}
+                            userData={this.props.idTokenPayload}
+                            language={this.state.language}
+                            token={this.props.accessToken}
+                            homeTitle={this.state.homeTitle}
                           />
                         }
                       />

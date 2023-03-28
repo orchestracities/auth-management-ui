@@ -39,7 +39,7 @@ export default function EndpointsForm({ title, close, action, token, env, getThe
   });
   const client = new ApolloClient({
     link: authLink.concat(httpLink),
-    cache: new InMemoryCache()
+    cache: new InMemoryCache({ addTypename: false })
   });
 
   const [msg, sendNotification] = useNotification();

@@ -44,7 +44,7 @@ export default function DeleteDialog({ open, onClose, getData, data, env, token 
 
   const client = new ApolloClient({
     link: authLink.concat(httpLink),
-    cache: new InMemoryCache()
+    cache: new InMemoryCache({ addTypename: false })
   });
 
   const urlMapper = (thisData) => {

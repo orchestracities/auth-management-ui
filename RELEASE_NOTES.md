@@ -11,6 +11,7 @@
 - Update apollo library to v4 (#136)
 - Policy display on entity table (#118)
 - Mongo auth (#153)
+- Custom text home page (#125)
 
 ### Bug fixes
 
