@@ -175,6 +175,7 @@
     "deleteText": "Are you really sure about deleting:",
     "deleteTextTitle": "Are you sure?",
     "saveButton": "SAVE",
+    "editButton": "EDIT",
     "deleteButton": "DELETE",
     "userPopup": {
       "settings": "settings"

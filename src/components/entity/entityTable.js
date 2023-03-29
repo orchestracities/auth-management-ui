@@ -9,6 +9,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import Button from '@mui/material/Button';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -29,6 +30,7 @@ import dayjs from 'dayjs';
 import * as log from 'loglevel';
 import DeleteDialog from '../shared/messages/cardDelete';
 import EntityForm from './entityForm';
+import EntityDisplay from './entityDisplay';
 import * as tableApi from '../../componentsApi/tableApi';
 import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
@@ -38,17 +40,18 @@ import PoliciesOnEntity from './policyDisplay';
 import DialogContent from '@mui/material/DialogContent';
 import AppBar from '@mui/material/AppBar';
 
+const DialogRounded = styled(Dialog)(() => ({
+  '& .MuiPaper-rounded': {
+    borderRadius: 15
+  }
+}));
+
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
   background: 'white',
   boxShadow: 'none'
 });
 
-const DialogRounded = styled(Dialog)(() => ({
-  '& .MuiPaper-rounded': {
-    borderRadius: 15
-  }
-}));
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Grow direction="up" ref={ref} {...props} />;
@@ -112,15 +115,17 @@ export default function EntityTable({
     setOpenDeleteDialog(false);
   };
   // EDIT
-  const [openEdit, setOpenEdit] = React.useState(false);
+  const [openView, setView] = React.useState(true);
+  const [openViewOrEdit, setOpenViewOrEdit] = React.useState(false);
   const [editData, setEditData] = React.useState({});
 
   const handleCloseEdit = () => {
-    setOpenEdit(false);
+    setOpenViewOrEdit(false);
+    setView(true)
   };
 
   const handleEdit = (data) => {
-    setOpenEdit(true);
+    setOpenViewOrEdit(true);
     setEditData(data);
   };
 
@@ -548,7 +553,7 @@ export default function EntityTable({
         </DinamicPaper>
       </Box>
       <DialogRounded
-        open={openEdit}
+        open={openViewOrEdit}
         fullWidth={true}
         maxWidth={'xl'}
         TransitionComponent={Transition}
@@ -557,6 +562,21 @@ export default function EntityTable({
         aria-labelledby="edit"
         aria-describedby="edit"
       >
+      {  (openView&&openViewOrEdit)?
+      <EntityDisplay
+      title={editData.id}
+      close={handleCloseEdit}
+      setView={setView}
+      token={token}
+      env={env}
+      data={editData}
+      GeTenantData={GeTenantData}
+      getTheEntities={getTheEntities}
+      entityEndpoint={entityEndpoint}
+      types={types}
+      services={services}
+    />
+:
         <EntityForm
           title={
             <Trans
@@ -566,6 +586,7 @@ export default function EntityTable({
               }}
             />
           }
+          view={setView}
           close={handleCloseEdit}
           action={'modify'}
           token={token}
@@ -576,7 +597,7 @@ export default function EntityTable({
           entityEndpoint={entityEndpoint}
           types={types}
           services={services}
-        />
+        />}
         <DialogActions></DialogActions>
       </DialogRounded>
       <DialogRounded
