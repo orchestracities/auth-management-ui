@@ -52,7 +52,6 @@ const CustomDialogTitle = styled(AppBar)({
   boxShadow: 'none'
 });
 
-
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Grow direction="up" ref={ref} {...props} />;
 });
@@ -121,7 +120,7 @@ export default function EntityTable({
 
   const handleCloseEdit = () => {
     setOpenViewOrEdit(false);
-    setView(true)
+    setView(true);
   };
 
   const handleEdit = (data) => {
@@ -562,42 +561,43 @@ export default function EntityTable({
         aria-labelledby="edit"
         aria-describedby="edit"
       >
-      {  (openView&&openViewOrEdit)?
-      <EntityDisplay
-      title={editData.id}
-      close={handleCloseEdit}
-      setView={setView}
-      token={token}
-      env={env}
-      data={editData}
-      GeTenantData={GeTenantData}
-      getTheEntities={getTheEntities}
-      entityEndpoint={entityEndpoint}
-      types={types}
-      services={services}
-    />
-:
-        <EntityForm
-          title={
-            <Trans
-              i18nKey="entity.form.edit"
-              values={{
-                name: editData.id
-              }}
-            />
-          }
-          view={setView}
-          close={handleCloseEdit}
-          action={'modify'}
-          token={token}
-          env={env}
-          data={editData}
-          GeTenantData={GeTenantData}
-          getTheEntities={getTheEntities}
-          entityEndpoint={entityEndpoint}
-          types={types}
-          services={services}
-        />}
+        {openView && openViewOrEdit ? (
+          <EntityDisplay
+            title={editData.id}
+            close={handleCloseEdit}
+            setView={setView}
+            token={token}
+            env={env}
+            data={editData}
+            GeTenantData={GeTenantData}
+            getTheEntities={getTheEntities}
+            entityEndpoint={entityEndpoint}
+            types={types}
+            services={services}
+          />
+        ) : (
+          <EntityForm
+            title={
+              <Trans
+                i18nKey="entity.form.edit"
+                values={{
+                  name: editData.id
+                }}
+              />
+            }
+            view={setView}
+            close={handleCloseEdit}
+            action={'modify'}
+            token={token}
+            env={env}
+            data={editData}
+            GeTenantData={GeTenantData}
+            getTheEntities={getTheEntities}
+            entityEndpoint={entityEndpoint}
+            types={types}
+            services={services}
+          />
+        )}
         <DialogActions></DialogActions>
       </DialogRounded>
       <DialogRounded

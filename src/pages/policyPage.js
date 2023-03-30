@@ -275,7 +275,13 @@ export default function PolicyPage({ getTenants, tenantValues, thisTenant, graph
             xl={12}
             sx={
               smallDevice
-                ? { width: (document.getElementById('filterContainer')===null)?300:document.getElementById('filterContainer').clientWidth, 'overflow-x': 'scroll' }
+                ? {
+                    width:
+                      document.getElementById('filterContainer') === null
+                        ? 300
+                        : document.getElementById('filterContainer').clientWidth,
+                    'overflow-x': 'scroll'
+                  }
                 : ''
             }
           >

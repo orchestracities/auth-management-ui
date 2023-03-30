@@ -21,6 +21,7 @@ import { Trans } from 'react-i18next';
 import axios from 'axios';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 import InputAdornment from '@mui/material/InputAdornment';
 import 'dayjs/locale/en';
 import 'dayjs/locale/it';
@@ -208,16 +209,15 @@ export default function EntityForm({
                 id={'dateInput' + index}
                 key={'dateInput' + index}
                 showToolbar={false}
-                value={attribute.value === '' ? new Date() : attribute.value}
+                value={attribute.value === '' ? dayjs() : dayjs(attribute.value)}
                 onChange={(newValue) => {
                   const newArray = attributesMap;
                   newArray[Number(index)].value = newValue;
                   setAttributesMap([...[], ...newArray]);
                 }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    InputProps={{
+                slotProps={{
+                  field: {
+                    InputProps: {
                       endAdornment: (
                         <InputAdornment position="end" onClick={handlePropagation}>
                           <ClearIcon
@@ -236,13 +236,13 @@ export default function EntityForm({
                           <AccessTimeIcon color="secondary"></AccessTimeIcon>
                         </InputAdornment>
                       )
-                    }}
-                    error={errorCases(attribute.value)}
-                    sx={{
-                      width: '100%'
-                    }}
-                  />
-                )}
+                    }
+                  }
+                }}
+                error={errorCases(attribute.value)}
+                sx={{
+                  width: '100%'
+                }}
               />
             </LocalizationProvider>
           </Grid>
@@ -481,7 +481,7 @@ export default function EntityForm({
     <div key={msg}>
       <CustomDialogTitle>
         <Toolbar>
-          <IconButton edge="start" onClick={()=>view(true)} aria-label="view">
+          <IconButton edge="start" onClick={() => view(true)} aria-label="view">
             <ArrowBackIcon />
           </IconButton>
           <Typography sx={{ ml: 2, flex: 1, color: 'black' }} noWrap gutterBottom variant="h6" component="div">

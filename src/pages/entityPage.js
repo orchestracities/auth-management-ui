@@ -255,7 +255,15 @@ export default function EntityPage({ token, graphqlErrors, env, thisTenant, tena
           lg={12}
           xl={12}
           sx={
-            smallDevice ? { width:  (document.getElementById('filterContainer')===null)?300:document.getElementById('filterContainer').clientWidth, 'overflow-x': 'scroll' } : ''
+            smallDevice
+              ? {
+                  width:
+                    document.getElementById('filterContainer') === null
+                      ? 300
+                      : document.getElementById('filterContainer').clientWidth,
+                  'overflow-x': 'scroll'
+                }
+              : ''
           }
         >
           <EntityFilters services={services} data={entities} mapper={filterMapper} types={types} />

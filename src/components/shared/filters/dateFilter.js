@@ -40,7 +40,7 @@ const StyledMenu = styled((props) => (
     color: theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
     boxShadow: 'none !important',
     '& .MuiMenu-list': {
-      padding: '3% 0'
+      padding: '0% 0'
     },
     '& .MuiMenuItem-root': {
       '& .MuiSvgIcon-root': {
@@ -111,10 +111,9 @@ export default function DateFilter({ status, setstatus, filterValue }) {
                 onChange={(newValue) => {
                   filterValue.set(newValue);
                 }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    InputProps={{
+                slotProps={{
+                  field: {
+                    InputProps: {
                       endAdornment: (
                         <InputAdornment position="start" onClick={handlePropagation}>
                           <ClearIcon
@@ -125,9 +124,9 @@ export default function DateFilter({ status, setstatus, filterValue }) {
                           />
                         </InputAdornment>
                       )
-                    }}
-                  />
-                )}
+                    }
+                  }
+                }}
                 sx={{ width: '100%', marginTop: '2%' }}
               />
             </Grow>
