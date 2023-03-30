@@ -9,7 +9,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import Button from '@mui/material/Button';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -22,7 +21,7 @@ import { visuallyHidden } from '@mui/utils';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import { Trans } from 'react-i18next';
-import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Grow from '@mui/material/Grow';
@@ -236,7 +235,7 @@ export default function EntityTable({
               key={'edit' + thisElement.id}
               onClick={() => handleEdit(thisElement)}
             >
-              <EditIcon />
+              <VisibilityIcon />
             </IconButton>
             <PoliciesOnEntity
               entityPolicies={entityPolicies}
@@ -567,13 +566,8 @@ export default function EntityTable({
             close={handleCloseEdit}
             setView={setView}
             token={token}
-            env={env}
             data={editData}
-            GeTenantData={GeTenantData}
-            getTheEntities={getTheEntities}
-            entityEndpoint={entityEndpoint}
             types={types}
-            services={services}
           />
         ) : (
           <EntityForm

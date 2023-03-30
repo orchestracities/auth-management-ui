@@ -14,7 +14,6 @@ import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import { InputLabel } from '@mui/material';
 import Select from '@mui/material/Select';
-import useNotification from '../shared/messages/alerts';
 import { Trans } from 'react-i18next';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -26,7 +25,6 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import MapEdit from './map/mapEditor';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { darken } from '@mui/material';
@@ -116,18 +114,7 @@ const DisplayCollapse = ({ component, icon }) => {
   );
 };
 
-export default function EntityDisplay({
-  title,
-  close,
-  setView,
-  env,
-  data,
-  getTheEntities,
-  types,
-  services,
-  GeTenantData,
-  entityEndpoint
-}) {
+export default function EntityDisplay({ title, close, setView, data, types }) {
   const theme = useTheme();
   const isResponsive = useMediaQuery(theme.breakpoints.down('sm'));
   const getAttributesNames = (types) => {
@@ -139,8 +126,6 @@ export default function EntityDisplay({
   };
   //errorLog
   const attributeNames = getAttributesNames(types);
-  const [error, setError] = React.useState(null);
-  const [msg, sendNotification] = useNotification();
 
   const handleClose = () => {
     close(false);
@@ -154,7 +139,6 @@ export default function EntityDisplay({
     { text: <Trans>entity.form.selectType.map</Trans>, id: 'geo:json' }
   ];
   //Type
-  const [type, setType] = React.useState([]);
 
   const [attributesMap, setAttributesMap] = React.useState([]);
   const createAttributesMap = () => {
@@ -196,6 +180,35 @@ export default function EntityDisplay({
         return [47.373878, 8.545094];
     }
   };
+
+  const ChangeView = ({ attribute }) => {
+    const geoJSON = {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          id: 0,
+          properties: {
+            Code: '',
+            Name: ''
+          },
+          geometry: attribute.value
+        }
+      ]
+    };
+    const map = useMap();
+    new L.GeoJSON(geoJSON),
+      {
+        pointToLayer: (latlng) => {
+          return L.marker(latlng.geometry.coordinates, {
+            icon: icon
+          }).addTo(map);
+        }
+      };
+    L.marker(returnCordinates(attribute), { icon }).addTo(map);
+    return null;
+  };
+
   const attributeTypeForm = (attribute, index) => {
     switch (attribute.type !== '' && typeof attribute.type !== 'undefined' && attribute.type !== null) {
       case attribute.type === 'Number':
@@ -252,7 +265,6 @@ export default function EntityDisplay({
                     }
                   }
                 }}
-                error={errorCases(attribute.value)}
                 sx={{
                   width: '100%'
                 }}
@@ -351,6 +363,7 @@ export default function EntityDisplay({
                         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                       />
+                      <ChangeView attribute={attribute} />
                       <GeoJSON
                         key="ID"
                         data={{
@@ -358,76 +371,12 @@ export default function EntityDisplay({
                           features: [
                             {
                               type: 'Feature',
-                              id: '37',
-                              properties: { name: 'North Carolina', density: 198.2 },
-                              geometry: {
-                                type: 'Polygon',
-                                coordinates: [
-                                  [
-                                    [-80.978661, 36.562108],
-                                    [-80.294043, 36.545677],
-                                    [-79.510841, 36.5402],
-                                    [-75.868676, 36.551154],
-                                    [-75.75366, 36.151337],
-                                    [-76.032984, 36.189676],
-                                    [-76.071322, 36.140383],
-                                    [-76.410893, 36.080137],
-                                    [-76.460185, 36.025367],
-                                    [-76.68474, 36.008937],
-                                    [-76.673786, 35.937736],
-                                    [-76.399939, 35.987029],
-                                    [-76.3616, 35.943213],
-                                    [-76.060368, 35.992506],
-                                    [-75.961783, 35.899398],
-                                    [-75.781044, 35.937736],
-                                    [-75.715321, 35.696751],
-                                    [-75.775568, 35.581735],
-                                    [-75.89606, 35.570781],
-                                    [-76.147999, 35.324319],
-                                    [-76.482093, 35.313365],
-                                    [-76.536862, 35.14358],
-                                    [-76.394462, 34.973795],
-                                    [-76.279446, 34.940933],
-                                    [-76.493047, 34.661609],
-                                    [-76.673786, 34.694471],
-                                    [-76.991448, 34.667086],
-                                    [-77.210526, 34.60684],
-                                    [-77.555573, 34.415147],
-                                    [-77.82942, 34.163208],
-                                    [-77.971821, 33.845545],
-                                    [-78.179944, 33.916745],
-                                    [-78.541422, 33.851022],
-                                    [-79.675149, 34.80401],
-                                    [-80.797922, 34.820441],
-                                    [-80.781491, 34.935456],
-                                    [-80.934845, 35.105241],
-                                    [-81.038907, 35.044995],
-                                    [-81.044384, 35.149057],
-                                    [-82.276696, 35.198349],
-                                    [-82.550543, 35.160011],
-                                    [-82.764143, 35.066903],
-                                    [-83.109191, 35.00118],
-                                    [-83.618546, 34.984749],
-                                    [-84.319594, 34.990226],
-                                    [-84.29221, 35.225734],
-                                    [-84.09504, 35.247642],
-                                    [-84.018363, 35.41195],
-                                    [-83.7719, 35.559827],
-                                    [-83.498053, 35.565304],
-                                    [-83.251591, 35.718659],
-                                    [-82.994175, 35.773428],
-                                    [-82.775097, 35.997983],
-                                    [-82.638174, 36.063706],
-                                    [-82.610789, 35.965121],
-                                    [-82.216449, 36.156814],
-                                    [-82.03571, 36.118475],
-                                    [-81.909741, 36.304691],
-                                    [-81.723525, 36.353984],
-                                    [-81.679709, 36.589492],
-                                    [-80.978661, 36.562108]
-                                  ]
-                                ]
-                              }
+                              id: 0,
+                              properties: {
+                                Code: '',
+                                Name: ''
+                              },
+                              geometry: attribute.value
                             }
                           ]
                         }}
@@ -444,21 +393,8 @@ export default function EntityDisplay({
     }
   };
 
-  const errorCases = (value) => {
-    if (error !== null) {
-      switch (true) {
-        case value === '':
-          return true;
-        default:
-          return false;
-      }
-    } else {
-      return false;
-    }
-  };
-
   return (
-    <div key={msg}>
+    <>
       <CustomDialogTitle>
         <Toolbar>
           <IconButton edge="start" onClick={handleClose} aria-label="close">
@@ -476,7 +412,7 @@ export default function EntityDisplay({
         <Grid container spacing={1}>
           <>
             {attributesMap.map((attribute, i) => (
-              <Grid item xs={12} sm={12} md={12} lg={12} xl={12} key={i} sx={{ marginTop: 1 }}>
+              <Grid item xs={12} sm={12} md={12} lg={12} xl={12} key={i} sx={{ marginTop: 2.5 }}>
                 <Grid
                   container
                   spacing={isResponsive ? 1 : 3}
@@ -491,7 +427,7 @@ export default function EntityDisplay({
                           variant="h6"
                           gutterBottom
                           component="div"
-                          sx={{ color: darken(theme.palette.primary.main, i / 10) }}
+                          sx={{ color: darken(theme.palette.primary.main, i / 15) }}
                           key={'title' + i}
                         >
                           {attribute.name + ':'}
@@ -499,7 +435,7 @@ export default function EntityDisplay({
                       </Grid>
                       <Grid item xs={12} sm={12} md={2} lg={2} xl={2}>
                         <FormControl fullWidth>
-                          <InputLabel id={'rowType' + i} error={errorCases(type.type)}>
+                          <InputLabel id={'rowType' + i}>
                             <Trans>entity.form.type</Trans>
                           </InputLabel>
                           <Select
@@ -530,6 +466,6 @@ export default function EntityDisplay({
           </>
         </Grid>
       </DialogContent>
-    </div>
+    </>
   );
 }
