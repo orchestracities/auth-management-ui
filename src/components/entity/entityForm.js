@@ -38,6 +38,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import Autocomplete from '@mui/material/Autocomplete';
 import Chip from '@mui/material/Chip';
+import CloseIcon from '@mui/icons-material/Close';
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -481,9 +482,15 @@ export default function EntityForm({
     <div key={msg}>
       <CustomDialogTitle>
         <Toolbar>
-          <IconButton edge="start" onClick={() => view(true)} aria-label="view">
-            <ArrowBackIcon />
-          </IconButton>
+          {action === 'create' ? (
+            <IconButton edge="start" onClick={handleClose} aria-label="close">
+              <CloseIcon />
+            </IconButton>
+          ) : (
+            <IconButton edge="start" onClick={() => view(true)} aria-label="view">
+              <ArrowBackIcon />
+            </IconButton>
+          )}
           <Typography sx={{ ml: 2, flex: 1, color: 'black' }} noWrap gutterBottom variant="h6" component="div">
             {title}
           </Typography>

@@ -37,6 +37,9 @@ export default {
     },
     entityEndpoint: {
       control: false
+    },
+    view: {
+      control: false
     }
   },
   parameters: {

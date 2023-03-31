@@ -44,6 +44,7 @@ import { MapContainer, TileLayer, useMap, GeoJSON } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import icon from './map/constants';
+import AddLocationIcon from '@mui/icons-material/AddLocation';
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -346,9 +347,9 @@ export default function EntityDisplay({ title, close, setView, data, types }) {
             <DisplayCollapse
               key={'map' + index}
               icon={
-                <AutoFixNormalIcon
+                <AddLocationIcon
                   sx={{ color: theme.palette.getContrastText(theme.palette.primary.main) }}
-                ></AutoFixNormalIcon>
+                ></AddLocationIcon>
               }
               component={
                 <Grid container maxWidth="xl" direction="row" justifyContent="center" alignItems="center">
