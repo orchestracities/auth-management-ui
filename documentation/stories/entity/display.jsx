@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import Grid from '@mui/material/Grid';
-import EntityForm from '../../../src/components/entity/entityForm';
+import EntityDisplay from '../../../src/components/entity/entityDisplay';
 import { BrowserRouter } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { orange } from '@mui/material/colors';
@@ -17,36 +17,24 @@ const theme = createTheme({
   }
 });
 
-export const Form = ({
+export const Display = ({
   title,
   close,
-  action,
-  env,
   data,
-  getTheEntities,
   types,
-  services,
-  GeTenantData,
-  entityEndpoint,
-  view
+  setView
 }) => {
   return (
     <SnackbarProvider maxSnack={5}>
       <ThemeProvider theme={theme}>
         <BrowserRouter>
           <Grid>
-            <EntityForm
+            <EntityDisplay
               title={title}
               close={close}
-              action={action}
-              env={env}
               data={data}
-              getTheEntities={getTheEntities}
               types={types}
-              services={services}
-              GeTenantData={GeTenantData}
-              entityEndpoint={entityEndpoint}
-              view={view}
+              setView={setView}
             />
           </Grid>
         </BrowserRouter>
@@ -55,7 +43,7 @@ export const Form = ({
   );
 };
 
-Form.propTypes = {
+Display.propTypes = {
   /**
    * The Titile that is going to be displayed inside the form
    */
@@ -69,49 +57,19 @@ Form.propTypes = {
    */
   data: PropTypes.object,
   /**
-   * The form action
-   */
-  action: PropTypes.oneOf(['create', 'modify']),
-  /**
-   * the config file passed
-   */
-  env: PropTypes.object,
-  /**
-   * The function to call to get the entities related to the Tenant
-   */
-  getTheEntities: PropTypes.func,
-  /**
    * the array of object with all of the attributes types
    */
   types: PropTypes.arrayOf(PropTypes.object),
   /**
-   * the array of object with all of the services
+   * The function to switch to the edit mode of the form
    */
-  services: PropTypes.arrayOf(PropTypes.object),
-  /**
-   * The function to get the Tenant data after a save
-   */
-  GeTenantData: PropTypes.func,
-  /**
-   * The defined enpoint of the entity
-   */
-  entityEndpoint: PropTypes.string,
-  /**
-   * The function to go back to the view mode (only if action is 'modify')
-   */
-  view: PropTypes.func
+  setView: PropTypes.func
 };
 
-Form.defaultProps = {
+Display.defaultProps = {
   title: 'Title',
   close: () => {},
-  action: null,
-  env: {},
   data: {},
-  getTheEntities: () => {},
   types: [],
-  services: [],
-  GeTenantData: () => {},
-  entityEndpoint: '',
-  view: () => {}
+  setView: () => {}
 };
