@@ -105,7 +105,7 @@ Edit.args = {
     }
   ],
   GeTenantData: () => {},
-   view: () => {},
+  view: () => {},
   entityEndpoint: 'http://localhost:1026/v2/entities?attrs=dateCreated,dateModified,*&options=count'
 };
 
@@ -148,6 +148,6 @@ Create.args = {
     }
   ],
   GeTenantData: () => {},
-   view: () => {},
+  view: () => {},
   entityEndpoint: 'http://localhost:1026/v2/entities?attrs=dateCreated,dateModified,*&options=count'
 };

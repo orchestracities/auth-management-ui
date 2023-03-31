@@ -17,25 +17,13 @@ const theme = createTheme({
   }
 });
 
-export const Display = ({
-  title,
-  close,
-  data,
-  types,
-  setView
-}) => {
+export const Display = ({ title, close, data, types, setView }) => {
   return (
     <SnackbarProvider maxSnack={5}>
       <ThemeProvider theme={theme}>
         <BrowserRouter>
           <Grid>
-            <EntityDisplay
-              title={title}
-              close={close}
-              data={data}
-              types={types}
-              setView={setView}
-            />
+            <EntityDisplay title={title} close={close} data={data} types={types} setView={setView} />
           </Grid>
         </BrowserRouter>
       </ThemeProvider>
