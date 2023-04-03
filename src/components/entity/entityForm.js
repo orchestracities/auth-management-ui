@@ -143,7 +143,7 @@ export default function EntityForm({
           return c.indexOf(e) === i;
         });
       for (let attribute of attributes) {
-        map.push({ name: attribute, type: data[attribute].type, value: data[attribute].value });
+        map.push({ name: attribute, type: data[attribute].type, value: data[attribute].value, old: true });
       }
       setAttributesMap(map);
       return;
@@ -154,8 +154,12 @@ export default function EntityForm({
   React.useEffect(() => {
     createAttributesMap();
   }, []);
+  const [toDisable, setToDisable] = React.useState('');
+  React.useEffect(() => {
+    action !== 'create' ? setToDisable(Object.getOwnPropertyNames(data)) : '';
+  }, [attributesMap]);
   const addEntities = () => {
-    setAttributesMap([...[{ name: '', type: 'Number', value: '' }], ...attributesMap]);
+    setAttributesMap([...[{ name: '', type: 'Number', value: '', old: false }], ...attributesMap]);
   };
   const removeEntities = (index) => {
     const newArray = attributesMap;
@@ -332,6 +336,13 @@ export default function EntityForm({
           newArray[i].value === '' ||
           newArray[i].value === null ||
           typeof newArray[i].value === 'undefined'
+        ) ||
+        !(
+          newArray[i].old === false ||
+          newArray[i].type === '' ||
+          newArray[i].value === '' ||
+          newArray[i].value === null ||
+          typeof newArray[i].value === 'undefined'
         )
       ) {
         config[newArray[i].name] = { type: newArray[i].type, value: newArray[i].value };
@@ -471,6 +482,8 @@ export default function EntityForm({
         return 'String too long';
       case !/^[a-zA-Z0-9-]+$/.test(value):
         return 'The string contains charts that are not allowed';
+      case toDisable.includes(value):
+        return 'using a deleted or existing element name is not allowed';
       default:
         return value.length + '/' + 256;
     }
@@ -591,6 +604,7 @@ export default function EntityForm({
                         <Grid item xs={12} sm={12} md={5} lg={5} xl={5}>
                           <TextField
                             id={'name' + i}
+                            disabled={attribute.old}
                             label={<Trans>entity.form.name</Trans>}
                             variant="outlined"
                             key={'name' + i}
@@ -601,12 +615,15 @@ export default function EntityForm({
                             sx={{
                               width: '100%'
                             }}
-                            helperText={attributeNameHelper(attribute.name)}
+                            helperText={attribute.old ? '' : attributeNameHelper(attribute.name)}
                             error={
-                              errorCases(attribute.name) ||
-                              attribute.name.length > 245 ||
-                              !/^[a-zA-Z0-9-]+$/.test(attribute.name) ||
-                              !isNaN(Number(attribute.name[0]))
+                              attribute.old
+                                ? ''
+                                : errorCases(attribute.name) ||
+                                  attribute.name.length > 245 ||
+                                  !/^[a-zA-Z0-9-]+$/.test(attribute.name) ||
+                                  !isNaN(Number(attribute.name[0])) ||
+                                  toDisable.includes(attribute.name)
                             }
                           />
                         </Grid>
@@ -616,6 +633,7 @@ export default function EntityForm({
                               <Trans>entity.form.type</Trans>
                             </InputLabel>
                             <Select
+                              disabled={toDisable.includes(attribute.name)}
                               color="secondary"
                               labelId={'rowType' + i}
                               id={'rowType' + i}
