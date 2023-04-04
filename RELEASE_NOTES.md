@@ -12,10 +12,12 @@
 - Policy display on entity table (#118)
 - Mongo auth (#153)
 - Custom text home page (#125)
+- Entity visualization (#116)
 
 ### Bug fixes
 
 - Resource types on entities page
+- Datepicker fix for MUIx 6.0.2
 
 ### Documentation
 

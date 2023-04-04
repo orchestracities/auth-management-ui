@@ -7,7 +7,7 @@ import DialogContent from '@mui/material/DialogContent';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import CloseIcon from '@mui/icons-material/Close';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
@@ -21,6 +21,7 @@ import { Trans } from 'react-i18next';
 import axios from 'axios';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 import InputAdornment from '@mui/material/InputAdornment';
 import 'dayjs/locale/en';
 import 'dayjs/locale/it';
@@ -37,6 +38,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import Autocomplete from '@mui/material/Autocomplete';
 import Chip from '@mui/material/Chip';
+import CloseIcon from '@mui/icons-material/Close';
 
 const CustomDialogTitle = styled(AppBar)({
   position: 'relative',
@@ -87,7 +89,8 @@ export default function EntityForm({
   types,
   services,
   GeTenantData,
-  entityEndpoint
+  entityEndpoint,
+  view
 }) {
   const getAttributesNames = (types) => {
     let map = [];
@@ -140,7 +143,7 @@ export default function EntityForm({
           return c.indexOf(e) === i;
         });
       for (let attribute of attributes) {
-        map.push({ name: attribute, type: data[attribute].type, value: data[attribute].value });
+        map.push({ name: attribute, type: data[attribute].type, value: data[attribute].value, old: true });
       }
       setAttributesMap(map);
       return;
@@ -151,8 +154,12 @@ export default function EntityForm({
   React.useEffect(() => {
     createAttributesMap();
   }, []);
+  const [toDisable, setToDisable] = React.useState('');
+  React.useEffect(() => {
+    action !== 'create' ? setToDisable(Object.getOwnPropertyNames(data)) : '';
+  }, [attributesMap]);
   const addEntities = () => {
-    setAttributesMap([...[{ name: '', type: 'Number', value: '' }], ...attributesMap]);
+    setAttributesMap([...[{ name: '', type: 'Number', value: '', old: false }], ...attributesMap]);
   };
   const removeEntities = (index) => {
     const newArray = attributesMap;
@@ -207,16 +214,15 @@ export default function EntityForm({
                 id={'dateInput' + index}
                 key={'dateInput' + index}
                 showToolbar={false}
-                value={attribute.value === '' ? new Date() : attribute.value}
+                value={attribute.value === '' ? dayjs() : dayjs(attribute.value)}
                 onChange={(newValue) => {
                   const newArray = attributesMap;
                   newArray[Number(index)].value = newValue;
                   setAttributesMap([...[], ...newArray]);
                 }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    InputProps={{
+                slotProps={{
+                  field: {
+                    InputProps: {
                       endAdornment: (
                         <InputAdornment position="end" onClick={handlePropagation}>
                           <ClearIcon
@@ -235,13 +241,13 @@ export default function EntityForm({
                           <AccessTimeIcon color="secondary"></AccessTimeIcon>
                         </InputAdornment>
                       )
-                    }}
-                    error={errorCases(attribute.value)}
-                    sx={{
-                      width: '100%'
-                    }}
-                  />
-                )}
+                    }
+                  }
+                }}
+                error={errorCases(attribute.value)}
+                sx={{
+                  width: '100%'
+                }}
               />
             </LocalizationProvider>
           </Grid>
@@ -326,6 +332,13 @@ export default function EntityForm({
       if (
         !(
           attributeNameHelper(newArray[i].name) !== newArray[i].name.length + '/' + 256 ||
+          newArray[i].type === '' ||
+          newArray[i].value === '' ||
+          newArray[i].value === null ||
+          typeof newArray[i].value === 'undefined'
+        ) ||
+        !(
+          newArray[i].old === false ||
           newArray[i].type === '' ||
           newArray[i].value === '' ||
           newArray[i].value === null ||
@@ -469,6 +482,8 @@ export default function EntityForm({
         return 'String too long';
       case !/^[a-zA-Z0-9-]+$/.test(value):
         return 'The string contains charts that are not allowed';
+      case toDisable.includes(value):
+        return 'using a deleted or existing element name is not allowed';
       default:
         return value.length + '/' + 256;
     }
@@ -480,9 +495,15 @@ export default function EntityForm({
     <div key={msg}>
       <CustomDialogTitle>
         <Toolbar>
-          <IconButton edge="start" onClick={handleClose} aria-label="close">
-            <CloseIcon />
-          </IconButton>
+          {action === 'create' ? (
+            <IconButton edge="start" onClick={handleClose} aria-label="close">
+              <CloseIcon />
+            </IconButton>
+          ) : (
+            <IconButton edge="start" onClick={() => view(true)} aria-label="view">
+              <ArrowBackIcon />
+            </IconButton>
+          )}
           <Typography sx={{ ml: 2, flex: 1, color: 'black' }} noWrap gutterBottom variant="h6" component="div">
             {title}
           </Typography>
@@ -583,6 +604,7 @@ export default function EntityForm({
                         <Grid item xs={12} sm={12} md={5} lg={5} xl={5}>
                           <TextField
                             id={'name' + i}
+                            disabled={attribute.old}
                             label={<Trans>entity.form.name</Trans>}
                             variant="outlined"
                             key={'name' + i}
@@ -593,12 +615,15 @@ export default function EntityForm({
                             sx={{
                               width: '100%'
                             }}
-                            helperText={attributeNameHelper(attribute.name)}
+                            helperText={attribute.old ? '' : attributeNameHelper(attribute.name)}
                             error={
-                              errorCases(attribute.name) ||
-                              attribute.name.length > 245 ||
-                              !/^[a-zA-Z0-9-]+$/.test(attribute.name) ||
-                              !isNaN(Number(attribute.name[0]))
+                              attribute.old
+                                ? ''
+                                : errorCases(attribute.name) ||
+                                  attribute.name.length > 245 ||
+                                  !/^[a-zA-Z0-9-]+$/.test(attribute.name) ||
+                                  !isNaN(Number(attribute.name[0])) ||
+                                  toDisable.includes(attribute.name)
                             }
                           />
                         </Grid>
@@ -608,6 +633,7 @@ export default function EntityForm({
                               <Trans>entity.form.type</Trans>
                             </InputLabel>
                             <Select
+                              disabled={toDisable.includes(attribute.name)}
                               color="secondary"
                               labelId={'rowType' + i}
                               id={'rowType' + i}

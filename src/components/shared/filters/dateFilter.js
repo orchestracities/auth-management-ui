@@ -5,7 +5,6 @@ import Menu from '@mui/material/Menu';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import Grid from '@mui/material/Grid';
 import Grow from '@mui/material/Grow';
-import TextField from '@mui/material/TextField';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -40,7 +39,7 @@ const StyledMenu = styled((props) => (
     color: theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
     boxShadow: 'none !important',
     '& .MuiMenu-list': {
-      padding: '3% 0'
+      padding: '0% 0'
     },
     '& .MuiMenuItem-root': {
       '& .MuiSvgIcon-root': {
@@ -111,10 +110,9 @@ export default function DateFilter({ status, setstatus, filterValue }) {
                 onChange={(newValue) => {
                   filterValue.set(newValue);
                 }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    InputProps={{
+                slotProps={{
+                  field: {
+                    InputProps: {
                       endAdornment: (
                         <InputAdornment position="start" onClick={handlePropagation}>
                           <ClearIcon
@@ -125,9 +123,9 @@ export default function DateFilter({ status, setstatus, filterValue }) {
                           />
                         </InputAdornment>
                       )
-                    }}
-                  />
-                )}
+                    }
+                  }
+                }}
                 sx={{ width: '100%', marginTop: '2%' }}
               />
             </Grow>

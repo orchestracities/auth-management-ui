@@ -62,7 +62,7 @@ export default function JsonEdit({ attribute, attributesMap, setAttributesMap, i
     isJSON(typeof content.json !== 'undefined' ? JSON.stringify(content.json) : content.text)
       ? typeof content.json !== 'undefined'
         ? (newArray[Number(index)].value = content.json)
-        : (newArray[Number(index)].value = content.text)
+        : (newArray[Number(index)].value = JSON.parse(content.text))
       : '';
     setAttributesMap([...[], ...newArray]);
   }, [content]);

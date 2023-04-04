@@ -175,6 +175,7 @@
     "deleteText": "Sei davvero sicuro di voler eliminare:",
     "deleteTextTitle": "Sei sicuro di procedere?",
     "saveButton": "SALVA",
+    "editButton": "EDITA",
     "deleteButton": "ELIMINA",
     "userPopup": {
       "settings": "Impostazioni"

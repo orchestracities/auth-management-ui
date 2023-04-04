@@ -21,7 +21,7 @@ import { visuallyHidden } from '@mui/utils';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import { Trans } from 'react-i18next';
-import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Grow from '@mui/material/Grow';
@@ -29,6 +29,7 @@ import dayjs from 'dayjs';
 import * as log from 'loglevel';
 import DeleteDialog from '../shared/messages/cardDelete';
 import EntityForm from './entityForm';
+import EntityDisplay from './entityDisplay';
 import * as tableApi from '../../componentsApi/tableApi';
 import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
@@ -38,17 +39,17 @@ import PoliciesOnEntity from './policyDisplay';
 import DialogContent from '@mui/material/DialogContent';
 import AppBar from '@mui/material/AppBar';
 
-const CustomDialogTitle = styled(AppBar)({
-  position: 'relative',
-  background: 'white',
-  boxShadow: 'none'
-});
-
 const DialogRounded = styled(Dialog)(() => ({
   '& .MuiPaper-rounded': {
     borderRadius: 15
   }
 }));
+
+const CustomDialogTitle = styled(AppBar)({
+  position: 'relative',
+  background: 'white',
+  boxShadow: 'none'
+});
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Grow direction="up" ref={ref} {...props} />;
@@ -112,15 +113,17 @@ export default function EntityTable({
     setOpenDeleteDialog(false);
   };
   // EDIT
-  const [openEdit, setOpenEdit] = React.useState(false);
+  const [openView, setView] = React.useState(true);
+  const [openViewOrEdit, setOpenViewOrEdit] = React.useState(false);
   const [editData, setEditData] = React.useState({});
 
   const handleCloseEdit = () => {
-    setOpenEdit(false);
+    setOpenViewOrEdit(false);
+    setView(true);
   };
 
   const handleEdit = (data) => {
-    setOpenEdit(true);
+    setOpenViewOrEdit(true);
     setEditData(data);
   };
 
@@ -232,7 +235,7 @@ export default function EntityTable({
               key={'edit' + thisElement.id}
               onClick={() => handleEdit(thisElement)}
             >
-              <EditIcon />
+              <VisibilityIcon />
             </IconButton>
             <PoliciesOnEntity
               entityPolicies={entityPolicies}
@@ -548,7 +551,7 @@ export default function EntityTable({
         </DinamicPaper>
       </Box>
       <DialogRounded
-        open={openEdit}
+        open={openViewOrEdit}
         fullWidth={true}
         maxWidth={'xl'}
         TransitionComponent={Transition}
@@ -557,26 +560,38 @@ export default function EntityTable({
         aria-labelledby="edit"
         aria-describedby="edit"
       >
-        <EntityForm
-          title={
-            <Trans
-              i18nKey="entity.form.edit"
-              values={{
-                name: editData.id
-              }}
-            />
-          }
-          close={handleCloseEdit}
-          action={'modify'}
-          token={token}
-          env={env}
-          data={editData}
-          GeTenantData={GeTenantData}
-          getTheEntities={getTheEntities}
-          entityEndpoint={entityEndpoint}
-          types={types}
-          services={services}
-        />
+        {openView && openViewOrEdit ? (
+          <EntityDisplay
+            title={editData.id}
+            close={handleCloseEdit}
+            setView={setView}
+            token={token}
+            data={editData}
+            types={types}
+          />
+        ) : (
+          <EntityForm
+            title={
+              <Trans
+                i18nKey="entity.form.edit"
+                values={{
+                  name: editData.id
+                }}
+              />
+            }
+            view={setView}
+            close={handleCloseEdit}
+            action={'modify'}
+            token={token}
+            env={env}
+            data={editData}
+            GeTenantData={GeTenantData}
+            getTheEntities={getTheEntities}
+            entityEndpoint={entityEndpoint}
+            types={types}
+            services={services}
+          />
+        )}
         <DialogActions></DialogActions>
       </DialogRounded>
       <DialogRounded

@@ -27,7 +27,8 @@ export const Form = ({
   types,
   services,
   GeTenantData,
-  entityEndpoint
+  entityEndpoint,
+  view
 }) => {
   return (
     <SnackbarProvider maxSnack={5}>
@@ -45,6 +46,7 @@ export const Form = ({
               services={services}
               GeTenantData={GeTenantData}
               entityEndpoint={entityEndpoint}
+              view={view}
             />
           </Grid>
         </BrowserRouter>
@@ -93,7 +95,11 @@ Form.propTypes = {
   /**
    * The defined enpoint of the entity
    */
-  entityEndpoint: PropTypes.string
+  entityEndpoint: PropTypes.string,
+  /**
+   * The function to go back to the view mode (only if action is 'modify')
+   */
+  view: PropTypes.func
 };
 
 Form.defaultProps = {
@@ -106,5 +112,6 @@ Form.defaultProps = {
   types: [],
   services: [],
   GeTenantData: () => {},
-  entityEndpoint: ''
+  entityEndpoint: '',
+  view: () => {}
 };

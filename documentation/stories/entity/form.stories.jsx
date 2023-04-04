@@ -37,6 +37,9 @@ export default {
     },
     entityEndpoint: {
       control: false
+    },
+    view: {
+      control: false
     }
   },
   parameters: {
@@ -102,6 +105,7 @@ Edit.args = {
     }
   ],
   GeTenantData: () => {},
+  view: () => {},
   entityEndpoint: 'http://localhost:1026/v2/entities?attrs=dateCreated,dateModified,*&options=count'
 };
 
@@ -144,5 +148,6 @@ Create.args = {
     }
   ],
   GeTenantData: () => {},
+  view: () => {},
   entityEndpoint: 'http://localhost:1026/v2/entities?attrs=dateCreated,dateModified,*&options=count'
 };
