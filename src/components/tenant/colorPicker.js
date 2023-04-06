@@ -130,7 +130,7 @@ function CustomSelect({ placeholder, defaultValue, mode, setColor }) {
       setColor(color);
       setValidity(false);
     }
-  }, [listboxVisible]);
+  }, [listboxVisible, color]);
 
   return (
     <Root

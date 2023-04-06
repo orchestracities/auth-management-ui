@@ -18,6 +18,8 @@
 
 - Resource types on entities page
 - Datepicker fix for MUIx 6.0.2
+- Tenant Form Fix (new hook behavior)
+- react-colorful 5.6.1 (hook behavior)
 
 ### Documentation
 

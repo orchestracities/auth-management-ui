@@ -72,16 +72,20 @@ export default function TenantForm({ title, close, action, tenant, getTenants, t
     log.debug(files);
   };
 
+  const fetchImg = async () => {
+    if (iconName === 'custom') {
+      const result = await toBase64(customImage[0]);
+      setBase64Image(result);
+    }
+  };
+
   const client = new ApolloClient({
     link: authLink.concat(httpLink),
     cache: new InMemoryCache({ addTypename: false })
   });
 
-  React.useEffect(async () => {
-    if (iconName === 'custom') {
-      const result = await toBase64(customImage[0]);
-      setBase64Image(result);
-    }
+  React.useEffect(() => {
+    fetchImg();
   }, [customImage]);
 
   const handleSave = () => {
