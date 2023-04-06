@@ -21,6 +21,11 @@ export const menu = [
         title: 'menu.entity.title',
         route: '/Entity',
         items: []
+      },
+      {
+        title: 'alarms',
+        route: '/Alarms',
+        items: []
       }
     ]
   },

@@ -27,6 +27,7 @@ import ResourcePage from './pages/resourcePage';
 import EntityPage from './pages/entityPage';
 import HomePage from './pages/homePage';
 import ErrorPage from './pages/errorPage';
+import AlarmsPage from './pages/alarmsPage';
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import UserMenu from './components/shared/userMenu';
@@ -719,6 +720,19 @@ export default class App extends Component {
                           />
                         }
                       />
+                      <Route
+                        path="Alarms"
+                        element={
+                          <AlarmsPage
+                            getTenants={this.state.getTenants}
+                            env={env}
+                            tenantValues={this.state.tenants}
+                            thisTenant={this.state.thisTenant}
+                            graphqlErrors={this.state.connectionIssue}
+                          />
+                        }
+                      />
+
                       <Route path="403" element={<ErrorPage env={env} code="403" msg="common.notAuthorized" />} />
                       <Route path="*" element={<ErrorPage env={env} code="404" msg="common.notFound" />} />
                     </Routes>
