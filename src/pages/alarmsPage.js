@@ -4,6 +4,7 @@ import AddButton from '../components/shared/addButton';
 import { Grid } from '@mui/material';
 import SortButton from '../components/shared/sortButton';
 import AlarmCard from '../components/alarms/alarmCard';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import ServiceForm from '../components/service/serviceForm';
 import axios from 'axios';
 import Grow from '@mui/material/Grow';
@@ -11,13 +12,33 @@ import { Trans } from 'react-i18next';
 import useNotification from '../components/shared/messages/alerts';
 import Box from '@mui/material/Box';
 import * as log from 'loglevel';
+import AlarmsFilters from '../components/alarms/alarmsFilter';
+import AlarmForm from '../components/alarms/alarmForm';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { lighten } from '@mui/material';
 
-export default function AlarmsPage({ getTenants, tenantValues, thisTenant, graphqlErrors, env }) {
+
+export default function AlarmsPage({ getTenants, tenantValues, thisTenant, graphqlErrors, env,language }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
   const theme = useTheme();
+
+  const GeTenantData = (type) => {
+    const tenantArray = tenantValues.filter((e) => e.id === thisTenant);
+    if (type === 'name') {
+      return tenantArray[0].name;
+    } else {
+      return tenantArray[0].id;
+    }
+  };
+
+  const [servicePath, setServicePath] = React.useState(null);
+  const filterMapper = {
+    servicePath: {
+      value: servicePath,
+      set: setServicePath
+    }
+  };
 
   const [createOpen, setCreateOpen] = React.useState(false);
   const [alarmsList, setAlarmsList] = React.useState([
@@ -25,7 +46,7 @@ export default function AlarmsPage({ getTenants, tenantValues, thisTenant, graph
       id: 1,
       alarm_type: 'entity',
       tenant: 'EKZ',
-      servicepath: '/EnvironmentManagement/Aeroqual',
+      servicepath: '/',
       entity_id: 'urn:ngsi-ld:AirQualityObserved:AQY_BB-629',
       entity_type: '',
       channel_type: 'email',
@@ -47,9 +68,30 @@ export default function AlarmsPage({ getTenants, tenantValues, thisTenant, graph
     counter(count + 1);
   };
 
-  React.useEffect(() => {}, [thisTenant]);
+  // services
+  const [services, setServices] = React.useState([]);
+  const getServices = () => {
+    axios
+      .get(
+        (typeof env !== 'undefined' ? env.ANUBIS_API_URL : '') + 'v1/tenants/' + GeTenantData('id') + '/service_paths',
+        {}
+      )
+      .then((response) => {
+        setServices(response.data);
+      });
+  };
 
-  const mainTitle = 'TESTOH';
+
+
+  React.useEffect(() => {}, [thisTenant, servicePath]);
+
+  React.useEffect(() => {
+    setServicePath(null);
+    thisTenant !== null ? getServices() : '';
+  }, [thisTenant]);
+
+  const mainTitle = 'ALARMS';
+  const smallDevice = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <Box>
       <MainTitle mainTitle={mainTitle}></MainTitle>
@@ -57,7 +99,7 @@ export default function AlarmsPage({ getTenants, tenantValues, thisTenant, graph
         ''
       ) : (
         <AddButton
-          pageType={<></>}
+          pageType={<AlarmForm env={env} close={setCreateOpen} action={"create"} services={services}/>}
           setOpen={setCreateOpen}
           status={createOpen}
           graphqlErrors={graphqlErrors}
@@ -65,8 +107,28 @@ export default function AlarmsPage({ getTenants, tenantValues, thisTenant, graph
       )}
       {alarmsList.length > 0 ? (
         <Grid container spacing={2}>
-          <Grid item xs={12}>
-            {alarmsList.length > 0 ? <SortButton data={alarmsList} id={'id'} sortData={rerOder}></SortButton> : ''}
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={12}
+            lg={12}
+            xl={12}
+            sx={
+              smallDevice
+                ? {
+                    width:
+                      document.getElementById('filterContainer') === null
+                        ? 300
+                        : document.getElementById('filterContainer').clientWidth,
+                    'overflow-x': 'scroll'
+                  }
+                : ''
+            }
+          >
+            
+            {alarmsList.length > 0 ? <AlarmsFilters services={services} data={alarmsList} mapper={filterMapper} sortData={rerOder} />: ''}
+
           </Grid>
           {alarmsList.map((alarm, index) => (
             <Grow
@@ -78,6 +140,7 @@ export default function AlarmsPage({ getTenants, tenantValues, thisTenant, graph
               <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
                 <AlarmCard
                   env={env}
+                  language={language}
                   key={alarm.id}
                   colors={{
                     secondaryColor: lighten(theme.palette.secondary.main, index * 0.05),
