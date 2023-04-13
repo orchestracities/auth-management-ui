@@ -62,10 +62,10 @@ export default function AlarmsPage({ getTenants, tenantValues, thisTenant, graph
       alarm_type: 'entity',
       tenant: 'EKZ',
       servicepath: '/',
-      entity_id: 'urn:ngsi-ld:AirQualityObserved:AQY_BB-629',
-      entity_type: '',
+      entity_id: 'urn:ngsi-ld:sss',
+      entity_type: 'Thing',
       channel_type: 'email',
-      channel_destination: 'smartcity@ekz.ch',
+      channel_destination: ['smartcity@ekz.ch'],
       time_unit: 'h',
       max_time_since_last_update: 6,
       alarm_frequency_time_unit: 'd',
@@ -204,7 +204,8 @@ export default function AlarmsPage({ getTenants, tenantValues, thisTenant, graph
                     secondaryColor: lighten(theme.palette.secondary.main, index * 0.05),
                     primaryColor: lighten(theme.palette.primary.main, index * 0.05)
                   }}
-                  pageType={<></>}
+                  pageType={<AlarmForm env={env} types={types} token={token} GeTenantData={GeTenantData} close={setCreateOpen} action={"modify"} data={alarm} services={services}/>}
+
                   data={alarm}
                 ></AlarmCard>
               </Grid>

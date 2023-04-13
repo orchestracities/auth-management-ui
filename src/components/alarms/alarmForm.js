@@ -32,7 +32,7 @@ const CustomDialogTitle = styled(AppBar)({
     boxShadow: 'none'
 });
 
-export default function AlarmForm({ title, close, action, GeTenantData, services, env, types, token }) {
+export default function AlarmForm({ title, close, action, GeTenantData, services, env, types, token,data }) {
     typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
 
     const httpLink = createHttpLink({
@@ -60,16 +60,16 @@ export default function AlarmForm({ title, close, action, GeTenantData, services
     const [error, setError] = React.useState(null);
 
 
-    const [alarmType, setAlarmType] = React.useState("entity")
-    const [pathSelected, setPathSelected] = React.useState('');
-    const [entityType, setEntityType] = React.useState([]);
-    const [channel, setChannel] = React.useState('email');
-    const [maxTime, setMaxTime] = React.useState(1);
-    const [timeUnit, setTimeUnit] = React.useState('d');
-    const [minTime, setMinTime] = React.useState(1);
-    const [frequency, setFrequency] = React.useState('d');
+    const [alarmType, setAlarmType] = React.useState((action==="create")?"entity":data.alarm_type)
+    const [pathSelected, setPathSelected] = React.useState((action==="create")?null:{path:data.servicepath});
+    const [entityType, setEntityType] = React.useState((action==="create")?{}:{type:data.entity_type});
+    const [channel, setChannel] = React.useState((action==="create")?'email':data.channel_type);
+    const [maxTime, setMaxTime] = React.useState((action==="create")?1:data.max_time_since_last_update);
+    const [timeUnit, setTimeUnit] = React.useState((action==="create")?'d':data.time_unit);
+    const [minTime, setMinTime] = React.useState((action==="create")?1:data.alarm_frequency_time);
+    const [frequency, setFrequency] = React.useState((action==="create")?'d':data.alarm_frequency_time_unit);
 
-    const [channelDestination, setChannelDestination] = React.useState([]);
+    const [channelDestination, setChannelDestination] = React.useState((action==="create")?[]:data.channel_destination);
     const servicePathForm = {
         pathSelected: {
             value: pathSelected,
@@ -104,17 +104,13 @@ export default function AlarmForm({ title, close, action, GeTenantData, services
             set: setFrequency
         },
     }
-    const [entityID, setEntityID] = React.useState(null);
+    const [entityID, setEntityID] = React.useState((action==="create")?null:{id:data.entity_id});
     React.useEffect(() => {
         (alarmType === "entity" && entityID !== null && typeof entityID.type !== "undefined") ? setEntityType({type:entityID.type}) : ""
 
     }, [entityID]);
 
-    React.useEffect(() => {
-        setEntityID(null)
-        setPathSelected(null)
-setEntityType(null)
-    }, [alarmType]);
+
 
     const entityForm = {
         pathSelected: {
@@ -158,7 +154,6 @@ setEntityType(null)
     const [entities, setEntities] = React.useState([]);
     React.useEffect(() => {
         setEntities([])
-        setEntityID(null)
     }, [pathSelected]);
 
     const getEntityURL = () => {
@@ -354,6 +349,8 @@ const ServicePath = ({ form, services, action, types }) => {
                         sx={{ width: '100%' }}
                         options={services}
                         autoHighlight
+                        value={form.pathSelected.value}
+                        defaultValue={form.pathSelected.value}
                         getOptionLabel={(option) => option.path}
                         isOptionEqualToValue={(option, value) => option.path === value.path}
                         onChange={(event, value) => form.pathSelected.set(value)}
@@ -432,7 +429,7 @@ const ServicePath = ({ form, services, action, types }) => {
             <Grid item xs={12} >
 
                 <FormControl fullWidth>
-                    <InputLabel id={'channelDestination'} error={errorCases(form.entityType.value)}></InputLabel>
+                    <InputLabel id={'channelDestination'} error={errorCases(form.channelDestination.value)}></InputLabel>
                     <Autocomplete
                         multiple
                         color="primary"
@@ -460,7 +457,7 @@ const ServicePath = ({ form, services, action, types }) => {
                         }
                         renderInput={(params) => (
                             <TextField
-                                error={errorCases(form.entityType.value)}
+                                error={errorCases(form.channelDestination.value)}
                                 {...params}
                                 variant="outlined"
                                 label="Mails"
@@ -468,7 +465,7 @@ const ServicePath = ({ form, services, action, types }) => {
                             />
                         )}
                     />
-                    <FormHelperText error={errorCases(form.pathSelected.value)}>{helper(form.entityType.value)}</FormHelperText>
+                    <FormHelperText error={errorCases(form.pathSelected.value)}>{helper(form.channelDestination.value)}</FormHelperText>
 
                 </FormControl>
             </Grid>
@@ -622,6 +619,8 @@ const EntityPath = ({ form, services, entities, getEntityURL, action, types }) =
                         error={errorCases(form.pathSelected.value)}
                         sx={{ width: '100%' }}
                         options={services}
+                        value={form.pathSelected.value}
+                        defaultValue={form.pathSelected.value}
                         autoHighlight
                         getOptionLabel={(option) => option.path}
                         isOptionEqualToValue={(option, value) => option.path === value.path}
@@ -642,7 +641,7 @@ const EntityPath = ({ form, services, entities, getEntityURL, action, types }) =
                     <FormHelperText error={errorCases(form.pathSelected.value)}>{helper(form.pathSelected.value)}</FormHelperText>
                 </FormControl>
             </Grid>
-
+            {(form.pathSelected.value!==null)?
             <Grid item xs={12}>
                 <FormControl fullWidth>
                     <InputLabel id={'entityID'} error={errorCases(form.entityID.value)}></InputLabel>
@@ -676,6 +675,7 @@ const EntityPath = ({ form, services, entities, getEntityURL, action, types }) =
                     <FormHelperText error={errorCases(form.entityID.value)}>{helper(form.entityID.value)}</FormHelperText>
                 </FormControl>
             </Grid>
+            :""}
             {(form.entityID.value!==null)?         <Grid item xs={12}>
                 <FormControl fullWidth>
                     <InputLabel id={'entityType'} ></InputLabel>
@@ -735,7 +735,7 @@ const EntityPath = ({ form, services, entities, getEntityURL, action, types }) =
             <Grid item xs={12} >
 
                 <FormControl fullWidth>
-                    <InputLabel id={'channelDestination'} error={errorCases(form.entityType.value)}></InputLabel>
+                    <InputLabel id={'channelDestination'} error={errorCases(form.channelDestination.value)}></InputLabel>
                     <Autocomplete
                         multiple
                         color="primary"
@@ -763,7 +763,7 @@ const EntityPath = ({ form, services, entities, getEntityURL, action, types }) =
                         }
                         renderInput={(params) => (
                             <TextField
-                                error={errorCases(form.entityType.value)}
+                                error={errorCases(form.channelDestination.value)}
                                 {...params}
                                 variant="outlined"
                                 label="Mails"
@@ -771,7 +771,7 @@ const EntityPath = ({ form, services, entities, getEntityURL, action, types }) =
                             />
                         )}
                     />
-                    <FormHelperText error={errorCases(form.pathSelected.value)}>{helper(form.entityType.value)}</FormHelperText>
+                    <FormHelperText error={errorCases(form.channelDestination.value)}>{helper(form.channelDestination.value)}</FormHelperText>
 
                 </FormControl>
             </Grid>

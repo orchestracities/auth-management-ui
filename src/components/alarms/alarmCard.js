@@ -188,10 +188,15 @@ export default function AlarmCard({ pageType, data, getData, seTenant, colors, t
     switch (true) {
       case data === 'd':
         return "Day";
-      case data === 'm':
-        return "Mounth";
-      case data === 'y':
-        return "Year";
+        case data === 'h':
+        return "Hours";
+        case data === 'm':
+          return "Minutes";
+          case data === 's':
+            return "Seconds";
+            case data === 'ms':
+              return "Milliseconds";
+   
       default:
         return false;
     }
@@ -314,11 +319,14 @@ export default function AlarmCard({ pageType, data, getData, seTenant, colors, t
             <ListItemText
               primary="mail"
               secondary={
-                <React.Fragment>
-                  <ListTypo component="span" variant="body2" color="text.primary">
-                    {data.channel_destination}
+                data.channel_destination.map((mail, index) => (
+                  <React.Fragment>
+                  <ListTypo key={mail+index} component="span" variant="body2" color="text.primary">
+                    {mail}
                   </ListTypo>
                 </React.Fragment>
+                ))
+               
               }
             />
           </ListItem>
