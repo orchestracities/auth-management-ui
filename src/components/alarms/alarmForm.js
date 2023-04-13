@@ -14,23 +14,42 @@ import MenuItem from '@mui/material/MenuItem';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import FormControl from '@mui/material/FormControl';
 import { InputLabel } from '@mui/material';
-
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import FormHelperText from '@mui/material/FormHelperText';
+import Chip from '@mui/material/Chip';
 import axios from 'axios';
 import InputAdornment from '@mui/material/InputAdornment';
 import useNotification from '../shared/messages/alerts';
 import { Trans } from 'react-i18next';
 import Autocomplete from '@mui/material/Autocomplete';
 import * as log from 'loglevel';
-
+import isEmail from 'validator/lib/isEmail';
+import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
 const CustomDialogTitle = styled(AppBar)({
     position: 'relative',
     background: 'white',
     boxShadow: 'none'
 });
 
-export default function AlarmForm({ title, close, action, tenantName_id, services, env }) {
+export default function AlarmForm({ title, close, action, GeTenantData, services, env, types, token }) {
     typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
-    const anubisURL = typeof env !== 'undefined' ? env.ANUBIS_API_URL : '';
+
+    const httpLink = createHttpLink({
+        uri: typeof env !== 'undefined' ? env.CONFIGURATION_API_URL : ''
+    });
+    const authLink = setContext((_, { headers }) => {
+        return {
+            headers: {
+                ...headers,
+                Authorization: `Bearer ${token}`
+            }
+        };
+    });
+    const client = new ApolloClient({
+        link: authLink.concat(httpLink),
+        cache: new InMemoryCache({ addTypename: false })
+    });
     const [msg, sendNotification] = useNotification();
     log.debug(msg);
 
@@ -38,8 +57,177 @@ export default function AlarmForm({ title, close, action, tenantName_id, service
         close(false);
     };
 
+    const [error, setError] = React.useState(null);
+
+
     const [alarmType, setAlarmType] = React.useState("entity")
     const [pathSelected, setPathSelected] = React.useState('');
+    const [entityType, setEntityType] = React.useState([]);
+    const [channel, setChannel] = React.useState('email');
+    const [maxTime, setMaxTime] = React.useState(1);
+    const [timeUnit, setTimeUnit] = React.useState('d');
+    const [minTime, setMinTime] = React.useState(1);
+    const [frequency, setFrequency] = React.useState('d');
+
+    const [channelDestination, setChannelDestination] = React.useState([]);
+    const servicePathForm = {
+        pathSelected: {
+            value: pathSelected,
+            set: setPathSelected
+        },
+        entityType: {
+            value: entityType,
+            set: setEntityType
+        },
+        channel: {
+            value: channel,
+            set: setChannel
+        },
+        channelDestination: {
+            value: channelDestination,
+            set: setChannelDestination
+        },
+        maxTime: {
+            value: maxTime,
+            set: setMaxTime
+        },
+        timeUnit: {
+            value: timeUnit,
+            set: setTimeUnit
+        },
+        minTime: {
+            value: minTime,
+            set: setMinTime
+        },
+        frequency: {
+            value: frequency,
+            set: setFrequency
+        },
+    }
+    const [entityID, setEntityID] = React.useState(null);
+    React.useEffect(() => {
+        (alarmType === "entity" && entityID !== null && typeof entityID.type !== "undefined") ? setEntityType({type:entityID.type}) : ""
+
+    }, [entityID]);
+
+    React.useEffect(() => {
+        setEntityID(null)
+        setPathSelected(null)
+setEntityType(null)
+    }, [alarmType]);
+
+    const entityForm = {
+        pathSelected: {
+            value: pathSelected,
+            set: setPathSelected
+        },
+        entityType: {
+            value: entityType,
+            set: setEntityType
+        },
+        channel: {
+            value: channel,
+            set: setChannel
+        },
+        channelDestination: {
+            value: channelDestination,
+            set: setChannelDestination
+        },
+        maxTime: {
+            value: maxTime,
+            set: setMaxTime
+        },
+        timeUnit: {
+            value: timeUnit,
+            set: setTimeUnit
+        },
+        minTime: {
+            value: minTime,
+            set: setMinTime
+        },
+        frequency: {
+            value: frequency,
+            set: setFrequency
+        },
+        entityID: {
+            value: entityID,
+            set: setEntityID
+        },
+    }
+
+    const [entities, setEntities] = React.useState([]);
+    React.useEffect(() => {
+        setEntities([])
+        setEntityID(null)
+    }, [pathSelected]);
+
+    const getEntityURL = () => {
+        client
+            .query({
+                query: gql`
+            query getTenantResourceType($tenantName: String!, $skip: Int!, $limit: Int!) {
+              getTenantResourceType(tenantName: $tenantName, skip: $skip, limit: $limit) {
+                data {
+                  name
+                  userID
+                  tenantName
+                  endpointUrl
+                  ID
+                }
+                count
+              }
+            }
+          `,
+                variables: { tenantName: GeTenantData('name'), skip: 0, limit: 0 }
+            })
+            .then((response) => {
+                let filtered = response.data.getTenantResourceType.data.filter((e) => e.name === 'entity');
+                filtered.length > 0
+                    ? getEntitiesFromResource(
+                        filtered[0].endpointUrl.slice(0, filtered[0].endpointUrl.indexOf('?')) +
+                        '?attrs=dateCreated,dateModified,*&offset=' +
+                        entities.length +
+                        '&limit=' +
+                        100 +
+                        '&options=count'
+                    )
+                    : getEntitiesFromResource(
+                        env.ORION +
+                        '/v2/entities?attrs=dateCreated,dateModified,*&offset=' +
+                        entities.length +
+                        '&limit=' +
+                        100 +
+                        '&options=count'
+                    );
+            })
+            .catch((e) => {
+                sendNotification({ msg: e.message + ' the config', variant: 'error' });
+            });
+    };
+
+
+    const getEntitiesFromResource = (entityUrl) => {
+
+        const headers =
+        {
+            'fiware-Service': GeTenantData('name'),
+            //'Authorization': `Bearer ${token}`,
+            'fiware-ServicePath': (pathSelected === null) ? "/" : pathSelected.path
+
+        };
+        axios
+            .get(entityUrl, {
+                headers: headers
+            })
+            .then((response) => {
+                entities.length < response.headers['fiware-total-count']
+                    ? setEntities([...entities, ...response.data])
+                    : '';
+            })
+            .catch((e) => {
+                sendNotification({ msg: e.message, variant: 'error' });
+            });
+    };
 
     const handleSave = () => {
         switch (action) {
@@ -52,6 +240,7 @@ export default function AlarmForm({ title, close, action, tenantName_id, service
                 break;
         }
     };
+
 
     return (
         <div>
@@ -99,7 +288,10 @@ export default function AlarmForm({ title, close, action, tenantName_id, service
                             </Select>
                         </FormControl>
                     </Grid>
-                    {(alarmType === "entity") ? "" : <ServicePath services={services} setPathSelected={setPathSelected}></ServicePath>}
+                    {(alarmType === "entity") ?
+                        <EntityPath services={services} action={action} types={types} entities={entities} getEntityURL={getEntityURL} form={entityForm} />
+                        :
+                        <ServicePath services={services} action={action} types={types} form={servicePathForm} />}
                 </Grid>
             </DialogContent>
         </div>
@@ -107,33 +299,569 @@ export default function AlarmForm({ title, close, action, tenantName_id, service
 }
 
 
-function ServicePath({ setPathSelected, services }) {
+const ServicePath = ({ form, services, action, types }) => {
+
+
+
+    const channels = [
+        { text: "Email", id: 'email' }
+    ];
+    const timeUnit = [
+        { text: "Days", id: 'd' },
+        { text: "Hours", id: 'h' },
+        { text: "Minutes", id: 'm' },
+        { text: "Seconds", id: 's' },
+        { text: "Milliseconds", id: 'ms' }
+    ];
+
+    const errorCases = (value) => {
+        switch (true) {
+            case value === '':
+                return true;
+            case value === null:
+                return true;
+            case typeof value === 'object' && value.length <= 0:
+                return true;
+            default:
+                return false;
+        }
+
+    };
+
+    const helper = (value) => {
+        switch (true) {
+            case value === '':
+                return <Trans>common.errors.mandatory</Trans>;
+            case value === null:
+                return <Trans>common.errors.mandatory</Trans>;
+            case typeof value === 'object' && value.length <= 0:
+                return <Trans>common.errors.mandatory</Trans>;
+
+            default:
+                return "";
+        }
+    };
 
 
     return (
-
-        <Grid item xs={12}>
-            <Autocomplete
-                id="pathSelector"
-                sx={{ width: '100%' }}
-                options={services}
-                autoHighlight
-                getOptionLabel={(option) => option.path}
-                isOptionEqualToValue={(option, value) => option.path === value.path}
-                onChange={(event, value) => setPathSelected(value)}
-                renderInput={(params) => (
-                    <TextField
-                        {...params}
-                        label={<Trans>service.form.parentPath</Trans>}
-                        variant="outlined"
-                        inputProps={{
-                            ...params.inputProps,
-                            autoComplete: 'newPath'
-                        }}
+        <>
+            <Grid item xs={12}>
+                <FormControl fullWidth>
+                    <InputLabel id={'types'} error={errorCases(form.pathSelected.value)}></InputLabel>
+                    <Autocomplete
+                        id="pathSelected"
+                        error={errorCases(form.pathSelected.value)}
+                        sx={{ width: '100%' }}
+                        options={services}
+                        autoHighlight
+                        getOptionLabel={(option) => option.path}
+                        isOptionEqualToValue={(option, value) => option.path === value.path}
+                        onChange={(event, value) => form.pathSelected.set(value)}
+                        renderInput={(params) => (
+                            <TextField
+                                error={errorCases(form.pathSelected.value)}
+                                {...params}
+                                label={<Trans>service.form.parentPath</Trans>}
+                                variant="outlined"
+                                inputProps={{
+                                    ...params.inputProps,
+                                    autoComplete: 'pathSelected'
+                                }}
+                            />
+                        )}
                     />
-                )}
-            />
-        </Grid>
+                    <FormHelperText error={errorCases(form.pathSelected.value)}>{helper(form.pathSelected.value)}</FormHelperText>
+                </FormControl>
+            </Grid>
 
+            <Grid item xs={12}>
+                <FormControl fullWidth>
+                    <InputLabel id={'entityType'} ></InputLabel>
+                    <Autocomplete
+                        id="entityType"
+                        fullWidth={true}
+                        options={types}
+                        autoHighlight
+                        getOptionLabel={(option) => option.type}
+                        isOptionEqualToValue={(option, value) => option.type === value.type}
+                        defaultValue={form.entityType.value}
+                        value={form.entityType.value}
+                        onChange={(event, value) => form.entityType.set(value)}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label={"entityType"}
+                                variant="outlined"
+                                inputProps={{
+                                    ...params.inputProps,
+                                    autoComplete: 'entityType'
+                                }}
+                            />
+                        )}
+                    />
+                
+                </FormControl>
+            </Grid>
+
+            <Grid item xs={12} >
+                <FormControl fullWidth>
+                    <InputLabel id={'channel'}>
+                        {'channel'}
+                    </InputLabel>
+                    <Select
+                        color="primary"
+                        labelId={'channel'}
+                        id={'channel'}
+                        key={'channel'}
+                        value={form.channel.value}
+                        onChange={(event) => {
+                            form.channel.set(event.target.value);
+                        }}
+                        variant="outlined"
+                        label={"channel"}
+                        input={<OutlinedInput label="channel" />}
+                    >
+                        {channels.map((channel) => (
+                            <MenuItem key={channel.id} value={channel.id}>
+                                {channel.text}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+            </Grid>
+            <Grid item xs={12} >
+
+                <FormControl fullWidth>
+                    <InputLabel id={'channelDestination'} error={errorCases(form.entityType.value)}></InputLabel>
+                    <Autocomplete
+                        multiple
+                        color="primary"
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <MailOutlineIcon color="secondary"></MailOutlineIcon>
+                                </InputAdornment>
+                            )
+                        }}
+                        id={'channelDestination'}
+                        options={[]}
+                        defaultValue={form.channelDestination.value}
+                        limitTags={2}
+                        freeSolo
+                        value={form.channelDestination.value}
+                        onChange={(event, value) => {
+                            const filteredArray = value.filter(function (e) { return isEmail(e) })
+                            form.channelDestination.set(filteredArray);
+                        }}
+                        renderTags={(value, getTagProps) =>
+                            value.map((option, index) => (
+                                <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                            ))
+                        }
+                        renderInput={(params) => (
+                            <TextField
+                                error={errorCases(form.entityType.value)}
+                                {...params}
+                                variant="outlined"
+                                label="Mails"
+                                placeholder="Mails"
+                            />
+                        )}
+                    />
+                    <FormHelperText error={errorCases(form.pathSelected.value)}>{helper(form.entityType.value)}</FormHelperText>
+
+                </FormControl>
+            </Grid>
+            <Grid item xs={12} >
+                <TextField
+                    id="maxTime"
+                    label="maxTime"
+                    variant="outlined"
+                    type="number"
+                    value={form.maxTime.value}
+                    onChange={(event) => {
+                        form.maxTime.set(event.target.value);
+                    }}
+                    sx={{
+                        width: '100%'
+                    }}
+                    error={errorCases(form.maxTime.value)}
+                    helperText={helper(form.maxTime.value)}
+
+                />
+            </Grid>
+            <Grid item xs={12} >
+                <FormControl fullWidth>
+                    <InputLabel id={'timeUnit'}>
+                        {"timeUnit"}
+                    </InputLabel>
+                    <Select
+                        color="primary"
+                        labelId={'timeUnit'}
+                        id={'timeUnit'}
+                        key={'timeUnit'}
+                        value={form.timeUnit.value}
+                        onChange={(event) => {
+                            form.timeUnit.set(event.target.value);
+                        }}
+                        variant="outlined"
+                        label={"timeUnit"}
+                        input={<OutlinedInput label="timeUnit" />}
+                    >
+                        {timeUnit.map((time) => (
+                            <MenuItem key={time.id} value={time.id}>
+                                {time.text}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+            </Grid>
+            <Grid item xs={12} >
+                <TextField
+                    id="minTime"
+                    label="minTime"
+                    variant="outlined"
+                    type="number"
+                    value={form.minTime.value}
+                    onChange={(event) => {
+                        form.minTime.set(event.target.value);
+                    }}
+                    sx={{
+                        width: '100%'
+                    }}
+                    error={errorCases(form.minTime.value)}
+                    helperText={helper(form.minTime.value)}
+                />
+            </Grid>
+            <Grid item xs={12} >
+                <FormControl fullWidth>
+                    <InputLabel id={'frequency'}>
+                        {"frequency"}
+                    </InputLabel>
+                    <Select
+                        color="primary"
+                        labelId={'frequency'}
+                        id={'frequency'}
+                        key={'frequency'}
+                        value={form.frequency.value}
+                        onChange={(event, value) => {
+                            form.frequency.set(event.target.value);
+                        }}
+                        variant="outlined"
+                        label={"frequency"}
+                        input={<OutlinedInput label="frequency" />}
+                    >
+                        {timeUnit.map((time) => (
+                            <MenuItem key={time.id} value={time.id}>
+                                {time.text}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+            </Grid>
+        </>
+    );
+}
+
+const EntityPath = ({ form, services, entities, getEntityURL, action, types }) => {
+
+    const [loading, setLoading] = React.useState(true);
+
+    React.useEffect(() => {
+        setLoading(!loading);
+    }, [entities]);
+
+
+
+    const channels = [
+        { text: "Email", id: 'email' }
+    ];
+    const timeUnit = [
+        { text: "Days", id: 'd' },
+        { text: "Hours", id: 'h' },
+        { text: "Minutes", id: 'm' },
+        { text: "Seconds", id: 's' },
+        { text: "Milliseconds", id: 'ms' }
+    ];
+
+    const errorCases = (value) => {
+        switch (true) {
+            case value === '':
+                return true;
+            case value === null:
+                return true;
+            case typeof value === 'object' && value.length <= 0:
+                return true;
+            default:
+                return false;
+        }
+
+    };
+
+    const helper = (value) => {
+        switch (true) {
+            case value === '':
+                return <Trans>common.errors.mandatory</Trans>;
+            case value === null:
+                return <Trans>common.errors.mandatory</Trans>;
+            case typeof value === 'object' && value.length <= 0:
+                return <Trans>common.errors.mandatory</Trans>;
+
+            default:
+                return "";
+        }
+    };
+
+    return (
+        <>
+            <Grid item xs={12}>
+                <FormControl fullWidth>
+                    <InputLabel id={'types'} error={errorCases(form.pathSelected.value)}></InputLabel>
+                    <Autocomplete
+                        id="pathSelected"
+                        error={errorCases(form.pathSelected.value)}
+                        sx={{ width: '100%' }}
+                        options={services}
+                        autoHighlight
+                        getOptionLabel={(option) => option.path}
+                        isOptionEqualToValue={(option, value) => option.path === value.path}
+                        onChange={(event, value) => form.pathSelected.set(value)}
+                        renderInput={(params) => (
+                            <TextField
+                                error={errorCases(form.pathSelected.value)}
+                                {...params}
+                                label={<Trans>service.form.parentPath</Trans>}
+                                variant="outlined"
+                                inputProps={{
+                                    ...params.inputProps,
+                                    autoComplete: 'pathSelected'
+                                }}
+                            />
+                        )}
+                    />
+                    <FormHelperText error={errorCases(form.pathSelected.value)}>{helper(form.pathSelected.value)}</FormHelperText>
+                </FormControl>
+            </Grid>
+
+            <Grid item xs={12}>
+                <FormControl fullWidth>
+                    <InputLabel id={'entityID'} error={errorCases(form.entityID.value)}></InputLabel>
+                    <Autocomplete
+                        disabled={(form.pathSelected.value === null || typeof form.pathSelected.value === "undefined" || form.pathSelected.value === "") ? true : false}
+                        id="entityID"
+                        error={errorCases(form.entityID.value)}
+                        sx={{ width: '100%' }}
+                        options={entities}
+                        autoHighlight
+                        loading={loading}
+                        onOpen={() => getEntityURL()}
+                        getOptionLabel={(option) => option.id}
+                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                        onChange={(event, value) => form.entityID.set(value)}
+                        defaultValue={form.entityID.value}
+                        value={form.entityID.value}
+                        renderInput={(params) => (
+                            <TextField
+                                error={errorCases(form.entityID.value)}
+                                {...params}
+                                label={"entityID"}
+                                variant="outlined"
+                                inputProps={{
+                                    ...params.inputProps,
+                                    autoComplete: 'entityID'
+                                }}
+                            />
+                        )}
+                    />
+                    <FormHelperText error={errorCases(form.entityID.value)}>{helper(form.entityID.value)}</FormHelperText>
+                </FormControl>
+            </Grid>
+            {(form.entityID.value!==null)?         <Grid item xs={12}>
+                <FormControl fullWidth>
+                    <InputLabel id={'entityType'} ></InputLabel>
+                    <Autocomplete
+                        id="entityType"
+                        disabled
+                        fullWidth={true}
+                        options={types}
+                        autoHighlight
+                        getOptionLabel={(option) => option.type}
+                        isOptionEqualToValue={(option, value) => option.type === value.type}
+                        defaultValue={form.entityType.value}
+                        value={form.entityType.value}
+                        onChange={(event, value) => form.entityType.set(value)}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label={"entityType"}
+                                variant="outlined"
+                                inputProps={{
+                                    ...params.inputProps,
+                                    autoComplete: 'entityType'
+                                }}
+                            />
+                        )}
+                    />
+                </FormControl>
+            </Grid>:""}
+   
+
+            <Grid item xs={12} >
+                <FormControl fullWidth>
+                    <InputLabel id={'channel'}>
+                        {'channel'}
+                    </InputLabel>
+                    <Select
+                        color="primary"
+                        labelId={'channel'}
+                        id={'channel'}
+                        key={'channel'}
+                        value={form.channel.value}
+                        onChange={(event) => {
+                            form.channel.set(event.target.value);
+                        }}
+                        variant="outlined"
+                        label={"channel"}
+                        input={<OutlinedInput label="channel" />}
+                    >
+                        {channels.map((channel) => (
+                            <MenuItem key={channel.id} value={channel.id}>
+                                {channel.text}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+            </Grid>
+            <Grid item xs={12} >
+
+                <FormControl fullWidth>
+                    <InputLabel id={'channelDestination'} error={errorCases(form.entityType.value)}></InputLabel>
+                    <Autocomplete
+                        multiple
+                        color="primary"
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <MailOutlineIcon color="secondary"></MailOutlineIcon>
+                                </InputAdornment>
+                            )
+                        }}
+                        id={'channelDestination'}
+                        options={[]}
+                        defaultValue={form.channelDestination.value}
+                        limitTags={2}
+                        freeSolo
+                        value={form.channelDestination.value}
+                        onChange={(event, value) => {
+                            const filteredArray = value.filter(function (e) { return isEmail(e) })
+                            form.channelDestination.set(filteredArray);
+                        }}
+                        renderTags={(value, getTagProps) =>
+                            value.map((option, index) => (
+                                <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                            ))
+                        }
+                        renderInput={(params) => (
+                            <TextField
+                                error={errorCases(form.entityType.value)}
+                                {...params}
+                                variant="outlined"
+                                label="Mails"
+                                placeholder="Mails"
+                            />
+                        )}
+                    />
+                    <FormHelperText error={errorCases(form.pathSelected.value)}>{helper(form.entityType.value)}</FormHelperText>
+
+                </FormControl>
+            </Grid>
+            <Grid item xs={12} >
+                <TextField
+                    id="maxTime"
+                    label="maxTime"
+                    variant="outlined"
+                    type="number"
+                    value={form.maxTime.value}
+                    onChange={(event) => {
+                        form.maxTime.set(event.target.value);
+                    }}
+                    sx={{
+                        width: '100%'
+                    }}
+                    error={errorCases(form.maxTime.value)}
+                    helperText={helper(form.maxTime.value)}
+
+                />
+            </Grid>
+            <Grid item xs={12} >
+                <FormControl fullWidth>
+                    <InputLabel id={'timeUnit'}>
+                        {"timeUnit"}
+                    </InputLabel>
+                    <Select
+                        color="primary"
+                        labelId={'timeUnit'}
+                        id={'timeUnit'}
+                        key={'timeUnit'}
+                        value={form.timeUnit.value}
+                        onChange={(event) => {
+                            form.timeUnit.set(event.target.value);
+                        }}
+                        variant="outlined"
+                        label={"timeUnit"}
+                        input={<OutlinedInput label="timeUnit" />}
+                    >
+                        {timeUnit.map((time) => (
+                            <MenuItem key={time.id} value={time.id}>
+                                {time.text}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+            </Grid>
+            <Grid item xs={12} >
+                <TextField
+                    id="minTime"
+                    label="minTime"
+                    variant="outlined"
+                    type="number"
+                    value={form.minTime.value}
+                    onChange={(event) => {
+                        form.minTime.set(event.target.value);
+                    }}
+                    sx={{
+                        width: '100%'
+                    }}
+                    error={errorCases(form.minTime.value)}
+                    helperText={helper(form.minTime.value)}
+                />
+            </Grid>
+            <Grid item xs={12} >
+                <FormControl fullWidth>
+                    <InputLabel id={'frequency'}>
+                        {"frequency"}
+                    </InputLabel>
+                    <Select
+                        color="primary"
+                        labelId={'frequency'}
+                        id={'frequency'}
+                        key={'frequency'}
+                        value={form.frequency.value}
+                        onChange={(event, value) => {
+                            form.frequency.set(event.target.value);
+                        }}
+                        variant="outlined"
+                        label={"frequency"}
+                        input={<OutlinedInput label="frequency" />}
+                    >
+                        {timeUnit.map((time) => (
+                            <MenuItem key={time.id} value={time.id}>
+                                {time.text}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+            </Grid>
+        </>
     );
 }

@@ -725,6 +725,7 @@ export default class App extends Component {
                         element={
                           <AlarmsPage
                             getTenants={this.state.getTenants}
+                            token={this.props.accessToken}
                             env={env}
                             tenantValues={this.state.tenants}
                             thisTenant={this.state.thisTenant}

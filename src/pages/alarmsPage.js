@@ -17,12 +17,27 @@ import AlarmForm from '../components/alarms/alarmForm';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { lighten } from '@mui/material';
+import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
 
-
-export default function AlarmsPage({ getTenants, tenantValues, thisTenant, graphqlErrors, env,language }) {
+export default function AlarmsPage({ getTenants, tenantValues, thisTenant, graphqlErrors, env,language,token }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
   const theme = useTheme();
-
+  const httpLink = createHttpLink({
+    uri: typeof env !== 'undefined' ? env.CONFIGURATION_API_URL : ''
+  });
+  const authLink = setContext((_, { headers }) => {
+    return {
+      headers: {
+        ...headers,
+        Authorization: `Bearer ${token}`
+      }
+    };
+  });
+  const client = new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache({ addTypename: false })
+  });
   const GeTenantData = (type) => {
     const tenantArray = tenantValues.filter((e) => e.id === thisTenant);
     if (type === 'name') {
@@ -81,6 +96,48 @@ export default function AlarmsPage({ getTenants, tenantValues, thisTenant, graph
       });
   };
 
+  const getTypeURL = () => {
+    client
+      .query({
+        query: gql`
+          query getTenantResourceType($tenantName: String!, $skip: Int!, $limit: Int!) {
+            getTenantResourceType(tenantName: $tenantName, skip: $skip, limit: $limit) {
+              data {
+                name
+                userID
+                tenantName
+                endpointUrl
+                ID
+              }
+              count
+            }
+          }
+        `,
+        variables: { tenantName: GeTenantData('name'), skip: 0, limit: 0 }
+      })
+      .then((response) => {
+        let filtered = response.data.getTenantResourceType.data.filter((e) => e.name === 'type');
+        filtered.length > 0
+          ? getTypesFromResource(filtered[0].endpointUrl)
+          : getTypesFromResource(env.ORION + '/v2/types');
+      })
+      .catch((e) => {
+        sendNotification({ msg: e.message + ' the config', variant: 'error' });
+      });
+  };
+
+   //types
+   const [types, setTypes] = React.useState([]);
+   const getTypesFromResource = (typeUrl) => {
+     const headers = { 'fiware-Service': GeTenantData('name') };
+     axios
+       .get(typeUrl, {
+         headers: headers
+       })
+       .then((response) => {
+         setTypes(response.data);
+       });
+   };
 
 
   React.useEffect(() => {}, [thisTenant, servicePath]);
@@ -88,6 +145,7 @@ export default function AlarmsPage({ getTenants, tenantValues, thisTenant, graph
   React.useEffect(() => {
     setServicePath(null);
     thisTenant !== null ? getServices() : '';
+    thisTenant !== null ? getTypeURL() : '';
   }, [thisTenant]);
 
   const mainTitle = 'ALARMS';
@@ -99,7 +157,7 @@ export default function AlarmsPage({ getTenants, tenantValues, thisTenant, graph
         ''
       ) : (
         <AddButton
-          pageType={<AlarmForm env={env} close={setCreateOpen} action={"create"} services={services}/>}
+          pageType={<AlarmForm env={env} types={types} token={token} GeTenantData={GeTenantData} close={setCreateOpen} action={"create"} services={services}/>}
           setOpen={setCreateOpen}
           status={createOpen}
           graphqlErrors={graphqlErrors}
