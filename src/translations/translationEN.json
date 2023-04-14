@@ -126,6 +126,44 @@
       "edit": "Modify entity: <0>{{name}}</0>"
     }
   },
+  "alarms":{
+    "page":{
+      "title": "Alarms",
+       "noData": "No data available."
+    },
+    "card":{
+      "tenant":"Tenant:",
+      "servicePath":"Service path:",
+      "email":"Email:",
+      "frequency":"Frequency:",
+      "last":"Last alarm:",
+      "tooltip": {
+        "editIcon": "Edit"
+      },
+      "time":{
+        "day":"Day",
+        "hours":"Hours",
+        "minutes":"Minutes",
+        "seconds":"Seconds",
+        "milliseconds":"Milliseconds"
+        }
+    },
+    "form":{
+      "new": "New alarm",
+      "edit": "Edit {{name}}",
+      "servicePath":"Service path:",
+      "alarmType":"Alarm type",
+      "entity":"Entity",
+      "path":"Path",
+      "entityType":"Entity type",
+      "notificationChannel":"Notification channel",
+      "channelDestination":"Channel destination",
+      "maxTime":"Max time since last entity update",
+      "timeUnit":"Time unit",
+      "minTime":"Minimum time interval between notifications",
+      "alarmFrequency":"Alarm frequency time unit"
+    }
+  },
   "menu": {
     "home": {
       "title": "Home",
@@ -138,6 +176,9 @@
     },
     "entity": {
       "title": "Entities"
+    },
+    "alarm": {
+      "title": "Alarms"
     },
     "security": {
       "title": "Security",

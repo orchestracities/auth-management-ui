@@ -126,6 +126,44 @@
       "edit": "Modifica entità: <0>{{name}}</0>"
     }
   },
+  "alarms":{
+    "page":{
+      "title": "Allarmi",
+       "noData": "Nessun dato disponibile"
+    },
+    "card":{
+      "tenant":"Tenant:",
+      "servicePath":"Percorso dei servizi:",
+      "email":"Email:",
+      "frequency":"Frequenza:",
+      "last":"Ultimo allarme:",
+      "tooltip": {
+        "editIcon": "Modifica"
+      },
+      "time":{
+        "day":"Giorno",
+        "hours":"Ora",
+        "minutes":"Minuti",
+        "seconds":"Secondi",
+        "milliseconds":"Millisecondi"
+        }
+    },
+    "form":{
+      "new": "Nuovo allarme",
+      "edit": "Modifica {{name}}",
+      "servicePath":"Percorso dei servizi:",
+      "alarmType":"Tipo Allarme",
+      "entity":"Entità",
+      "path":"Percorso",
+      "entityType":"Tipologia Entità",
+      "notificationChannel":"Canale di comunicazione",
+      "channelDestination":"Destinazione comunicazione",
+      "maxTime":"Tempo massimo dall'ultimo aggiornamento",
+      "timeUnit":"Valore",
+      "minTime":"Tempo minimo tra le notifiche",
+      "alarmFrequency":"Frequenza del valore"
+    }
+  },
   "menu": {
     "home": {
       "title": "Home",
@@ -138,6 +176,9 @@
     },
     "entity" : {
       "title": "Entità"
+    },
+    "alarm": {
+      "title": "Allarmi"
     },
     "security" : {
       "title": "Sicurezza",

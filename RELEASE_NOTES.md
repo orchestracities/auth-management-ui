@@ -13,6 +13,10 @@
 - Mongo auth (#153)
 - Custom text home page (#125)
 - Entity visualization (#116)
+- Design create alarm page (#174)
+- Design edit alarm page (#175)
+- Design alarm widget (#176)
+- Alarm page translations (#180)
 
 ### Bug fixes
 
