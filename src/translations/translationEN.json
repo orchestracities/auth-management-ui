@@ -177,6 +177,9 @@
     "entity": {
       "title": "Entities"
     },
+    "alarm": {
+      "title": "Alarms"
+    },
     "security": {
       "title": "Security",
       "description": "In this area you can manage access control policies to resources. Powered by Anubis!"

@@ -177,6 +177,9 @@
     "entity" : {
       "title": "Entità"
     },
+    "alarm": {
+      "title": "Allarmi"
+    },
     "security" : {
       "title": "Sicurezza",
       "description": "In questa sezione gestisci le policy di controllo di accesso alle risorse. Powered by Anubis!"

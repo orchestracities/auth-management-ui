@@ -23,7 +23,7 @@ export const menu = [
         items: []
       },
       {
-        title: 'alarms',
+        title: 'menu.alarm.title',
         route: '/Alarms',
         items: []
       }
