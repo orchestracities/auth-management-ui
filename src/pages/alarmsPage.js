@@ -18,7 +18,7 @@ import { lighten } from '@mui/material';
 import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 
-export default function AlarmsPage({ getTenants, tenantValues, thisTenant, graphqlErrors, env, language, token }) {
+export default function AlarmsPage({ tenantValues, thisTenant, graphqlErrors, env, language, token }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
   const theme = useTheme();
   const httpLink = createHttpLink({
