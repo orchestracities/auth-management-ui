@@ -4,7 +4,7 @@ import PathFilter from '../shared/filters/pathFilter';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import SortButton from '../shared/sortButton';
-export default function AlarmsFilters({ mapper, services,sortData,data }) {
+export default function AlarmsFilters({ mapper, services, sortData, data }) {
   const [status, setstatus] = React.useState(null);
   const getUniqueListBy = (arr, key) => {
     return [...new Map(arr.map((item) => [item[key], item])).values()];
@@ -29,7 +29,7 @@ export default function AlarmsFilters({ mapper, services,sortData,data }) {
       alignItems="center"
       sx={isResponsive ? { minWidth: 1100 } : ''}
     >
-        <Grid
+      <Grid
         item
         xs={status === 'PathFilter' ? 12 : 'auto'}
         sm={status === 'PathFilter' ? 12 : 'auto'}
@@ -37,13 +37,13 @@ export default function AlarmsFilters({ mapper, services,sortData,data }) {
         lg={status === 'PathFilter' ? 12 : 'auto'}
         xl={status === 'PathFilter' ? 12 : 'auto'}
         sx={{
-          marginBottom:"8px"
+          marginBottom: '8px'
         }}
         zeroMinWidth
       >
-    { status !== null  ? '' : <SortButton data={data} id={'id'} sortData={sortData}></SortButton> }
+        {status !== null ? '' : <SortButton data={data} id={'id'} sortData={sortData}></SortButton>}
       </Grid>
-    
+
       <Grid
         item
         xs={status === 'PathFilter' ? 12 : 'auto'}

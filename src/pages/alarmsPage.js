@@ -2,10 +2,8 @@ import * as React from 'react';
 import MainTitle from '../components/shared/mainTitle';
 import AddButton from '../components/shared/addButton';
 import { Grid } from '@mui/material';
-import SortButton from '../components/shared/sortButton';
 import AlarmCard from '../components/alarms/alarmCard';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import ServiceForm from '../components/service/serviceForm';
 import axios from 'axios';
 import Grow from '@mui/material/Grow';
 import { Trans } from 'react-i18next';
@@ -20,7 +18,7 @@ import { lighten } from '@mui/material';
 import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 
-export default function AlarmsPage({ getTenants, tenantValues, thisTenant, graphqlErrors, env,language,token }) {
+export default function AlarmsPage({ getTenants, tenantValues, thisTenant, graphqlErrors, env, language, token }) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
   const theme = useTheme();
   const httpLink = createHttpLink({
@@ -126,19 +124,18 @@ export default function AlarmsPage({ getTenants, tenantValues, thisTenant, graph
       });
   };
 
-   //types
-   const [types, setTypes] = React.useState([]);
-   const getTypesFromResource = (typeUrl) => {
-     const headers = { 'fiware-Service': GeTenantData('name') };
-     axios
-       .get(typeUrl, {
-         headers: headers
-       })
-       .then((response) => {
-         setTypes(response.data);
-       });
-   };
-
+  //types
+  const [types, setTypes] = React.useState([]);
+  const getTypesFromResource = (typeUrl) => {
+    const headers = { 'fiware-Service': GeTenantData('name') };
+    axios
+      .get(typeUrl, {
+        headers: headers
+      })
+      .then((response) => {
+        setTypes(response.data);
+      });
+  };
 
   React.useEffect(() => {}, [thisTenant, servicePath]);
 
@@ -148,7 +145,7 @@ export default function AlarmsPage({ getTenants, tenantValues, thisTenant, graph
     thisTenant !== null ? getTypeURL() : '';
   }, [thisTenant]);
 
-  const mainTitle = 'ALARMS';
+  const mainTitle = <Trans>alarms.page.title</Trans>;
   const smallDevice = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <Box>
@@ -157,7 +154,18 @@ export default function AlarmsPage({ getTenants, tenantValues, thisTenant, graph
         ''
       ) : (
         <AddButton
-          pageType={<AlarmForm env={env} types={types} token={token} GeTenantData={GeTenantData} close={setCreateOpen} action={"create"} services={services}/>}
+          pageType={
+            <AlarmForm
+              env={env}
+              title={<Trans>alarms.form.new</Trans>}
+              types={types}
+              token={token}
+              GeTenantData={GeTenantData}
+              close={setCreateOpen}
+              action={'create'}
+              services={services}
+            />
+          }
           setOpen={setCreateOpen}
           status={createOpen}
           graphqlErrors={graphqlErrors}
@@ -184,9 +192,11 @@ export default function AlarmsPage({ getTenants, tenantValues, thisTenant, graph
                 : ''
             }
           >
-            
-            {alarmsList.length > 0 ? <AlarmsFilters services={services} data={alarmsList} mapper={filterMapper} sortData={rerOder} />: ''}
-
+            {alarmsList.length > 0 ? (
+              <AlarmsFilters services={services} data={alarmsList} mapper={filterMapper} sortData={rerOder} />
+            ) : (
+              ''
+            )}
           </Grid>
           {alarmsList.map((alarm, index) => (
             <Grow
@@ -201,11 +211,22 @@ export default function AlarmsPage({ getTenants, tenantValues, thisTenant, graph
                   language={language}
                   key={alarm.id}
                   colors={{
-                    secondaryColor: lighten(theme.palette.secondary.main, index * 0.05),
-                    primaryColor: lighten(theme.palette.primary.main, index * 0.05)
+                    secondaryColor: lighten(theme.palette.secondary.main, index * 0.15 + 0.1),
+                    primaryColor: lighten(theme.palette.primary.main, index * 0.15 + 0.1)
                   }}
-                  pageType={<AlarmForm env={env} types={types} token={token} GeTenantData={GeTenantData} close={setCreateOpen} action={"modify"} data={alarm} services={services}/>}
-
+                  pageType={
+                    <AlarmForm
+                      env={env}
+                      title={<Trans i18nKey="alarms.form.edit" values={{ name: alarm.id }} />}
+                      types={types}
+                      token={token}
+                      GeTenantData={GeTenantData}
+                      close={setCreateOpen}
+                      action={'modify'}
+                      data={alarm}
+                      services={services}
+                    />
+                  }
                   data={alarm}
                 ></AlarmCard>
               </Grid>
@@ -214,7 +235,7 @@ export default function AlarmsPage({ getTenants, tenantValues, thisTenant, graph
         </Grid>
       ) : (
         <Typography sx={{ padding: '20px' }} variant="h6" component="h3">
-          <Trans>service.titles.noData</Trans>
+          <Trans>alarms.page.noData</Trans>
         </Typography>
       )}
     </Box>

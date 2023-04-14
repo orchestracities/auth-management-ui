@@ -2,18 +2,12 @@ import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
 import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms';
 import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
-import { red } from '@mui/material/colors';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useTheme } from '@mui/material/styles';
 import List from '@mui/material/List';
@@ -28,7 +22,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import { Trans } from 'react-i18next';
-import AddIcon from '@mui/icons-material/Add';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Grow from '@mui/material/Grow';
 import DeleteDialog from '../shared/messages/cardDelete';
@@ -39,6 +32,7 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import RouteIcon from '@mui/icons-material/Route';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+
 const RadiusDiv = styled(Box)(({ theme }) => ({
   borderRadius: '15px',
   background: theme.palette.primary.light.replace(')', ' / 70% )').replace(/,/g, ''),
@@ -46,7 +40,7 @@ const RadiusDiv = styled(Box)(({ theme }) => ({
   maxWidth: 550
 }));
 
-const CustomList = styled(List)(({ theme }) => ({
+const CustomList = styled(List)(() => ({
   width: '100%',
   padding: '0 !important',
   marginLeft: 16,
@@ -65,6 +59,11 @@ const DialogRounded = styled(Dialog)(() => ({
   }
 }));
 
+const CustomDivider = styled(Divider)(({ theme }) => ({
+  borderColor: theme.palette.getContrastText(theme.palette.primary.main),
+  marginRight: '36px'
+}));
+
 const fabProps = {
   sx: {
     background: '#8a93e100',
@@ -75,6 +74,7 @@ const fabProps = {
     }
   }
 };
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Grow direction="up" ref={ref} {...props} />;
 });
@@ -104,7 +104,7 @@ const MultifunctionButton = ({ pageType, setOpen, status, data, getData, env, to
     {
       icon: <EditIcon />,
       id: 'multifunctional',
-      name: <Trans>tenant.tooltip.editIcon</Trans>,
+      name: <Trans>tenant.card.tooltip.editIcon</Trans>,
       click: handleClickOpen
     },
     {
@@ -126,9 +126,9 @@ const MultifunctionButton = ({ pageType, setOpen, status, data, getData, env, to
     >
       <SpeedDial
         FabProps={fabProps}
-        ariaLabel="SpeedDial basic example"
+        ariaLabel="alarmDial"
         sx={{ position: 'absolute', bottom: 0, right: 5 }}
-        icon={<MoreVertIcon />}
+        icon={<MoreVertIcon sx={{ color: theme.palette.getContrastText(theme.palette.primary.main) }} />}
       >
         {actions.map((action, index) => (
           <SpeedDialAction
@@ -165,10 +165,11 @@ const MultifunctionButton = ({ pageType, setOpen, status, data, getData, env, to
   );
 };
 
-export default function AlarmCard({ pageType, data, getData, seTenant, colors, tenantName_id, env, token,language }) {
+export default function AlarmCard({ pageType, data, getData, colors, env, token, language }) {
   const theme = useTheme();
-  const [subpathOpen, setSubpathOpen] = React.useState(false);
+
   const anubisURL = typeof env !== 'undefined' ? env.ANUBIS_API_URL : '';
+  console.log(anubisURL);
   const [expanded, setExpanded] = React.useState(false);
 
   const handleExpandClick = () => {
@@ -187,20 +188,19 @@ export default function AlarmCard({ pageType, data, getData, seTenant, colors, t
   const translator = (data) => {
     switch (true) {
       case data === 'd':
-        return "Day";
-        case data === 'h':
-        return "Hours";
-        case data === 'm':
-          return "Minutes";
-          case data === 's':
-            return "Seconds";
-            case data === 'ms':
-              return "Milliseconds";
-   
+        return <Trans>alarms.card.time.day</Trans>;
+      case data === 'h':
+        return <Trans>alarms.card.time.hours</Trans>;
+      case data === 'm':
+        return <Trans>alarms.card.time.minutes</Trans>;
+      case data === 's':
+        return <Trans>alarms.card.time.seconds</Trans>;
+      case data === 'ms':
+        return <Trans>alarms.card.time.milliseconds</Trans>;
       default:
         return false;
     }
-  }
+  };
   const printDate = (date) => {
     try {
       const lang = typeof language === 'undefined' || language === '' ? 'en' : language;
@@ -210,13 +210,13 @@ export default function AlarmCard({ pageType, data, getData, seTenant, colors, t
     }
   };
 
-  React.useEffect(() => { }, [data]);
+  React.useEffect(() => {}, [data]);
 
   return (
     <RadiusDiv
       boxShadow={5}
       sx={{
-        background: layout.props.action === 'Sub-service-creation' ? cardColor : '#8086bab8'
+        background: cardColor
       }}
     >
       <CardHeader
@@ -271,7 +271,7 @@ export default function AlarmCard({ pageType, data, getData, seTenant, colors, t
               </Avatar>
             </ListItemAvatar>
             <ListItemText
-              primary="Tenant"
+              primary={<Trans>alarms.card.tenant</Trans>}
               secondary={
                 <React.Fragment>
                   <ListTypo component="span" variant="body2" color="text.primary">
@@ -281,7 +281,7 @@ export default function AlarmCard({ pageType, data, getData, seTenant, colors, t
               }
             />
           </ListItem>
-          <Divider variant="inset" component="li" />
+          <CustomDivider variant="inset" component="li" />
           <ListItem alignItems="flex-start">
             <ListItemAvatar>
               <Avatar
@@ -294,7 +294,7 @@ export default function AlarmCard({ pageType, data, getData, seTenant, colors, t
               </Avatar>
             </ListItemAvatar>
             <ListItemText
-              primary="service path"
+              primary={<Trans>alarms.card.servicePath</Trans>}
               secondary={
                 <React.Fragment>
                   <ListTypo component="span" variant="body2" color="text.primary">
@@ -304,7 +304,7 @@ export default function AlarmCard({ pageType, data, getData, seTenant, colors, t
               }
             />
           </ListItem>
-          <Divider variant="inset" component="li" />
+          <CustomDivider variant="inset" component="li" />
           <ListItem alignItems="flex-start">
             <ListItemAvatar>
               <Avatar
@@ -317,17 +317,14 @@ export default function AlarmCard({ pageType, data, getData, seTenant, colors, t
               </Avatar>
             </ListItemAvatar>
             <ListItemText
-              primary="mail"
-              secondary={
-                data.channel_destination.map((mail, index) => (
-                  <React.Fragment>
-                  <ListTypo key={mail+index} component="span" variant="body2" color="text.primary">
+              primary={<Trans>alarms.card.email</Trans>}
+              secondary={data.channel_destination.map((mail, index) => (
+                <React.Fragment key={mail + index}>
+                  <ListTypo component="span" variant="body2" color="text.primary">
                     {mail}
                   </ListTypo>
                 </React.Fragment>
-                ))
-               
-              }
+              ))}
             />
           </ListItem>
         </CustomList>
@@ -348,17 +345,17 @@ export default function AlarmCard({ pageType, data, getData, seTenant, colors, t
                 </Avatar>
               </ListItemAvatar>
               <ListItemText
-                primary="frequency"
+                primary={<Trans>alarms.card.frequency</Trans>}
                 secondary={
                   <React.Fragment>
                     <ListTypo component="span" variant="body2" color="text.primary">
-                      {data.alarm_frequency_time + " " + translator(data.alarm_frequency_time_unit)}
+                      {data.alarm_frequency_time + ' '} {translator(data.alarm_frequency_time_unit)}
                     </ListTypo>
                   </React.Fragment>
                 }
               />
             </ListItem>
-            <Divider variant="inset" component="li" />
+            <CustomDivider variant="inset" component="li" />
             <ListItem alignItems="flex-start">
               <ListItemAvatar>
                 <Avatar
@@ -371,17 +368,17 @@ export default function AlarmCard({ pageType, data, getData, seTenant, colors, t
                 </Avatar>
               </ListItemAvatar>
               <ListItemText
-                primary="Last alarm"
+                primary={<Trans>alarms.card.last</Trans>}
                 secondary={
                   <React.Fragment>
                     <ListTypo component="span" variant="body2" color="text.primary">
-                {printDate(data.time_of_last_alarm)}
+                      {printDate(data.time_of_last_alarm)}
                     </ListTypo>
                   </React.Fragment>
                 }
               />
             </ListItem>
-            <Divider variant="inset" component="li" />
+            <CustomDivider variant="inset" component="li" />
           </CustomList>
         </CardContent>
       </Collapse>
