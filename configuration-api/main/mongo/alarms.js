@@ -15,7 +15,7 @@ async function deleteThisAlarm(data) {
       console.error(error);
     }
   });
-  return getTheAlarms();
+  return [old[index]];
 }
 async function addAlarm(data) {
   let old = JSON.parse(fs.readFileSync(path.join(configDirectory, 'alarms.json'), 'utf8'));

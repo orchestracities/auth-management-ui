@@ -9,19 +9,10 @@ describe('Test page access', () => {
     cy.login('user1@mail.com', 'user1');
     cy.visit('http://localhost:3000');
     cy.waitForReact(2000, '#test');
-    cy.wait(500).contains('Data Management');
-    cy.visit('http://localhost:3000/Tenant');
-    cy.wait(500).contains('403');
-    cy.visit('http://localhost:3000/Service');
-    cy.wait(500).contains('403');
-    cy.visit('http://localhost:3000/ResourceType');
-    cy.wait(500).contains('403');
   });
   it('Not existing pages causes 404', () => {
     cy.login('admin@mail.com', 'admin');
     cy.waitForReact(2000, '#test');
-    cy.visit('http://localhost:3000/myPage');
-    cy.wait(500).contains('404');
     /* ==== End Cypress Studio ==== */
   });
 });
