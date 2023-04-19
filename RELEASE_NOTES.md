@@ -17,6 +17,7 @@
 - Design edit alarm page (#175)
 - Design alarm widget (#176)
 - Alarm page translations (#180)
+- Alarm page Docs (#179)
 
 ### Bug fixes
 
@@ -33,6 +34,7 @@
 - Update all the libraries to the latest version
 - Replace the json editor with new library
 - Rewrite the map component to mach leafleat v4
+- Storybook 7
 
 ### Technical debt
 
