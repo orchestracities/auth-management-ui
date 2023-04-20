@@ -18,6 +18,7 @@ config.loadConfig();
 const { get, update, add, deleteTenant } = require('./mongo/tenantsQueries');
 const { getUserPref, updateUserPref } = require('./mongo/userSettings');
 const { getResource, deleteResource, newResource, updateResource } = require('./mongo/resourceTypes');
+const { getTheAlarms, deleteThisAlarm, addAlarm, updateThisAlarm } = require('./mongo/alarms');
 const typeDefs = gql`
   type TenantConfiguration {
     name: String!
@@ -56,9 +57,27 @@ const typeDefs = gql`
     text: String!
   }
 
+  type Alarm {
+    id: String!
+    alarm_type: String!
+    tenant: String!
+    servicepath: String!
+    entity_id: String!
+    entity_type: String!
+    channel_type: String!
+    channel_destination: [String]!
+    time_unit: String!
+    max_time_since_last_update: Int!
+    alarm_frequency_time_unit: String!
+    alarm_frequency_time: Int!
+    time_of_last_alarm: String!
+    status: String!
+  }
+
   type Query {
     listTenants(tenantNames: [String]!): [TenantConfiguration]
     getUserPreferences(userName: String!): [UserPreferencies]
+    getAlarms(tenantName: String!, servicePath: String!): [Alarm]
     getTenantResourceType(tenantName: String!, skip: Int!, limit: Int!): resourcePagination
   }
   type Mutation {
@@ -92,6 +111,38 @@ const typeDefs = gql`
       secondaryColor: String!
       file: String
     ): [TenantConfiguration]
+    newAlarm(
+      alarm_type: String!
+      tenant: String!
+      servicepath: String!
+      entity_id: String!
+      entity_type: String!
+      channel_type: String!
+      channel_destination: [String]!
+      time_unit: String!
+      max_time_since_last_update: Int!
+      alarm_frequency_time_unit: String!
+      alarm_frequency_time: Int!
+      time_of_last_alarm: String!
+      status: String!
+    ): [Alarm]
+    modifyAlarm(
+      id: String!
+      alarm_type: String!
+      tenant: String!
+      servicepath: String!
+      entity_id: String!
+      entity_type: String!
+      channel_type: String!
+      channel_destination: [String]!
+      time_unit: String!
+      max_time_since_last_update: Int!
+      alarm_frequency_time_unit: String!
+      alarm_frequency_time: Int!
+      time_of_last_alarm: String!
+      status: String!
+    ): [Alarm]
+    deleteAlarm(id: String!): [Alarm]
   }
 `;
 
@@ -119,6 +170,15 @@ const resolvers = {
       try {
         config.getLogger().info(logContext, 'getTenantResourceType: %s', JSON.stringify(args));
         return await getResource(args);
+      } catch (err) {
+        config.getLogger().error(logContext, err);
+        throw new GraphQLError({ data: { reason: err.message } });
+      }
+    },
+    getAlarms: async (object, args, context, info) => {
+      try {
+        config.getLogger().info(logContext, 'getAlarms: %s', JSON.stringify(args));
+        return await getTheAlarms(args);
       } catch (err) {
         config.getLogger().error(logContext, err);
         throw new GraphQLError({ data: { reason: err.message } });
@@ -184,6 +244,33 @@ const resolvers = {
       try {
         config.getLogger().info(logContext, 'addEndpoint: %s', JSON.stringify(args));
         return await updateResource(args);
+      } catch (err) {
+        config.getLogger().error(logContext, err);
+        throw new GraphQLError(err.message);
+      }
+    },
+    deleteAlarm: async (object, args, context, info) => {
+      try {
+        config.getLogger().info(logContext, 'deleteAlarm: %s', JSON.stringify(args));
+        return await deleteThisAlarm(args);
+      } catch (err) {
+        config.getLogger().error(logContext, err);
+        throw new GraphQLError(err.message);
+      }
+    },
+    modifyAlarm: async (object, args, context, info) => {
+      try {
+        config.getLogger().info(logContext, 'modifyAlarm: %s', JSON.stringify(args));
+        return await updateThisAlarm(args);
+      } catch (err) {
+        config.getLogger().error(logContext, err);
+        throw new GraphQLError(err.message);
+      }
+    },
+    newAlarm: async (object, args, context, info) => {
+      try {
+        config.getLogger().info(logContext, 'newAlarm: %s', JSON.stringify(args));
+        return await addAlarm(args);
       } catch (err) {
         config.getLogger().error(logContext, err);
         throw new GraphQLError(err.message);

@@ -54,30 +54,55 @@ export default function AlarmsPage({ tenantValues, thisTenant, graphqlErrors, en
   };
 
   const [createOpen, setCreateOpen] = React.useState(false);
-  const [alarmsList, setAlarmsList] = React.useState([
-    {
-      id: 1,
-      alarm_type: 'entity',
-      tenant: 'EKZ',
-      servicepath: '/',
-      entity_id: 'urn:ngsi-ld:sss',
-      entity_type: 'Thing',
-      channel_type: 'email',
-      channel_destination: ['smartcity@ekz.ch'],
-      time_unit: 'h',
-      max_time_since_last_update: 6,
-      alarm_frequency_time_unit: 'd',
-      alarm_frequency_time: 1,
-      time_of_last_alarm: '2023-04-05T15:27:37.222Z',
-      status: 'active'
-    }
-  ]);
+  const [alarmsList, setAlarmsList] = React.useState([]);
   const [count, counter] = React.useState(1);
+
+  const getAlarms = () => {
+    client
+      .query({
+        query: gql`
+          query getAlarms($tenantName: String!, $servicePath: String!) {
+            getAlarms(tenantName: $tenantName, servicePath: $servicePath) {
+              id
+              alarm_type
+              tenant
+              servicepath
+              entity_id
+              entity_type
+              channel_type
+              channel_destination
+              time_unit
+              max_time_since_last_update
+              alarm_frequency_time_unit
+              alarm_frequency_time
+              time_of_last_alarm
+              status
+            }
+          }
+        `,
+        variables: { tenantName: '', servicePath: '' }
+      })
+      .then((response) => {
+        let alarmsValues = response.data.getAlarms.map((value, index) => ({
+          ...value,
+          ...{
+            secondaryColor: lighten(theme.palette.secondary.main, index * 0.15 + 0.1),
+            primaryColor: lighten(theme.palette.primary.main, index * 0.15 + 0.1)
+          }
+        }));
+        setAlarmsList(alarmsValues);
+      })
+      .catch((e) => {
+        sendNotification({ msg: e.message + ' the config', variant: 'error' });
+      });
+  };
 
   const [msg, sendNotification] = useNotification();
   log.debug(msg);
   const rerOder = (newData) => {
-    setAlarmsList(newData);
+    setAlarmsList(
+      newData.map((obj) => Object.fromEntries(Object.entries(obj).map(([key, val]) => [key, JSON.parse(val)])))
+    );
     counter(count + 1);
   };
 
@@ -141,6 +166,7 @@ export default function AlarmsPage({ tenantValues, thisTenant, graphqlErrors, en
 
   React.useEffect(() => {
     setServicePath(null);
+    thisTenant !== null ? getAlarms() : '';
     thisTenant !== null ? getServices() : '';
     thisTenant !== null ? getTypeURL() : '';
   }, [thisTenant]);
@@ -161,6 +187,7 @@ export default function AlarmsPage({ tenantValues, thisTenant, graphqlErrors, en
               types={types}
               token={token}
               GeTenantData={GeTenantData}
+              getAlarms={getAlarms}
               close={setCreateOpen}
               action={'create'}
               services={services}
@@ -211,18 +238,20 @@ export default function AlarmsPage({ tenantValues, thisTenant, graphqlErrors, en
                   language={language}
                   key={alarm.id}
                   colors={{
-                    secondaryColor: lighten(theme.palette.secondary.main, index * 0.15 + 0.1),
-                    primaryColor: lighten(theme.palette.primary.main, index * 0.15 + 0.1)
+                    secondaryColor: alarm.secondaryColor,
+                    primaryColor: alarm.primaryColor
                   }}
+                  getData={getAlarms}
                   pageType={
                     <AlarmForm
                       env={env}
                       title={<Trans i18nKey="alarms.form.edit" values={{ name: alarm.id }} />}
                       types={types}
                       token={token}
+                      getAlarms={getAlarms}
                       GeTenantData={GeTenantData}
                       close={setCreateOpen}
-                      action={'modify'}
+                      action={'edit'}
                       data={alarm}
                       services={services}
                     />

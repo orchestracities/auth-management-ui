@@ -32,7 +32,18 @@ const CustomDialogTitle = styled(AppBar)({
   boxShadow: 'none'
 });
 
-export default function AlarmForm({ title, close, action, GeTenantData, services, env, types, token, data }) {
+export default function AlarmForm({
+  title,
+  close,
+  action,
+  getAlarms,
+  GeTenantData,
+  services,
+  env,
+  types,
+  token,
+  data
+}) {
   typeof env === 'undefined' ? log.setDefaultLevel('debug') : log.setLevel(env.LOG_LEVEL);
 
   const httpLink = createHttpLink({
@@ -217,13 +228,193 @@ export default function AlarmForm({ title, close, action, GeTenantData, services
   };
 
   const handleSave = () => {
-    switch (action) {
-      case 'create':
-        break;
-      case 'edit':
-        break;
-      default:
-        break;
+    if (
+      channelDestination.length > 0 &&
+      [alarmType, pathSelected.path, entityType.type, channel, timeUnit, maxTime, frequency, minTime].find(
+        (element) => element === ''
+      ) === undefined
+    ) {
+      switch (action) {
+        case 'create':
+          client
+            .mutate({
+              mutation: gql`
+                mutation newAlarm(
+                  $alarm_type: String!
+                  $tenant: String!
+                  $servicepath: String!
+                  $entity_id: String!
+                  $entity_type: String!
+                  $channel_type: String!
+                  $channel_destination: [String]!
+                  $time_unit: String!
+                  $max_time_since_last_update: Int!
+                  $alarm_frequency_time_unit: String!
+                  $alarm_frequency_time: Int!
+                  $time_of_last_alarm: String!
+                  $status: String!
+                ) {
+                  newAlarm(
+                    alarm_type: $alarm_type
+                    tenant: $tenant
+                    servicepath: $servicepath
+                    entity_id: $entity_id
+                    entity_type: $entity_type
+                    channel_type: $channel_type
+                    channel_destination: $channel_destination
+                    time_unit: $time_unit
+                    max_time_since_last_update: $max_time_since_last_update
+                    alarm_frequency_time_unit: $alarm_frequency_time_unit
+                    alarm_frequency_time: $alarm_frequency_time
+                    time_of_last_alarm: $time_of_last_alarm
+                    status: $status
+                  ) {
+                    id
+                    alarm_type
+                    tenant
+                    servicepath
+                    entity_id
+                    entity_type
+                    channel_type
+                    channel_destination
+                    time_unit
+                    max_time_since_last_update
+                    alarm_frequency_time_unit
+                    alarm_frequency_time
+                    time_of_last_alarm
+                    status
+                  }
+                }
+              `,
+              variables: {
+                alarm_type: alarmType,
+                tenant: GeTenantData('name'),
+                servicepath: pathSelected.path,
+                entity_id: alarmType === 'entity' ? entityID.id : '',
+                entity_type: entityType.type,
+                channel_type: channel,
+                channel_destination: channelDestination,
+                time_unit: timeUnit,
+                max_time_since_last_update: Number(maxTime),
+                alarm_frequency_time_unit: frequency,
+                alarm_frequency_time: Number(minTime),
+                time_of_last_alarm: new Date().toString(),
+                status: 'active'
+              }
+            })
+            .then(() => {
+              getAlarms();
+              close(false);
+              sendNotification({
+                msg: (
+                  <Trans
+                    i18nKey="common.messages.sucessCreate"
+                    values={{
+                      data: 'Alert'
+                    }}
+                  />
+                ),
+                variant: 'success'
+              });
+            })
+            .catch((e) => {
+              sendNotification({ msg: e.message + ' the config', variant: 'error' });
+            });
+
+          break;
+        case 'edit':
+          client
+            .mutate({
+              mutation: gql`
+                mutation modifyAlarm(
+                  $id: String!
+                  $alarm_type: String!
+                  $tenant: String!
+                  $servicepath: String!
+                  $entity_id: String!
+                  $entity_type: String!
+                  $channel_type: String!
+                  $channel_destination: [String]!
+                  $time_unit: String!
+                  $max_time_since_last_update: Int!
+                  $alarm_frequency_time_unit: String!
+                  $alarm_frequency_time: Int!
+                  $time_of_last_alarm: String!
+                  $status: String!
+                ) {
+                  modifyAlarm(
+                    id: $id
+                    alarm_type: $alarm_type
+                    tenant: $tenant
+                    servicepath: $servicepath
+                    entity_id: $entity_id
+                    entity_type: $entity_type
+                    channel_type: $channel_type
+                    channel_destination: $channel_destination
+                    time_unit: $time_unit
+                    max_time_since_last_update: $max_time_since_last_update
+                    alarm_frequency_time_unit: $alarm_frequency_time_unit
+                    alarm_frequency_time: $alarm_frequency_time
+                    time_of_last_alarm: $time_of_last_alarm
+                    status: $status
+                  ) {
+                    id
+                    alarm_type
+                    tenant
+                    servicepath
+                    entity_id
+                    entity_type
+                    channel_type
+                    channel_destination
+                    time_unit
+                    max_time_since_last_update
+                    alarm_frequency_time_unit
+                    alarm_frequency_time
+                    time_of_last_alarm
+                    status
+                  }
+                }
+              `,
+              variables: {
+                id: data.id,
+                alarm_type: alarmType,
+                tenant: GeTenantData('name'),
+                servicepath: pathSelected.path,
+                entity_id: alarmType === 'entity' ? entityID.id : '',
+                entity_type: entityType.type,
+                channel_type: channel,
+                channel_destination: channelDestination,
+                time_unit: timeUnit,
+                max_time_since_last_update: Number(maxTime),
+                alarm_frequency_time_unit: frequency,
+                alarm_frequency_time: Number(minTime),
+                time_of_last_alarm: data.time_of_last_alarm,
+                status: data.status
+              }
+            })
+            .then(() => {
+              getAlarms();
+              close(false);
+              sendNotification({
+                msg: (
+                  <Trans
+                    i18nKey="common.messages.sucessCreate"
+                    values={{
+                      data: 'Alert'
+                    }}
+                  />
+                ),
+                variant: 'success'
+              });
+            })
+            .catch((e) => {
+              sendNotification({ msg: e.message + ' the config', variant: 'error' });
+            });
+
+          break;
+        default:
+          break;
+      }
     }
   };
 
