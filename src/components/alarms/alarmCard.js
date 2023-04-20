@@ -104,7 +104,7 @@ const MultifunctionButton = ({ pageType, setOpen, status, data, getData, env, to
     {
       icon: <EditIcon />,
       id: 'multifunctional',
-      name: <Trans>tenant.card.tooltip.editIcon</Trans>,
+      name: <Trans>alarms.card.tooltip.editIcon</Trans>,
       click: handleClickOpen
     },
     {
@@ -313,18 +313,18 @@ export default function AlarmCard({ pageType, data, getData, colors, env, token,
                 }}
                 aria-label="recipe"
               >
-                <MailOutlineIcon></MailOutlineIcon>
+                <CalendarTodayIcon></CalendarTodayIcon>
               </Avatar>
             </ListItemAvatar>
             <ListItemText
-              primary={<Trans>alarms.card.email</Trans>}
-              secondary={data.channel_destination.map((mail, index) => (
-                <React.Fragment key={mail + index}>
+              primary={<Trans>alarms.card.frequency</Trans>}
+              secondary={
+                <React.Fragment>
                   <ListTypo component="span" variant="body2" color="text.primary">
-                    {mail}
+                    {data.alarm_frequency_time + ' '} {translator(data.alarm_frequency_time_unit)}
                   </ListTypo>
                 </React.Fragment>
-              ))}
+              }
             />
           </ListItem>
         </CustomList>
@@ -341,18 +341,22 @@ export default function AlarmCard({ pageType, data, getData, colors, env, token,
                   }}
                   aria-label="recipe"
                 >
-                  <CalendarTodayIcon></CalendarTodayIcon>
+                  <MailOutlineIcon></MailOutlineIcon>
                 </Avatar>
               </ListItemAvatar>
               <ListItemText
-                primary={<Trans>alarms.card.frequency</Trans>}
-                secondary={
-                  <React.Fragment>
-                    <ListTypo component="span" variant="body2" color="text.primary">
-                      {data.alarm_frequency_time + ' '} {translator(data.alarm_frequency_time_unit)}
-                    </ListTypo>
+                primary={<Trans>alarms.card.email</Trans>}
+                secondary={data.channel_destination.map((mail, index) => (
+                  <React.Fragment key={mail + index}>
+                    <Typography
+                      component="div"
+                      variant="body2"
+                      sx={{ color: theme.palette.getContrastText(theme.palette.primary.main) }}
+                    >
+                      {mail}
+                    </Typography>
                   </React.Fragment>
-                }
+                ))}
               />
             </ListItem>
             <CustomDivider variant="inset" component="li" />

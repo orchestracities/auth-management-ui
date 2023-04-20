@@ -94,6 +94,8 @@ export default function DeleteDialog({ open, onClose, getData, data, env, token 
         return data.selectedText;
       case typeof data.access_to !== 'undefined':
         return '';
+      case typeof data.alarm_type !== 'undefined':
+        return 'alarm: ' + data.id;
       default:
         break;
     }
@@ -113,6 +115,50 @@ export default function DeleteDialog({ open, onClose, getData, data, env, token 
           }
         `,
         variables: { tenantName: tenantName }
+      })
+      .catch((e) => {
+        sendNotification({ msg: e.message + ' the config', variant: 'error' });
+      });
+  };
+
+  const deleteAlarm = () => {
+    client
+      .mutate({
+        mutation: gql`
+          mutation deleteAlarm($id: String!) {
+            deleteAlarm(id: $id) {
+              id
+              alarm_type
+              tenant
+              servicepath
+              entity_id
+              entity_type
+              channel_type
+              channel_destination
+              time_unit
+              max_time_since_last_update
+              alarm_frequency_time_unit
+              alarm_frequency_time
+              time_of_last_alarm
+              status
+            }
+          }
+        `,
+        variables: { id: data.id }
+      })
+      .then(() => {
+        getData();
+        sendNotification({
+          msg: (
+            <Trans
+              i18nKey="common.messages.sucessDelete"
+              values={{
+                data: data.id
+              }}
+            />
+          ),
+          variant: 'info'
+        });
       })
       .catch((e) => {
         sendNotification({ msg: e.message + ' the config', variant: 'error' });
@@ -194,7 +240,11 @@ export default function DeleteDialog({ open, onClose, getData, data, env, token 
           <DialogContentText id="alert-dialog-description">{uiMapper() + ' ?'}</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={deletElement} autoFocus color="secondary">
+          <Button
+            onClick={typeof data.alarm_type !== 'undefined' ? deleteAlarm : deletElement}
+            autoFocus
+            color="secondary"
+          >
             <Trans>common.deleteButton</Trans>
           </Button>
         </DialogActions>

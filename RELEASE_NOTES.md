@@ -18,6 +18,7 @@
 - Design alarm widget (#176)
 - Alarm page translations (#180)
 - Alarm page Docs (#179)
+- JSON Mockup implementation (#182)
 
 ### Bug fixes
 
@@ -25,6 +26,7 @@
 - Datepicker fix for MUIx 6.0.2
 - Tenant Form Fix (new hook behavior)
 - react-colorful 5.6.1 (hook behavior)
+- not necessary state on sort button
 
 ### Documentation
 

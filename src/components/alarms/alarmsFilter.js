@@ -41,7 +41,17 @@ export default function AlarmsFilters({ mapper, services, sortData, data }) {
         }}
         zeroMinWidth
       >
-        {status !== null ? '' : <SortButton data={data} id={'id'} sortData={sortData}></SortButton>}
+        {status !== null ? (
+          ''
+        ) : (
+          <SortButton
+            data={data.map((obj) =>
+              Object.fromEntries(Object.entries(obj).map(([key, val]) => [key, JSON.stringify(val)]))
+            )}
+            id={'id'}
+            sortData={sortData}
+          ></SortButton>
+        )}
       </Grid>
 
       <Grid
