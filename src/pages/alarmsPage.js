@@ -61,8 +61,8 @@ export default function AlarmsPage({ tenantValues, thisTenant, graphqlErrors, en
     client
       .query({
         query: gql`
-          query getAlarms($tenantName: String!, $servicePath: String!) {
-            getAlarms(tenantName: $tenantName, servicePath: $servicePath) {
+          query getAlarms($tenantName: String!, $servicePath: String!, $operation: String!) {
+            getAlarms(tenantName: $tenantName, servicePath: $servicePath, operation: $operation) {
               id
               alarm_type
               tenant
@@ -80,7 +80,12 @@ export default function AlarmsPage({ tenantValues, thisTenant, graphqlErrors, en
             }
           }
         `,
-        variables: { tenantName: '', servicePath: '' }
+        variables: {
+          tenantName: GeTenantData('name'),
+          servicePath:
+            servicePath === '' || servicePath === null || typeof servicePath === 'undefined' ? '' : servicePath.path,
+          operation: 'MONGO'
+        }
       })
       .then((response) => {
         let alarmsValues = response.data.getAlarms.map((value, index) => ({
@@ -162,7 +167,9 @@ export default function AlarmsPage({ tenantValues, thisTenant, graphqlErrors, en
       });
   };
 
-  React.useEffect(() => {}, [thisTenant, servicePath]);
+  React.useEffect(() => {
+    thisTenant !== null ? getAlarms() : '';
+  }, [servicePath]);
 
   React.useEffect(() => {
     setServicePath(null);
@@ -198,75 +205,73 @@ export default function AlarmsPage({ tenantValues, thisTenant, graphqlErrors, en
           graphqlErrors={graphqlErrors}
         ></AddButton>
       )}
-      {alarmsList.length > 0 ? (
-        <Grid container spacing={2}>
-          <Grid
-            item
-            xs={12}
-            sm={12}
-            md={12}
-            lg={12}
-            xl={12}
-            sx={
-              smallDevice
-                ? {
-                    width:
-                      document.getElementById('filterContainer') === null
-                        ? 300
-                        : document.getElementById('filterContainer').clientWidth,
-                    'overflow-x': 'scroll'
-                  }
-                : ''
-            }
-          >
-            {alarmsList.length > 0 ? (
-              <AlarmsFilters services={services} data={alarmsList} mapper={filterMapper} sortData={rerOder} />
-            ) : (
-              ''
-            )}
-          </Grid>
-          {alarmsList.map((alarm, index) => (
-            <Grow
-              key={index}
-              in={true}
-              style={{ transformOrigin: '0 0 0' }}
-              {...(alarm.id === alarm.id ? { timeout: index * 600 } : {})}
-            >
-              <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-                <AlarmCard
-                  env={env}
-                  language={language}
-                  key={alarm.id}
-                  colors={{
-                    secondaryColor: alarm.secondaryColor,
-                    primaryColor: alarm.primaryColor
-                  }}
-                  getData={getAlarms}
-                  pageType={
-                    <AlarmForm
-                      env={env}
-                      title={<Trans i18nKey="alarms.form.edit" values={{ name: alarm.id }} />}
-                      types={types}
-                      token={token}
-                      getAlarms={getAlarms}
-                      GeTenantData={GeTenantData}
-                      close={setCreateOpen}
-                      action={'edit'}
-                      data={alarm}
-                      services={services}
-                    />
-                  }
-                  data={alarm}
-                ></AlarmCard>
-              </Grid>
-            </Grow>
-          ))}
+      <Grid container spacing={2}>
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          md={12}
+          lg={12}
+          xl={12}
+          sx={
+            smallDevice
+              ? {
+                  width:
+                    document.getElementById('filterContainer') === null
+                      ? 300
+                      : document.getElementById('filterContainer').clientWidth,
+                  'overflow-x': 'scroll'
+                }
+              : ''
+          }
+        >
+          <AlarmsFilters services={services} data={alarmsList} mapper={filterMapper} sortData={rerOder} />
         </Grid>
-      ) : (
-        <Typography sx={{ padding: '20px' }} variant="h6" component="h3">
-          <Trans>alarms.page.noData</Trans>
-        </Typography>
-      )}
+        {alarmsList.length > 0 ? (
+          <>
+            {alarmsList.map((alarm, index) => (
+              <Grow
+                key={index}
+                in={true}
+                style={{ transformOrigin: '0 0 0' }}
+                {...(alarm.id === alarm.id ? { timeout: index * 600 } : {})}
+              >
+                <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+                  <AlarmCard
+                    env={env}
+                    language={language}
+                    key={alarm.id}
+                    colors={{
+                      secondaryColor: alarm.secondaryColor,
+                      primaryColor: alarm.primaryColor
+                    }}
+                    getData={getAlarms}
+                    pageType={
+                      <AlarmForm
+                        env={env}
+                        title={<Trans i18nKey="alarms.form.edit" values={{ name: alarm.id }} />}
+                        types={types}
+                        token={token}
+                        getAlarms={getAlarms}
+                        GeTenantData={GeTenantData}
+                        close={setCreateOpen}
+                        action={'edit'}
+                        data={alarm}
+                        services={services}
+                      />
+                    }
+                    data={alarm}
+                  ></AlarmCard>
+                </Grid>
+              </Grow>
+            ))}
+          </>
+        ) : (
+          <Typography sx={{ padding: '20px' }} variant="h6" component="h3">
+            <Trans>alarms.page.noData</Trans>
+          </Typography>
+        )}
+      </Grid>
     </Box>
   );
 }

@@ -19,6 +19,7 @@
 - Alarm page translations (#180)
 - Alarm page Docs (#179)
 - JSON Mockup implementation (#182)
+- MongoDB implementation
 
 ### Bug fixes
 

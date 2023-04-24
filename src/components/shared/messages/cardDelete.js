@@ -125,8 +125,8 @@ export default function DeleteDialog({ open, onClose, getData, data, env, token 
     client
       .mutate({
         mutation: gql`
-          mutation deleteAlarm($id: String!) {
-            deleteAlarm(id: $id) {
+          mutation deleteAlarm($id: String!, $operation: String!) {
+            deleteAlarm(id: $id, operation: $operation) {
               id
               alarm_type
               tenant
@@ -144,7 +144,7 @@ export default function DeleteDialog({ open, onClose, getData, data, env, token 
             }
           }
         `,
-        variables: { id: data.id }
+        variables: { id: data.id, operation: 'MONGO' }
       })
       .then(() => {
         getData();
