@@ -31,7 +31,7 @@ const Alarms = new mongoose.Schema({
 });
 const Alarm = connection.model('Alarms', Alarms);
 
-async function getTheAlarmsMongo(data) {
+async function getTheAlarmsmongo(data) {
   const AlarmsData =
     data.servicePath === ''
       ? await Alarm.find({ tenant: data.tenantName })
@@ -40,7 +40,7 @@ async function getTheAlarmsMongo(data) {
         });
   return AlarmsData;
 }
-async function deleteThisAlarmMongo(data) {
+async function deleteThisAlarmmongo(data) {
   const AlarmsData = await Alarm.find({ id: data.id });
   let deletedAlarms = {};
   for (const e of AlarmsData) {
@@ -48,7 +48,7 @@ async function deleteThisAlarmMongo(data) {
   }
   return AlarmsData;
 }
-async function addAlarmMongo(data) {
+async function addAlarmmongo(data) {
   const arrayOfData = {
     id: uid(16),
     alarm_type: data.alarm_type,
@@ -68,7 +68,7 @@ async function addAlarmMongo(data) {
   await Alarm.create(arrayOfData);
   return [arrayOfData];
 }
-async function updateThisAlarmMongo(data) {
+async function updateThisAlarmmongo(data) {
   const filter = {
     id: data.id
   };
@@ -90,10 +90,7 @@ async function updateThisAlarmMongo(data) {
     status: data.status
   };
   const session = await connection.startSession();
-
-  await session.withTransaction(async (session) => {
-     Alarm.findOneAndUpdate(filter, update,{session:session});
-    });
+  await Alarm.findOneAndUpdate(filter, update, { session: session, new: true });
   return [update];
 }
 
@@ -136,45 +133,16 @@ async function updateThisAlarmjson(data) {
 }
 
 async function getTheAlarms(data) {
-  console.log( (process.env.ALARMS_SAVE).toLowerCase())
-  switch (true) {
-    case (process.env.ALARMS_SAVE).toLowerCase() === 'json':
-      return await getTheAlarmsjson(data);
-    case (process.env.ALARMS_SAVE).toLowerCase() === 'mongo':
-      return await getTheAlarmsMongo(data);
-    default:
-      return await getTheAlarmsjson(data);
-  }
+  return eval('getTheAlarms' + process.env.ALARMS_SAVE.toLowerCase() + '(data)');
 }
 async function deleteThisAlarm(data) {
-  switch (true) {
-    case (process.env.ALARMS_SAVE).toLowerCase() === 'json':
-      return await deleteThisAlarmjson(data);
-    case (process.env.ALARMS_SAVE).toLowerCase() === 'mongo':
-      return await deleteThisAlarmMongo(data);
-    default:
-      return await deleteThisAlarmjson(data);
-  }
+  return eval('deleteThisAlarm' + process.env.ALARMS_SAVE.toLowerCase() + '(data)');
 }
 async function addAlarm(data) {
-  switch (true) {
-    case (process.env.ALARMS_SAVE).toLowerCase() === 'json':
-      return await addAlarmjson(data);
-    case (process.env.ALARMS_SAVE).toLowerCase() === 'mongo':
-      return await addAlarmMongo(data);
-    default:
-      return await addAlarmjson(data);
-  }
+  return eval('addAlarm' + process.env.ALARMS_SAVE.toLowerCase() + '(data)');
 }
 async function updateThisAlarm(data) {
-  switch (true) {
-    case (process.env.ALARMS_SAVE).toLowerCase() === 'json':
-      return await updateThisAlarmjson(data);
-    case (process.env.ALARMS_SAVE).toLowerCase() === 'mongo':
-      return await updateThisAlarmMongo(data);
-    default:
-      return await updateThisAlarmjson(data);
-  }
+  return eval('updateThisAlarm' + process.env.ALARMS_SAVE.toLowerCase() + '(data)');
 }
 
 module.exports = {
