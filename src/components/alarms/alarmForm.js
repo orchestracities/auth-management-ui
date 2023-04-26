@@ -398,7 +398,7 @@ export default function AlarmForm({
               sendNotification({
                 msg: (
                   <Trans
-                    i18nKey="common.messages.sucessCreate"
+                    i18nKey="common.messages.sucessUpdate"
                     values={{
                       data: 'Alert'
                     }}
