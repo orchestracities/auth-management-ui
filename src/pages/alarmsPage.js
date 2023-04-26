@@ -61,8 +61,8 @@ export default function AlarmsPage({ tenantValues, thisTenant, graphqlErrors, en
     client
       .query({
         query: gql`
-          query getAlarms($tenantName: String!, $servicePath: String!, $operation: String!) {
-            getAlarms(tenantName: $tenantName, servicePath: $servicePath, operation: $operation) {
+          query getAlarms($tenantName: String!, $servicePath: String!) {
+            getAlarms(tenantName: $tenantName, servicePath: $servicePath) {
               id
               alarm_type
               tenant
@@ -83,8 +83,7 @@ export default function AlarmsPage({ tenantValues, thisTenant, graphqlErrors, en
         variables: {
           tenantName: GeTenantData('name'),
           servicePath:
-            servicePath === '' || servicePath === null || typeof servicePath === 'undefined' ? '' : servicePath.path,
-          operation: 'MONGO'
+            servicePath === '' || servicePath === null || typeof servicePath === 'undefined' ? '' : servicePath.path
         }
       })
       .then((response) => {

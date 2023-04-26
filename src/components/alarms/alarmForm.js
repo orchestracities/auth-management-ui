@@ -240,7 +240,6 @@ export default function AlarmForm({
             .mutate({
               mutation: gql`
                 mutation newAlarm(
-                  $operation: String!
                   $alarm_type: String!
                   $tenant: String!
                   $servicepath: String!
@@ -256,7 +255,6 @@ export default function AlarmForm({
                   $status: String!
                 ) {
                   newAlarm(
-                    operation: $operation
                     alarm_type: $alarm_type
                     tenant: $tenant
                     servicepath: $servicepath
@@ -289,7 +287,6 @@ export default function AlarmForm({
                 }
               `,
               variables: {
-                operation: 'MONGO',
                 alarm_type: alarmType,
                 tenant: GeTenantData('name'),
                 servicepath: pathSelected.path,
@@ -330,7 +327,6 @@ export default function AlarmForm({
             .mutate({
               mutation: gql`
                 mutation modifyAlarm(
-                  $operation: String!
                   $id: String!
                   $alarm_type: String!
                   $tenant: String!
@@ -347,7 +343,6 @@ export default function AlarmForm({
                   $status: String!
                 ) {
                   modifyAlarm(
-                    operation: $operation
                     id: $id
                     alarm_type: $alarm_type
                     tenant: $tenant
@@ -381,7 +376,6 @@ export default function AlarmForm({
                 }
               `,
               variables: {
-                operation: 'MONGO',
                 id: data.id,
                 alarm_type: alarmType,
                 tenant: GeTenantData('name'),

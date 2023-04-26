@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
 const config = require('../config');
+require('dotenv').config({ path: '../../.env' });
 const connection = mongoose.createConnection(config.getConfig().mongo_db);
 const { uid } = require('uid/secure');
 
@@ -92,37 +93,37 @@ async function updateThisAlarmMongo(data) {
   return [update];
 }
 
-//JSON
-async function getTheAlarmsJSON(data) {
-  return JSON.parse(fs.readFileSync(path.join(configDirectory, 'alarms.json'), 'utf8'));
+//json
+async function getTheAlarmsjson(data) {
+  return json.parse(fs.readFileSync(path.join(configDirectory, 'alarms.json'), 'utf8'));
 }
-async function deleteThisAlarmJSON(data) {
-  let old = JSON.parse(fs.readFileSync(path.join(configDirectory, 'alarms.json'), 'utf8'));
+async function deleteThisAlarmjson(data) {
+  let old = json.parse(fs.readFileSync(path.join(configDirectory, 'alarms.json'), 'utf8'));
   const index = old.findIndex((x) => x.id === data.id);
   old.splice(index, 1);
-  fs.writeFile(path.join(configDirectory, 'alarms.json'), JSON.stringify(old), (error) => {
+  fs.writeFile(path.join(configDirectory, 'alarms.json'), json.stringify(old), (error) => {
     if (error) {
       console.error(error);
     }
   });
   return [old[index]];
 }
-async function addAlarmJSON(data) {
-  let old = JSON.parse(fs.readFileSync(path.join(configDirectory, 'alarms.json'), 'utf8'));
+async function addAlarmjson(data) {
+  let old = json.parse(fs.readFileSync(path.join(configDirectory, 'alarms.json'), 'utf8'));
   data.id = uid(16);
   old.push(data);
-  fs.writeFile(path.join(configDirectory, 'alarms.json'), JSON.stringify(old), (error) => {
+  fs.writeFile(path.join(configDirectory, 'alarms.json'), json.stringify(old), (error) => {
     if (error) {
       console.error(error);
     }
   });
   return [data];
 }
-async function updateThisAlarmJSON(data) {
-  let old = JSON.parse(fs.readFileSync(path.join(configDirectory, 'alarms.json'), 'utf8'));
+async function updateThisAlarmjson(data) {
+  let old = json.parse(fs.readFileSync(path.join(configDirectory, 'alarms.json'), 'utf8'));
   const index = old.findIndex((x) => x.id === data.id);
   old[index] = data;
-  fs.writeFile(path.join(configDirectory, 'alarms.json'), JSON.stringify(old), (error) => {
+  fs.writeFile(path.join(configDirectory, 'alarms.json'), json.stringify(old), (error) => {
     if (error) {
       console.error(error);
     }
@@ -131,43 +132,44 @@ async function updateThisAlarmJSON(data) {
 }
 
 async function getTheAlarms(data) {
+  console.log( (process.env.ALARMS_SAVE).toLowerCase())
   switch (true) {
-    case data.operation === 'JSON':
-      return await getTheAlarmsJSON(data);
-    case data.operation === 'MONGO':
+    case (process.env.ALARMS_SAVE).toLowerCase() === 'json':
+      return await getTheAlarmsjson(data);
+    case (process.env.ALARMS_SAVE).toLowerCase() === 'mongo':
       return await getTheAlarmsMongo(data);
     default:
-      return await getTheAlarmsJSON(data);
+      return await getTheAlarmsjson(data);
   }
 }
 async function deleteThisAlarm(data) {
   switch (true) {
-    case data.operation === 'JSON':
-      return await deleteThisAlarmJSON(data);
-    case data.operation === 'MONGO':
+    case (process.env.ALARMS_SAVE).toLowerCase() === 'json':
+      return await deleteThisAlarmjson(data);
+    case (process.env.ALARMS_SAVE).toLowerCase() === 'mongo':
       return await deleteThisAlarmMongo(data);
     default:
-      return await deleteThisAlarmJSON(data);
+      return await deleteThisAlarmjson(data);
   }
 }
 async function addAlarm(data) {
   switch (true) {
-    case data.operation === 'JSON':
-      return await addAlarmJSON(data);
-    case data.operation === 'MONGO':
+    case (process.env.ALARMS_SAVE).toLowerCase() === 'json':
+      return await addAlarmjson(data);
+    case (process.env.ALARMS_SAVE).toLowerCase() === 'mongo':
       return await addAlarmMongo(data);
     default:
-      return await addAlarmJSON(data);
+      return await addAlarmjson(data);
   }
 }
 async function updateThisAlarm(data) {
   switch (true) {
-    case data.operation === 'JSON':
-      return await updateThisAlarmJSON(data);
-    case data.operation === 'MONGO':
+    case (process.env.ALARMS_SAVE).toLowerCase() === 'json':
+      return await updateThisAlarmjson(data);
+    case (process.env.ALARMS_SAVE).toLowerCase() === 'mongo':
       return await updateThisAlarmMongo(data);
     default:
-      return await updateThisAlarmJSON(data);
+      return await updateThisAlarmjson(data);
   }
 }
 

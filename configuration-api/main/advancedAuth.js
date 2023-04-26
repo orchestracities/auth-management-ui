@@ -77,7 +77,7 @@ const typeDefs = gql`
   type Query {
     listTenants(tenantNames: [String]!): [TenantConfiguration]
     getUserPreferences(userName: String!): [UserPreferencies]
-    getAlarms(tenantName: String!, servicePath: String!, operation: String!): [Alarm]
+    getAlarms(tenantName: String!, servicePath: String!): [Alarm]
     getTenantResourceType(tenantName: String!, skip: Int!, limit: Int!): resourcePagination
   }
   type Mutation {
@@ -112,7 +112,6 @@ const typeDefs = gql`
       file: String
     ): [TenantConfiguration]
     newAlarm(
-      operation: String!
       alarm_type: String!
       tenant: String!
       servicepath: String!
@@ -128,7 +127,6 @@ const typeDefs = gql`
       status: String!
     ): [Alarm]
     modifyAlarm(
-      operation: String!
       id: String!
       alarm_type: String!
       tenant: String!
@@ -144,7 +142,7 @@ const typeDefs = gql`
       time_of_last_alarm: String!
       status: String!
     ): [Alarm]
-    deleteAlarm(id: String!, operation: String!): [Alarm]
+    deleteAlarm(id: String!): [Alarm]
   }
 `;
 
