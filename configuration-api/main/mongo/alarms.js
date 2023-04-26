@@ -69,10 +69,11 @@ async function addAlarmmongo(data) {
   return [arrayOfData];
 }
 async function updateThisAlarmmongo(data) {
+  const session = await connection.startSession();
   const filter = {
     id: data.id
   };
-  const AlarmsData = await Alarm.find(filter);
+  const AlarmsData = await Alarm.find(filter,null,{ session: session, new: true });
   const update = {
     id: AlarmsData[0].id,
     alarm_type: data.alarm_type,
@@ -89,7 +90,7 @@ async function updateThisAlarmmongo(data) {
     time_of_last_alarm: data.time_of_last_alarm,
     status: data.status
   };
-  const session = await connection.startSession();
+
   await Alarm.findOneAndUpdate(filter, update, { session: session, new: true });
   return [update];
 }
