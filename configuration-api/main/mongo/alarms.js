@@ -96,13 +96,13 @@ async function updateThisAlarmmongo(data) {
 
 //json
 async function getTheAlarmsjson(data) {
-  return json.parse(fs.readFileSync(path.join(configDirectory, 'alarms.json'), 'utf8'));
+  return JSON.parse(fs.readFileSync(path.join(configDirectory, 'alarms.json'), 'utf8'));
 }
 async function deleteThisAlarmjson(data) {
-  let old = json.parse(fs.readFileSync(path.join(configDirectory, 'alarms.json'), 'utf8'));
+  let old = JSON.parse(fs.readFileSync(path.join(configDirectory, 'alarms.json'), 'utf8'));
   const index = old.findIndex((x) => x.id === data.id);
   old.splice(index, 1);
-  fs.writeFile(path.join(configDirectory, 'alarms.json'), json.stringify(old), (error) => {
+  fs.writeFile(path.join(configDirectory, 'alarms.json'), JSON.stringify(old), (error) => {
     if (error) {
       console.error(error);
     }
@@ -110,10 +110,10 @@ async function deleteThisAlarmjson(data) {
   return [old[index]];
 }
 async function addAlarmjson(data) {
-  let old = json.parse(fs.readFileSync(path.join(configDirectory, 'alarms.json'), 'utf8'));
+  let old = JSON.parse(fs.readFileSync(path.join(configDirectory, 'alarms.json'), 'utf8'));
   data.id = uid(16);
   old.push(data);
-  fs.writeFile(path.join(configDirectory, 'alarms.json'), json.stringify(old), (error) => {
+  fs.writeFile(path.join(configDirectory, 'alarms.json'), JSON.stringify(old), (error) => {
     if (error) {
       console.error(error);
     }
@@ -121,10 +121,10 @@ async function addAlarmjson(data) {
   return [data];
 }
 async function updateThisAlarmjson(data) {
-  let old = json.parse(fs.readFileSync(path.join(configDirectory, 'alarms.json'), 'utf8'));
+  let old = JSON.parse(fs.readFileSync(path.join(configDirectory, 'alarms.json'), 'utf8'));
   const index = old.findIndex((x) => x.id === data.id);
   old[index] = data;
-  fs.writeFile(path.join(configDirectory, 'alarms.json'), json.stringify(old), (error) => {
+  fs.writeFile(path.join(configDirectory, 'alarms.json'), JSON.stringify(old), (error) => {
     if (error) {
       console.error(error);
     }
