@@ -89,7 +89,11 @@ async function updateThisAlarmMongo(data) {
     time_of_last_alarm: data.time_of_last_alarm,
     status: data.status
   };
-  await Alarm.findOneAndUpdate(filter, update);
+  const session = await connection.startSession();
+
+  await session.withTransaction(async (session) => {
+     Alarm.findOneAndUpdate(filter, update,{session:session});
+    });
   return [update];
 }
 
