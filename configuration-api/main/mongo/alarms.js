@@ -134,16 +134,16 @@ async function updateThisAlarmjson(data) {
 }
 
 async function getTheAlarms(data) {
-  return eval('getTheAlarms' + process.env.ALARMS_SAVE.toLowerCase() + '(data)');
+  return eval('getTheAlarms' + (typeof process.env.ALARMS_SAVE==="undefined")?"mongo":process.env.ALARMS_SAVE.toLowerCase() + '(data)');
 }
 async function deleteThisAlarm(data) {
-  return eval('deleteThisAlarm' + process.env.ALARMS_SAVE.toLowerCase() + '(data)');
+  return eval('deleteThisAlarm' + (typeof process.env.ALARMS_SAVE==="undefined")?"mongo":process.env.ALARMS_SAVE.toLowerCase() + '(data)');
 }
 async function addAlarm(data) {
-  return eval('addAlarm' + process.env.ALARMS_SAVE.toLowerCase() + '(data)');
+  return eval('addAlarm' + (typeof process.env.ALARMS_SAVE==="undefined")?"mongo":process.env.ALARMS_SAVE.toLowerCase() + '(data)');
 }
 async function updateThisAlarm(data) {
-  return eval('updateThisAlarm' + process.env.ALARMS_SAVE.toLowerCase() + '(data)');
+  return eval('updateThisAlarm' + (typeof process.env.ALARMS_SAVE==="undefined")?"mongo":process.env.ALARMS_SAVE.toLowerCase() + '(data)');
 }
 
 module.exports = {
