@@ -20,6 +20,7 @@
 - Alarm page Docs (#179)
 - JSON Mockup implementation (#182)
 - MongoDB implementation
+- MongoDB mocha tests
 
 ### Bug fixes
 

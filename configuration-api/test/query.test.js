@@ -52,6 +52,30 @@ describe('GraphQL-Query', function () {
     variables: { tenantName: 'Tenant1', skip: 0, limit: 10 }
   };
 
+  const getTenantAlarms = {
+    query: `
+    query getAlarms($tenantName: String!, $servicePath: String!) {
+      getAlarms(tenantName: $tenantName, servicePath: $servicePath) {
+        id
+        alarm_type
+        tenant
+        servicepath
+        entity_id
+        entity_type
+        channel_type
+        channel_destination
+        time_unit
+        max_time_since_last_update
+        alarm_frequency_time_unit
+        alarm_frequency_time
+        time_of_last_alarm
+        status
+      }
+    }
+  `,
+    variables: { tenantName: 'Tenant1', servicePath: '' }
+  };
+
   it('Returns tenant properties', (done) => {
     request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
       .post('/')
@@ -117,6 +141,30 @@ describe('GraphQL-Query', function () {
               expect(res.body.data.getTenantResourceType.data[0]).to.have.own.property('tenantName');
               expect(res.body.data.getTenantResourceType.data[0]).to.have.own.property('resourceID');
               expect(res.body.data.getTenantResourceType.data[0]).to.have.own.property('endpointUrl');
+            }
+            done();
+          });
+      });
+  });
+
+  it('Returns TenantAlarms', (done) => {
+    request(config.getConfig().oidc_issuer + '/protocol/openid-connect/token')
+      .post('/')
+      .set('Content-type', 'application/x-www-form-urlencoded')
+      .send(loginSettings)
+      .end(function (err, res) {
+        const token = res.body.access_token;
+        request(url)
+          .post('/')
+          .set('Authorization', `Bearer ${token}`)
+          .send(getTenantAlarms)
+          .expect(200)
+          .end((err, res) => {
+            if (err) return done(err);
+            if (res.body.data.length > 0) {
+              expect(res.body.data.getAlarms.data[0]).to.have.own.property('id');
+              expect(res.body.data.getAlarms.data[0]).to.have.own.property('alarm_type');
+              expect(res.body.data.getAlarms.data[0]).to.have.own.property('tenant');
             }
             done();
           });
