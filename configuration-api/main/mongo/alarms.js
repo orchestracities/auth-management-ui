@@ -73,7 +73,7 @@ async function updateThisAlarmmongo(data) {
   const filter = {
     id: data.id
   };
-  const AlarmsData = await Alarm.find(filter, null, { session: session, new: true });
+  const AlarmsData = await Alarm.find(filter,null,{ session: session, new: true });
   const update = {
     id: AlarmsData[0].id,
     alarm_type: data.alarm_type,
