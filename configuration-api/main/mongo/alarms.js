@@ -133,17 +133,21 @@ async function updateThisAlarmjson(data) {
   return [data];
 }
 
+const getCorrectString=()=>{
+  const newString=(typeof process.env.ALARMS_SAVE==="undefined")?"mongo":process.env.ALARMS_SAVE.toLowerCase();
+  return newString;
+}
 async function getTheAlarms(data) {
-  return eval('getTheAlarms' + (typeof process.env.ALARMS_SAVE==="undefined")?"mongo":process.env.ALARMS_SAVE.toLowerCase() + '(data)');
+  return eval('getTheAlarms' + getCorrectString() + '(data)');
 }
 async function deleteThisAlarm(data) {
-  return eval('deleteThisAlarm' + (typeof process.env.ALARMS_SAVE==="undefined")?"mongo":process.env.ALARMS_SAVE.toLowerCase() + '(data)');
+  return eval('deleteThisAlarm' + getCorrectString() + '(data)');
 }
 async function addAlarm(data) {
-  return eval('addAlarm' + (typeof process.env.ALARMS_SAVE==="undefined")?"mongo":process.env.ALARMS_SAVE.toLowerCase() + '(data)');
+  return eval('addAlarm' + getCorrectString() + '(data)');
 }
 async function updateThisAlarm(data) {
-  return eval('updateThisAlarm' + (typeof process.env.ALARMS_SAVE==="undefined")?"mongo":process.env.ALARMS_SAVE.toLowerCase() + '(data)');
+  return eval('updateThisAlarm' + getCorrectString() + '(data)');
 }
 
 module.exports = {
