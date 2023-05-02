@@ -29,6 +29,7 @@
 - Tenant Form Fix (new hook behavior)
 - react-colorful 5.6.1 (hook behavior)
 - not necessary state on sort button
+- Alerts delete UI side
 
 ### Documentation
 
