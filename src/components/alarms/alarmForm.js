@@ -456,9 +456,6 @@ export default function AlarmForm({
                 <MenuItem key={'entity'} value={'entity'}>
                   {<Trans>alarms.form.entity</Trans>}
                 </MenuItem>
-                <MenuItem key={'entity'} value={'path'}>
-                  {<Trans>alarms.form.path</Trans>}
-                </MenuItem>
               </Select>
             </FormControl>
           </Grid>

@@ -21,6 +21,7 @@
 - JSON Mockup implementation (#182)
 - MongoDB implementation
 - MongoDB mocha tests
+- Alerts logic inside config api
 
 ### Bug fixes
 
@@ -29,6 +30,8 @@
 - Tenant Form Fix (new hook behavior)
 - react-colorful 5.6.1 (hook behavior)
 - not necessary state on sort button
+- Form change on alerts (path removed)
+- Added more consistend display on Alerts
 
 ### Documentation
 

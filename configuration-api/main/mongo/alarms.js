@@ -5,6 +5,7 @@ const config = require('../config');
 require('dotenv').config({ path: '../../.env' });
 const connection = mongoose.createConnection(config.getConfig().mongo_db);
 const { uid } = require('uid/secure');
+const { newElement, modifyElement, deleteElement } = require('../../Alarms/alarmscheduler');
 
 const configDirectory = path.resolve(process.cwd(), 'main/mongo');
 
@@ -29,6 +30,7 @@ const Alarms = new mongoose.Schema({
   time_of_last_alarm: String,
   status: String
 });
+
 const Alarm = connection.model('Alarms', Alarms);
 
 async function getTheAlarmsmongo(data) {
@@ -46,6 +48,7 @@ async function deleteThisAlarmmongo(data) {
   for (const e of AlarmsData) {
     deletedAlarms = await Alarm.findByIdAndRemove(e._id);
   }
+  deleteElement(AlarmsData[0]);
   return AlarmsData;
 }
 async function addAlarmmongo(data) {
@@ -66,6 +69,7 @@ async function addAlarmmongo(data) {
     status: data.status
   };
   await Alarm.create(arrayOfData);
+  newElement(arrayOfData);
   return [arrayOfData];
 }
 async function updateThisAlarmmongo(data) {
@@ -73,7 +77,7 @@ async function updateThisAlarmmongo(data) {
   const filter = {
     id: data.id
   };
-  const AlarmsData = await Alarm.find(filter,null,{ session: session, new: true });
+  const AlarmsData = await Alarm.find(filter, null, { session: session, new: true });
   const update = {
     id: AlarmsData[0].id,
     alarm_type: data.alarm_type,
@@ -92,6 +96,7 @@ async function updateThisAlarmmongo(data) {
   };
 
   await Alarm.findOneAndUpdate(filter, update, { session: session, new: true });
+  modifyElement(update);
   return [update];
 }
 
@@ -133,10 +138,10 @@ async function updateThisAlarmjson(data) {
   return [data];
 }
 
-const getCorrectString=()=>{
-  const newString=(typeof process.env.ALARMS_SAVE==="undefined")?"mongo":process.env.ALARMS_SAVE.toLowerCase();
+const getCorrectString = () => {
+  const newString = typeof process.env.ALARMS_SAVE === 'undefined' ? 'mongo' : process.env.ALARMS_SAVE.toLowerCase();
   return newString;
-}
+};
 async function getTheAlarms(data) {
   return eval('getTheAlarms' + getCorrectString() + '(data)');
 }

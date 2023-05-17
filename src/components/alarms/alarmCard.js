@@ -317,7 +317,30 @@ export default function AlarmCard({ pageType, data, getData, colors, env, token,
               </Avatar>
             </ListItemAvatar>
             <ListItemText
-              primary={<Trans>alarms.card.frequency</Trans>}
+              primary={<Trans>alarms.card.timeThreshold</Trans>}
+              secondary={
+                <React.Fragment>
+                  <ListTypo component="span" variant="body2" color="text.primary">
+                    {data.max_time_since_last_update + ' '} {translator(data.time_unit)}
+                  </ListTypo>
+                </React.Fragment>
+              }
+            />
+          </ListItem>
+          <CustomDivider variant="inset" component="li" />
+          <ListItem alignItems="flex-start">
+            <ListItemAvatar>
+              <Avatar
+                sx={{
+                  bgcolor: avatarColor
+                }}
+                aria-label="recipe"
+              >
+                <CalendarTodayIcon></CalendarTodayIcon>
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText
+              primary={<Trans>alarms.card.notificationsPeriod</Trans>}
               secondary={
                 <React.Fragment>
                   <ListTypo component="span" variant="body2" color="text.primary">

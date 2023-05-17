@@ -128,6 +128,14 @@ and the Configuration API:
 - `REACT_APP_TABLE_PAGINATION_OPTIONS`: Options of rows inside the table
 - `REACT_APP_TABLE_DEFAULT_DATA_AMOUNT`: Default displayed rows inside a table
 - `ALARMS_SAVE`: The operation related to the alarms if mongo or json
+- `NOTIFICATION_DELAY`: the delay of the notification emails
+- `DEV_VERSION`: if true the notification are going to test without a real send
+- `MAIL_HOST`: mail host for alerts
+- `MAIL_ACCOUNT`: mail account name for alerts
+- `MAIL_PASS`: mail password for alerts
+- `MAIL_SUBJECT`: alerts subject
+- `MAIL_MESSAGE`: alerts message
+- `MAIL_FROM`: alerts sender
 - `MONGO_DB`: the MongoDB endpoint of the Config API with authorization
   [populateDB.js](configuration-api/main/mongo/populateDB.js)
   to populate the Configuration API backend with example data
