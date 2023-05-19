@@ -3,7 +3,7 @@ const app = express();
 const port = 4200;
 const mongoose = require('mongoose');
 require('dotenv').config({ path: '../.env' });
-const connection = mongoose.createConnection(process.env.MONGO_DB);
+const connection = mongoose.createConnection(typeof process.env.MONGO_DB=== 'undefined' ? 'mongodb://root:example@localhost:27017/admin' :process.env.MONGO_DB);
 const axios = require('axios');
 const nodemailer = require('nodemailer');
 
