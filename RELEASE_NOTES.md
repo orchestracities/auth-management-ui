@@ -32,6 +32,7 @@
 - not necessary state on sort button
 - Form change on alerts (path removed)
 - Added more consistend display on Alerts
+- Alerts delete UI side
 
 ### Documentation
 
