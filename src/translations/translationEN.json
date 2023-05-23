@@ -135,7 +135,8 @@
       "tenant":"Tenant:",
       "servicePath":"Service path:",
       "email":"Email:",
-      "frequency":"Frequency:",
+      "timeThreshold":"Time threshold:",
+      "notificationsPeriod":"Notifications period:",
       "last":"Last alarm:",
       "tooltip": {
         "editIcon": "Edit"

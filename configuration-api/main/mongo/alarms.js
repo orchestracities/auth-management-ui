@@ -5,6 +5,7 @@ const config = require('../config');
 require('dotenv').config({ path: '../../.env' });
 const connection = mongoose.createConnection(config.getConfig().mongo_db);
 const { uid } = require('uid/secure');
+const { newElement, modifyElement, deleteElement } = require('../../Alarms/alarmscheduler');
 
 const configDirectory = path.resolve(process.cwd(), 'main/mongo');
 
@@ -29,6 +30,7 @@ const Alarms = new mongoose.Schema({
   time_of_last_alarm: String,
   status: String
 });
+
 const Alarm = connection.model('Alarms', Alarms);
 
 async function getTheAlarmsmongo(data) {
@@ -46,6 +48,7 @@ async function deleteThisAlarmmongo(data) {
   for (const e of AlarmsData) {
     deletedAlarms = await Alarm.findByIdAndRemove(e._id);
   }
+  typeof process.env.DEV_VERSION === 'undefined' ? '' :deleteElement(AlarmsData[0]);
   return AlarmsData;
 }
 async function addAlarmmongo(data) {
@@ -66,6 +69,7 @@ async function addAlarmmongo(data) {
     status: data.status
   };
   await Alarm.create(arrayOfData);
+  typeof process.env.DEV_VERSION === 'undefined' ? '' :newElement(arrayOfData);
   return [arrayOfData];
 }
 async function updateThisAlarmmongo(data) {
@@ -92,6 +96,7 @@ async function updateThisAlarmmongo(data) {
   };
 
   await Alarm.findOneAndUpdate(filter, update, { session: session, new: true });
+  typeof process.env.DEV_VERSION === 'undefined' ? '' :modifyElement(update);
   return [update];
 }
 

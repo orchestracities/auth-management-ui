@@ -90,8 +90,8 @@ export default function AlarmsPage({ tenantValues, thisTenant, graphqlErrors, en
         let alarmsValues = response.data.getAlarms.map((value, index) => ({
           ...value,
           ...{
-            secondaryColor: lighten(theme.palette.secondary.main, index * 0.15 + 0.1),
-            primaryColor: lighten(theme.palette.primary.main, index * 0.15 + 0.1)
+            secondaryColor: lighten(theme.palette.secondary.main, index / 50),
+            primaryColor: lighten(theme.palette.primary.main, index / 50)
           }
         }));
         setAlarmsList(alarmsValues);
