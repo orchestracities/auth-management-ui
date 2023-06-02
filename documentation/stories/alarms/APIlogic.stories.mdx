@@ -7,6 +7,7 @@ import {
     PRIMARY_STORY,
     Meta, Story, Canvas, Source
 } from '@storybook/addon-docs';
+import alert from '../images/alert.png';
 
 
 <Meta title="Alarms/API's" />
@@ -324,3 +325,52 @@ There are eight of them:
 - `MAIL_SUBJECT`: alerts subject
 - `MAIL_MESSAGE`: alerts message
 - `MAIL_FROM`: alerts sender
+
+### How to test
+
+For now an automated test is not avaitable for this feature, but still is it possibile to test it manually.
+
+#### Prerequisites
+
+In order to let the alerts work, is necessary to run first some services:
+
+- The docker images of mongo,keycloack,policy API and upstream service
+- The frontend application of Anubis UI 
+- The configuration API
+
+Without these, the alarms feature is not going to work correctly.
+
+For more info aabout this setup, please read the README inside the main folder
+
+#### How to create an alarm
+
+To create an alarm, you must log in inside the Anubis UI and go to the Alerts page.
+
+On the bottom right, clicking the button a form will be opened:
+
+here is possibile to select some parameter for the alarm, like the selected entity, the treshold and the notification period.
+
+<img src={alert}  />
+
+after the saving this alarm will be added to the queue.
+
+#### After the save logic
+
+After the saving the logic behind the user notification is very simple:
+
+If the corrent time is less, the alarm will be rescheduled inside the queue with the threshold time choosed, otherwhise the user will be notificated.
+
+#### The result
+
+The result depens on the configuration choosed by the user inside the env file.
+
+If the `DEV_VERSION` is setted to true, the applicationis going to use a service that verifies if the data is correct without actually sending the message, in that case the result is going to be displayed inside the configuration API console:
+
+<Source
+                        language="console"
+                        dark={true}
+                        code={`
+Preview URL: https://ethereal.email/message/ZHWy66OBWeQPM7GlZHWzCuH-N9VDsy0GAAAAAqzLJwephbnzMt1K3VdlOZg
+Message sent: <55c6b90e-796b-f3fe-40a3-58388cedff08@example.com>
+                        `}
+                    />
