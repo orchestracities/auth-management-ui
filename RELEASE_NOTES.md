@@ -36,6 +36,8 @@
 
 ### Documentation
 
+- Alerts API docs
+
 ### Continuous Integration
 
 - Update React to v18.2
@@ -43,6 +45,7 @@
 - Replace the json editor with new library
 - Rewrite the map component to mach leafleat v4
 - Storybook 7
+- Storybook 7.08
 
 ### Technical debt
 

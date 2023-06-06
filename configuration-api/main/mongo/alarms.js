@@ -48,7 +48,7 @@ async function deleteThisAlarmmongo(data) {
   for (const e of AlarmsData) {
     deletedAlarms = await Alarm.findByIdAndRemove(e._id);
   }
-  typeof process.env.DEV_VERSION === 'undefined' ? '' :deleteElement(AlarmsData[0]);
+  typeof process.env.DEV_VERSION === 'undefined' ? '' : deleteElement(AlarmsData[0]);
   return AlarmsData;
 }
 async function addAlarmmongo(data) {
@@ -69,7 +69,7 @@ async function addAlarmmongo(data) {
     status: data.status
   };
   await Alarm.create(arrayOfData);
-  typeof process.env.DEV_VERSION === 'undefined' ? '' :newElement(arrayOfData);
+  typeof process.env.DEV_VERSION === 'undefined' ? '' : newElement(arrayOfData);
   return [arrayOfData];
 }
 async function updateThisAlarmmongo(data) {
@@ -96,7 +96,7 @@ async function updateThisAlarmmongo(data) {
   };
 
   await Alarm.findOneAndUpdate(filter, update, { session: session, new: true });
-  typeof process.env.DEV_VERSION === 'undefined' ? '' :modifyElement(update);
+  typeof process.env.DEV_VERSION === 'undefined' ? '' : modifyElement(update);
   return [update];
 }
 

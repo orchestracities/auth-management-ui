@@ -1,0 +1,376 @@
+import {
+    Title,
+    Subtitle,
+    Description,
+    ArgsTable,
+    Stories,
+    PRIMARY_STORY,
+    Meta, Story, Canvas, Source
+} from '@storybook/addon-docs';
+import alert from '../images/alert.png';
+
+
+<Meta title="Alarms/API's" />
+
+<style>
+  {`
+    .subheading {
+      --mediumdark: '#999999';
+      font-weight: 900;
+      font-size: 13px;
+      color: #999;
+      letter-spacing: 6px;
+      line-height: 24px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      margin-top: 40px;
+    }
+
+    .link-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr 1fr;
+      row-gap: 10px;
+    }
+
+    @media (min-width: 620px) {
+      .link-list {
+        row-gap: 20px;
+        column-gap: 20px;
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media all and (-ms-high-contrast:none) {
+    .link-list {
+        display: -ms-grid;
+        -ms-grid-columns: 1fr 1fr;
+        -ms-grid-rows: 1fr 1fr;
+      }
+    }
+
+    .link-item {
+      display: block;
+      padding: 20px 30px 20px 15px;
+      border: 1px solid #00000010;
+      border-radius: 5px;
+      transition: background 150ms ease-out, border 150ms ease-out, transform 150ms ease-out;
+      color: #333333;
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .link-item:hover {
+      border-color: #1EA7FD50;
+      transform: translate3d(0, -3px, 0);
+      box-shadow: rgba(0, 0, 0, 0.08) 0 3px 10px 0;
+    }
+
+    .link-item:active {
+      border-color: #1EA7FD;
+      transform: translate3d(0, 0, 0);
+    }
+
+    .link-item strong {
+      font-weight: 700;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .link-item img {
+      height: 40px;
+      width: 40px;
+      margin-right: 15px;
+      flex: none;
+    }
+
+    .link-item span {
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .tip {
+      display: inline-block;
+      border-radius: 1em;
+      font-size: 11px;
+      line-height: 12px;
+      font-weight: 700;
+      background: #E7FDD8;
+      color: #66BF3C;
+      padding: 4px 12px;
+      margin-right: 10px;
+      vertical-align: top;
+    }
+
+    .tip-wrapper {
+      font-size: 13px;
+      line-height: 20px;
+      margin-top: 40px;
+      margin-bottom: 40px;
+    }
+
+    .tip-wrapper code {
+      font-size: 12px;
+      display: inline-block;
+    }
+  `}
+</style>
+
+# Alarms API's
+
+
+## Introduction:
+
+The code related to the alarm logic could be found inside the file configuration-api/Alarms/alarmscheduler.js.
+
+Inside this file is possibile to look the logic behind the alarms.
+
+In a nutshell the istance is running on port 4200 using and express server, the code can be runned using the node command on just launching the configuration-api as a whole.
+
+## The logic behind
+
+### First launch
+
+When launched for the first time the API's are going to fetch every scheduled alarm (status active) and set the queue that is an array of object with some data on in and the timeout.
+
+ <Source
+                        language="jsx"
+                        dark={true}
+                        code={`
+                     const queueInit = (alarmsData) => {
+  for (let alarm of alarmsData) {
+    queue.push({
+      id: alarm.id,
+      timeout: setTimeout(async () => {
+        entityReschedule(alarm);
+      }, timeCalculator(alarm.alarm_frequency_time_unit, alarm.alarm_frequency_time))
+    });
+  }
+};
+                        `}
+                    />
+
+
+The timeCalculator is the function that is returning the correct amount of milliseconds depending on the value that is passed
+
+### The reschedule
+
+Everytime the timeout choosed by the user is over, a function dedicated to monitor the data will be called.
+
+This code is going to get the last update of the monitored entity add the threshold time choosed by the user and compare it with the corrent date.
+
+If the corrent time is less, the alarm will be rescheduled inside the queue with the threshold time choosed and the default notification delay inside the env file.
+
+Otherwhise an email will be sended,the data updated and the alarm rescheduled.
+
+
+<Source
+                        language="jsx"
+                        dark={true}
+                        code={`
+                  const entityReschedule = async (updateData) => {
+  const resourceTypes = await Resource.find({ name: 'entity' });
+  const url =
+    resourceTypes.length > 0
+      ? resourceTypes[0].endpointUrl.slice(0, resourceTypes[0].endpointUrl.indexOf('?')) +
+        '?attrs=dateCreated,dateModified'
+      : process.env.REACT_APP_ORION + '/v2/entities?attrs=dateCreated,dateModified';
+  const queryParameters = '&id=' + updateData.entity_id;
+  const headers = {
+    'fiware-Service': updateData.tenant,
+    'fiware-ServicePath': updateData.servicepath
+  };
+  axios
+    .get(url + queryParameters, {
+      headers: headers
+    })
+    .then(async (response) => {
+      const index = queue.findIndex((x) => x.id === updateData.id);
+      const now = new Date();
+      const lastUpdate = new Date(response.data[0].dateModified.value);
+      lastUpdate.setMilliseconds(timeCalculator(updateData.time_unit, updateData.max_time_since_last_update));
+      if (lastUpdate.getTime() > now.getTime()) {
+        queue[index].timeout = setTimeout(async () => {
+          entityReschedule(updateData);
+        }, timeCalculator(updateData.alarm_frequency_time_unit, updateData.alarm_frequency_time) + process.env.NOTIFICATION_DELAY);
+      } else {
+        await sender(updateData);
+        const update = {
+          id: updateData.id,
+          alarm_type: updateData.alarm_type,
+          tenant: updateData.tenant,
+          servicepath: updateData.servicepath,
+          entity_id: updateData.entity_id,
+          entity_type: updateData.entity_type,
+          channel_type: updateData.channel_type,
+          channel_destination: updateData.channel_destination,
+          time_unit: updateData.time_unit,
+          max_time_since_last_update: updateData.max_time_since_last_update,
+          alarm_frequency_time_unit: updateData.alarm_frequency_time_unit,
+          alarm_frequency_time: updateData.alarm_frequency_time,
+          time_of_last_alarm: new Date().toString(),
+          status: updateData.status
+        };
+        const filter = {
+          id: updateData.id
+        };
+
+        queue[index].timeout = setTimeout(async () => {
+          entityReschedule(update);
+        }, timeCalculator(update.alarm_frequency_time_unit, update.alarm_frequency_time) + process.env.NOTIFICATION_DELAY);
+        await Alarm.findOneAndUpdate(filter, update);
+      }
+    })
+    .catch((e) => {
+      console.log(e);
+    });
+};
+                        `}
+                    />
+
+
+### Email sender
+
+The email sender is heavy influnced by the values contained inside the env file.
+
+By default is using a test account that is checking if is possibile to send the email but without actually sending it.
+
+When is done, a message inside the console is going to provide a feedback and a link to the email body, like this:
+<Source
+                        language="console"
+                        dark={true}
+                        code={`
+Preview URL: https://ethereal.email/message/ZHWy66OBWeQPM7GlZHWzCuH-N9VDsy0GAAAAAqzLJwephbnzMt1K3VdlOZg
+Message sent: <55c6b90e-796b-f3fe-40a3-58388cedff08@example.com>
+                        `}
+                    />
+
+
+This mode can be disabled by changing the env variable DEV_VERSION to false, but then is mandatory to set a real email client, by changing the values of this three variables:
+
+- MAIL_HOST
+- MAIL_ACCOUNT
+- MAIL_PASS
+
+Is also possible to configure the sender the subject and the message inside this other three variables:
+
+- MAIL_FROM
+- MAIL_SUBJECT
+- MAIL_MESSAGE
+
+
+<Source
+                        language="jsx"
+                        dark={true}
+                        code={`
+const sender = async (data) => {
+  let testAccount = process.env.DEV_VERSION.toLowerCase() === 'true' ? await nodemailer.createTestAccount() : '';
+
+  let transporter = nodemailer.createTransport({
+    host: process.env.DEV_VERSION.toLowerCase() === 'true' ? 'smtp.ethereal.email' : process.env.MAIL_HOST,
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: process.env.DEV_VERSION.toLowerCase() === 'true' ? testAccount.user : process.env.MAIL_ACCOUNT, // generated ethereal user
+      pass: process.env.DEV_VERSION.toLowerCase() === 'true' ? testAccount.pass : process.env.MAIL_PASS // generated ethereal password
+    }
+  });
+
+  try {
+    let info = await transporter.sendMail({
+      from: process.env.MAIL_FROM, // sender address
+      to: data.channel_destination.toString(), // list of receivers
+      subject: process.env.MAIL_SUBJECT + ' ' + data.id, // Subject line
+      text: process.env.MAIL_MESSAGE + ' ' + data.entity_id // plain text body
+    });
+    console.log('Message sent: %s', info.messageId);
+    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+  } catch (err) {
+    console.log(err);
+  }
+};
+                        `}
+                    />
+
+### Add/update/delete
+
+The code is monitoring when something has changed inside the alarm queue.
+
+If a user is going for example to delete an alarm, the code is going to remove the schedule from the queue.
+
+The same logig is applied when someone is doing an update or a new entry.
+
+<Source
+                        language="jsx"
+                        dark={true}
+                        code={`
+const deleteElement = async (data) => {
+  const index = queue.findIndex((x) => x.id === data.id);
+  clearTimeout(queue[index].timeout);
+};
+};
+                        `}
+                    />
+
+### ENV
+
+The configuration of the envroinment variables is a must, without them the code is not going to work.
+There are eight of them:
+
+- `NOTIFICATION_DELAY`: the delay of the notification emails
+- `DEV_VERSION`: if true the notification are going to test without a real send
+- `MAIL_HOST`: mail host for alerts
+- `MAIL_ACCOUNT`: mail account name for alerts
+- `MAIL_PASS`: mail password for alerts
+- `MAIL_SUBJECT`: alerts subject
+- `MAIL_MESSAGE`: alerts message
+- `MAIL_FROM`: alerts sender
+
+### How to test
+
+For now an automated test is not avaitable for this feature, but still is it possibile to test it manually.
+
+#### Prerequisites
+
+In order to let the alerts work, is necessary to run first some services:
+
+- The docker images of mongo,keycloack,policy API and upstream service
+- The frontend application of Anubis UI 
+- The configuration API
+
+Without these, the alarms feature is not going to work correctly.
+
+For more info aabout this setup, please read the README inside the main folder
+
+#### How to create an alarm
+
+To create an alarm, you must log in inside the Anubis UI and go to the Alerts page.
+
+On the bottom right, clicking the button a form will be opened:
+
+here is possibile to select some parameter for the alarm, like the selected entity, the treshold and the notification period.
+
+<img src={alert}  />
+
+after the saving this alarm will be added to the queue.
+
+#### After the save logic
+
+After the saving the logic behind the user notification is very simple:
+
+If the corrent time is less, the alarm will be rescheduled inside the queue with the threshold time choosed, otherwhise the user will be notificated.
+
+#### The result
+
+The result depens on the configuration choosed by the user inside the env file.
+
+If the `DEV_VERSION` is setted to true, the applicationis going to use a service that verifies if the data is correct without actually sending the message, in that case the result is going to be displayed inside the configuration API console:
+
+<Source
+                        language="console"
+                        dark={true}
+                        code={`
+Preview URL: https://ethereal.email/message/ZHWy66OBWeQPM7GlZHWzCuH-N9VDsy0GAAAAAqzLJwephbnzMt1K3VdlOZg
+Message sent: <55c6b90e-796b-f3fe-40a3-58388cedff08@example.com>
+                        `}
+                    />
