@@ -74,7 +74,7 @@
     ]
   },
   "devDependencies": {
-    "cypress": "^12.8.0",
+    "cypress": "^13.0.0",
     "cypress-react-selector": "^3.0.0",
     "eslint": "^8.14.0",
     "eslint-config-prettier": "^8.5.0",
