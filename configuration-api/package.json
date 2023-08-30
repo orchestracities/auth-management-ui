@@ -16,7 +16,7 @@
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "dependencies": {
-    "@apollo/server": "^4.4.1",
+    "@apollo/server": "^4.9.3",
     "axios": "^1.4.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
